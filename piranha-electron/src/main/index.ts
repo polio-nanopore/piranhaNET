@@ -3,35 +3,41 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+console.log("initialisingxx")
 function createWindow(): void {
+  console.log("Creating window")
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
-    show: false,
+    show: true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
-  })
+  });
 
-  mainWindow.on('ready-to-show', () => {
+
+  /*mainWindow.on('ready-to-show', () => {
+    console.log("showing")
     mainWindow.show()
-  })
+  })*/
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
+  /*mainWindow.webContents.setWindowOpenHandler((details) => {
+    console.log("open external")
     shell.openExternal(details.url)
     return { action: 'deny' }
-  })
+  })*/
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  if (is.dev) {
+    console.log("is dev")
+    mainWindow.loadURL('http://localhost:5173');
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html')) // TODO! THis won't work
   }
 }
 
