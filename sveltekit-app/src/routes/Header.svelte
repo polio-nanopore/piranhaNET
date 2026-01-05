@@ -12,6 +12,7 @@
 	</div>
 
 	<nav>
+		<div class="title">PiranhaNET</div>
 		<ul>
 			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
 				<a href={resolve('/')}>Run</a>
@@ -19,6 +20,8 @@
 			<li aria-current={page.url.pathname.startsWith('/history') ? 'page' : undefined}>
 				<a href={resolve('/history')}>History</a>
 			</li>
+		</ul>
+		<ul>
 			<li aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href={resolve('/about')}>About</a>
 			</li>
@@ -55,7 +58,13 @@
 
 	nav {
 		display: flex;
-		justify-content: center;
+		justify-content: space-between;
+		color: var(--color-text-light);
+		font-weight: 600;
+		font-size: 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		width: 100%;
 	}
 
 	svg {
@@ -70,9 +79,7 @@
 
 	ul {
 		position: relative;
-		padding-top: 0.2rem;
 		margin: 0;
-		height: 3em;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -84,20 +91,21 @@
 	li {
 		position: relative;
 		height: 100%;
+		padding: 1rem 1.2rem;
 	}
 
 	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 1.2rem;
 		color: var(--color-text-light);
-		font-weight: 700;
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
+		display: flex;
 		text-decoration: none;
 		transition: color 0.2s linear;
+	}
+
+	.title {
+		font-size: 1.4rem;
+		text-transform: none;
+		padding: 0.6rem 1.5rem;
+		color: #a2bec3; /* This is a lighter variant of color-theme-2 */
 	}
 
 	a:hover, li[aria-current="page"] a {
