@@ -1,15 +1,23 @@
 <script>
+	import { Input, Label } from "flowbite-svelte";
+	import Info from "./components/Info.svelte";
 </script>
 
 <svelte:head>
-	<title>History</title>
+	<title>Piranha Run</title>
 	<meta name="description" content="PiranhaNET Home" />
 </svelte:head>
 
 <div>
-	<h1>Run Piranha</h1>
+	<h1>New Sequencing Run</h1>
 
-	<p>
-		Default page - run new Piranha project - will go here
-	</p>
+	<form>
+		<div class="grid gap-6">
+		  <div>
+			  <Info tooltip="Enter a unique name for this sequencing run"></Info>
+			  <Label for="name" class="text-base">Name</Label>
+			  <Input type="text" id="name" required></Input>
+		  </div>
+		</div>
+	</form>
 </div>
