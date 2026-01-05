@@ -3,9 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-console.log("initialisingxx")
 function createWindow(): void {
-  console.log("Creating window")
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -24,12 +22,10 @@ function createWindow(): void {
 
 
   /*mainWindow.on('ready-to-show', () => {
-    console.log("showing")
     mainWindow.show()
   })*/
 
   /*mainWindow.webContents.setWindowOpenHandler((details) => {
-    console.log("open external")
     shell.openExternal(details.url)
     return { action: 'deny' }
   })*/
@@ -37,10 +33,9 @@ function createWindow(): void {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev) {
-    console.log("is dev")
     mainWindow.loadURL('http://localhost:5173');
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html')) // TODO! THis won't work
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html')) // TODO! THis won't work in prod mode
   }
 }
 
