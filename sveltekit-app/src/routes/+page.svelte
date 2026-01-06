@@ -1,6 +1,7 @@
 <script>
-	import { Fileupload, Input, Label, Textarea } from "flowbite-svelte";
+	import { Accordion, AccordionItem, Button, Checkbox, Fileupload, Input, Label, Textarea } from "flowbite-svelte";
 	import Info from "./components/Info.svelte";
+	import Settings from "./components/Settings.svelte";
 </script>
 
 <svelte:head>
@@ -32,6 +33,18 @@
 				<Info tooltip="Notes will be saved to the output report"></Info>
 				<Label for="notes" class="text-base">Notes</Label>
 				<Textarea id="notes" class="w-full" rows="4"></Textarea>
+			</div>
+			<Accordion>
+				<AccordionItem>
+					{#snippet header()}Settings{/snippet}
+					<Settings></Settings>
+					<div class="mt-6">
+						<Checkbox checked>Update settings for future runs</Checkbox>
+					</div>
+				</AccordionItem>
+			</Accordion>
+			<div>
+				<Button class="primary-button float-right">Start Run</Button>
 			</div>
 		</div>
 	</form>

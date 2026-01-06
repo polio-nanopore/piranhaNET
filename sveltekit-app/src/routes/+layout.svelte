@@ -30,7 +30,7 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		width: 100%;
+		width: 60rem;
 		padding: 1rem 6rem;
 		margin: 0 auto;
 		box-sizing: border-box;

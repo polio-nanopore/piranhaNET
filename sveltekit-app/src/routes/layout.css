@@ -69,9 +69,12 @@ button:focus:not(:focus-visible) {
 	outline: none;
 }
 
+.primary-button {
+	background-color: #19434c;
+}
+
 form {
 	margin-top: 1rem;
-	max-width: 60rem;
 }
 
 @media (min-width: 720px) {
