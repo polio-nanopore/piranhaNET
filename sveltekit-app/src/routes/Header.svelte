@@ -2,6 +2,8 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import logo from '$lib/images/piranha-logo.svg';
+	import {Dropdown, DropdownItem} from "flowbite-svelte";
+	import ChevronDownoutline from "./components/ChevronDownoutline.svelte";
 </script>
 
 <header>
@@ -20,11 +22,23 @@
 			<li aria-current={page.url.pathname.startsWith('/history') ? 'page' : undefined}>
 				<a href={resolve('/history')}>History</a>
 			</li>
+			<li aria-current={page.url.pathname.startsWith('/settings') ? 'page' : undefined}>
+				<a href={resolve('/settings')}>Settings</a>
+			</li>
 		</ul>
 		<ul>
 			<li aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href={resolve('/about')}>About</a>
 			</li>
+			<li>
+				EN<ChevronDownoutline class="text-white ms-2" />
+			</li>
+			<Dropdown>
+				<DropdownItem>EN</DropdownItem>
+				<DropdownItem>FR</DropdownItem>
+			</Dropdown>
+			<li>v0.1.0</li>
+
 		</ul>
 	</nav>
 </header>
