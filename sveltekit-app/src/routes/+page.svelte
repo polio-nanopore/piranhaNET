@@ -2,6 +2,8 @@
 	import { Accordion, AccordionItem, Button, Checkbox, Fileupload, Input, Label, Textarea } from "flowbite-svelte";
 	import Info from "./components/Info.svelte";
 	import Settings from "./components/Settings.svelte";
+	import RunInfo from "./components/RunInfo.svelte";
+	let runStarted = $state(false);
 </script>
 
 <svelte:head>
@@ -11,7 +13,7 @@
 
 <div>
 	<h1>New Sequencing Run</h1>
-
+	{#if !runStarted}
 	<form>
 		<div class="grid gap-6">
 		    <div>
@@ -44,8 +46,11 @@
 				</AccordionItem>
 			</Accordion>
 			<div>
-				<Button class="primary-button float-right">Start Run</Button>
+				<Button class="primary-button float-right" onclick={() => runStarted = true}>Start Run</Button>
 			</div>
 		</div>
 	</form>
+	{:else}
+		<RunInfo></RunInfo>
+	{/if}
 </div>
