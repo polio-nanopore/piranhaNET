@@ -1,5 +1,6 @@
 <script lang="ts">
 	import pscLogo from '$lib/images/Poliovirus Sequencing Consortium.png';
+	import GithubIcon from "../components/GithubIcon.svelte";
 </script>
 
 <svelte:head>
@@ -20,8 +21,8 @@
 	</p>
 	<p>
 		This is open-source software.<br/>
-		<a href="https://github.com/polio-nanopore/piranhaNET/" target="_blank">Github repository for PiranhaNET</a> <br/>
-		<a href="https://github.com/polio-nanopore/piranha" target="_blank">Github repository for Piranha</a>
+		<GithubIcon></GithubIcon><a class="pl-1" href="https://github.com/polio-nanopore/piranhaNET/" target="_blank">Github repository for PiranhaNET</a> <br/>
+		<GithubIcon></GithubIcon><a class="pl-1" href="https://github.com/polio-nanopore/piranha" target="_blank">Github repository for Piranha</a>
 	</p>
 </div>
 
