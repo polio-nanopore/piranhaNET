@@ -1,4 +1,8 @@
 <script>
+    import { goto } from '$app/navigation';
+    import { Button, Spinner } from "flowbite-svelte";
+    import CheckCircle from "./CheckCircle.svelte";
+
     let logs = $state(["Initialising", "Waiting for logs..."]);
     let status = $state("running");
     let interval = 0;
@@ -14,9 +18,26 @@
 </script>
 
 <div class={`status status-${status}`}>
-    <h2>test-run</h2>
-    <p>Barcodes file: <strong>barcodes.csv</strong></p>
-    <p>MinKnow folder: <strong>/home/piranha/test/minknow</strong></p>
+    <h2>
+        test-run
+        {#if status==="complete"}
+            <CheckCircle></CheckCircle>
+        {:else}
+            <Spinner color="orange" size="5" />
+        {/if}
+    </h2>
+    <div style="position: relative;">
+        <p>Barcodes file: <strong>barcodes.csv</strong></p>
+        <p>MinKnow folder: <strong>/home/piranha/test/minknow</strong></p>
+        <p>Output folder: <strong>/home/piranha/test/output</strong></p>
+        {#if status==="complete"}
+          <Button class="primary-button open-report"
+                  onclick={() => goto('/output-report')}
+                  style="position: absolute; bottom: 0; right: 0; cursor: pointer;">
+              Open report
+          </Button>
+        {/if}
+    </div>
     <div class="logs">
         <div class="pb-3"><strong>Logs</strong></div>
         <pre>{logs.join("\n")}</pre>

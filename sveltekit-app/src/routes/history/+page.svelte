@@ -56,7 +56,9 @@
 						<a href="/">Re-run</a>
 					</TableBodyCell>
 					<TableBodyCell>
-						<a href="#">Open report</a>
+						{#if item.status === "success"}
+							<a href="#">Open report</a>
+						{/if}
 					</TableBodyCell>
 				</TableBodyRow>
 			{/each}

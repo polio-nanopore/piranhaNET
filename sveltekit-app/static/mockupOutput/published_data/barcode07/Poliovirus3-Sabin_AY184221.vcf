@@ -1,0 +1,9 @@
+##fileformat=VCFv4.1
+##medaka_version=1.11.3
+##contig=<ID=Poliovirus3-Sabin_AY184221,length=900>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Medaka genotype.">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Medaka genotype quality score">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE
+Poliovirus3-Sabin_AY184221	17	.	C	T	44.105	PASS	.	GT:GQ	1:44
+Poliovirus3-Sabin_AY184221	160	.	G	A	1.301	PASS	.	GT:GQ	1:1
+Poliovirus3-Sabin_AY184221	473	.	TC	T	2.822	PASS	.	GT:GQ	1:3
