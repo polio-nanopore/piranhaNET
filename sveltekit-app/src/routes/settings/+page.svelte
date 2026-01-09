@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { loadSettings, saveSettings } from "../../settingsStore";
 	import Settings from "../components/Settings.svelte";
 	import {Button} from "flowbite-svelte";
 
-	const settingsState = {
-		outputFolder: "",
-		userName: ""
-	}; // TODO: get from localstorage
-	let settings = $state(settingsState);
+	let settings = $state(loadSettings());
+	// TODO: I don't thing we need settingsChanged - save on Save click in Settings page, and on Run in index - but
+	// use this for testing for now
 	const settingsChanged = (newSettings) => {
 		console.log("settings changed");
+		console.log(JSON.stringify(settings));
 	};
 </script>
 
@@ -23,9 +23,9 @@
 		<p>
 			These settings will be used as defaults in all sequencing runs.
 		</p>
-		<Settings settings={settings} settingsChanged={settingsChanged}></Settings>
+		<Settings bind:settings={settings} settingsChanged={settingsChanged}></Settings>
 		<div>
-			<Button class="primary-button float-right">Save</Button>
+			<Button class="primary-button float-right" onclick={saveSettings(settings)}>Save</Button>
 		</div>
 	</div>
 </div>

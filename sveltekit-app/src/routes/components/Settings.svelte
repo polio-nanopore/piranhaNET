@@ -1,6 +1,8 @@
 <script>
     import {Accordion, AccordionItem, Checkbox, Fileupload, Input, Label, Select, Toggle} from "flowbite-svelte";
 
+    // TODO: bind all values to settings
+    // TODO: remove settingsChanged
     let {settings, settingsChanged} = $props();
 
     import Info from "./Info.svelte";
@@ -61,8 +63,8 @@
         {#snippet header()}Piranha Output Settings{/snippet}
         <div class="grid gap-6">
             <div>
-                <Label for="publish_directory" class="text-base">Publish directory</Label>
-                <Input type="text" id="publish_directory"></Input>
+                <Label for="publish_folder" class="text-base">Publish folder</Label>
+                <Input type="text" id="publish_folder"></Input>
             </div>
             <div>
                 <Label for="output_prefix" class="text-base">Output prefix</Label>
@@ -106,6 +108,10 @@
             <div>
                 <Label for="min_read_percentage" class="text-base">Minimum read percentage</Label>
                 <Input type="number" id="min_read_percentage" value="0"></Input>
+            </div>
+            <div>
+                <Label for="primer_length" class="text-base">Primer length</Label>
+                <Input type="number" id="primer_length" value="30"></Input>
             </div>
         </div>
     </AccordionItem>

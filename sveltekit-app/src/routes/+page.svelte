@@ -1,11 +1,20 @@
-<script>
+<script lang="ts">
 	import { Accordion, AccordionItem, Button, Checkbox, Fileupload, Input, Label, Textarea } from "flowbite-svelte";
+	import { loadSettings, saveSettings } from "../settingsStore.ts";
+	import type {AppSettings} from "../settingsStore.ts";
 	import Info from "./components/Info.svelte";
 	import Settings from "./components/Settings.svelte";
 	import RunInfo from "./components/RunInfo.svelte";
 	let runStarted = $state(false);
 
-	let settings = {};
+	let settings = $state(loadSettings());
+	let saveSettingsOnRun = $state(true);
+	let startRun = () => {
+		if (saveSettingsOnRun) {
+			saveSettings(settings as AppSettings);
+		}
+		runStarted = true;
+	};
 	let settingsChanged = () => {};
 </script>
 
@@ -47,14 +56,14 @@
 			<Accordion>
 				<AccordionItem>
 					{#snippet header()}Settings{/snippet}
-					<Settings settings={settings} settingsChanged={settingsChanged}></Settings>
+					<Settings bind:settings={settings} settingsChanged={settingsChanged}></Settings>
 					<div class="mt-6">
-						<Checkbox checked color="orange">Update settings for future runs</Checkbox>
+						<Checkbox bind:checked={saveSettingsOnRun} color="orange">Update settings for future runs</Checkbox>
 					</div>
 				</AccordionItem>
 			</Accordion>
 			<div>
-				<Button class="primary-button float-right" onclick={() => runStarted = true}>Start Run</Button>
+				<Button class="primary-button float-right" onclick={startRun}>Start Run</Button>
 			</div>
 		</div>
 	</form>
