@@ -4,6 +4,9 @@
 	import Settings from "./components/Settings.svelte";
 	import RunInfo from "./components/RunInfo.svelte";
 	let runStarted = $state(false);
+
+	let settings = {};
+	let settingsChanged = () => {};
 </script>
 
 <svelte:head>
@@ -36,12 +39,17 @@
 				<Label for="notes" class="text-base">Notes</Label>
 				<Textarea id="notes" class="w-full" rows="4"></Textarea>
 			</div>
+			<div>
+				<Info tooltip="Number of parallel threads Piranha will use for this run"></Info>
+				<Label for="analysis_threads" class="text-base">Analysis threads</Label>
+				<Input type="number" id="analysis_threads" value="10" required></Input>
+			</div>
 			<Accordion>
 				<AccordionItem>
 					{#snippet header()}Settings{/snippet}
-					<Settings></Settings>
+					<Settings settings={settings} settingsChanged={settingsChanged}></Settings>
 					<div class="mt-6">
-						<Checkbox checked>Update settings for future runs</Checkbox>
+						<Checkbox checked color="orange">Update settings for future runs</Checkbox>
 					</div>
 				</AccordionItem>
 			</Accordion>
