@@ -3,6 +3,8 @@
     import { Button, Spinner } from "flowbite-svelte";
     import CheckCircle from "./CheckCircle.svelte";
 
+    let { name, barcodesFile, minKnowFolder } = $props();
+
     let logs = $state(["Initialising", "Waiting for logs..."]);
     let status = $state("running");
     let interval = 0;
@@ -19,7 +21,7 @@
 
 <div class={`status status-${status}`}>
     <h2>
-        test-run
+        { name }
         {#if status==="complete"}
             <CheckCircle></CheckCircle>
         {:else}
@@ -27,9 +29,9 @@
         {/if}
     </h2>
     <div style="position: relative;">
-        <p>Barcodes file: <strong>barcodes.csv</strong></p>
-        <p>MinKnow folder: <strong>/home/piranha/test/minknow</strong></p>
-        <p>Output folder: <strong>/home/piranha/test/output</strong></p>
+        <p>Barcodes file: <strong>{barcodesFile}</strong></p>
+        <p>MinKnow folder: <strong>/{minKnowFolder}</strong></p>
+        <p>Output folder: <strong>/home/piranha/{name}/output</strong></p>
         {#if status==="complete"}
           <Button class="primary-button open-report"
                   onclick={() => goto('/output-report')}

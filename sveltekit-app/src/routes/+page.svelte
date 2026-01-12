@@ -5,6 +5,11 @@
 	import Info from "./components/Info.svelte";
 	import Settings from "./components/Settings.svelte";
 	import RunInfo from "./components/RunInfo.svelte";
+
+	let name = $state("");
+	let barcodesFile = $state("");
+	let minKnowFolder = $state("");
+
 	let runStarted = $state(false);
 
 	let settings = $state(loadSettings());
@@ -19,8 +24,8 @@
 </script>
 
 <svelte:head>
-	<title>Piranha Run</title>
-	<meta name="description" content="PiranhaNET Home" />
+	<title>PiranhaNET - Run</title>
+	<meta name="description" content="PiranhaNET - Run" />
 </svelte:head>
 
 <div>
@@ -31,17 +36,17 @@
 		    <div>
 			    <Info tooltip="Enter a unique name for this sequencing run"></Info>
 			    <Label for="name" class="text-base">Name</Label>
-			    <Input type="text" id="name" required></Input>
+			    <Input type="text" id="name" required bind:value={name}></Input>
 		    </div>
 			<div>
 				<Info tooltip="Select a CSV file containing the IDs and barcodes for each sample"></Info>
 				<Label for="barcodes_file" class="text-base">Barcodes file</Label>
-				<Fileupload id="barcodes_file" accept=".csv" required></Fileupload>
+				<Fileupload id="barcodes_file" accept=".csv" required bind:value={barcodesFile}></Fileupload>
 			</div>
 			<div>
 				<Info tooltip="Select the folder containing sample sequencing reads from MinKnow"></Info>
 				<Label for="minknow_folder" class="text-base">MinKnow folder</Label>
-				<Fileupload id="minknow_folder" webkitdirectory="true" directory required></Fileupload>
+				<Fileupload id="minknow_folder" webkitdirectory="true" directory required bind:value={minKnowFolder}></Fileupload>
 			</div>
 			<div>
 				<Info tooltip="Notes will be saved to the output report"></Info>
@@ -68,6 +73,6 @@
 		</div>
 	</form>
 	{:else}
-		<RunInfo></RunInfo>
+		<RunInfo name={name} barcodesFile={barcodesFile} minKnowFolder={minKnowFolder}></RunInfo>
 	{/if}
 </div>

@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Piranha - Run History</title>
+	<title>PiranhaNET - Run History</title>
 	<meta name="description" content="Run history" />
 </svelte:head>
 
