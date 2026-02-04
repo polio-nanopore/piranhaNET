@@ -3,4 +3,4 @@ set -ex
 
 out_dir=test_results
 rm -rf $out_dir
-./dist/piranha/piranha -i test_data/demultiplexed -b test_data/barcodes.csv -pc Pos1,P2 -nc "my negative control" -o $out_dir --verbose
+./dist/piranha -i test_data/demultiplexed -b test_data/barcodes.csv -pc Pos1,P2 -nc "my negative control" -o $out_dir --verbose
