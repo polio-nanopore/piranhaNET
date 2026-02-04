@@ -29,9 +29,9 @@
         {/if}
     </h2>
     <div style="position: relative;">
-        <p>Barcodes file: <strong>{barcodesFile}</strong></p>
-        <p>MinKnow folder: <strong>/{minKnowFolder}</strong></p>
-        <p>Output folder: <strong>/home/piranha/{name}/output</strong></p>
+        <p>Barcodes file: <strong>/dev/piranha/test_data/{barcodesFile}</strong></p>
+        <p>MinKnow folder: <strong>/dev/piranha/test_data/demultiplexed</strong></p>
+        <p>Output folder: <strong>/dev/piranha/{name}/output</strong></p>
         {#if status==="complete"}
           <Button class="primary-button open-report"
                   onclick={() => goto('/output-report')}
@@ -69,6 +69,6 @@
         background-color: black;
         color: white;
         padding: 0.5rem;
-        height: 70vh;
+        height: 50vh;
     }
 </style>

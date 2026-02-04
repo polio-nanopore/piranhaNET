@@ -74,6 +74,10 @@ button:focus:not(:focus-visible) {
 	background-color: #19434c;
 }
 
+.accordion-content {
+	background-color: white;
+}
+
 form {
 	margin-top: 1rem;
 }
@@ -82,4 +86,38 @@ form {
 	h1 {
 		font-size: 1.6rem;
 	}
+}
+
+.customFileInput::-webkit-file-upload-button {
+	visibility: hidden;
+	width: 0px;
+}
+
+.customInputContainer {
+	float: left;
+	position: relative;
+	height: 80px;
+}
+
+.customFileInput {
+	position: absolute;
+	top: 24px;
+	left: 74px;
+	margin-left: 0!important;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+.customFileInputButton {
+	position: absolute;
+	background-color: #1e2939;
+	color: white;
+	height: 42px;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 8px;
+	padding-right: 8px;
+	margin-right: 0!important;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	font-size: 14px;
 }

@@ -16,7 +16,7 @@ Electron app installer.
 
 ## Development
 
-Production mode is still tbd. To run in dev mode, we first the sveltekit application on port 51367:
+Production mode is still tbd. To run in dev mode, we first the sveltekit application on port 5137:
 `npm run dev --prefix ./sveltekit-app`
 Then, run the electron app, which points a browser window at that port:
 `npm run dev --prefix ./piranha-electron`

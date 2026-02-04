@@ -17,15 +17,15 @@
     ];
 
 </script>
-
+<div class="accordion-content">
 <Accordion>
     <AccordionItem open>
         {#snippet header()}Run Settings{/snippet}
         <div class="grid gap-6">
-            <div>
+            <div class="customInputContainer">
                 <Info tooltip="Select a folder for the output of Piranha analysis"></Info>
                 <Label for="output_folder" class="text-base">Output folder</Label>
-                <Fileupload id="output_folder" bind:value={settings.outputFolder} webkitdirectory="true" directory required></Fileupload>
+                <input type="file" id="output_folder" style="width: 928px;" webkitdirectory="true" class="disabled:cursor-not-allowed disabled:opacity-50 rtl:text-right focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-500 dark:focus:ring-primary-500 bg-gray-50 text-gray-900 dark:bg-gray-700 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600 rounded-lg border p-0! dark:text-gray-400 text-sm p-2.5 customFileInput" directory required/><label htmlFor="output_folder" class="customFileInputButton">Choose Folder</label>
             </div>
             <div>
                 <Info tooltip="User name to appear in report"></Info>
@@ -116,3 +116,4 @@
         </div>
     </AccordionItem>
 </Accordion>
+</div>
