@@ -1,0 +1,30 @@
+name: Piranha Installer for Ubuntu
+on:
+  push:
+    paths:
+      - 'piranha-installer/**'
+      - './github/workflows'
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: ./piranha-installer
+
+jobs:
+  build-piranha-exe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install micromambo
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+      - name: Build Piranha exe
+        run: ./scripts/build-installer
+      - name: Upload exe as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: piranha-exe-ubuntu
+          path: ./dist/piranha
+          retention-days: 1
