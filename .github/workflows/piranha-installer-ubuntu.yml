@@ -18,11 +18,12 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
-      - name: Install micromambo
+      - name: Install micromamba
         uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: ./piranha-installer/environment.yml
       - name: Build Piranha exe
+        shell: bash -el {0}
         run: ./scripts/build-installer
       - name: Upload exe as artifact
         uses: actions/upload-artifact@v4
@@ -30,3 +31,13 @@ jobs:
           name: piranha-exe-ubuntu
           path: ./piranha-installer/dist/piranha
           retention-days: 1
+
+  test-piranha-exe:
+    needs: build-piranha-exe
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Piranha exe
+        uses: actions/download-artifact@v4
+        with:
+          name: piranha-exe-ubuntu
+
