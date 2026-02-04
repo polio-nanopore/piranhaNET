@@ -16,6 +16,8 @@ jobs:
   build-piranha-exe:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out source
+        uses: actions/checkout@v4
       - name: Install micromambo
         uses: mamba-org/setup-micromamba@v2
         with:
