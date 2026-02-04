@@ -19,12 +19,12 @@ jobs:
       - name: Install micromambo
         uses: mamba-org/setup-micromamba@v2
         with:
-          environment-file: environment.yml
+          environment-file: ./piranha-installer/environment.yml
       - name: Build Piranha exe
         run: ./scripts/build-installer
       - name: Upload exe as artifact
         uses: actions/upload-artifact@v4
         with:
           name: piranha-exe-ubuntu
-          path: ./dist/piranha
+          path: ./piranha-installer/dist/piranha
           retention-days: 1
