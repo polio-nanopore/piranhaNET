@@ -4,11 +4,14 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - charset-normalizer
   - conda
+  - importlib-resources
   - medaka=1.11.3
   - minimap2
   - piranha-polio
   - python
   - snakemake
+  - pkg_resources
   - pyinstaller
   - tzdata=2025a # 2025c and latest 2025b breaks pyinstaller!
