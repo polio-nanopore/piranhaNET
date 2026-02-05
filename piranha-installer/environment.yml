@@ -12,6 +12,6 @@ dependencies:
   - piranha-polio
   - python
   - snakemake
-  - pkg_resources
+  - setuptools
   - pyinstaller
   - tzdata=2025a # 2025c and latest 2025b breaks pyinstaller!
