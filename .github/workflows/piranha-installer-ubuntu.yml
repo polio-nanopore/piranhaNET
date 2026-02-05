@@ -46,6 +46,8 @@ jobs:
           name: piranha-exe-ubuntu
           path:
             ./piranha-installer/dist
+      - name: Check folder
+        run: ls dist
       - name: Test Piranha exe
         run: ./scripts/test-run-exe
 
