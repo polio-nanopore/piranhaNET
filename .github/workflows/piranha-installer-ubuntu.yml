@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: piranha-exe-ubuntu
-          path: ./piranha-installer/dist/piranha
+          path: ./piranha-installer/dist/
           retention-days: 1
 
   test-piranha-exe:
@@ -38,8 +38,8 @@ jobs:
     steps:
       - name: Check out source # Get source just to have access to test data and run script
         uses: actions/checkout@v4
-      - name: Make empty dist folder # So we can run the same script as in local dev, manually create dist folder...
-        run: mkdir dist
+      #- name: Make empty dist folder # So we can run the same script as in local dev, manually create dist folder...
+      #  run: mkdir dist
       - name: Download Piranha exe # ...and download the exe to it
         uses: actions/download-artifact@v4
         with:
@@ -47,7 +47,7 @@ jobs:
           path:
             ./piranha-installer/dist
       - name: Add executable permission
-        run: chmod u+x dist/piranha
+        run: chmod u+x dist/piranha/piranha
       #- name: TMATE
       #  uses: mxschmitt/action-tmate@v3
       - name: Test Piranha exe
