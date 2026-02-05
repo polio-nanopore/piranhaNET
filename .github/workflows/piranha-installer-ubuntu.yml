@@ -46,10 +46,10 @@ jobs:
           name: piranha-exe-ubuntu
           path:
             ./piranha-installer/dist
-      - name: Check folder
-        run: ls dist
-      - name: TMATE
-        uses: mxschmitt/action-tmate@v3
+      - name: Add executable permission
+        run: chmod u+x dist/piranha
+      #- name: TMATE
+      #  uses: mxschmitt/action-tmate@v3
       - name: Test Piranha exe
         run: ./scripts/test-run-exe
 
