@@ -18,6 +18,9 @@ a = Analysis(
 
     ],
     hiddenimports=[
+      'minimap2',
+      'snakemake',
+      'medaka'
     ],
     hookspath=[],
     hooksconfig={},

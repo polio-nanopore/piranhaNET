@@ -6,6 +6,7 @@ channels:
 dependencies:
   - conda
   - medaka=1.11.3
+  - minimap2
   - piranha-polio
   - python
   - snakemake
