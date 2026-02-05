@@ -1,12 +1,12 @@
 name: Piranha Installer for Ubuntu
 on:
   push:
+    branches: [ main ]
     paths:
       - 'piranha-installer/**'
-      - './github/workflows'
+      - './github/workflows/**'
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 defaults:
   run:
@@ -36,8 +36,16 @@ jobs:
     needs: build-piranha-exe
     runs-on: ubuntu-latest
     steps:
-      - name: Download Piranha exe
+      - name: Check out source # Get source just to have access to test data and run script
+        uses: actions/checkout@v4
+      - name: Make empty dist folder # So we can run the same script as in local dev, manually create dist folder...
+        run: mkdir dist
+      - name: Download Piranha exe # ...and download the exe to it
         uses: actions/download-artifact@v4
         with:
           name: piranha-exe-ubuntu
+          path:
+            ./piranha-installer/dist
+      - name: Test Piranha exe
+        run: ./scripts/test-run-exe
 
