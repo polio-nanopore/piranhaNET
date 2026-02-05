@@ -48,7 +48,7 @@ jobs:
             ./piranha-installer/dist
       - name: Add executable permission
         run: chmod u+x dist/piranha/piranha
-      - name: TMATE
+      - name: TMATE #todo: remove
         uses: mxschmitt/action-tmate@v3
       - name: Test Piranha exe
         run: ./scripts/test-run-exe
