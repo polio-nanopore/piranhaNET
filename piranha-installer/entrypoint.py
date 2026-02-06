@@ -1,5 +1,8 @@
 import subprocess
 import sys
+import minimap2
+import snakemake
+import medaka
 from piranha import command
 
 name, *args = sys.argv
