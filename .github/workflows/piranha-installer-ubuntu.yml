@@ -25,8 +25,8 @@ jobs:
       - name: Build Piranha exe
         shell: bash -el {0}
         run: ./scripts/build-installer
-      - name: TMATE #todo: remove
-        uses: mxschmitt/action-tmate@v3
+      #- name: TMATE #todo: remove
+      #  uses: mxschmitt/action-tmate@v3
       - name: Upload exe as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -50,8 +50,8 @@ jobs:
             ./piranha-installer/dist
       - name: Add executable permission
         run: chmod u+x dist/piranha/piranha
-      - name: TMATE #todo: remove
-        uses: mxschmitt/action-tmate@v3
+      #- name: TMATE #todo: remove
+      #  uses: mxschmitt/action-tmate@v3
       - name: Test Piranha exe
         run: ./scripts/test-run-exe
 

@@ -5,13 +5,16 @@ channels:
   - defaults
 dependencies:
   - charset-normalizer
+  - coincbc # Avoid runtime snakemake message 'Falling back to greedy scheduler because no default solver is found for pulp (you have to install either coincbc or glpk).'?
   - conda
   - importlib-resources
+  - jaraco.text
   - medaka=1.11.3
   - minimap2
   - piranha-polio
-  - python
+  - python=3.9
   - snakemake
   - setuptools<81
   - pyinstaller
+  #- pyinstaller-hooks-contrib=2024.8 # more recent ones require higher version of pyinstaller than we can support
   - tzdata=2025a # 2025c and latest 2025b breaks pyinstaller!

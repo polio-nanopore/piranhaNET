@@ -3,9 +3,14 @@
 from conda.core.envs_manager import list_all_known_prefixes
 
 # Get the root of the installed piranha package in order to copy data files etc into the installer
+# TODO: replace this with pulp pattern
 env_root = list(filter(lambda prefix: prefix.endswith("piranha-installer"), list_all_known_prefixes()))[-1]
 python_version = "3.9"
 piranha_package_root = "{env_root}/lib/python{python_version}/site-packages/piranha/".format(env_root = env_root, python_version = python_version)
+
+def get_pulp_path():
+    import pulp
+    return pulp.__path__[0]
 
 a = Analysis(
     ['entrypoint.py'],
@@ -18,17 +23,21 @@ a = Analysis(
 
     ],
     hiddenimports=[
+      'pulp',
       'minimap2',
       'snakemake',
       'medaka'
     ],
-    hookspath=[],
+    hookspath=['/home/emmarussell/dev/piranhaNET/piranha-installer/hooks'],
     hooksconfig={},
-    runtime_hooks=[],
+    runtime_hooks=['runtime_hook.py'],
     excludes=[],
     noarchive=False,
     optimize=0,
 )
+
+# TODO: check if we actually need to do this?
+a.datas += Tree(get_pulp_path(), prefix='pulp', excludes=["*.pyc"])
 
 pyz = PYZ(a.pure)
 
