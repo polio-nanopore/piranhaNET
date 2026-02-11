@@ -11,22 +11,8 @@ name, *args = sys.argv
 # new workflows, expecting the exe to be python or python3, but that
 # is not the case when running from this executable!)
 if (args[0] == "-m" and args[1] == "snakemake"):
-    # Run snakemake
-    # I think the problem is that when we try to relaunch snakemake here via python3, we lose all the bundled modules
-    # including snakemake itself..
-    # Can't we just run snakemake? we're already in a new process! - tried that before and it doesn't likt ie
-    #subprocess.run(
-    #  ["python3", *args],
-    #  stdout=sys.stdout,
-    #  stderr=sys.stdout,
-    #  check=True,
-    # )
-    #print(str(args))
-    #main(args[2:])
-    #print("TRYING TO CALL SNAKEMAKE")
-    #sys.argv = sys.argv[3:] # slice off name, '-m' and 'snakemake'
+    # Run snakemake with remaining args
     sys.argv = [name, *args[2:]]
-    #print(str(sys.argv))
     runpy.run_module("snakemake")
 else:
     # Run piranha
