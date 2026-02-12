@@ -11,7 +11,7 @@ a = Analysis(
       'snakemake',
       'medaka'
     ],
-    hookspath=['/home/emmarussell/dev/piranhaNET/piranha-installer/hooks'], # TODO: fix!
+    hookspath=['hooks'],
     hooksconfig={},
     runtime_hooks=['runtime_hook.py'],
     excludes=[],

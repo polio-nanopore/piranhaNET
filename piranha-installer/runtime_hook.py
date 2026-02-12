@@ -1,10 +1,15 @@
 import os
 
 print("RUNTIME HOOK")
-# TODO: can i get running context from pytinstaller hooks support, or just use core python ? Tidy up on teardown?
-# TODO: don't add if already in path
-os.environ["PATH"] += os.pathsep + '/home/emmarussell/dev/piranhaNET/piranha-installer/dist/piranha/_internal/piranha_dependencies'
-if "PYTHONPATH" in os.environ:
-    os.environ["PYTHONPATH"] +=os.pathsep + '/home/emmarussell/dev/piranhaNET/piranha-installer/dist/piranha/_internal'
-else:
-    os.environ["PYTHONPATH"] = '/home/emmarussell/dev/piranhaNET/piranha-installer/dist/piranha/_internal'
+# TODO: comment
+installer_path = os.path.dirname(__file__)
+# TODO: replace piranha_dependencies with bin
+bin_path = os.path.join(installer_path, "piranha_dependencies")
+
+# TODO: comment
+if bin_path not in os.environ["PATH"]:
+   os.environ["PATH"] += os.pathsep + bin_path
+
+existing_pythonpath = os.environ["PYTHONPATH"] if "PYTHONPATH" in os.environ else ''
+if installer_path not in existing_pythonpath:
+    os.environ["PYTHONPATH"] = existing_pythonpath + os.pathsep + installer_path if existing_pythonpath else installer_path
