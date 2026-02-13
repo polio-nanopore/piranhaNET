@@ -8,6 +8,7 @@ logger.info("Running piranha hook")
 
 # Use this shebang in arbitary scripts called via snakemake
 # !/home/emmarussell/dev/piranhaNET/piranha-installer/dist/piranha/_internal/piranha_dependencies/python
+# Use #!/usr/bin/env python3.9 ...?
 
 # TODO: pin piranha version
 # TODO: consider exclude tkinter from spec rather than hacky override
