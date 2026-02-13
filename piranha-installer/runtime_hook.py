@@ -6,8 +6,7 @@ import os
 print("RUNTIME HOOK")
 # TODO: comment
 installer_path = os.path.dirname(__file__)
-# TODO: replace piranha_dependencies with bin
-bin_path = os.path.join(installer_path, "piranha_dependencies")
+bin_path = os.path.join(installer_path, "bin")
 
 # TODO: comment
 if bin_path not in os.environ["PATH"]:
