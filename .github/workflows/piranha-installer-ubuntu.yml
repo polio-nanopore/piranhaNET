@@ -50,6 +50,8 @@ jobs:
             ./piranha-installer/dist
       - name: Add executable permission
         run: chmod u+x dist/piranha/piranha
+      - name: Add executable permission to medaka
+        run: chmod u+x dist/piranha/_internal/bin/medaka
       #- name: TMATE #todo: remove
       #  uses: mxschmitt/action-tmate@v3
       - name: Test Piranha exe
