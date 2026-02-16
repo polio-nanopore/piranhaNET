@@ -31,17 +31,16 @@ conda_lib = os.path.join(conda_env_root, "lib")
 dependencies_dest = "bin"
 
 # clean portable_scripts folder (see below)
-portable_folder = os.path.join(sys.prefix, "portable_scripts")
-if os.path.exists(portable_folder):
-    shutil.rmtree(portable_folder)
-os.mkdir(portable_folder)
+#portable_folder = os.path.join(sys.prefix, "portable_scripts")
+#if os.path.exists(portable_folder):
+#    shutil.rmtree(portable_folder)
+#os.mkdir(portable_folder)
 
+scripts_to_port = []
 def make_portable(file_path):
     # Some of the files we need to collect are python scripts pulled from conda with local conda environment shebangs
-    # - identify these using the current sys prefix to identify the conda root and replace this with the more generic
-    # /usr/bin/env python (We collect the right python version and add it to the system path in the runtime hook so it
-    # should always be available). Write out changed file to portable_scripts folder if necessary. Return new file path,
-    # or original path if changes were not required.
+    # - identify these using the current sys prefix to identify the conda root.  We'll need to port these to the
+    # runtime environment on first startup, so here we make a note of which files these are
 
     # Read in the file
     try:
@@ -60,18 +59,20 @@ def make_portable(file_path):
     print(first_line)
     if local_shebang in first_line:
         print("FOUND NONPORTABLE FILE")
-        # If so, replace it with !#/usr/bin/env python. This will preserve any python version after 'python'.
-        new_first_line = first_line.replace(local_shebang, "!#/usr/bin/env python")
         file_name = os.path.basename(file_path)
-        # ...and save to portable_scripts folder
-        new_file_path = os.path.join(portable_folder, file_name)
-        with open(new_file_path, "w") as f:
-            f.write("\n".join([new_first_line, *following_lines]))
-        os.chmod(new_file_path, 0o755) # make executable by all
+        if file_name not in scripts_to_port:
+            scripts_to_port.append(file_name)
 
-        return new_file_path
-    else:
-        return file_path
+        # If so, replace it with !#/usr/bin/env python. This will preserve any python version after 'python'.
+        #new_first_line = first_line.replace(local_shebang, "!#/usr/bin/env python")
+        #file_name = os.path.basename(file_path)
+        # ...and save to portable_scripts folder
+        #new_file_path = os.path.join(portable_folder, file_name)
+        #with open(new_file_path, "w") as f:
+        #    f.write("\n".join([new_first_line, *following_lines]))
+        #os.chmod(new_file_path, 0o755) # make executable by all
+
+    return file_path
 
 def collect_bin_files_from_package(package_name):
     return [(make_portable(file.locate()), dependencies_dest) for file in conda_support.files(package_name) if file.parts[0] == "bin"]
@@ -104,8 +105,17 @@ binaries = [
 print("sys prefix")
 print(sys.prefix)
 
+ported_scripts_file = "ported_scripts"
+with open(ported_scripts_file, "w") as f:
+    f.write("\n".join(scripts_to_port))
+os.chmod(ported_scripts_file, 0o744) # make readable by all
+
 datas = [
     *collect_data_files("piranha", include_py_files=False, subdir='data'),
     *collect_data_files("piranha", include_py_files=True, subdir='analysis'),
-    *collect_data_files("piranha", include_py_files=True, subdir='scripts')
+    *collect_data_files("piranha", include_py_files=True, subdir='scripts'),
+    (ported_scripts_file, dependencies_dest)
 ]
+
+
+
