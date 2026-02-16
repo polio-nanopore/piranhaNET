@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Zipping and uploading the built installer as an artifact wipes its permissions. Update these to make executable
+DIR=$1
+echo "DIR is $DIR"
+for file in "$DIR"/*; do
+  chmod 711 "$file"
+  echo "Updated $file"
+done

@@ -40,18 +40,16 @@ jobs:
     steps:
       - name: Check out source # Get source just to have access to test data and run script
         uses: actions/checkout@v4
-      #- name: Make empty dist folder # So we can run the same script as in local dev, manually create dist folder...
-      #  run: mkdir dist
       - name: Download Piranha exe # ...and download the exe to it
         uses: actions/download-artifact@v4
         with:
           name: piranha-exe-ubuntu
           path:
             ./piranha-installer/dist
-      - name: Add executable permission
+      - name: Add executable permission to exe
         run: chmod u+x dist/piranha/piranha
-      - name: Add executable permission to medaka
-        run: chmod u+x dist/piranha/_internal/bin/medaka
+      - name: Add executable permission to bin files
+        run: ./scripts/make_bin_files_executable ./dist/piranha/_internal/bin
       #- name: TMATE #todo: remove
       #  uses: mxschmitt/action-tmate@v3
       - name: Test Piranha exe
