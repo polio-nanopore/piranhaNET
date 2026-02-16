@@ -6,6 +6,19 @@ import runpy
 name, *args = sys.argv
 
 print("ENTRYPOINT")
+
+# TODO: comment
+installer_path = os.path.dirname(__file__)
+bin_path = os.path.join(installer_path, "bin")
+
+# TODO: comment
+print("BIN PATH: " + bin_path)
+print("PATH: " + os.environ["PATH"])
+if bin_path not in os.environ["PATH"]:
+   os.environ["PATH"] += os.pathsep + bin_path
+   print("NEW PATH: " + os.environ["PATH"])
+
+
 # Decide from args whether this is the top level entrypoint to a
 # piranha run, or an invocation of snakemake.
 # (This is needed because snakemake uses sys.executable to launch
