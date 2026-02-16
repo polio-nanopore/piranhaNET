@@ -9,8 +9,11 @@ installer_path = os.path.dirname(__file__)
 bin_path = os.path.join(installer_path, "bin")
 
 # TODO: comment
+print("BIN PATH: " + bin_path)
+print("PATH: " + os.environ["PATH"])
 if bin_path not in os.environ["PATH"]:
    os.environ["PATH"] += os.pathsep + bin_path
+   print("NEW PATH: " + os.environ["PATH"])
 
 # TODO: Maybe not necessary when set shebang in python shell scripts correctly
 existing_pythonpath = os.environ["PYTHONPATH"] if "PYTHONPATH" in os.environ else ''
