@@ -7,11 +7,6 @@ from PyInstaller.utils.hooks import collect_dynamic_libs, collect_submodules, co
 logger = logging.getLogger(__name__)
 logger.info("Running piranha hook")
 
-# Use this shebang in arbitary scripts called via snakemake
-# !/home/emmarussell/dev/piranhaNET/piranha-installer/dist/piranha/_internal/bin/python
-# It's supposed to be portable though...
-# Use #!/usr/bin/env python3.9 ...?
-
 # TODO: pin piranha version
 # TODO: consider exclude tkinter from spec rather than hacky override
 # TODO: get dependencies from piranha's DEPENDENCIES list (medaka, minimap2, snakemake)
@@ -29,12 +24,6 @@ conda_env_root = sys.prefix
 conda_bin = os.path.join(conda_env_root, "bin")
 conda_lib = os.path.join(conda_env_root, "lib")
 dependencies_dest = "bin"
-
-# clean portable_scripts folder (see below)
-#portable_folder = os.path.join(sys.prefix, "portable_scripts")
-#if os.path.exists(portable_folder):
-#    shutil.rmtree(portable_folder)
-#os.mkdir(portable_folder)
 
 scripts_to_port = []
 def make_portable(file_path):
@@ -116,6 +105,11 @@ datas = [
     *collect_data_files("piranha", include_py_files=True, subdir='scripts'),
     (ported_scripts_file, dependencies_dest)
 ]
+
+# TODO: comment
+#module_collection_mode = {
+#    "medaka": "py+pyz"
+#}
 
 
 

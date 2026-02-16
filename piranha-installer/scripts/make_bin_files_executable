@@ -5,5 +5,4 @@ DIR=$1
 echo "DIR is $DIR"
 for file in "$DIR"/*; do
   chmod 711 "$file"
-  echo "Updated $file"
 done
