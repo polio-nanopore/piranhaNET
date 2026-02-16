@@ -23,11 +23,14 @@ prev_run_dir = None
 if (os.path.exists(run_dir_file)):
     with open(run_dir_file, "r") as f:
         prev_run_dir = f.read()
+
 if prev_run_dir != installer_path:
+    print("porting scripts")
     ported_scripts_file = os.path.join(bin_path, "ported_scripts")
     # get the names of the files we need to port
     with open(ported_scripts_file, "r") as f:
         scripts_to_port = f.read().split("\n")
+    print(str(scripts_to_port))
 
     # update the files with local python path
     new_shebang = f"#!{os.path.join(bin_path,'python3')}"
@@ -42,3 +45,5 @@ if prev_run_dir != installer_path:
     # write out the run_dir so we don't need to do this next time, unless we get moved
     with open(run_dir_file, "w") as f:
         f.write(installer_path)
+
+print("FINISHED RUNTIME HOOK")

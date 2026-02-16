@@ -5,6 +5,7 @@ import runpy
 
 name, *args = sys.argv
 
+print("ENTRYPOINT")
 # Decide from args whether this is the top level entrypoint to a
 # piranha run, or an invocation of snakemake.
 # (This is needed because snakemake uses sys.executable to launch
