@@ -61,12 +61,13 @@ def make_portable(file_path):
     if local_shebang in first_line:
         print("FOUND NONPORTABLE FILE")
         # If so, replace it with !#/usr/bin/env python. This will preserve any python version after 'python'.
-        new_first_line = first_line.replace(local_shebang, "!#/user/bin/env python")
+        new_first_line = first_line.replace(local_shebang, "!#/usr/bin/env python")
         file_name = os.path.basename(file_path)
         # ...and save to portable_scripts folder
         new_file_path = os.path.join(portable_folder, file_name)
         with open(new_file_path, "w") as f:
             f.write("\n".join([new_first_line, *following_lines]))
+        os.chmod(new_file_path, 0o755) # make executable by all
 
         return new_file_path
     else:
