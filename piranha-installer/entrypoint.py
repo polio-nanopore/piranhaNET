@@ -18,6 +18,10 @@ if bin_path not in os.environ["PATH"]:
    os.environ["PATH"] += os.pathsep + bin_path
    print("NEW PATH: " + os.environ["PATH"])
 
+which_output = subprocess.check_output(['which', 'medaka'])
+print('which said:', which_output)
+
+
 
 # Decide from args whether this is the top level entrypoint to a
 # piranha run, or an invocation of snakemake.
