@@ -6,6 +6,7 @@
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
+    "format:check": "prettier --plugin prettier-plugin-svelte --write .",
     "lint": "eslint --cache .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "svelte-check": "svelte-check --tsconfig ./tsconfig.json",
