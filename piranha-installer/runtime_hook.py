@@ -1,8 +1,5 @@
 import os
 
-# TODO: could we instead set these env vars in launches of subprocess env so as not to affect user env permanently
-# See Launching External Programs from the Frozen Application at https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html
-
 print("RUNTIME HOOK")
 # TODO: comment
 installer_path = os.path.dirname(__file__)
@@ -16,10 +13,10 @@ bin_path = os.path.join(installer_path, "bin")
 #   print("NEW PATH: " + os.environ["PATH"])
 
 # TODO: Maybe not necessary when set shebang in python shell scripts correctly
-#existing_pythonpath = os.environ["PYTHONPATH"] if "PYTHONPATH" in os.environ else ''
-#if installer_path not in existing_pythonpath:
-#    os.environ["PYTHONPATH"] = existing_pythonpath + os.pathsep + installer_path if existing_pythonpath else installer_path
-#os.environ["PYTHONHOME"] = installer_path
+existing_pythonpath = os.environ["PYTHONPATH"] if "PYTHONPATH" in os.environ else ''
+if installer_path not in existing_pythonpath:
+    os.environ["PYTHONPATH"] = existing_pythonpath + os.pathsep + installer_path if existing_pythonpath else installer_path
+os.environ["PYTHONHOME"] = os.path.join(installer_path, "python3.9")
 
 # Check if run_dir exists, and if its contents are the same as current dir - if so, we don't need to port the scripts
 run_dir_file = os.path.join(bin_path, "piranha_run_dir")

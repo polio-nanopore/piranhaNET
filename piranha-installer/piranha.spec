@@ -9,7 +9,8 @@ a = Analysis(
       'pulp',
       'minimap2',
       'snakemake',
-      'medaka'
+      'medaka',
+      'python3.9'
     ],
     hookspath=['hooks'],
     hooksconfig={},

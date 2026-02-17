@@ -107,9 +107,10 @@ datas = [
 ]
 
 # TODO: comment
-#module_collection_mode = {
-#    "medaka": "py+pyz"
-#}
+module_collection_mode = {
+    "medaka": "py",
+    "python3.9": "py"
+}
 
 
 
