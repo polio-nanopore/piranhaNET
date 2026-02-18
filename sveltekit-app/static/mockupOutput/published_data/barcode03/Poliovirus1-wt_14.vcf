@@ -1,0 +1,20 @@
+##fileformat=VCFv4.1
+##medaka_version=1.11.3
+##contig=<ID=Poliovirus1-wt_14,length=906>
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Medaka genotype.">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Medaka genotype quality score">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE
+Poliovirus1-wt_14	6	.	G	A	23.694	PASS	.	GT:GQ	1:24
+Poliovirus1-wt_14	24	.	T	C	50.724	PASS	.	GT:GQ	1:51
+Poliovirus1-wt_14	120	.	A	G	28.331	PASS	.	GT:GQ	1:28
+Poliovirus1-wt_14	123	.	C	T	26.91	PASS	.	GT:GQ	1:27
+Poliovirus1-wt_14	237	.	CT	C	5.508	PASS	.	GT:GQ	1:6
+Poliovirus1-wt_14	264	.	C	T	37.662	PASS	.	GT:GQ	1:38
+Poliovirus1-wt_14	303	.	G	A	22.807	PASS	.	GT:GQ	1:23
+Poliovirus1-wt_14	372	.	T	C	40.293	PASS	.	GT:GQ	1:40
+Poliovirus1-wt_14	423	.	C	T	35.135	PASS	.	GT:GQ	1:35
+Poliovirus1-wt_14	426	.	C	T	37.891	PASS	.	GT:GQ	1:38
+Poliovirus1-wt_14	531	.	G	A	50.724	PASS	.	GT:GQ	1:51
+Poliovirus1-wt_14	834	.	A	G	28.979	PASS	.	GT:GQ	1:29
+Poliovirus1-wt_14	837	.	C	T	42.136	PASS	.	GT:GQ	1:42
+Poliovirus1-wt_14	873	.	T	C	28.384	PASS	.	GT:GQ	1:28

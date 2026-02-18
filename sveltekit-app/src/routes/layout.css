@@ -1,7 +1,7 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
-@import '@fontsource/fira-mono';
+@plugin 'flowbite/plugin';
+@source "../../node_modules/flowbite-svelte/dist";
+@source "../../node_modules/flowbite-svelte-icons/dist";
 
 :root {
 	--font-body:
@@ -47,11 +47,12 @@ a:hover {
 }
 
 h1 {
-	font-size: 2rem;
+	font-size: 1.2rem;
 }
 
 h2 {
-	font-size: 1rem;
+	font-size: 1.1rem;
+	font-weight: 600;
 }
 
 pre {
@@ -69,8 +70,54 @@ button:focus:not(:focus-visible) {
 	outline: none;
 }
 
+.primary-button {
+	background-color: #19434c;
+}
+
+.accordion-content {
+	background-color: white;
+}
+
+form {
+	margin-top: 1rem;
+}
+
 @media (min-width: 720px) {
 	h1 {
-		font-size: 2.4rem;
+		font-size: 1.6rem;
 	}
+}
+
+.customFileInput::-webkit-file-upload-button {
+	visibility: hidden;
+	width: 0px;
+}
+
+.customInputContainer {
+	float: left;
+	position: relative;
+	height: 80px;
+}
+
+.customFileInput {
+	position: absolute;
+	top: 24px;
+	left: 74px;
+	margin-left: 0!important;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+.customFileInputButton {
+	position: absolute;
+	background-color: #1e2939;
+	color: white;
+	height: 42px;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 8px;
+	padding-right: 8px;
+	margin-right: 0!important;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	font-size: 14px;
 }
