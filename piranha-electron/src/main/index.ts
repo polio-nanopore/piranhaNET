@@ -3,6 +3,9 @@ import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 
+// This prevents permission errors in libEGL on Linux
+app.disableHardwareAcceleration();
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
