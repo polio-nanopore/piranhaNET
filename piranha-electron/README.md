@@ -1,4 +1,4 @@
-# piranha-electron
+# piranah-electron
 
 An Electron application with Svelte and TypeScript
 
@@ -20,6 +20,18 @@ $ npm install
 $ npm run dev
 ```
 
+#### Troubleshooting
+
+You may see errors like this when running in dev on Ubuntu:
+```
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+```
+I'm not sure why this happens, but re-installing the Nvidia EGL library fixed it on my machine:
+```
+sudo apt-get install libnvidia-egl-wayland1
+```
+
+
 ### Build
 
 ```bash
@@ -32,3 +44,5 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+

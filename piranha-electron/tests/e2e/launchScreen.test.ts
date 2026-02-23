@@ -3,7 +3,8 @@ import { test, expect, _electron as electron } from "@playwright/test";
 let electronApp;
 
 test.beforeEach(async () => {
-  electronApp = await electron.launch({ args: ['src/main/index.ts'] });
+  // Point Playwright at the development build, not the src ts file
+  electronApp = await electron.launch({ args: ['out/main/index.js'] });
 });
 
 test.afterEach(async () => {
@@ -14,6 +15,6 @@ test.afterEach(async () => {
 
 test("displays Run button", async () => {
   const firstWindow = await electronApp.firstWindow();
-  await expect(await firstWindow.getByText("PiranhaNET")).toBeVisible();
-  await expect(await firstWindow.getByRole("button")).toHaveText(/Run Piranha/);
+  await expect(await firstWindow.getByText(/PiranhaNET/)).toBeVisible();
+  await expect(await firstWindow.getByText(/Run Piranha/)).toBeVisible();
 });

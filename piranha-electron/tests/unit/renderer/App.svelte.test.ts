@@ -11,6 +11,7 @@ describe("App", () => {
   test("renders as expected", () => {
     render(App);
     expect(screen.getByRole("img")).toHaveClass("logo");
-    expect(screen.getByText("PiranhaNET")).toBeVisible();
+    expect(screen.getByText(/PiranhaNET/)).toBeVisible();
+    expect(screen.getByText(/Run Piranha/)).toBeVisible();
   });
 });
