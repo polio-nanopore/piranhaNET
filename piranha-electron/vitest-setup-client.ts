@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import '@testing-library/jest-dom/vitest';
+import "@testing-library/jest-dom/vitest";
 
 // required for svelte5 + jsdom as jsdom does not support matchMedia
 const mockMatchMedia = vi.fn();

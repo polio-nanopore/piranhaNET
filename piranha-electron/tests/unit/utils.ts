@@ -1,4 +1,4 @@
-export const mockWindowElectron = () => {
+export const mockWindowElectron = (): void => {
   (window as any).electron = {
     process: {
       versions: {

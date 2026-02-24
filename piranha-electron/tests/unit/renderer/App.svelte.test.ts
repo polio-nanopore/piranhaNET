@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/svelte";
 import { describe, expect, test, beforeAll } from "vitest";
 import App from "../../../src/renderer/src/App.svelte";
-import {mockWindowElectron} from "../utils";
+import { mockWindowElectron } from "../utils";
 
 describe("App", () => {
   beforeAll(() => {

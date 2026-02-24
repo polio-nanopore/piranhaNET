@@ -4,7 +4,7 @@ let electronApp;
 
 test.beforeEach(async () => {
   // Point Playwright at the development build, not the src ts file
-  electronApp = await electron.launch({ args: ['out/main/index.js'] });
+  electronApp = await electron.launch({ args: ["out/main/index.js"] });
 });
 
 test.afterEach(async () => {
