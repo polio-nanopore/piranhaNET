@@ -4,6 +4,11 @@ import { svelteTesting } from "@testing-library/svelte/vite";
 
 export default defineConfig({
   test: {
+    coverage: {
+      provider: "istanbul",
+      include: ["src/**/**.{js,ts}"],
+      exclude: ["tests"]
+    },
     projects: [
       {
         plugins: [svelte(), svelteTesting()],
@@ -12,7 +17,7 @@ export default defineConfig({
           environment: "jsdom",
           clearMocks: true,
           include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
-          setupFiles: ["./vitest-setup-client.ts"]
+          setupFiles: ["./vitest-setup-client.ts"],
         }
       }
     ]
