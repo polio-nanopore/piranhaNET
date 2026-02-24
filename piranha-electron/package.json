@@ -22,7 +22,7 @@
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
     "test:unit": "vitest run",
-    "test:e2e": "electron-vite build && npx playwright test"
+    "test:e2e": "electron-vite build && DEBUG=pw:browser npx playwright test"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
