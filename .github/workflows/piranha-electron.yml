@@ -44,5 +44,7 @@ jobs:
         run: npm ci
       - name: Unit test
         run: npm run test:unit
+      - name: TMATE #todo: remove
+        uses: mxschmitt/action-tmate@v3
       - name: E2e test
         run: npm run test:e2e
