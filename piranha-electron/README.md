@@ -43,10 +43,12 @@ In order to run the Playwright tests on GitHub Actions, the `test:e2e` script us
 systems without a default display driver. See [here](https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci) for more details.
 
 ### Lint
+
 Run lint without making changes: `npm run lint`
 Run lint and make automatic fixes: `npm run lint:fix`
 
 ## Formatting
+
 Run formatting check without making changes: `npm run format:check`
 Run formatting with automatic fixes: `npm run format:write`
 
