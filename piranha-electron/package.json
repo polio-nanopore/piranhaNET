@@ -1,10 +1,8 @@
 {
   "name": "piranha-electron",
-  "version": "1.0.0",
-  "description": "An Electron application with Svelte and TypeScript",
+  "version": "0.0.1",
+  "description": "An Electron application for running Piranha",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
     "format:check": "prettier --plugin prettier-plugin-svelte --check .",

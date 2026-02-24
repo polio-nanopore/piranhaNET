@@ -42,6 +42,8 @@ Run Playwright e2e tests with `npm run test:e2e`.
 In order to run the Playwright tests on GitHub Actions, the `test:e2e` script uses xvfb, a virtual display for use on
 systems without a default display driver. See [here](https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci) for more details.
 
+The `test:e2e` script also pre-builds the app, as Playwright needs to use a built js application, not Typescript directly.
+
 ### Lint
 
 Run lint without making changes: `npm run lint`
