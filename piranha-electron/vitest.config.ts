@@ -17,7 +17,7 @@ export default defineConfig({
           environment: "jsdom",
           clearMocks: true,
           include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
-          setupFiles: ["./vitest-setup-client.ts"],
+          setupFiles: ["./vitest-setup-client.ts"]
         }
       }
     ]
