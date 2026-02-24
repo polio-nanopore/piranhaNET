@@ -1,14 +1,11 @@
-# piranah-electron
+# piranha-electron
 
-An Electron application with Svelte and TypeScript
-
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+An [Electron](https://www.electronjs.org/svelte) application with [Svelte](https://svelte.dev/) and
+[TypeScript](https://www.typescriptlang.org/) which enables desktop users to run [piranha](https://github.com/polio-nanopore/piranha).
 
 ## Project Setup
 
-### Install
+### Install dependencies
 
 ```bash
 $ npm install
@@ -36,7 +33,26 @@ sudo apt-get install libnvidia-egl-wayland1
 
 This did not appear to be an issue when running with the app built in production mode.
 
+### Tests
+
+Run unit tests with `npm run test:unit`.
+
+Run Playwright e2e tests with `npm run test:e2e`.
+
+In order to run the Playwright tests on GitHub Actions, the `test:e2e` script uses xvfb, a virtual display for use on
+systems without a default display driver. See [here](https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci) for more details.
+
+### Lint
+Run lint without making changes: `npm run lint`
+Run lint and make automatic fixes: `npm run lint:fix`
+
+## Formatting
+Run formatting check without making changes: `npm run format:check`
+Run formatting with automatic fixes: `npm run format:write`
+
 ### Build
+
+Build distributions of the app with:
 
 ```bash
 # For windows
