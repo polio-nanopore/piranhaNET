@@ -18,10 +18,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24.x
           cache: npm
+          cache-dependency-path: piranha-electron/package-lock.json
       - name: Install dependencies
         run: npm ci
       - name: Lint
