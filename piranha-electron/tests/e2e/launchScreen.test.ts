@@ -3,8 +3,9 @@ import { test, expect, _electron as electron } from "@playwright/test";
 let electronApp;
 
 test.beforeEach(async () => {
-  // Point Playwright at the development build, not the src ts file
-  electronApp = await electron.launch({ args: ["out/main/index.js"] });
+  // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
+  // permission-related failures on CI.
+  electronApp = await electron.launch({ args: ["out/main/index.js", "--no-sandbox"] });
 });
 
 test.afterEach(async () => {

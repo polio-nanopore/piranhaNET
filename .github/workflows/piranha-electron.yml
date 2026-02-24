@@ -38,7 +38,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 24.x
-          package-manager-cache: false # electron with playwright has permission issues if node_modules is cached
+          cache: npm
+          cache-dependency-path: piranha-electron/package-lock.json
       - name: Install dependencies
         run: npm ci
       - name: Unit test
