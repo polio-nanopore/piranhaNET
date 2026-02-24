@@ -30,7 +30,7 @@ I'm not sure why this happens, but re-installing the Nvidia EGL library fixed it
 ```
 sudo apt-get install libnvidia-egl-wayland1
 ```
-
+This did not appear to be an issue when running with the app built in production mode.
 
 ### Build
 
