@@ -4,7 +4,7 @@
   "description": "An Electron application for running Piranha",
   "main": "./out/main/index.js",
   "engines": {
-    "node" : ">=24.0.0 <25.0.0"
+    "node": ">=24.0.0 <25.0.0"
   },
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
