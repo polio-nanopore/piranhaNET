@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -ex
+
+npm ci --prefix piranha-electron
+npm run dev --prefix piranha-electron
