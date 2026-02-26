@@ -1,6 +1,8 @@
 node_modules
+coverage
 dist
 out
+test-results
 .DS_Store
 .eslintcache
 *.log*

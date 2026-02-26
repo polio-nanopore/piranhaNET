@@ -1,0 +1,55 @@
+name: Piranha Electron
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    paths:
+      - 'piranha-electron/**'
+      - './github/workflows/**'
+
+defaults:
+  run:
+    working-directory: ./piranha-electron
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: npm
+          cache-dependency-path: piranha-electron/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Format
+        run: npm run format:check
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: npm
+          cache-dependency-path: piranha-electron/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit test
+        run: npm run coverage
+      - name: E2e test
+        run: npm run test:e2e
+      # TODO: add this when codecov token is available
+      #- name: Upload coverage
+      #  uses: codecov/codecov-action@v5
+      #  with:
+      #    fail_ci_if_error: true
+      #    files: ./coverage/coverage-final.json
+      #    token: ${{ secrets.CODECOV_TOKEN }}
