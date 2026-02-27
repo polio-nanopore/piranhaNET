@@ -1,14 +1,16 @@
-import Dockerode from "dockerode-ts";
+import { PiranhaRunOptions } from "./types.js"
+import Docker from "dockerode";
 
+// TODO: add network
 export class PiranhaRunner {
     private readonly imageRef: string;
-    private docker = new Dockerode();
+    private docker = new Docker();
     constructor(imageName="polionanopore/piranha", imageTag="latest") {
         this.imageRef = `${imageName}:${imageTag}`;
     }
 
-    // TODO: add read stream to pipe to, same as we'll do for run
-    public pullPiranha(): Promise<void> {
+    // TODO: add read stream param to pipe output to, same as we'll do for run
+    public async pullPiranhaImage() {
         return new Promise<void>((resolve, reject) => {
             this.docker.pull(this.imageRef, (err, stream) => {
                 if (err) {
@@ -21,7 +23,37 @@ export class PiranhaRunner {
         });
     }
 
-    public async runPiranha() {
+    // TODO: read stream to pipe output to, use this rather than process.stdout
+    public async runPiranha(options: PiranhaRunOptions) {
+        const env = [
+          `THREADS=${options.threads || 1}`,
+          `POSITIVE_CONTROL=${options.positiveControl}`,
+          `NEGATIVE_CONTROL=${options.negativeControl}`
+        ];
 
+        const containerRunPath = "/data/run_data/analysis";
+        const containerBaseCalledPath = "/data/run_data/basecalled";
+        const containerOutputPath = "/data/run_data/output";
+
+        return this.docker.run(this.imageRef,
+            [], // default cmd
+            process.stdout,
+            {
+                Env: env,
+                Volumes: {
+                    containerRunPath: {},
+                    containerBaseCalledPath: {},
+                    containerOutputPath: {}
+                },
+                HostConfig: {
+                    Binds: [
+                        `${options.runPath}:${containerRunPath}`,
+                        `${options.basecalledPath}:${containerBaseCalledPath}`,
+                        `${options.outputPath}:${containerOutputPath}`
+                    ],
+                    AutoRemove: true // rm
+                }
+            }
+        );
     }
 }

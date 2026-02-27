@@ -14,7 +14,6 @@
     "@types/node": "^25.3.0",
     "@vitest/coverage-istanbul": "^4.0.18",
     "dockerode": "^4.0.9",
-    "dockerode-ts": "^0.3.2",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   }
