@@ -1,0 +1,20 @@
+{
+  "name": "piranha-runner",
+  "version": "0.0.1",
+  "description": "Wrapper for running piranha in docker",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^4.0.1",
+    "@types/node": "^25.3.0",
+    "@vitest/coverage-istanbul": "^4.0.18",
+    "dockerode": "^4.0.9",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

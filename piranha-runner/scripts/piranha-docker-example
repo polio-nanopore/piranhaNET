@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -ex
+
+# This script just shows a working example of running piranha directly through docker
+
+IMAGE=polionanopore/piranha:latest
+
+# folder containing barcodes.csv (which goes into -b parameter to piranha)
+RUN_PATH=./test-data
+
+# folder containing the files for barcodes referred to by barcodes.csv - corresponds to -i parameter
+BASECALLED_PATH=./test-data/demultiplexed
+
+# corresponds to --outdir parameter
+OUTPUT_PATH=./test-results
+
+# TODO: we currently need to sudo this because the docker container sets restrictive permissions on generated output!
+# TODO: just create if doesn't exist don't need to remove
+sudo rm -rf $OUTPUT_PATH
+mkdir $OUTPUT_PATH
+
+docker pull $IMAGE
+# NB no detach so we can see output
+docker run \
+  --rm \
+  --name test-piranha \
+  -v $RUN_PATH:/data/run_data/analysis \
+  -v $BASECALLED_PATH:/data/run_data/basecalled \
+  -v $OUTPUT_PATH:/data/run_data/output \
+  -e THREADS=1 \
+  -e POSITIVE_CONTROL="Pos1,P2" \
+  -e NEGATIVE_CONTROL="my negative control" \
+  $IMAGE
