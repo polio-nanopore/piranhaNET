@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { describe, expect, test, beforeAll } from "vitest";
+import { describe, expect, test } from "vitest";
 import { PiranhaRunner } from "../../src/index.js";
 import {Writable} from "node:stream";
 
@@ -16,27 +16,16 @@ describe("piranhaRunner", () => {
         return {writable, readBuffer};
     };
 
-    // TODO: combine into one test
-    test("can pull docker image", async () => {
+    test("can pull and run docker image", async () => {
         const runner = new PiranhaRunner();
-        await runner.pullPiranhaImage();
-    }, 60_000);
 
-    test("can run docker image", async () => {
-        const runner = new PiranhaRunner();
-        const testDataPath = join(__dirname, "../../test-data");
+        const pullOutput = getWritableWithBuffer();
+        await runner.pullPiranhaImage(pullOutput.writable);
+        let outputText = pullOutput.readBuffer();
+        expect(outputText).toContain("Pulling from polionanopore/piranha");
 
-        // Default output stream is stdout, but let's test we
-        // can capture to an arbitrary stream
-        /*const chunks = [];
-        const outputStream = new Writable({
-            write(chunk, encoding, callback) {
-                chunks.push(chunk);
-                callback();
-            }
-        });*/
         const runOutput = getWritableWithBuffer();
-
+        const testDataPath = join(__dirname, "../../test-data");
         await runner.runPiranha({
             runPath: testDataPath,
             basecalledPath: join(testDataPath, "demultiplexed"),
@@ -46,10 +35,9 @@ describe("piranhaRunner", () => {
             threads: 1
         }, runOutput.writable);
 
-        // outputText = Buffer.concat(chunks).toString();
-        const outputText = runOutput.readBuffer();
-        expect(outputText).toContain("Poliovirus Investigation Resource");
-        expect(outputText).toContain(/Generating: \/data\/run_data\/output\/piranha_output_\d+\/report.html/);
+        outputText = runOutput.readBuffer();
+        expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
+        expect(outputText).toMatch(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/); //output report
 
     }, 300_000); // This will take a while!
 });

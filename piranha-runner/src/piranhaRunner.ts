@@ -1,6 +1,7 @@
 import { PiranhaRunOptions } from "./types.js"
 import Docker from "dockerode";
 
+// TODO: add description
 // TODO: add network
 export class PiranhaRunner {
     private readonly imageRef: string;
@@ -9,14 +10,13 @@ export class PiranhaRunner {
         this.imageRef = `${imageName}:${imageTag}`;
     }
 
-    // TODO: add read stream param to pipe output to, same as we'll do for run
-    public async pullPiranhaImage() {
+    public async pullPiranhaImage(outputStream: NodeJS.WritableStream = process.stdout) {
         return new Promise<void>((resolve, reject) => {
             this.docker.pull(this.imageRef, (err, stream) => {
                 if (err) {
                     return reject(err)
                 } else {
-                    stream.pipe(process.stdout);
+                    stream.pipe(outputStream);
                     resolve();
                 }
             });
