@@ -15,6 +15,7 @@ BASECALLED_PATH=./test-data/demultiplexed
 OUTPUT_PATH=./test-results
 
 # TODO: we currently need to sudo this because the docker container sets restrictive permissions on generated output!
+# TODO: just create if doesn't exist don't need to remove
 sudo rm -rf $OUTPUT_PATH
 mkdir $OUTPUT_PATH
 

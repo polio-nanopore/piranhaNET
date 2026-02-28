@@ -23,8 +23,7 @@ export class PiranhaRunner {
         });
     }
 
-    // TODO: read stream to pipe output to, use this rather than process.stdout
-    public async runPiranha(options: PiranhaRunOptions) {
+    public async runPiranha(options: PiranhaRunOptions, outputStream: NodeJS.WritableStream = process.stdout) {
         const env = [
           `THREADS=${options.threads || 1}`,
           `POSITIVE_CONTROL=${options.positiveControl}`,
@@ -37,7 +36,7 @@ export class PiranhaRunner {
 
         return this.docker.run(this.imageRef,
             [], // default cmd
-            process.stdout,
+            outputStream,
             {
                 Env: env,
                 Volumes: {
