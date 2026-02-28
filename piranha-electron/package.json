@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "description": "An Electron application for running Piranha",
   "main": "./out/main/index.js",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0"
+  },
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
-    "format:check": "prettier --plugin prettier-plugin-svelte --write .",
+    "format:check": "prettier --plugin prettier-plugin-svelte --check .",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
@@ -18,7 +21,10 @@
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
-    "build:linux": "npm run build && electron-builder --linux"
+    "build:linux": "npm run build && electron-builder --linux",
+    "test:unit": "vitest run",
+    "coverage": "vitest run --coverage",
+    "test:e2e": "electron-vite build && xvfb-run npx playwright test"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
@@ -28,18 +34,24 @@
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
     "@electron-toolkit/tsconfig": "^2.0.0",
+    "@playwright/test": "^1.58.2",
     "@sveltejs/vite-plugin-svelte": "^6.2.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^5.3.1",
     "@types/node": "^22.19.1",
+    "@vitest/coverage-istanbul": "^4.0.18",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-svelte": "^3.13.1",
+    "jsdom": "^28.1.0",
     "prettier": "^3.7.4",
     "prettier-plugin-svelte": "^3.4.0",
     "svelte": "^5.45.6",
     "svelte-check": "^4.3.4",
     "typescript": "^5.9.3",
-    "vite": "^7.2.6"
+    "vite": "^7.2.6",
+    "vitest": "^4.0.18"
   }
 }

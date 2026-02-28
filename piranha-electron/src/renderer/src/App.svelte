@@ -6,7 +6,6 @@
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
-<div class="creator">Powered by electron-vite</div>
 <div class="text">PiranhaNET</div>
 <div class="actions">
   <div class="action">

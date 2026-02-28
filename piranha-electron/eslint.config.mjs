@@ -21,5 +21,11 @@ export default defineConfig(
       "svelte/no-unused-svelte-ignore": "off"
     }
   },
+  {
+    files: ["tests/**/*"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  },
   eslintConfigPrettier
 );
