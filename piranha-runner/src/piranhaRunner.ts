@@ -17,6 +17,7 @@ export class PiranhaRunner {
                     return reject(err)
                 } else {
                     stream.pipe(outputStream);
+                    console.log("Piranha image pulled successfully");
                     resolve();
                 }
             });
