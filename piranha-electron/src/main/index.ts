@@ -39,7 +39,7 @@ function createWindow(): void {
   ipcMain.on("run-piranha", async () => {
     const writable = new Writable({
       write(chunk, encoding, callback) {
-        // Send each buffer chunk to the renderer
+        // Send each chunk to the renderer
         mainWindow.webContents.send('stream-chunk', chunk);
         callback();
       },
@@ -49,6 +49,7 @@ function createWindow(): void {
         callback()
       }
     });
+
     const runner = new PiranhaRunner();
     const testDataPath = join(__dirname, "../../../piranha-runner/test-data");
     console.log("running piranha")

@@ -11,7 +11,7 @@
   }
   window.api.onChunk((chunk) => {
     const textChunk = decoder.decode(chunk, { stream: true });
-    log.push(`${textChunk}\n`);
+    log.push(`${textChunk}`);
   });
   window.api.onEnd(() => {
       log.push("Piranha Run Finished");
@@ -27,7 +27,7 @@
     <a target="_blank" rel="noreferrer" on:click={runPiranha}>Run Piranha</a>
   </div>
 </div>
-<div style="height: 100px; width: 600px; overflow: scroll; font-family: monospace; background-color: white; color: black; margin-top: 16px;">
-  {log}
-</div>
+<pre style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
+  {log.join("\n")}
+</pre>
 <Versions />
