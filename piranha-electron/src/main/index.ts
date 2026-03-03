@@ -2,6 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
+import {PiranhaRunner} from "piranha-runner";
+import {Writable} from "node:stream";
 
 function createWindow(): void {
   // Create the browser window.
@@ -33,6 +35,32 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
+
+  ipcMain.on("run-piranha", async () => {
+    const writable = new Writable({
+      write(chunk, encoding, callback) {
+        // Send each buffer chunk to the renderer
+        mainWindow.webContents.send('stream-chunk', chunk);
+        callback();
+      },
+      final(callback) {
+        console.log("finished running piranha")
+        mainWindow.webContents.send('stream-end');
+        callback()
+      }
+    });
+    const runner = new PiranhaRunner();
+    const testDataPath = join(__dirname, "../../../piranha-runner/test-data");
+    console.log("running piranha")
+    await runner.runPiranha({
+      runPath: testDataPath,
+      basecalledPath: join(testDataPath, "demultiplexed"),
+      outputPath: join(__dirname, "../../../piranha-runner/test-results"),
+      positiveControl: "Pos1,P2",
+      negativeControl: "my negative control",
+      threads: 1
+    }, writable);
+  });
 }
 
 // This method will be called when Electron has finished
@@ -49,8 +77,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // IPC test
-  ipcMain.on("run-piranha", () => console.log("Not implemented yet!"));
+
 
   createWindow();
 

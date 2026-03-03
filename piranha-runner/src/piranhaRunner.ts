@@ -1,4 +1,4 @@
-import { PiranhaRunOptions } from "./types.js"
+import type { PiranhaRunOptions } from "./types.js"
 import Docker from "dockerode";
 
 // TODO: add description
@@ -12,7 +12,7 @@ export class PiranhaRunner {
 
     public async pullPiranhaImage(outputStream: NodeJS.WritableStream = process.stdout) {
         return new Promise<void>((resolve, reject) => {
-            this.docker.pull(this.imageRef, (err, stream) => {
+            this.docker.pull(this.imageRef, (err: string, stream: NodeJS.ReadableStream) => {
                 if (err) {
                     return reject(err)
                 } else {
@@ -35,7 +35,7 @@ export class PiranhaRunner {
         const containerBaseCalledPath = "/data/run_data/basecalled";
         const containerOutputPath = "/data/run_data/output";
 
-        return this.docker.run(this.imageRef,
+        await this.docker.run(this.imageRef,
             [], // default cmd
             outputStream,
             {
@@ -55,5 +55,6 @@ export class PiranhaRunner {
                 }
             }
         );
+        outputStream.end();
     }
 }
