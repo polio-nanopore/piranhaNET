@@ -1,4 +1,4 @@
-import { PiranhaRunOptions } from "./types.js"
+import type { PiranhaRunOptions } from "./types.js"
 import Docker from "dockerode";
 
 // TODO: add description
@@ -12,13 +12,15 @@ export class PiranhaRunner {
 
     public async pullPiranhaImage(outputStream: NodeJS.WritableStream = process.stdout) {
         return new Promise<void>((resolve, reject) => {
-            this.docker.pull(this.imageRef, (err, stream) => {
+            this.docker.pull(this.imageRef, (err: string, stream: NodeJS.ReadableStream) => {
                 if (err) {
                     return reject(err)
                 } else {
+                    stream.on("end", () => {
+                        console.log("Piranha image pulled successfully");
+                        resolve();
+                    });
                     stream.pipe(outputStream);
-                    console.log("Piranha image pulled successfully");
-                    resolve();
                 }
             });
         });
@@ -26,16 +28,16 @@ export class PiranhaRunner {
 
     public async runPiranha(options: PiranhaRunOptions, outputStream: NodeJS.WritableStream = process.stdout) {
         const env = [
-          `THREADS=${options.threads || 1}`,
-          `POSITIVE_CONTROL=${options.positiveControl}`,
-          `NEGATIVE_CONTROL=${options.negativeControl}`
+            `THREADS=${options.threads || 1}`,
+            `POSITIVE_CONTROL=${options.positiveControl}`,
+            `NEGATIVE_CONTROL=${options.negativeControl}`
         ];
 
         const containerRunPath = "/data/run_data/analysis";
         const containerBaseCalledPath = "/data/run_data/basecalled";
         const containerOutputPath = "/data/run_data/output";
 
-        return this.docker.run(this.imageRef,
+        await this.docker.run(this.imageRef,
             [], // default cmd
             outputStream,
             {
@@ -55,5 +57,6 @@ export class PiranhaRunner {
                 }
             }
         );
+        outputStream.end();
     }
 }

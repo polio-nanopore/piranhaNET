@@ -1,5 +1,5 @@
-import { PiranhaRunner } from "./piranhaRunner.ts";
-import { PiranhaRunOptions } from "./types.js";
+import { PiranhaRunner } from "./piranhaRunner";
+import type { PiranhaRunOptions } from "./types";
 
 export { PiranhaRunner };
-export { PiranhaRunOptions };
+export type { PiranhaRunOptions };

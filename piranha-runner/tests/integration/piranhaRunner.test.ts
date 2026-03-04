@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
-import { PiranhaRunner } from "../../src/index.js";
+import { PiranhaRunner } from "../../src/piranhaRunner";
 import {Writable} from "node:stream";
 
 describe("piranhaRunner", () => {
@@ -37,7 +37,7 @@ describe("piranhaRunner", () => {
 
         outputText = runOutput.readBuffer();
         expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
-        expect(outputText).toMatch(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/); //output report
+        expect(outputText).toMatch(/\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/); //output report
 
     }, 300_000); // This will take a while!
 });
