@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
-import { PiranhaRunner } from "../../src/index.js";
+import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import {Writable} from "node:stream";
 
 describe("piranhaRunner", () => {
@@ -25,11 +25,11 @@ describe("piranhaRunner", () => {
         expect(outputText).toContain("Pulling from polionanopore/piranha");
 
         const runOutput = getWritableWithBuffer();
-        const testDataPath = join(__dirname, "../../test-data");
+        const testDataPath = join(__dirname, "../../../../test-data");
         await runner.runPiranha({
             runPath: testDataPath,
             basecalledPath: join(testDataPath, "demultiplexed"),
-            outputPath: join(__dirname, "../../test-results"),
+            outputPath: join(__dirname, "../../../../test-results"),
             positiveControl: "Pos1,P2",
             negativeControl: "my negative control",
             threads: 1

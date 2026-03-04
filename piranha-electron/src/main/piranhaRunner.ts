@@ -2,7 +2,6 @@ import type { PiranhaRunOptions } from "./types.js"
 import Docker from "dockerode";
 
 // TODO: add description
-// TODO: add network
 export class PiranhaRunner {
     private readonly imageRef: string;
     private docker = new Docker();
@@ -16,9 +15,10 @@ export class PiranhaRunner {
                 if (err) {
                     return reject(err)
                 } else {
-                    stream.pipe(outputStream);
-                    console.log("Piranha image pulled successfully");
+                  stream.on("end", () => {
                     resolve();
+                  });
+                  stream.pipe(outputStream);
                 }
             });
         });

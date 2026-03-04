@@ -19,6 +19,16 @@ export default defineConfig({
           include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
           setupFiles: ["./vitest-setup-client.ts"]
         }
+      },
+      {
+        plugins: [],
+        test: {
+          name: "main",
+          environment: "node",
+          clearMocks: true,
+          include: ["tests/integration/main/**/**.{test,spec}.{js,ts}"],
+          setupFiles: []
+        }
       }
     ]
   }

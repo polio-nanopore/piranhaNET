@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import {PiranhaRunner} from "piranha-runner";
+import {PiranhaRunner} from "./piranhaRunner";
 import {Writable} from "node:stream";
 
 function createWindow(): void {
@@ -51,12 +51,12 @@ function createWindow(): void {
     });
 
     const runner = new PiranhaRunner();
-    const testDataPath = join(__dirname, "../../../piranha-runner/test-data");
+    const testDataPath = join(__dirname, "../../../test-data");
     console.log("running piranha")
     await runner.runPiranha({
       runPath: testDataPath,
       basecalledPath: join(testDataPath, "demultiplexed"),
-      outputPath: join(__dirname, "../../../piranha-runner/test-results"),
+      outputPath: join(__dirname, "../../../test-results"),
       positiveControl: "Pos1,P2",
       negativeControl: "my negative control",
       threads: 1

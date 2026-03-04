@@ -9,11 +9,11 @@
     log = [];
     window.electron.ipcRenderer.send("run-piranha");
   }
-  window.api.onChunk((chunk) => {
+  window.api?.onChunk((chunk) => {
     const textChunk = decoder.decode(chunk, { stream: true });
     log.push(`${textChunk}`);
   });
-  window.api.onEnd(() => {
+  window.api?.onEnd(() => {
       log.push("Piranha Run Finished");
     }
   );
