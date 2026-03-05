@@ -36,6 +36,10 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
 
+  ipcMain.on("test-message", async () => {
+    console.log("Message received from renderer");
+  });
+
   ipcMain.on("run-piranha", async () => {
     const writable = new Writable({
       write(chunk, encoding, callback) {

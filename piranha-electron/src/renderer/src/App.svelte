@@ -17,17 +17,23 @@
       log.push("Piranha Run Finished");
     }
   );
+
+  const testMessageMain = (): void => {
+    // Prove that we can still message main while piranha is running
+    // - should see it log a message to the console
+    window.electron.ipcRenderer.send("test-message");
+  }
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
 <div class="actions">
-  <div class="action">
-    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions a11y-missing-attribute-->
-    <a target="_blank" rel="noreferrer" on:click={runPiranha}>Run Piranha</a>
-  </div>
+  <button class="action" onclick={runPiranha}>Run Piranha</button>
 </div>
 <pre style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
   {log.join("\n")}
 </pre>
+<button class="action" onclick={testMessageMain}>
+  Test Message Main
+</button>
 <Versions />
