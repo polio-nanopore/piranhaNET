@@ -1,6 +1,9 @@
 <script lang="ts">
+  import * as ansi_up from "ansi_up";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
+
+  const ansi = new ansi_up.AnsiUp();
 
   let log = $state([]);
   const decoder = new TextDecoder('utf-8');
@@ -30,9 +33,11 @@
 <div class="actions">
   <button class="action" onclick={runPiranha}>Run Piranha</button>
 </div>
-<pre style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
-  {log.join("\n")}
-</pre>
+<code style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
+  {#each log as logentry}
+    {@html ansi.ansi_to_html(logentry)}<br/>
+  {/each}
+</code>
 <button class="action" onclick={testMessageMain}>
   Test Message Main
 </button>
