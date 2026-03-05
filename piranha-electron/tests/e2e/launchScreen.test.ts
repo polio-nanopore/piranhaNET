@@ -19,3 +19,11 @@ test("displays Run button", async () => {
   await expect(await firstWindow.getByText(/PiranhaNET/)).toBeVisible();
   await expect(await firstWindow.getByText(/Run Piranha/)).toBeVisible();
 });
+
+test("can Run Piranha", async () => {
+  // click run button
+
+  // See expected text in log
+
+  // Eventually see run finished message
+});

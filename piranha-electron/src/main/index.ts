@@ -5,7 +5,9 @@ import icon from "../../resources/icon.png?asset";
 import {PiranhaRunner} from "./piranhaRunner";
 import {Writable} from "node:stream";
 
+const runner = new PiranhaRunner();
 function createWindow(): void {
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -54,9 +56,8 @@ function createWindow(): void {
       }
     });
 
-    const runner = new PiranhaRunner();
     const testDataPath = join(__dirname, "../../../test-data");
-    console.log("running piranha")
+
     await runner.runPiranha({
       runPath: testDataPath,
       basecalledPath: join(testDataPath, "demultiplexed"),
@@ -71,7 +72,7 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron");
 
@@ -82,8 +83,10 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-
-
+  // Pull Piranha image
+  // TODO: be more smart about this - only pull if required and show window
+  // but prevent run until pull is complete
+  await runner.pullPiranhaImage();
   createWindow();
 
   app.on("activate", function () {
