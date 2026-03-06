@@ -2,12 +2,11 @@ import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
-import {PiranhaRunner} from "./piranhaRunner";
-import {Writable} from "node:stream";
+import { PiranhaRunner } from "./piranhaRunner";
+import { Writable } from "node:stream";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {
-
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -46,30 +45,33 @@ function createWindow(): void {
     const writable = new Writable({
       write(chunk, encoding, callback) {
         // Send each chunk to the renderer
-        mainWindow.webContents.send('stream-chunk', chunk);
+        mainWindow.webContents.send("stream-chunk", chunk);
         callback();
       },
       final(callback) {
-        console.log("finished running piranha")
-        mainWindow.webContents.send('stream-end');
-        callback()
+        console.log("finished running piranha");
+        mainWindow.webContents.send("stream-end");
+        callback();
       }
     });
 
     const testDataPath = join(__dirname, "../../../test-data");
 
-    await runner.runPiranha({
-      runPath: testDataPath,
-      basecalledPath: join(testDataPath, "demultiplexed"),
-      outputPath: join(__dirname, "../../../test-results"),
-      positiveControl: "Pos1,P2",
-      negativeControl: "my negative control",
-      threads: 1
-    }, writable);
+    await runner.runPiranha(
+      {
+        runPath: testDataPath,
+        basecalledPath: join(testDataPath, "demultiplexed"),
+        outputPath: join(__dirname, "../../../test-results"),
+        positiveControl: "Pos1,P2",
+        negativeControl: "my negative control",
+        threads: 1
+      },
+      writable
+    );
   });
 
   runner.pullPiranhaImage().then(() => {
-    mainWindow.webContents.send('initialized');
+    mainWindow.webContents.send("initialized");
   });
 }
 
@@ -104,5 +106,3 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
-

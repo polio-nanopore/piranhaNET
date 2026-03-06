@@ -8,11 +8,19 @@ export default defineConfig(
   tseslint.configs.recommended,
   eslintPluginSvelte.configs["flat/recommended"],
   {
+    rules: {
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }]
+    }
+  },s
+  {
     files: ["**/*.svelte"],
     languageOptions: {
       parserOptions: {
-        parser: tseslint.parser
+        parser: tseslint.parsers
       }
+    },
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off"
     }
   },
   {

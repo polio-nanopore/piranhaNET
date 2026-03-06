@@ -7,30 +7,29 @@
 
   let initialized = $state(false);
   let log = $state([]);
-  const decoder = new TextDecoder('utf-8');
+  const decoder = new TextDecoder("utf-8");
 
-  const runPiranha = (): void => {
+  const runPiranha = () => {
     log = [];
     window.electron.ipcRenderer.send("run-piranha");
-  }
+  };
 
   window.api?.onInitialized(() => {
-    initialized = true
+    initialized = true;
   });
   window.api?.onChunk((chunk) => {
     const textChunk = decoder.decode(chunk, { stream: true });
     log.push(`${textChunk}`);
   });
   window.api?.onEnd(() => {
-      log.push("Piranha Run Finished");
-    }
-  );
+    log.push("Piranha Run Finished");
+  });
 
-  const testMessageMain = (): void => {
+  const testMessageMain = () => {
     // Prove that we can still message main while piranha is running
     // - should see it log a message to the console
     window.electron.ipcRenderer.send("test-message");
-  }
+  };
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
@@ -39,14 +38,16 @@
   <div class="actions">
     <button class="action" onclick={runPiranha}>Run Piranha</button>
   </div>
-  <code style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;" data-testid="log">
-    {#each log as logentry}
-      {@html ansi.ansi_to_html(logentry)}<br/>
+  <code
+    style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
+    data-testid="log"
+  >
+    {#each log as logentry, index (index)}
+      <!-- eslint-disable  svelte/no-at-html-tags -->
+      {@html ansi.ansi_to_html(logentry)}<br />
     {/each}
   </code>
-  <button class="action" onclick={testMessageMain}>
-    Test Message Main
-  </button>
+  <button class="action" onclick={testMessageMain}> Test Message Main </button>
 {:else}
   Initializing...
 {/if}

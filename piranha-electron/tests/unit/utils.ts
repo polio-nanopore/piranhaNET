@@ -1,4 +1,4 @@
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 export const mockWindowElectron = (): void => {
   (window as any).electron = {
@@ -9,7 +9,7 @@ export const mockWindowElectron = (): void => {
         node: "3.3.3"
       }
     }
-   };
+  };
 };
 
 export const mockWindowAPI = (): void => {

@@ -1,4 +1,4 @@
-import { test, expect, _electron as electron } from "@playwright/test";
+import { test, expect, _electron as electron, Page } from "@playwright/test";
 
 let electronApp;
 
@@ -14,7 +14,7 @@ test.afterEach(async () => {
   }
 });
 
-const getWindow = async () => {
+const getWindow = async (): Promise<Page> => {
   return await electronApp.firstWindow();
 };
 
@@ -23,17 +23,19 @@ test("can see main window and run Piranha", async () => {
   await expect(await win.getByText(/Initializing.../)).toBeVisible();
 
   // need to wait for button to become visible
-  await expect(await win.getByText(/PiranhaNET/)).toBeVisible({timeout: 120_000});
+  await expect(await win.getByText(/PiranhaNET/)).toBeVisible({ timeout: 120_000 });
   await expect(await win.getByText(/Run Piranha/)).toBeVisible();
 
   // click run button
-  await win.getByRole('button', {name: /Run Piranha/}).click();
+  await win.getByRole("button", { name: /Run Piranha/ }).click();
 
   // See expected start run text in log
   const log = await win.getByTestId("log");
   await expect(log).toHaveText(/Building DAG of jobs.../);
 
   // Eventually see run finished message
-  await expect(log).toHaveText(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/, {timeout: 300_000});
+  await expect(log).toHaveText(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/, {
+    timeout: 300_000
+  });
   await expect(log).toHaveText(/Piranha Run Finished/);
 });

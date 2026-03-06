@@ -31,7 +31,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "ansi_up": "^6.0.6",
-    "dockerode":"^4.0.9"
+    "dockerode": "^4.0.9"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

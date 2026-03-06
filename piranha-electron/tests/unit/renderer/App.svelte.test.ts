@@ -1,7 +1,7 @@
-import { render, screen, waitFor} from "@testing-library/svelte";
+import { render, screen, waitFor } from "@testing-library/svelte";
 import { describe, expect, test, beforeEach } from "vitest";
 import App from "../../../src/renderer/src/App.svelte";
-import { mockWindowElectron , mockWindowAPI} from "../utils";
+import { mockWindowElectron, mockWindowAPI } from "../utils";
 
 // TODO use vitest-browser-svelte
 describe("App", () => {
@@ -38,13 +38,13 @@ describe("App", () => {
 
     expect(window.api.onChunk).toHaveBeenCalled();
     const addChunk = window.api.onChunk.mock.calls[0][0];
-    const encoder = new TextEncoder('utf-8');
+    const encoder = new TextEncoder("utf-8");
     addChunk(encoder.encode("test log message"));
-    await waitFor(() =>  expect(log).toHaveTextContent(/test log message/));
+    await waitFor(() => expect(log).toHaveTextContent(/test log message/));
 
     expect(window.api.onEnd).toHaveBeenCalled();
     const end = window.api.onEnd.mock.calls[0][0];
     end();
-    await waitFor(() =>  expect(log).toHaveTextContent("Piranha Run Finished"));
+    await waitFor(() => expect(log).toHaveTextContent("Piranha Run Finished"));
   });
 });
