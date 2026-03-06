@@ -55,8 +55,8 @@ function createWindow(): void {
       }
     });
 
+    // Pre-canned run with test data, to be replaced with user-selected parameters
     const testDataPath = join(__dirname, "../../../test-data");
-
     await runner.runPiranha(
       {
         runPath: testDataPath,

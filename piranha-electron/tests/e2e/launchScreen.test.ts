@@ -33,7 +33,7 @@ test("can see main window and run Piranha", async () => {
   const log = await win.getByTestId("log");
   await expect(log).toHaveText(/Building DAG of jobs.../);
 
-  // Eventually see run finished message
+  // Eventually see run finished messages
   await expect(log).toHaveText(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/, {
     timeout: 300_000
   });

@@ -16,11 +16,8 @@ export default defineConfig(
     files: ["**/*.svelte"],
     languageOptions: {
       parserOptions: {
-        parser: tseslint.parsers
+        parser: tseslint.parser
       }
-    },
-    rules: {
-      "@typescript-eslint/explicit-function-return-type": "off"
     }
   },
   {

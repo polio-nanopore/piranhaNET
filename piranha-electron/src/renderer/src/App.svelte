@@ -9,7 +9,7 @@
   let log = $state([]);
   const decoder = new TextDecoder("utf-8");
 
-  const runPiranha = () => {
+  const runPiranha = (): void => {
     log = [];
     window.electron.ipcRenderer.send("run-piranha");
   };
@@ -25,7 +25,7 @@
     log.push("Piranha Run Finished");
   });
 
-  const testMessageMain = () => {
+  const testMessageMain = (): void => {
     // Prove that we can still message main while piranha is running
     // - should see it log a message to the console
     window.electron.ipcRenderer.send("test-message");
