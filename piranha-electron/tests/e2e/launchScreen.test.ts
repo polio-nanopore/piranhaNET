@@ -14,16 +14,26 @@ test.afterEach(async () => {
   }
 });
 
-test("displays Run button", async () => {
-  const firstWindow = await electronApp.firstWindow();
-  await expect(await firstWindow.getByText(/PiranhaNET/)).toBeVisible();
-  await expect(await firstWindow.getByText(/Run Piranha/)).toBeVisible();
-});
+const getWindow = async () => {
+  return await electronApp.firstWindow();
+};
 
-test("can Run Piranha", async () => {
+test("can see main window and run Piranha", async () => {
+  const win = await getWindow();
+  await expect(await win.getByText(/Initializing.../)).toBeVisible();
+
+  // need to wait for button to become visible
+  await expect(await win.getByText(/PiranhaNET/)).toBeVisible({timeout: 120_000});
+  await expect(await win.getByText(/Run Piranha/)).toBeVisible();
+
   // click run button
+  await win.getByRole('button', {name: /Run Piranha/}).click();
 
-  // See expected text in log
+  // See expected start run text in log
+  const log = await win.getByTestId("log");
+  await expect(log).toHaveText(/Building DAG of jobs.../);
 
   // Eventually see run finished message
+  await expect(log).toHaveText(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/, {timeout: 300_000});
+  await expect(log).toHaveText(/Piranha Run Finished/);
 });

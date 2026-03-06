@@ -39,7 +39,7 @@
   <div class="actions">
     <button class="action" onclick={runPiranha}>Run Piranha</button>
   </div>
-  <code style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
+  <code style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;" data-testid="log">
     {#each log as logentry}
       {@html ansi.ansi_to_html(logentry)}<br/>
     {/each}
