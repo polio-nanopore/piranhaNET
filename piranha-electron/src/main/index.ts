@@ -67,6 +67,10 @@ function createWindow(): void {
       threads: 1
     }, writable);
   });
+
+  runner.pullPiranhaImage().then(() => {
+    mainWindow.webContents.send('initialized');
+  });
 }
 
 // This method will be called when Electron has finished
@@ -83,10 +87,6 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // Pull Piranha image
-  // TODO: be more smart about this - only pull if required and show window
-  // but prevent run until pull is complete
-  await runner.pullPiranhaImage();
   createWindow();
 
   app.on("activate", function () {
@@ -105,5 +105,4 @@ app.on("window-all-closed", () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+

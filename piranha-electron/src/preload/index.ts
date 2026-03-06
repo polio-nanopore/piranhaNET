@@ -3,6 +3,7 @@ import { electronAPI } from "@electron-toolkit/preload";
 
 // Custom APIs for renderer
 const api = {
+  onInitialized: (callback) => ipcRenderer.on('initialized', (_event) => callback()),
   onChunk: (callback) => ipcRenderer.on('stream-chunk', (_event, value) => callback(value)),
   onEnd: (callback) => ipcRenderer.on('stream-end', (_event) => callback())
 }

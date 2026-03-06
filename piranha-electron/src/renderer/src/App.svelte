@@ -5,6 +5,7 @@
 
   const ansi = new ansi_up.AnsiUp();
 
+  let initialized = $state(false);
   let log = $state([]);
   const decoder = new TextDecoder('utf-8');
 
@@ -12,6 +13,10 @@
     log = [];
     window.electron.ipcRenderer.send("run-piranha");
   }
+
+  window.api?.onInitialized(() => {
+    initialized = true
+  });
   window.api?.onChunk((chunk) => {
     const textChunk = decoder.decode(chunk, { stream: true });
     log.push(`${textChunk}`);
@@ -30,15 +35,19 @@
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
-<div class="actions">
-  <button class="action" onclick={runPiranha}>Run Piranha</button>
-</div>
-<code style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
-  {#each log as logentry}
-    {@html ansi.ansi_to_html(logentry)}<br/>
-  {/each}
-</code>
-<button class="action" onclick={testMessageMain}>
-  Test Message Main
-</button>
+{#if initialized}
+  <div class="actions">
+    <button class="action" onclick={runPiranha}>Run Piranha</button>
+  </div>
+  <code style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;">
+    {#each log as logentry}
+      {@html ansi.ansi_to_html(logentry)}<br/>
+    {/each}
+  </code>
+  <button class="action" onclick={testMessageMain}>
+    Test Message Main
+  </button>
+{:else}
+  Initializing...
+{/if}
 <Versions />
