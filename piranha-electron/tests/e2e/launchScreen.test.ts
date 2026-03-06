@@ -21,10 +21,10 @@ const getWindow = async (): Promise<Page> => {
 test("can see main window and run Piranha", async () => {
   const win = await getWindow();
   await expect(await win.getByText(/Initializing.../)).toBeVisible();
+  await expect(await win.getByText(/PiranhaNET/)).toBeVisible();
 
   // need to wait for button to become visible
-  await expect(await win.getByText(/PiranhaNET/)).toBeVisible({ timeout: 120_000 });
-  await expect(await win.getByText(/Run Piranha/)).toBeVisible();
+  await expect(await win.getByText(/Run Piranha/)).toBeVisible({ timeout: 120_000 });
 
   // click run button
   await win.getByRole("button", { name: /Run Piranha/ }).click();
