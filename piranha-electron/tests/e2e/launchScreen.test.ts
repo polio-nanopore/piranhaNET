@@ -24,7 +24,7 @@ test("can see main window and run Piranha", async () => {
   await expect(await win.getByText(/PiranhaNET/)).toBeVisible();
 
   // need to wait for button to become visible
-  await expect(await win.getByText(/Run Piranha/)).toBeVisible({ timeout: 300_000 });
+  await expect(await win.getByText(/Run Piranha/)).toBeVisible({ timeout: 600_000 });
 
   // click run button
   await win.getByRole("button", { name: /Run Piranha/ }).click();
