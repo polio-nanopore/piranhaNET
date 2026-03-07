@@ -97,9 +97,10 @@ code {
 .action {
   flex-shrink: 0;
   padding: 6px;
+  margin-top: 12px;
 }
 
-.action a {
+.action {
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
