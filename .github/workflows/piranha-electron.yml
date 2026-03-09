@@ -44,6 +44,8 @@ jobs:
         run: npm ci
       - name: Unit and integration test
         run: npm run coverage
+      - name: tmate
+        uses: mxschmitt/action-tmate@v3
       - name: E2e test
         run: npm run test:e2e
       # TODO: add this when codecov token is available
