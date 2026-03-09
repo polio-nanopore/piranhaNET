@@ -22,6 +22,10 @@ function createWindow(): void {
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
+
+    runner.pullPiranhaImage().then(() => {
+      mainWindow.webContents.send("initialized");
+    });
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -68,10 +72,6 @@ function createWindow(): void {
       },
       writable
     );
-  });
-
-  runner.pullPiranhaImage().then(() => {
-    mainWindow.webContents.send("initialized");
   });
 }
 
