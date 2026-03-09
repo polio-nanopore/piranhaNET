@@ -23,7 +23,8 @@ test("can see main window and run Piranha", async () => {
   await expect(await win.getByText(/Initializing.../)).toBeVisible();
   await expect(await win.getByText(/PiranhaNET/)).toBeVisible();
 
-  // need to wait for button to become visible
+  // need to wait for button to become visible when docker image has downloaded
+  // - this definitely shouldn't take 10 minutes, but can be slow on CI
   await expect(await win.getByText(/Run Piranha/)).toBeVisible({ timeout: 600_000 });
 
   // click run button

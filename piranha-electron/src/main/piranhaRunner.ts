@@ -1,7 +1,7 @@
 import type { PiranhaRunOptions } from "./types.js";
 import Docker from "dockerode";
 
-// TODO: add description
+// Class for pulling piranha docker image and using it to run piranha jobs, used by Electron main process
 export class PiranhaRunner {
   private readonly imageRef: string;
   private docker = new Docker();

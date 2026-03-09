@@ -3,7 +3,7 @@ import { describe, expect, test, beforeEach } from "vitest";
 import App from "../../../src/renderer/src/App.svelte";
 import { mockWindowElectron, mockWindowAPI } from "../utils";
 
-// TODO use vitest-browser-svelte
+// TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {
   beforeEach(() => {
     mockWindowElectron();
