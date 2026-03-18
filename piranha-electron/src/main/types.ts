@@ -1,6 +1,6 @@
 export interface PiranhaRunOptions {
   runPath: string;
-  basecalledPath: string;
+  baseCalledPath: string;
   outputPath: string;
   threads?: number;
   positiveControl?: string;

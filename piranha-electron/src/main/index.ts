@@ -20,12 +20,15 @@ function createWindow(): void {
     }
   });
 
-  mainWindow.on("ready-to-show", () => {
+  mainWindow.on("ready-to-show", async () => {
     mainWindow.show();
 
-    runner.pullPiranhaImage().then(() => {
+    try {
+      await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
-    });
+    } catch (e) {
+      mainWindow.webContents.send("error", "Initialization error", e.message);
+    }
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -41,10 +44,17 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
 
+  /**
+   * Handles request from renderer to log a test message. This is intended as a temporary
+   * proof of concept that the main process is still responsive while running a piranha job.
+   */
   ipcMain.on("test-message", async () => {
     console.log("Message received from renderer");
   });
 
+  /**
+   * Handles request from renderer to run Piranha and stream logs back to the main window
+   */
   ipcMain.on("run-piranha", async () => {
     const writable = new Writable({
       write(chunk, encoding, callback) {
@@ -61,17 +71,21 @@ function createWindow(): void {
 
     // Pre-canned run with test data, to be replaced with user-selected parameters
     const testDataPath = join(__dirname, "../../../test-data");
-    await runner.runPiranha(
-      {
-        runPath: testDataPath,
-        basecalledPath: join(testDataPath, "demultiplexed"),
-        outputPath: join(__dirname, "../../../test-results"),
-        positiveControl: "Pos1,P2",
-        negativeControl: "my negative control",
-        threads: 1
-      },
-      writable
-    );
+    try {
+      await runner.runPiranha(
+        {
+          runPath: testDataPath,
+          baseCalledPath: join(testDataPath, "demultiplexed"),
+          outputPath: join(__dirname, "../../../test-results"),
+          positiveControl: "Pos1,P2",
+          negativeControl: "my negative control",
+          threads: 1
+        },
+        writable
+      );
+    } catch (e) {
+      mainWindow.webContents.send("error", "Piranha Run error", e.message);
+    }
   });
 }
 

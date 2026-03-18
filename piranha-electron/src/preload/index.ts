@@ -5,7 +5,8 @@ import { electronAPI } from "@electron-toolkit/preload";
 const api = {
   onInitialized: (callback) => ipcRenderer.on("initialized", (_event) => callback()),
   onChunk: (callback) => ipcRenderer.on("stream-chunk", (_event, value) => callback(value)),
-  onEnd: (callback) => ipcRenderer.on("stream-end", (_event) => callback())
+  onEnd: (callback) => ipcRenderer.on("stream-end", (_event) => callback()),
+  onError: (callback) => ipcRenderer.on("error", (_event, error, detail) => callback(error, detail))
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

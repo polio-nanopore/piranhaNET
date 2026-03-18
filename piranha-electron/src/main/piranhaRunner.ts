@@ -54,7 +54,7 @@ export class PiranhaRunner {
         HostConfig: {
           Binds: [
             `${options.runPath}:${containerRunPath}`,
-            `${options.basecalledPath}:${containerBaseCalledPath}`,
+            `${options.baseCalledPath}:${containerBaseCalledPath}`,
             `${options.outputPath}:${containerOutputPath}`
           ],
           AutoRemove: true // rm

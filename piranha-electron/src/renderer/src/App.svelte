@@ -6,6 +6,7 @@
   const ansi = new ansi_up.AnsiUp();
 
   let initialized = $state(false);
+  let error = $state("");
   let log = $state([]);
   const decoder = new TextDecoder("utf-8");
 
@@ -24,6 +25,10 @@
   window.api?.onEnd(() => {
     log.push("Piranha Run Finished");
   });
+  window.api?.onError((e, detail) => {
+    error = e;
+    console.error(detail); // TODO: we should make error details available to users more generically
+  });
 
   const testMessageMain = (): void => {
     // Prove that we can still message main while piranha is running
@@ -34,6 +39,9 @@
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
+{#if error}
+  <div class="error">Error: {error}</div>
+{/if}
 {#if initialized}
   <div class="actions">
     <button class="action" onclick={runPiranha}>Run Piranha</button>
