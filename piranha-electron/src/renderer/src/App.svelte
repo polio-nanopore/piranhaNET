@@ -1,7 +1,10 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
+  import { m } from "../../paraglide/messages.js";
+  // TODO: put this in a separte module which sets locale and also saves to local storage
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
+  import {updateLang, i18n} from "./lib/i18n.svelte"
 
   const ansi = new ansi_up.AnsiUp();
 
@@ -12,6 +15,13 @@
   const runPiranha = (): void => {
     log = [];
     window.electron.ipcRenderer.send("run-piranha");
+  };
+
+  const toggleLanguage = () => {
+    //const locale = getLocale();
+    //const newLocale = locale == "en" ? "fr" : "en";
+    //console.log(`Setting to ${newLocale}`);
+    updateLang();
   };
 
   window.api?.onInitialized(() => {
@@ -34,9 +44,13 @@
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
+{#key i18n.lang}
+<div>{ m.welcome() }</div>
 {#if initialized}
   <div class="actions">
     <button class="action" onclick={runPiranha}>Run Piranha</button>
+    <button class="action" onclick={toggleLanguage}>{ m.toggleLanguage() }</button>
+    <span>{i18n.lang}</span>
   </div>
   <code
     style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
@@ -51,4 +65,5 @@
 {:else}
   Initializing...
 {/if}
+{/key}
 <Versions />
