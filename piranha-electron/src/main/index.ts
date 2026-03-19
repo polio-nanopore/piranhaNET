@@ -2,7 +2,10 @@ import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
+import { PiranhaRunner } from "./piranhaRunner";
+import { Writable } from "node:stream";
 
+const runner = new PiranhaRunner();
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -17,8 +20,15 @@ function createWindow(): void {
     }
   });
 
-  mainWindow.on("ready-to-show", () => {
+  mainWindow.on("ready-to-show", async () => {
     mainWindow.show();
+
+    try {
+      await runner.pullPiranhaImage();
+      mainWindow.webContents.send("initialized");
+    } catch (e) {
+      mainWindow.webContents.send("error", "Initialization error", e.message);
+    }
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -33,12 +43,56 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
+
+  /**
+   * Handles request from renderer to log a test message. This is intended as a temporary
+   * proof of concept that the main process is still responsive while running a piranha job.
+   */
+  ipcMain.on("test-message", async () => {
+    console.log("Message received from renderer");
+  });
+
+  /**
+   * Handles request from renderer to run Piranha and stream logs back to the main window
+   */
+  ipcMain.on("run-piranha", async () => {
+    const writable = new Writable({
+      write(chunk, encoding, callback) {
+        // Send each chunk to the renderer
+        mainWindow.webContents.send("stream-chunk", chunk);
+        callback();
+      },
+      final(callback) {
+        console.log("finished running piranha");
+        mainWindow.webContents.send("stream-end");
+        callback();
+      }
+    });
+
+    // Pre-canned run with test data, to be replaced with user-selected parameters
+    const testDataPath = join(__dirname, "../../../test-data");
+    try {
+      await runner.runPiranha(
+        {
+          runPath: testDataPath,
+          baseCalledPath: join(testDataPath, "demultiplexed"),
+          outputPath: join(__dirname, "../../../test-results"),
+          positiveControl: "Pos1,P2",
+          negativeControl: "my negative control",
+          threads: 1
+        },
+        writable
+      );
+    } catch (e) {
+      mainWindow.webContents.send("error", "Piranha Run error", e.message);
+    }
+  });
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron");
 
@@ -48,9 +102,6 @@ app.whenReady().then(() => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
-
-  // IPC test
-  ipcMain.on("run-piranha", () => console.log("Not implemented yet!"));
 
   createWindow();
 
@@ -69,6 +120,3 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

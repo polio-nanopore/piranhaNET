@@ -36,7 +36,8 @@ This did not appear to be an issue when running with the app built in production
 ### Tests
 
 Run unit tests with `npm run test:unit`.
-Run unit tests with coverage using `npm run coverage`
+Run integrarion tests with `npm run test:integration`.
+Run unit and integration tests with coverage using `npm run coverage`
 
 Run Playwright e2e tests with `npm run test:e2e`.
 

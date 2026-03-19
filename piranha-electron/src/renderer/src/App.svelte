@@ -1,16 +1,62 @@
 <script lang="ts">
+  import * as ansi_up from "ansi_up";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
 
-  const ipcHandle = (): void => window.electron.ipcRenderer.send("run-piranha");
+  const ansi = new ansi_up.AnsiUp();
+
+  let initialized = $state(false);
+  let error = $state("");
+  let log = $state([]);
+  const decoder = new TextDecoder("utf-8");
+
+  const runPiranha = (): void => {
+    log = [];
+    window.api.runPiranha();
+  };
+
+  const testMessageMain = (): void => {
+    // Prove that we can still message main while piranha is running
+    // - should see it log a message to the console
+    window.api.testMessage();
+  };
+
+  window.api?.onInitialized(() => {
+    initialized = true;
+  });
+  window.api?.onChunk((chunk) => {
+    const textChunk = decoder.decode(chunk, { stream: true });
+    log.push(`${textChunk}`);
+  });
+  window.api?.onEnd(() => {
+    log.push("Piranha Run Finished");
+  });
+  window.api?.onError((e, detail) => {
+    error = e;
+    console.error(detail); // TODO: we should make error details available to users more generically
+  });
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
-<div class="actions">
-  <div class="action">
-    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions a11y-missing-attribute-->
-    <a target="_blank" rel="noreferrer" on:click={ipcHandle}>Run Piranha</a>
+{#if error}
+  <div class="error">Error: {error}</div>
+{/if}
+{#if initialized}
+  <div class="actions">
+    <button class="action" onclick={runPiranha}>Run Piranha</button>
   </div>
-</div>
+  <code
+    style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
+    data-testid="log"
+  >
+    {#each log as logentry, index (index)}
+      <!-- eslint-disable  svelte/no-at-html-tags -->
+      {@html ansi.ansi_to_html(logentry)}<br />
+    {/each}
+  </code>
+  <button class="action" onclick={testMessageMain}> Test Message Main </button>
+{:else}
+  Initializing...
+{/if}
 <Versions />
