@@ -12,7 +12,13 @@
 
   const runPiranha = (): void => {
     log = [];
-    window.electron.ipcRenderer.send("run-piranha");
+    window.api.runPiranha();
+  };
+
+  const testMessageMain = (): void => {
+    // Prove that we can still message main while piranha is running
+    // - should see it log a message to the console
+    window.api.testMessage();
   };
 
   window.api?.onInitialized(() => {
@@ -29,12 +35,6 @@
     error = e;
     console.error(detail); // TODO: we should make error details available to users more generically
   });
-
-  const testMessageMain = (): void => {
-    // Prove that we can still message main while piranha is running
-    // - should see it log a message to the console
-    window.electron.ipcRenderer.send("test-message");
-  };
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
