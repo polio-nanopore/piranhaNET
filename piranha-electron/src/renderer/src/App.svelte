@@ -3,7 +3,7 @@
   import { m } from "../../paraglide/messages.js";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
-  import {i18n, initialiseI18n} from "./lib/i18n.svelte"
+  import {i18n} from "./lib/i18n.svelte"
 
   const ansi = new ansi_up.AnsiUp();
 
@@ -37,8 +37,6 @@
     error = e;
     console.error(detail); // TODO: we should make error details available to users more generically
   });
-
-  initialiseI18n();
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
@@ -50,7 +48,7 @@
 {/if}
 {#if initialized}
   <div class="actions">
-    <button class="action" onclick={runPiranha}>Run Piranha</button>
+    <button class="action" onclick={runPiranha}>{ m.runPiranha() }</button>
   </div>
   <code
     style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
@@ -61,14 +59,17 @@
       {@html ansi.ansi_to_html(logentry)}<br />
     {/each}
   </code>
-  <button class="action" onclick={testMessageMain}> Test Message Main </button>
+  <button class="action" onclick={testMessageMain}>{ m.testMessageMain() }</button>
 {:else}
-  Initializing...
+  { m.initializing() }.
 {/if}
-<select bind:value={i18n.lang}>
-  {#each i18n.allLanguages as lang}
-    <option value={lang}>{lang}</option>
-  {/each}
-</select>
+  <div>
+    <label for="lang">{ m.language() }</label>
+    <select id="lang" bind:value={i18n.lang}>
+      {#each i18n.allLanguages as lang}
+        <option value={lang}>{lang}</option>
+      {/each}
+    </select>
+  </div>
 {/key}
 <Versions />

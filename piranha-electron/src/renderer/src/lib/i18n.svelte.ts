@@ -2,20 +2,31 @@ import { setLocale, locales } from "../../../paraglide/runtime";
 
 const LANG_KEY = "lang";
 
-export const i18n = $state({
-  lang: "",
-  allLanguages: locales
-});
+// Use a class so we can implement a setter which updates local storage and paraglide
+// before updating the reactive state value so paraglide is ready to serve new translated strings
+class I18n {
+  #lang = $state("");
 
-export const initialiseI18n = () => {
-  // effects should be created from component initialisation
-  $effect(() => {
-    setLocale(i18n.lang, {reload: false});
-    localStorage.setItem(LANG_KEY, i18n.lang);
-  });
+  get lang() {
+    return this.#lang;
+  }
 
-  // initialise from local storage
-  i18n.lang = localStorage.getItem(LANG_KEY) ?? "en";
-};
+  set lang(newValue) {
+    // TODO: check value is valid
+    setLocale(newValue, {reload: false});
+    localStorage.setItem(LANG_KEY, newValue);
+    this.#lang = newValue;
+  }
+
+  get allLanguages() {
+    return locales;
+  }
+}
+
+export const i18n = new I18n();
+
+// initialise from local storage
+i18n.lang = localStorage.getItem(LANG_KEY) ?? "en";
+
 
 
