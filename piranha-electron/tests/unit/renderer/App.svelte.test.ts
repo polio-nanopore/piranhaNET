@@ -1,12 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/svelte";
 import { describe, expect, test, beforeEach } from "vitest";
 import App from "../../../src/renderer/src/App.svelte";
-import { mockWindowElectron, mockWindowAPI } from "../utils";
+import { mockWindowAPI } from "../utils";
 
 // TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {
   beforeEach(() => {
-    mockWindowElectron();
     mockWindowAPI();
   });
 
@@ -46,5 +45,13 @@ describe("App", () => {
     const end = window.api.onEnd.mock.calls[0][0];
     end();
     await waitFor(() => expect(log).toHaveTextContent("Piranha Run Finished"));
+  });
+
+  test("displays error", async () => {
+    render(App);
+    expect(window.api.onError).toHaveBeenCalled();
+    const setError = window.api.onError.mock.calls[0][0];
+    setError("test error", "test error detail");
+    await waitFor(() => expect(screen.getByText("Error: test error")).toBeVisible());
   });
 });

@@ -1,27 +1,26 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
   import { m } from "../../paraglide/messages.js";
-  // TODO: put this in a separte module which sets locale and also saves to local storage
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
-  import {updateLang, i18n} from "./lib/i18n.svelte"
+  import {i18n, initialiseI18n} from "./lib/i18n.svelte"
 
   const ansi = new ansi_up.AnsiUp();
 
   let initialized = $state(false);
+  let error = $state("");
   let log = $state([]);
   const decoder = new TextDecoder("utf-8");
 
   const runPiranha = (): void => {
     log = [];
-    window.electron.ipcRenderer.send("run-piranha");
+    window.api.runPiranha();
   };
 
-  const toggleLanguage = () => {
-    //const locale = getLocale();
-    //const newLocale = locale == "en" ? "fr" : "en";
-    //console.log(`Setting to ${newLocale}`);
-    updateLang();
+  const testMessageMain = (): void => {
+    // Prove that we can still message main while piranha is running
+    // - should see it log a message to the console
+    window.api.testMessage();
   };
 
   window.api?.onInitialized(() => {
@@ -34,23 +33,24 @@
   window.api?.onEnd(() => {
     log.push("Piranha Run Finished");
   });
+  window.api?.onError((e, detail) => {
+    error = e;
+    console.error(detail); // TODO: we should make error details available to users more generically
+  });
 
-  const testMessageMain = (): void => {
-    // Prove that we can still message main while piranha is running
-    // - should see it log a message to the console
-    window.electron.ipcRenderer.send("test-message");
-  };
+  initialiseI18n();
 </script>
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
 {#key i18n.lang}
 <div>{ m.welcome() }</div>
+{#if error}
+  <div class="error">Error: {error}</div>
+{/if}
 {#if initialized}
   <div class="actions">
     <button class="action" onclick={runPiranha}>Run Piranha</button>
-    <button class="action" onclick={toggleLanguage}>{ m.toggleLanguage() }</button>
-    <span>{i18n.lang}</span>
   </div>
   <code
     style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
@@ -65,5 +65,10 @@
 {:else}
   Initializing...
 {/if}
+<select bind:value={i18n.lang}>
+  {#each i18n.allLanguages as lang}
+    <option value={lang}>{lang}</option>
+  {/each}
+</select>
 {/key}
 <Versions />

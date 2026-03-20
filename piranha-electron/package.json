@@ -28,7 +28,6 @@
     "test:e2e": "electron-vite build && DEBUG=pw:api xvfb-run npx playwright test"
   },
   "dependencies": {
-    "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "ansi_up": "^6.0.6",
     "dockerode": "^4.0.9"

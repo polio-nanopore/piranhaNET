@@ -29,7 +29,7 @@ describe("piranhaRunner", () => {
     await runner.runPiranha(
       {
         runPath: testDataPath,
-        basecalledPath: join(testDataPath, "demultiplexed"),
+        baseCalledPath: join(testDataPath, "demultiplexed"),
         outputPath: join(__dirname, "../../../../test-results"),
         positiveControl: "Pos1,P2",
         negativeControl: "my negative control",

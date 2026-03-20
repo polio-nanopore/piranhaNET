@@ -86,6 +86,10 @@ code {
   font-weight: 700;
 }
 
+.error {
+  color: #f08080;
+}
+
 .actions {
   display: flex;
   padding-top: 32px;
@@ -96,15 +100,10 @@ code {
 
 .action {
   flex-shrink: 0;
-  padding: 6px;
   margin-top: 12px;
-}
-
-.action {
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
-  border: 1px solid transparent;
   text-align: center;
   font-weight: 600;
   white-space: nowrap;
