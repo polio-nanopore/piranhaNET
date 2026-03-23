@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
-  import { m } from "../../paraglide/messages.js";
+  import { m } from "../../paraglide/messages";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
   import { i18n } from "./lib/i18n.svelte";
