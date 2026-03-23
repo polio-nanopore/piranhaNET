@@ -10,7 +10,7 @@ export default defineConfig({
       svelte(),
       paraglideVitePlugin({
         project: "./project.inlang",
-        outdir: "./src/paraglide",
+        outdir: "./src/paraglide"
       })
     ]
   }

@@ -3,7 +3,7 @@
   import { m } from "../../paraglide/messages.js";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
-  import {i18n} from "./lib/i18n.svelte"
+  import { i18n } from "./lib/i18n.svelte";
 
   const ansi = new ansi_up.AnsiUp();
 
@@ -42,31 +42,33 @@
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
 {#key i18n.lang}
-<div>{ m.welcome() }</div>
-{#if error}
-  <div class="error">Error: {error}</div>
-{/if}
-{#if initialized}
-  <div class="actions">
-    <button class="action" onclick={runPiranha}>{ m.runPiranha() }</button>
-  </div>
-  <code
-    style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
-    data-testid="log"
-  >
-    {#each log as logentry, index (index)}
-      <!-- eslint-disable  svelte/no-at-html-tags -->
-      {@html ansi.ansi_to_html(logentry)}<br />
-    {/each}
-  </code>
-  <button class="action" onclick={testMessageMain}>{ m.testMessageMain() }</button>
-{:else}
-  { m.initializing() }.
-{/if}
+  <div data-testid="welcome">{m.welcome()}</div>
+  {#if error}
+    <div class="error">Error: {error}</div>
+  {/if}
+  {#if initialized}
+    <div class="actions">
+      <button class="action" onclick={runPiranha} data-testid="run">{m.runPiranha()}</button>
+    </div>
+    <code
+      style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
+      data-testid="log"
+    >
+      {#each log as logentry, index (index)}
+        <!-- eslint-disable  svelte/no-at-html-tags -->
+        {@html ansi.ansi_to_html(logentry)}<br />
+      {/each}
+    </code>
+    <button class="action" onclick={testMessageMain} data-testid="test-msg"
+      >{m.testMessageMain()}</button
+    >
+  {:else}
+    {m.initializing()}...
+  {/if}
   <div>
-    <label for="lang">{ m.language() }</label>
-    <select id="lang" bind:value={i18n.lang}>
-      {#each i18n.allLanguages as lang}
+    <label for="lang">{m.language()}</label>
+    <select id="lang" data-testid="lang" bind:value={i18n.lang}>
+      {#each i18n.allLanguages as lang (lang)}
         <option value={lang}>{lang}</option>
       {/each}
     </select>
