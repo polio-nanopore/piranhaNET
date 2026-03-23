@@ -27,7 +27,7 @@ function createWindow(): void {
       await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
     } catch (e) {
-      mainWindow.webContents.send("error", "Initialization error", e.message);
+      mainWindow.webContents.send("error", "Initialization error", (e as Error).message);
     }
   });
 
@@ -57,7 +57,7 @@ function createWindow(): void {
    */
   ipcMain.on("run-piranha", async () => {
     const writable = new Writable({
-      write(chunk, encoding, callback) {
+      write(chunk, _, callback) {
         // Send each chunk to the renderer
         mainWindow.webContents.send("stream-chunk", chunk);
         callback();
@@ -84,7 +84,7 @@ function createWindow(): void {
         writable
       );
     } catch (e) {
-      mainWindow.webContents.send("error", "Piranha Run error", e.message);
+      mainWindow.webContents.send("error", "Piranha Run error", (e as Error).message);
     }
   });
 }
