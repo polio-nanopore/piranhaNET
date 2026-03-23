@@ -16,7 +16,10 @@ class I18n {
   }
 
   set lang(newValue) {
-    // TODO: check value is valid
+    if (!this.allLanguages.includes(newValue)) {
+      throw new RangeError("Unknown language");
+    }
+
     setLocale(newValue, { reload: false });
     localStorage.setItem(LANG_KEY, newValue);
     this.#lang = newValue;

@@ -23,6 +23,10 @@ describe("i18n", () => {
     expect(setLocaleSpy).toHaveBeenCalledWith("pt", { reload: false });
   });
 
+  test("throws error when set nonexistent language", () => {
+    expect(() => (i18n.lang = "zz")).toThrow("Unknown language");
+  });
+
   test("can get all languages", () => {
     expect(i18n.allLanguages).toStrictEqual(["en", "fr", "pt"]);
   });
