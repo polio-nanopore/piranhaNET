@@ -41,8 +41,9 @@ in the `messages` folder. After an `npm run build` that key will be available as
 imported from `src/paraglide/messages`.
 
 The `i18n` object defined in `renderer/src/lib/i18n.svelte.ts` allows reading and writing the current language which is
-a svelte `$state` value.  To make a message string in the UI reactive to language change, it should be included in a
+a svelte `$state` value. To make a message string in the UI reactive to language change, it should be included in a
 key block tied to that value:
+
 ```
 {#key i18n.lang}
 ...
@@ -50,6 +51,7 @@ key block tied to that value:
 ...
 {/key}
 ```
+
 `i18n` also provides an array of `allLanguages`, which it reads from Paraglide.
 
 ### Tests
