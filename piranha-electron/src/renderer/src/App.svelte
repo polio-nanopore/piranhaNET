@@ -1,77 +1,36 @@
 <script lang="ts">
-  import * as ansi_up from "ansi_up";
-  import { m } from "../../paraglide/messages";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
-  import { i18n } from "./lib/i18n.svelte";
-
-  const ansi = new ansi_up.AnsiUp();
-
-  let initialized = $state(false);
-  let error = $state("");
-  let log = $state([]);
-  const decoder = new TextDecoder("utf-8");
-
-  const runPiranha = (): void => {
-    log = [];
-    window.api.runPiranha();
-  };
-
-  const testMessageMain = (): void => {
-    // Prove that we can still message main while piranha is running
-    // - should see it log a message to the console
-    window.api.testMessage();
-  };
-
-  window.api?.onInitialized(() => {
-    initialized = true;
-  });
-  window.api?.onChunk((chunk) => {
-    const textChunk = decoder.decode(chunk, { stream: true });
-    log.push(`${textChunk}`);
-  });
-  window.api?.onEnd(() => {
-    log.push("Piranha Run Finished");
-  });
-  window.api?.onError((e, detail) => {
-    error = e;
-    console.error(detail); // TODO: we should make error details available to users more generically
-  });
+  import { Router, Route } from "svelte-tiny-router";
+  import Nav from "./components/Nav.svelte";
+  import Run from "./components/run/Run.svelte";
+  import About from "./components/about/About.svelte";
+  import {piranhaAPI} from "./lib/piranhaAPI.svelte";
+  import {m} from "../../paraglide/messages";
+  import {i18n} from "./lib/i18n.svelte";
 </script>
 
-<img alt="logo" class="logo" src={piranhaLogo} />
-<div class="text">PiranhaNET</div>
 {#key i18n.lang}
-  <div data-testid="welcome">{m.welcome()}</div>
-  {#if error}
-    <div class="error">Error: {error}</div>
-  {/if}
-  {#if initialized}
-    <div class="actions">
-      <button class="action" onclick={runPiranha} data-testid="run">{m.runPiranha()}</button>
-    </div>
-    <code
-      style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
-      data-testid="log"
-    >
-      {#each log as logentry, index (index)}
-        <!-- eslint-disable  svelte/no-at-html-tags -->
-        {@html ansi.ansi_to_html(logentry)}<br />
-      {/each}
-    </code>
-    <button class="action" onclick={testMessageMain} data-testid="test-msg"
-      >{m.testMessageMain()}</button
-    >
-  {:else}
-    {m.initializing()}...
-  {/if}
-  <div>
-    <label for="lang">{m.language()}</label>
-    <select id="lang" data-testid="lang" bind:value={i18n.lang}>
-      {#each i18n.allLanguages as lang (lang)}
-        <option value={lang}>{lang}</option>
-      {/each}
-    </select>
-  </div>
+  <Router>
+    <img alt="logo" class="logo" src={piranhaLogo} />
+    <div class="text">PiranhaNET</div>
+    <Nav></Nav>
+    {#if piranhaAPI.error}
+      <div class="error">Error: {piranhaAPI.error}</div>
+    {/if}
+    {#if piranhaAPI.initialized}
+
+        <Route path="/run" component="{Run}" />
+        <Route path="/about" component="{About}" />
+        <Route>
+          <p>
+            No route loaded yet
+          </p>
+        </Route>
+
+    {:else}
+      {m.initializing()}...
+    {/if}
+  </Router>
 {/key}
 <Versions />
