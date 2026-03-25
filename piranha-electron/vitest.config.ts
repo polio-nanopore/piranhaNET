@@ -1,8 +1,16 @@
 import { defineConfig } from "vitest/config";
+import path from "path";
+import tailwindcss from "@tailwindcss/vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { svelteTesting } from "@testing-library/svelte/vite";
 
 export default defineConfig({
+  plugins: [tailwindcss()],
+  resolve: {
+    alias: {
+      $lib: path.resolve("./src/renderer/src/lib"),
+    },
+  },
   test: {
     coverage: {
       provider: "istanbul",
