@@ -12,14 +12,12 @@
 
 {#key i18n.lang}
   <Router>
-    <img alt="logo" class="logo" src={piranhaLogo} />
-    <div class="text">PiranhaNET</div>
+    <!--<img alt="logo" class="logo" src={piranhaLogo} />-->
     <Nav></Nav>
     {#if piranhaAPI.error}
       <div class="error">Error: {piranhaAPI.error}</div>
     {/if}
     {#if piranhaAPI.initialized}
-
         <Route path="/run" component="{Run}" />
         <Route path="/about" component="{About}" />
         <Route>
