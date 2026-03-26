@@ -1,8 +1,6 @@
 <script lang="ts">
   import {useTinyRouter} from "svelte-tiny-router";
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
-  //import NavigationMenu from "$lib/shadcn/ui/navigation-menu/navigation-menu.svelte";
-  //import NavigationMenuList from "$lib/shadcn/ui/navigation-menu/navigation-menu-list.svelte";
 
   const router = useTinyRouter();
   const navigate = (route: string) => {
@@ -12,20 +10,19 @@
   navigate("/run");
 </script>
 
-<NavigationMenu.Root>
+<NavigationMenu.Root class="bg-primary text-primary-foreground max-w-full justify-between">
   <NavigationMenu.List>
-    <NavigationMenu.Item>PiranhaNET</NavigationMenu.Item>
+    <NavigationMenu.Item class="pn-title">PiranhaNET</NavigationMenu.Item>
   </NavigationMenu.List>
   <NavigationMenu.List>
-   <NavigationMenu.Item>Run</NavigationMenu.Item>
+    <NavigationMenu.Item class="nav-link">
+      <NavigationMenu.Link onSelect={() => navigate('/run')}>Run</NavigationMenu.Link>
+    </NavigationMenu.Item>
   </NavigationMenu.List>
   <NavigationMenu.List>
-    <NavigationMenu.Item>
-      <NavigationMenu.Item>About</NavigationMenu.Item>
+    <NavigationMenu.Item class="nav-link">
+      <NavigationMenu.Link onSelect={() => navigate('/about')}>About</NavigationMenu.Link>
     </NavigationMenu.Item>
   </NavigationMenu.List>
 </NavigationMenu.Root>
-<!--<nav>
-  <button onclick={() => navigate('/run')}>Run</button>
-  <button onclick={() => navigate('/about')}>About</button>
-</nav>-->
+

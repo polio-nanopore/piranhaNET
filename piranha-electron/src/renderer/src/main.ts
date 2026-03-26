@@ -1,6 +1,5 @@
 import { mount } from "svelte";
 
-import "tailwindcss/index.css";
 import "./assets/app.css";
 
 import App from "./App.svelte";
