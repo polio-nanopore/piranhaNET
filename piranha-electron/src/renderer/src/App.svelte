@@ -1,8 +1,7 @@
 <script lang="ts">
   import Versions from "./components/Versions.svelte";
-  import piranhaLogo from "./assets/piranha.svg";
   import { Router, Route } from "svelte-tiny-router";
-  import Nav from "./components/Nav.svelte";
+  import Nav from "./components/nav/Nav.svelte";
   import Run from "./components/run/Run.svelte";
   import About from "./components/about/About.svelte";
   import {piranhaAPI} from "./lib/piranhaAPI.svelte";
@@ -12,7 +11,6 @@
 
 {#key i18n.lang}
   <Router>
-    <!--<img alt="logo" class="logo" src={piranhaLogo} />-->
     <Nav></Nav>
     {#if piranhaAPI.error}
       <div class="error">Error: {piranhaAPI.error}</div>

@@ -200,6 +200,17 @@
   }
 }
 
+.nav {
+  height: 3.5rem;
+}
+
+.logo {
+  width: 4.25rem;
+  height: 4.25rem;
+  position: relative;
+  top: 0.8rem;
+}
+
 .pn-title {
   color: var(--pntitle);
 }

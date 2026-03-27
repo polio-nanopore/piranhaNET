@@ -1,3 +1,3 @@
-<div>
-  This is where the About page will go.
+<div class="container mx-auto p-4">
+  Placeholder for About page text.
 </div>
