@@ -12,9 +12,10 @@
   --mockup-theme-1: #f5eece;
   --mockup-theme-2: #fbf8ea;
   --mockup-theme-3: #f6f0d5;
-  --nav-selected: #e06962;
   --radius: 0.625rem;
 
+  --pntitle: #a2bec3;
+  --nav-current: #e06962;
   --background: #fbf8ea;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -200,5 +201,25 @@
 }
 
 .pn-title {
-  color: #a2bec3!important;
+  color: var(--pntitle);
+}
+
+.nav-link {
+  font-variant-caps: all-small-caps;
+  font-size: 100%;
+  font-weight: bold;
+  border-width: 0;
+}
+
+.nav-link:active, .nav-link:focus {
+  background-color: var(--primary);
+}
+
+.nav-link:hover {
+  background-color: var(--pntitle);
+  cursor: pointer;
+}
+
+.current-nav-route {
+  color: var(--nav-current)
 }
