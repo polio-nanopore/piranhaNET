@@ -2,4 +2,5 @@
 set -ex
 
 npm ci --prefix piranha-electron
+npm run build --prefix piranha-electron
 npm run dev --prefix piranha-electron

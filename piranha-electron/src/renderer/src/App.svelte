@@ -1,7 +1,9 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
+  import { m } from "../../paraglide/messages";
   import Versions from "./components/Versions.svelte";
   import piranhaLogo from "./assets/piranha.svg";
+  import { i18n } from "./lib/i18n.svelte";
 
   const ansi = new ansi_up.AnsiUp();
 
@@ -39,24 +41,37 @@
 
 <img alt="logo" class="logo" src={piranhaLogo} />
 <div class="text">PiranhaNET</div>
-{#if error}
-  <div class="error">Error: {error}</div>
-{/if}
-{#if initialized}
-  <div class="actions">
-    <button class="action" onclick={runPiranha}>Run Piranha</button>
+{#key i18n.lang}
+  <div data-testid="welcome">{m.welcome()}</div>
+  {#if error}
+    <div class="error">Error: {error}</div>
+  {/if}
+  {#if initialized}
+    <div class="actions">
+      <button class="action" onclick={runPiranha} data-testid="run">{m.runPiranha()}</button>
+    </div>
+    <code
+      style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
+      data-testid="log"
+    >
+      {#each log as logentry, index (index)}
+        <!-- eslint-disable  svelte/no-at-html-tags -->
+        {@html ansi.ansi_to_html(logentry)}<br />
+      {/each}
+    </code>
+    <button class="action" onclick={testMessageMain} data-testid="test-msg"
+      >{m.testMessageMain()}</button
+    >
+  {:else}
+    {m.initializing()}...
+  {/if}
+  <div>
+    <label for="lang">{m.language()}</label>
+    <select id="lang" data-testid="lang" bind:value={i18n.lang}>
+      {#each i18n.allLanguages as lang (lang)}
+        <option value={lang}>{lang}</option>
+      {/each}
+    </select>
   </div>
-  <code
-    style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
-    data-testid="log"
-  >
-    {#each log as logentry, index (index)}
-      <!-- eslint-disable  svelte/no-at-html-tags -->
-      {@html ansi.ansi_to_html(logentry)}<br />
-    {/each}
-  </code>
-  <button class="action" onclick={testMessageMain}> Test Message Main </button>
-{:else}
-  Initializing...
-{/if}
+{/key}
 <Versions />

@@ -33,10 +33,31 @@ sudo apt-get install libnvidia-egl-wayland1
 
 This did not appear to be an issue when running with the app built in production mode.
 
+### Internationalisation
+
+Internationalisation in the renderer is implemented using [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
+To add a UI string, add it in English (en), French (fr) and Portuguese (pt), with the same key, to the relevant json files
+in the `messages` folder. After an `npm run build` that key will be available as a method on `m` which can be
+imported from `src/paraglide/messages`.
+
+The `i18n` object defined in `renderer/src/lib/i18n.svelte.ts` allows reading and writing the current language which is
+a svelte `$state` value. To make a message string in the UI reactive to language change, it should be included in a
+key block tied to that value:
+
+```
+{#key i18n.lang}
+...
+   { m.whatever() }
+...
+{/key}
+```
+
+`i18n` also provides an array of `allLanguages`, which it reads from Paraglide.
+
 ### Tests
 
 Run unit tests with `npm run test:unit`.
-Run integrarion tests with `npm run test:integration`.
+Run integration tests with `npm run test:integration`.
 Run unit and integration tests with coverage using `npm run coverage`
 
 Run Playwright e2e tests with `npm run test:e2e`.

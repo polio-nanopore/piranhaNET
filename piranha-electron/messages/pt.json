@@ -1,0 +1,8 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "initializing": "Inicializando",
+  "language": "Idioma",
+  "runPiranha": "Corra Piranha",
+  "testMessageMain": "Enviar mensagem de teste",
+  "welcome": "Bem-vindo ao PiranhaNET"
+}
