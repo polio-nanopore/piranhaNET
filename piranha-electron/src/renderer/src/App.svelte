@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Versions from "./components/Versions.svelte";
   import { Router, Route } from "svelte-tiny-router";
   import Nav from "./components/nav/Nav.svelte";
   import Run from "./components/run/Run.svelte";
@@ -29,4 +28,3 @@
     {/if}
   </Router>
 {/key}
-<Versions />

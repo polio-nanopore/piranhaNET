@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Button } from "$lib/shadcn/ui/button";
   import { m } from "../../../../paraglide/messages";
-  import { i18n } from "../../lib/i18n.svelte";
   import * as ansi_up from "ansi_up";
   import {piranhaAPI} from "../../lib/piranhaAPI.svelte";
 
@@ -9,26 +9,17 @@
 <div class="container mx-auto p-4">
   <div data-testid="welcome">{m.welcome()}</div>
   <div class="actions">
-    <button class="action" onclick={() => piranhaAPI.runPiranha()} data-testid="run">{m.runPiranha()}</button>
+    <Button class="action" onclick={() => piranhaAPI.runPiranha()} data-testid="run">{m.runPiranha()}</Button>
   </div>
-  <code
-    style="height: 100px; width: 600px; overflow: scroll; background-color: white; color: black; margin-top: 16px;"
-    data-testid="log"
-  >
+  <div>
+  <code class="piranha-logs">
     {#each piranhaAPI.log as logentry, index (index)}
       <!-- eslint-disable  svelte/no-at-html-tags -->
       {@html ansi.ansi_to_html(logentry)}<br />
     {/each}
   </code>
-  <button class="action" onclick={() => piranhaAPI.testMessageMain()} data-testid="test-msg">
-    {m.testMessageMain()}
-  </button>
-  <div>
-    <label for="lang">{m.language()}</label>
-    <select id="lang" data-testid="lang" bind:value={i18n.lang}>
-      {#each i18n.allLanguages as lang (lang)}
-        <option value={lang}>{lang}</option>
-      {/each}
-    </select>
   </div>
+  <Button class="action" onclick={() => piranhaAPI.testMessageMain()} data-testid="test-msg">
+    {m.testMessageMain()}
+  </Button>
 </div>

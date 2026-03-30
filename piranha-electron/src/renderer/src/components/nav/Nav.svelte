@@ -3,6 +3,7 @@
   import piranhaLogo from "../../assets/piranha.svg";
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
   import NavLink from "./NavLink.svelte";
+  import LanguageSelect from "./LanguageSelect.svelte";
 
   const router = useTinyRouter();
 
@@ -23,6 +24,7 @@
   </NavigationMenu.List>
   <NavigationMenu.List>
     <NavLink route="/about" textKey="About" router={router} />
+    <LanguageSelect/>
   </NavigationMenu.List>
 </NavigationMenu.Root>
 
