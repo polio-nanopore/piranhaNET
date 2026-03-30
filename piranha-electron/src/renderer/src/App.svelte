@@ -24,7 +24,9 @@
         </Route>
 
     {:else}
-      {m.initializing()}...
+      <div class="container mx-auto p-4">
+         {m.initializing()}...
+      </div>
     {/if}
   </Router>
 {/key}

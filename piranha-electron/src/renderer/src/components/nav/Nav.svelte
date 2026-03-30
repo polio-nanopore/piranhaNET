@@ -20,10 +20,10 @@
     </NavigationMenu.Item>
   </NavigationMenu.List>
   <NavigationMenu.List>
-    <NavLink route="/run" textKey="Run" router={router} />
+    <NavLink route="/run" textKey="run" router={router} />
   </NavigationMenu.List>
   <NavigationMenu.List>
-    <NavLink route="/about" textKey="About" router={router} />
+    <NavLink route="/about" textKey="about" router={router} />
     <LanguageSelect/>
   </NavigationMenu.List>
 </NavigationMenu.Root>
