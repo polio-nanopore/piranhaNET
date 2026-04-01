@@ -7,8 +7,10 @@
 
   const router = useTinyRouter();
 
-  // Open Run page by default
-  router.navigate("/run");
+  // We may be on first load or reloading due to language change - retain the route in latter case, otherwise navigate
+  // to default /run route
+  const route = router.path === "/" ? "/run" : router.path;
+  router.navigate(route);
 </script>
 
 <NavigationMenu.Root class="nav bg-primary text-primary-foreground max-w-full justify-between text-2xl">
