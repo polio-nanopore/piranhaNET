@@ -1,15 +1,19 @@
 import {render, screen, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test, beforeEach, afterEach } from "vitest";
+import { describe, expect, test, beforeEach } from "vitest";
 import { i18n } from "$lib/i18n.svelte";
-import LanguageSelectInTestContext from "./LanguageSelectInTestContext.svelte";
+import NavComponentInTestContext from "./NavComponentInTestContext.svelte";
 
 describe("LanguageSelect", () => {
   let user;
   beforeEach(() => {
     user = userEvent.setup();
     i18n.lang = "en";
-    render(LanguageSelectInTestContext);
+    render(NavComponentInTestContext, {
+      props:{
+        componentName: "LanguageSelect"
+      }
+    });
   });
 
   test("displays current language", async () => {
