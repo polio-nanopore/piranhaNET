@@ -6,14 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* TODO: these are some values used in the mockups which we might re-use - remove when we decide! */
-  --mockup-accent-bg: #19434c;
-  --mockup-nav-title: #a2bec3;
-  --mockup-theme-1: #f5eece;
-  --mockup-theme-2: #fbf8ea;
-  --mockup-theme-3: #f6f0d5;
   --radius: 0.625rem;
-
   --pntitle: #a2bec3;
   --nav-current: #e06962;
   --background: #fbf8ea;

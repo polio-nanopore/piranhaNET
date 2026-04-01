@@ -7,6 +7,7 @@
 
   const router = useTinyRouter();
 
+  // Open Run page by default
   router.navigate("/run");
 </script>
 

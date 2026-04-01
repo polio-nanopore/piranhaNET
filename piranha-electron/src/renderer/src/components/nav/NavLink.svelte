@@ -13,6 +13,7 @@
 
 <NavigationMenu.Item>
   <NavigationMenu.Link class="nav-link rounded-none {isCurrentRoute(route) ? 'current-nav-route' : ''}"
+                       data-testid={`nav-${textKey}`}
                        onSelect={() => navigate(route)}>{m[textKey]()}</NavigationMenu.Link>
 </NavigationMenu.Item>
 

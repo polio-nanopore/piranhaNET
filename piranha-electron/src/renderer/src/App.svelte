@@ -17,12 +17,6 @@
     {#if piranhaAPI.initialized}
         <Route path="/run" component="{Run}" />
         <Route path="/about" component="{About}" />
-        <Route>
-          <p>
-            No route loaded yet
-          </p>
-        </Route>
-
     {:else}
       <div class="container mx-auto p-4">
          {m.initializing()}...

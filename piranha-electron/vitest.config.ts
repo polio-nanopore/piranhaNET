@@ -6,11 +6,6 @@ import { svelteTesting } from "@testing-library/svelte/vite";
 
 export default defineConfig({
   plugins: [tailwindcss()],
-  resolve: {
-    alias: {
-      $lib: path.resolve("./src/renderer/src/lib"),
-    },
-  },
   test: {
     coverage: {
       provider: "istanbul",
@@ -26,6 +21,11 @@ export default defineConfig({
           clearMocks: true,
           include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
           setupFiles: ["./vitest-setup-client.ts"]
+        },
+        resolve: {
+          alias: {
+            $lib: path.resolve(__dirname, "src/renderer/src/lib"),
+          },
         }
       },
       {

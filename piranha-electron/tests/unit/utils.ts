@@ -1,19 +1,22 @@
 import { vi } from "vitest";
 import { i18n } from "../../src/renderer/src/lib/i18n.svelte";
 import { waitFor } from "@testing-library/svelte";
+import {piranhaAPI} from "../../src/renderer/src/lib/piranhaAPI.svelte";
 
-export const mockWindowAPI = (): void => {
-  (window as any).api = {
-    onInitialized: vi.fn(),
-    onChunk: vi.fn(),
-    onEnd: vi.fn(),
-    onError: vi.fn(),
-    versions: {
-      electron: "1.1.1",
-      chrome: "2.2.2",
-      node: "3.3.3"
-    }
-  };
+export interface APIMock {
+  initialized: boolean,
+  error: string
+}
+
+const defaultAPIMock: APIMock = {
+  initialized: false,
+  error: ""
+}
+
+export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
+  const mockedAPI = {...defaultAPIMock, ...values}
+  vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(() => mockedAPI.initialized);
+  vi.spyOn(piranhaAPI, "error", "get").mockImplementation(() => mockedAPI.error);
 };
 
 type translation = string | RegExp;

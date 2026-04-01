@@ -2,7 +2,6 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "about": "Sobre",
   "initializing": "Inicializando",
-  "language": "Idioma",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
   "testMessageMain": "Enviar mensagem de teste",
