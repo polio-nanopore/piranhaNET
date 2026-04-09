@@ -12,7 +12,7 @@
     <Button class="action" onclick={() => piranhaAPI.runPiranha()} data-testid="run">{m.runPiranha()}</Button>
   </div>
   <div>
-  <code class="piranha-logs">
+  <code class="piranha-logs" data-testid="logs">
     {#each piranhaAPI.log as logentry, index (index)}
       <!-- eslint-disable  svelte/no-at-html-tags -->
       {@html ansi.ansi_to_html(logentry)}<br />

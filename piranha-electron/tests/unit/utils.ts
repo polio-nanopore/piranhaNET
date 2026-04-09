@@ -7,18 +7,23 @@ import I18nTestContext from "./renderer/components/I18nTestContext.svelte";
 
 export interface APIMock {
   initialized: boolean,
-  error: string
+  error: string,
+  log: string[]
 }
 
 const defaultAPIMock: APIMock = {
   initialized: false,
-  error: ""
+  error: "",
+  log: []
 }
 
 export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   const mockedAPI = {...defaultAPIMock, ...values}
   vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(() => mockedAPI.initialized);
   vi.spyOn(piranhaAPI, "error", "get").mockImplementation(() => mockedAPI.error);
+  vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() =>  mockedAPI.log);
+  vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
+  vi.spyOn(piranhaAPI, "testMessageMain").mockImplementation(() => {});
 };
 
 type translation = string | RegExp;
