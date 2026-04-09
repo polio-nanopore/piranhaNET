@@ -1,7 +1,7 @@
-import {render, screen, waitFor } from "@testing-library/svelte";
+import {render, screen } from "@testing-library/svelte";
 import { describe, expect, test, vi } from "vitest";
 import NavComponentInTestContext from "./NavComponentInTestContext.svelte";
-import {expectTranslations} from "../../../utils";
+import {expectTranslations, renderInI18nTestContext} from "../../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 
 const mockRouter = {
@@ -10,7 +10,7 @@ const mockRouter = {
 };
 
 const renderNavLink = (route = "/test-route") => {
-  render(NavComponentInTestContext, {
+  renderInI18nTestContext(NavComponentInTestContext, {
     props:{
       componentName: "NavLink",
       router: mockRouter,
@@ -25,7 +25,7 @@ const getLinkElement = () => screen.getByTestId("nav-about");
 describe("NavLink", () => {
   test("displays translations of textKey prop", async () => {
     renderNavLink();
-    await expectTranslations((text) => expect(getLinkElement()).toBeVisible(), {
+    await expectTranslations((text) => expect(getLinkElement()).toHaveTextContent(text), {
       en: "About",
       fr: "À propos",
       pt: "Sobre"

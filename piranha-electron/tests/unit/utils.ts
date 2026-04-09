@@ -1,7 +1,9 @@
+import {createRawSnippet, mount, unmount } from "svelte";
 import { vi } from "vitest";
 import { i18n } from "../../src/renderer/src/lib/i18n.svelte";
-import { waitFor } from "@testing-library/svelte";
+import {render, waitFor } from "@testing-library/svelte";
 import {piranhaAPI} from "../../src/renderer/src/lib/piranhaAPI.svelte";
+import I18nTestContext from "./renderer/components/I18nTestContext.svelte";
 
 export interface APIMock {
   initialized: boolean,
@@ -41,4 +43,16 @@ export const expectTranslations = async (
       expectation(translations[lang]);
     });
   }
+};
+
+//TODO: docstring
+export const renderInI18nTestContext = (component, options = {} as any) => {
+  const snippet = createRawSnippet(() => ({
+    render: () => "<div></div>", // placeholder markup
+    setup: (target) => {
+      const child = mount(component, {...options, target});
+      return () => unmount(child);
+    }
+  }));
+  render(I18nTestContext, { children: snippet });
 };
