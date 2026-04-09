@@ -45,7 +45,14 @@ export const expectTranslations = async (
   }
 };
 
-//TODO: docstring
+/**
+ * Utility to render a component in a context which will be reactive to changes in the current i18n language in order
+ * to test translations are correctly rendered. In the app we set this reactivity in the top level App component, so
+ * for tests we provide a I18nTestContext component and this method mounts the component under test as a child of that
+ * context component.
+ * @param component Component to be tested
+ * @param options Props and other options to be provided to the component mounted in context
+ */
 export const renderInI18nTestContext = (component, options = {} as any) => {
   const snippet = createRawSnippet(() => ({
     render: () => "<div></div>", // placeholder markup
