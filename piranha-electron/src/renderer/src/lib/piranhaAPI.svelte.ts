@@ -1,4 +1,4 @@
-class PiranhaAPI {
+export class PiranhaAPI {
   #initialized = $state(false);
   #running = $state(false);
   #error = $state("");
