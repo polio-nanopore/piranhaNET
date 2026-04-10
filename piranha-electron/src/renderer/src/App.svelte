@@ -3,9 +3,9 @@
   import Nav from "./components/nav/Nav.svelte";
   import Run from "./components/run/Run.svelte";
   import About from "./components/about/About.svelte";
-  import {piranhaAPI} from "./lib/piranhaAPI.svelte";
-  import {m} from "../../paraglide/messages";
-  import {i18n} from "./lib/i18n.svelte";
+  import { piranhaAPI } from "./lib/piranhaAPI.svelte";
+  import { m } from "../../paraglide/messages";
+  import { i18n } from "./lib/i18n.svelte";
 </script>
 
 {#key i18n.lang}
@@ -15,11 +15,11 @@
       <div class="error">Error: {piranhaAPI.error}</div>
     {/if}
     {#if piranhaAPI.initialized}
-        <Route path="/run" component="{Run}" />
-        <Route path="/about" component="{About}" />
+      <Route path="/run" component={Run} />
+      <Route path="/about" component={About} />
     {:else}
       <div class="container mx-auto p-4">
-         {m.initializing()}...
+        {m.initializing()}...
       </div>
     {/if}
   </Router>
