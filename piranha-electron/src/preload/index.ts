@@ -1,8 +1,9 @@
 import { contextBridge, ipcRenderer } from "electron";
+import {PiranhaRunOptions} from "../shared/types";
 
 // Custom APIs for renderer
 const api = {
-  runPiranha: () => ipcRenderer.send("run-piranha"),
+  runPiranha: (options: PiranhaRunOptions) => ipcRenderer.send("run-piranha", options),
   testMessage: () => ipcRenderer.send("test-message"),
   versions: process.versions,
   onInitialized: (callback) =>

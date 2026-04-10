@@ -1,4 +1,4 @@
-import type { PiranhaRunOptions } from "./types.js";
+import type { PiranhaRunOptions } from "../shared/types";
 import Docker from "dockerode";
 
 // Class for pulling piranha docker image and using it to run piranha jobs, used by Electron main process

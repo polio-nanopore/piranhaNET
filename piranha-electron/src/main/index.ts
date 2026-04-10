@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
+import {PiranhaRunOptions} from "../shared/types";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {
@@ -59,7 +60,7 @@ function createWindow(): void {
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.on("run-piranha", async () => {
+  ipcMain.on("run-piranha", async (event, options: PiranhaRunOptions) => {
     const writable = new Writable({
       write(chunk, _, callback) {
         // Send each chunk to the renderer
@@ -73,18 +74,9 @@ function createWindow(): void {
       },
     });
 
-    // Pre-canned run with test data, to be replaced with user-selected parameters
-    const testDataPath = join(__dirname, "../../../test-data");
     try {
       await runner.runPiranha(
-        {
-          barcodesFilePath: join(testDataPath, "barcodes.csv"),
-          baseCalledPath: join(testDataPath, "demultiplexed"),
-          outputPath: join(__dirname, "../../../test-results"),
-          positiveControl: "Pos1,P2",
-          negativeControl: "my negative control",
-          threads: 1,
-        },
+        options,
         writable,
       );
     } catch (e) {
