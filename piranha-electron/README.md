@@ -60,6 +60,8 @@ We're using [shadcn-svelte](https://www.shadcn-svelte.com) for components. Defau
 manually as needed e.g. `npx shadcn-svelte@latest add button`. See the [installation instructions](https://www.shadcn-svelte.com/docs/installation/manual)
 for more details.
 
+However, the shadcn svelte Form component is heavily tied to SvelteKit via `sveltekit-superforms` so we're making our own forms.
+
 ### Tests
 
 Run unit tests with `npm run test:unit`.

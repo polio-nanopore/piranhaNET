@@ -8,7 +8,7 @@ export default defineConfig({
   main: {},
   preload: {},
   renderer: {
-    plugins: [
+     plugins: [
       svelte(),
       tailwindcss(),
       paraglideVitePlugin({
