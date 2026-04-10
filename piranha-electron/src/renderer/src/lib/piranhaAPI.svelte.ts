@@ -46,13 +46,13 @@ export class PiranhaAPI {
     // Pre-canned run with test data, to be replaced with user-selected parameters
     const testDataPath = "/home/emmarussell/dev/piranhaNET/test-data/";
     const options = {
-        barcodesFilePath: `${testDataPath}barcodes.csv`,
-        baseCalledPath: `${testDataPath}demultiplexed`,
-        outputPath: "/home/emmarussell/dev/piranhaNET/test-results",
-        positiveControl: "Pos1,P2",
-        negativeControl: "my negative control",
-        threads: 1,
-      };
+      barcodesFilePath: `${testDataPath}barcodes.csv`,
+      baseCalledPath: `${testDataPath}demultiplexed`,
+      outputPath: "/home/emmarussell/dev/piranhaNET/test-results",
+      positiveControl: "Pos1,P2",
+      negativeControl: "my negative control",
+      threads: 1,
+    };
     window.api.runPiranha(options);
     this.#running = true;
   }

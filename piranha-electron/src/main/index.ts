@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
-import {PiranhaRunOptions} from "../shared/types";
+import { PiranhaRunOptions } from "../shared/types";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {
@@ -60,7 +60,7 @@ function createWindow(): void {
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.on("run-piranha", async (event, options: PiranhaRunOptions) => {
+  ipcMain.on("run-piranha", async (_event, options: PiranhaRunOptions) => {
     const writable = new Writable({
       write(chunk, _, callback) {
         // Send each chunk to the renderer
@@ -75,10 +75,7 @@ function createWindow(): void {
     });
 
     try {
-      await runner.runPiranha(
-        options,
-        writable,
-      );
+      await runner.runPiranha(options, writable);
     } catch (e) {
       mainWindow.webContents.send(
         "error",
