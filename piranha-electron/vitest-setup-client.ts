@@ -10,12 +10,12 @@ mockMatchMedia.mockImplementation((query) => ({
   onchange: null,
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
-  dispatchEvent: vi.fn()
+  dispatchEvent: vi.fn(),
 }));
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   enumerable: true,
-  value: mockMatchMedia
+  value: mockMatchMedia,
 });
 // add more mocks here if you need them

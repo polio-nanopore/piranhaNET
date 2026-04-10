@@ -1,4 +1,10 @@
-import { test, expect, _electron as electron, Page, ElectronApplication } from "@playwright/test";
+import {
+  test,
+  expect,
+  _electron as electron,
+  Page,
+  ElectronApplication,
+} from "@playwright/test";
 
 let electronApp;
 
@@ -34,10 +40,14 @@ const getWindow = async (): Promise<Page> => {
 test("can see main window and run Piranha", async () => {
   const win = await getWindow();
   await expect(await win.getByText(/Initializing.../)).toBeVisible();
-  await expect(await win.getByText("PiranhaNET", { exact: true })).toBeVisible();
+  await expect(
+    await win.getByText("PiranhaNET", { exact: true }),
+  ).toBeVisible();
 
   // need to wait for button to become visible when docker image has downloaded
-  await expect(await win.getByText(/Run Piranha/)).toBeVisible({ timeout: 300_000 });
+  await expect(await win.getByText(/Run Piranha/)).toBeVisible({
+    timeout: 300_000,
+  });
 
   // click run button
   await win.getByRole("button", { name: /Run Piranha/ }).click();
@@ -47,9 +57,12 @@ test("can see main window and run Piranha", async () => {
   await expect(log).toHaveText(/Building DAG of jobs.../);
 
   // Eventually see run finished messages
-  await expect(log).toHaveText(/\/data\/run_data\/output\/piranha_output_\d+\/report\.html/, {
-    timeout: 300_000
-  });
+  await expect(log).toHaveText(
+    /\/data\/run_data\/output\/piranha_output_\d+\/report\.html/,
+    {
+      timeout: 300_000,
+    },
+  );
   await expect(log).toHaveText(/Piranha Run Finished/);
 });
 
@@ -59,7 +72,7 @@ test("can change language", async () => {
   await expect(welcome).toHaveText(/Welcome to Piranha/);
 
   //change to French
-  let langLink = await win.getByRole("button", {name: "en", exact: true});
+  let langLink = await win.getByRole("button", { name: "en", exact: true });
   await langLink.click();
   const frItem = await win.getByTestId("lang-fr");
   await frItem.click();
@@ -70,7 +83,7 @@ test("can change language", async () => {
   await expect(testMsg).toHaveText(/Envoyer un message de test/);
 
   //change to Portuguese
-  langLink = await win.getByRole("button", {name: "fr"});
+  langLink = await win.getByRole("button", { name: "fr" });
   await langLink.click();
   const ptItem = await win.getByTestId("lang-pt");
   await ptItem.click();
@@ -83,7 +96,7 @@ test("can change language", async () => {
   await electronApp.close();
   electronApp = await launchApp();
   win = await getWindow();
-  langLink = await win.getByRole("button", {name: "pt"});
+  langLink = await win.getByRole("button", { name: "pt" });
   expect(langLink).toBeEnabled();
   welcome = await win.getByTestId("welcome");
   await expect(welcome).toHaveText(/Bem-vindo ao PiranhaNET/);
@@ -94,5 +107,7 @@ test("can change language", async () => {
   await enItem.click();
   await expect(welcome).toHaveText(/Welcome to Piranha/);
   await expect(await win.getByTestId("run")).toHaveText(/Run Piranha/);
-  await expect(await win.getByTestId("test-msg")).toHaveText(/Send test message/);
+  await expect(await win.getByTestId("test-msg")).toHaveText(
+    /Send test message/,
+  );
 });

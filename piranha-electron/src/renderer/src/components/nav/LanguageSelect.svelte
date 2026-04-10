@@ -4,7 +4,7 @@
   import {ChevronDown} from "@lucide/svelte";
   import { i18n } from "../../lib/i18n.svelte";
 
-  const closeContent = (event) => {
+  const closeContent = (event): void => {
     // This handler is to work around a bug in shadcn which causes "pointer-events: none;" to be left on <body> after
     // dropdown content has been opened. This is maintly an issue for unit tests as testing-library cleanup re-uses body.
     // See https://github.com/shadcn-ui/ui/issues/7575

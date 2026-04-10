@@ -4,33 +4,36 @@ import eslintConfigPrettier from "@electron-toolkit/eslint-config-prettier";
 import eslintPluginSvelte from "eslint-plugin-svelte";
 
 export default defineConfig(
-  { ignores: ["**/node_modules", "**/dist", "**/out"] },
+  { ignores: ["**/node_modules", "**/dist", "**/out", "**/shadcn"] },
   tseslint.configs.recommended,
   eslintPluginSvelte.configs["flat/recommended"],
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }]
-    }
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
+    },
   },
   {
     files: ["**/*.svelte", "**/*.svelte.ts"],
     languageOptions: {
       parserOptions: {
-        parser: tseslint.parser
-      }
-    }
+        parser: tseslint.parser,
+      },
+    },
   },
   {
     files: ["**/*.{tsx,svelte}"],
     rules: {
-      "svelte/no-unused-svelte-ignore": "off"
-    }
+      "svelte/no-unused-svelte-ignore": "off",
+    },
   },
   {
     files: ["tests/**/*"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off"
-    }
+      "@typescript-eslint/no-explicit-any": "off",
+    },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );

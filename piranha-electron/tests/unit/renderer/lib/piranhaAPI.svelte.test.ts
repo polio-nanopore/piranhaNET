@@ -1,5 +1,5 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
-import {PiranhaAPI} from "../../../../src/renderer/src/lib/piranhaAPI.svelte";
+import { PiranhaAPI } from "../../../../src/renderer/src/lib/piranhaAPI.svelte";
 
 describe("piranhaAPI", () => {
   let sut;
@@ -10,7 +10,7 @@ describe("piranhaAPI", () => {
       onEnd: vi.fn(),
       onError: vi.fn(),
       runPiranha: vi.fn(),
-      testMessage: vi.fn()
+      testMessage: vi.fn(),
     };
     sut = new PiranhaAPI();
   });
@@ -35,11 +35,11 @@ describe("piranhaAPI", () => {
 
     expect(sut.error).toBe("");
     const setError = window.api.onError.mock.calls[0][0];
-    setError("New Test Error")
+    setError("New Test Error");
     expect(sut.error).toBe("New Test Error");
 
-    expect (window.api.runPiranha).not.toHaveBeenCalled();
-    expect (window.api.testMessage).not.toHaveBeenCalled();
+    expect(window.api.runPiranha).not.toHaveBeenCalled();
+    expect(window.api.testMessage).not.toHaveBeenCalled();
   });
 
   test("runPiranha calls api", () => {

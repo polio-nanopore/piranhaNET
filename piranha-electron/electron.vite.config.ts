@@ -13,13 +13,13 @@ export default defineConfig({
       tailwindcss(),
       paraglideVitePlugin({
         project: "./project.inlang",
-        outdir: "./src/paraglide"
-      })
+        outdir: "./src/paraglide",
+      }),
     ],
     resolve: {
       alias: {
-        $lib: path.resolve(__dirname, "src/renderer/src/lib")
-      }
-    }
-  }
+        $lib: path.resolve(__dirname, "src/renderer/src/lib"),
+      },
+    },
+  },
 });

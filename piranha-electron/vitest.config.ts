@@ -10,7 +10,7 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
       include: ["src/**/**.{js,ts}"],
-      exclude: ["tests"]
+      exclude: ["tests"],
     },
     projects: [
       {
@@ -20,13 +20,13 @@ export default defineConfig({
           environment: "jsdom",
           clearMocks: true,
           include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
-          setupFiles: ["./vitest-setup-client.ts"]
+          setupFiles: ["./vitest-setup-client.ts"],
         },
         resolve: {
           alias: {
             $lib: path.resolve(__dirname, "src/renderer/src/lib"),
           },
-        }
+        },
       },
       {
         plugins: [],
@@ -35,9 +35,9 @@ export default defineConfig({
           environment: "node",
           clearMocks: true,
           include: ["tests/integration/main/**/**.{test,spec}.{js,ts}"],
-          setupFiles: []
-        }
-      }
-    ]
-  }
+          setupFiles: [],
+        },
+      },
+    ],
+  },
 });

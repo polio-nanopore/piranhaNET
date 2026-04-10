@@ -40,18 +40,18 @@ export class PiranhaAPI {
     return this.#log;
   }
 
-  runPiranha() {
+  runPiranha(): void {
     // TODO throw error if we're already running
     this.#log = [];
     window.api.runPiranha();
     this.#running = true;
   }
 
-  testMessageMain() {
+  testMessageMain(): void {
     // Prove that we can still message main while piranha is running
     // - should see it log a message to the console
     window.api.testMessage();
-  };
+  }
 }
 
 export const piranhaAPI = new PiranhaAPI();

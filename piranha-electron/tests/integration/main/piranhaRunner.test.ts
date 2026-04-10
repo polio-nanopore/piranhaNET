@@ -4,13 +4,16 @@ import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
 
 describe("piranhaRunner", () => {
-  const getWritableWithBuffer = (): { writable: Writable; readBuffer: () => string } => {
+  const getWritableWithBuffer = (): {
+    writable: Writable;
+    readBuffer: () => string;
+  } => {
     const chunks = [];
     const writable = new Writable({
       write(chunk, encoding, callback) {
         chunks.push(chunk);
         callback();
-      }
+      },
     });
     const readBuffer = (): string => Buffer.concat(chunks).toString();
     return { writable, readBuffer };
@@ -33,13 +36,15 @@ describe("piranhaRunner", () => {
         outputPath: join(__dirname, "../../../../test-results"),
         positiveControl: "Pos1,P2",
         negativeControl: "my negative control",
-        threads: 1
+        threads: 1,
       },
-      runOutput.writable
+      runOutput.writable,
     );
 
     outputText = runOutput.readBuffer();
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
-    expect(outputText).toMatch(/\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/); //output report
+    expect(outputText).toMatch(
+      /\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/,
+    ); //output report
   }, 300_000); // This will take a while!
 });

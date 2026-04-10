@@ -3,11 +3,11 @@
   import { m } from "../../../../paraglide/messages";
 
   let {route, textKey, router} = $props();
-  const navigate = (route: string) => {
+  const navigate = (route: string): void => {
     router.navigate(route);
   };
 
-  const isCurrentRoute = (route) => route == router.path;
+  const isCurrentRoute = (route): boolean => route == router.path;
 
 </script>
 

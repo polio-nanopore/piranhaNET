@@ -1,39 +1,41 @@
 import { render, screen, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test, beforeEach } from "vitest";
+import { describe, expect, test } from "vitest";
 import App from "../../../src/renderer/src/App.svelte";
-import { expectTranslations, mockPiranhaAPI} from "../utils";
-import { i18n } from "../../../src/renderer/src/lib/i18n.svelte";
+import { expectTranslations, mockPiranhaAPI } from "../utils";
 
 // TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {
   const expectedInitTranslations = {
     en: "Initializing...",
     fr: "Initialisation...",
-    pt: "Inicializando..."
+    pt: "Inicializando...",
   };
 
-  const expectRunPage = async () => {
-    await expectTranslations((text) => expect(screen.getByText(text)).toBeVisible(), {
-      en: /Run Piranha/,
-      fr: /Courez Piranha/,
-      pt: /Corra Piranha/
-    });
+  const expectRunPage = async (): Promise<void> => {
+    await expectTranslations(
+      (text) => expect(screen.getByText(text)).toBeVisible(),
+      {
+        en: /Run Piranha/,
+        fr: /Courez Piranha/,
+        pt: /Corra Piranha/,
+      },
+    );
   };
 
   test("renders as expected before initialized", async () => {
-    mockPiranhaAPI({})
+    mockPiranhaAPI({});
     render(App);
     expect(screen.getByRole("img")).toHaveClass("logo");
     expect(screen.getByText("PiranhaNET")).toBeVisible();
     await expectTranslations(
       (text) => expect(screen.getByText(text)).toBeVisible(),
-      expectedInitTranslations
+      expectedInitTranslations,
     );
   });
 
   test("renders as expected after initialized", async () => {
-    mockPiranhaAPI({initialized: true});
+    mockPiranhaAPI({ initialized: true });
     render(App);
 
     // Expect to see default page (Run) after initialization
@@ -41,18 +43,20 @@ describe("App", () => {
 
     await expectTranslations(
       (text) => expect(screen.queryByText(text)).toBeNull(),
-      expectedInitTranslations
+      expectedInitTranslations,
     );
   });
 
   test("routes to About and Run pages", async () => {
-    mockPiranhaAPI({initialized: true});
+    mockPiranhaAPI({ initialized: true });
     render(App);
 
     // Navigate to About using the Nav menu
     await userEvent.click(screen.getByTestId("nav-about"));
     await waitFor(() => {
-      expect(screen.getByText("Placeholder for About page text.")).toBeVisible();
+      expect(
+        screen.getByText("Placeholder for About page text."),
+      ).toBeVisible();
     });
 
     await userEvent.click(screen.getByTestId("nav-run"));
@@ -60,7 +64,7 @@ describe("App", () => {
   });
 
   test("displays error", () => {
-    mockPiranhaAPI({error: "test error"});
+    mockPiranhaAPI({ error: "test error" });
     render(App);
     expect(screen.getByText("Error: test error")).toBeVisible();
   });

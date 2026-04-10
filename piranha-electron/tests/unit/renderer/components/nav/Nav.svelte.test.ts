@@ -1,20 +1,20 @@
-import {render, screen } from "@testing-library/svelte";
+import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import Nav from "../../../../../src/renderer/src/components/nav/Nav.svelte";
-import {expectTranslations, renderInI18nTestContext} from "../../../utils";
-import {routerHelper} from "../../../../../src/renderer/src/lib/routerHelper.svelte";
+import { expectTranslations, renderInI18nTestContext } from "../../../utils";
+import { routerHelper } from "../../../../../src/renderer/src/lib/routerHelper.svelte";
 
-const { mockRouter} = vi.hoisted(() => {
+const { mockRouter } = vi.hoisted(() => {
   const mockRouter = {
     path: "/",
-    navigate: vi.fn()
+    navigate: vi.fn(),
   };
-  return {mockRouter}
+  return { mockRouter };
 });
 
 vi.mock("svelte-tiny-router", () => ({
-  useTinyRouter: () => mockRouter
+  useTinyRouter: () => mockRouter,
 }));
 
 describe("Nav", () => {
@@ -27,21 +27,30 @@ describe("Nav", () => {
   test("renders as expected", async () => {
     renderInI18nTestContext(Nav);
     expect(screen.getByText("PiranhaNET")).toBeVisible();
-    await expectTranslations((text) => expect(screen.getByTestId("nav-about")).toHaveTextContent(text), {
-      en: /About/,
-      fr: /À propos/,
-      pt: /Sobre/
-    });
-    await expectTranslations((text) => expect(screen.getByTestId("nav-run")).toHaveTextContent(text), {
-      en: /Run/,
-      fr: /Courez/,
-      pt: /Corra/
-    });
-    await expectTranslations((text) => expect(screen.getByRole("button")).toHaveTextContent(text), {
-      en: /en/,
-      fr: /fr/,
-      pt: /pt/
-    });
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("nav-about")).toHaveTextContent(text),
+      {
+        en: /About/,
+        fr: /À propos/,
+        pt: /Sobre/,
+      },
+    );
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("nav-run")).toHaveTextContent(text),
+      {
+        en: /Run/,
+        fr: /Courez/,
+        pt: /Corra/,
+      },
+    );
+    await expectTranslations(
+      (text) => expect(screen.getByRole("button")).toHaveTextContent(text),
+      {
+        en: /en/,
+        fr: /fr/,
+        pt: /pt/,
+      },
+    );
   });
 
   test("navigates to current route on load, if initial navigation has been done", () => {
@@ -54,7 +63,7 @@ describe("Nav", () => {
   test("navigates to run on load, if initial navigation has not been done", () => {
     routerHelper.initialNavigationDone = false;
     render(Nav);
-    expect(mockRouter.navigate).toHaveBeenCalledWith("/run")
+    expect(mockRouter.navigate).toHaveBeenCalledWith("/run");
   });
 
   test("navigates to run on click run link", async () => {

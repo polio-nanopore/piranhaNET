@@ -1,27 +1,31 @@
-import {createRawSnippet, mount, unmount } from "svelte";
+import { createRawSnippet, mount, unmount } from "svelte";
 import { vi } from "vitest";
 import { i18n } from "../../src/renderer/src/lib/i18n.svelte";
-import {render, waitFor } from "@testing-library/svelte";
-import {piranhaAPI} from "../../src/renderer/src/lib/piranhaAPI.svelte";
+import { render, waitFor } from "@testing-library/svelte";
+import { piranhaAPI } from "../../src/renderer/src/lib/piranhaAPI.svelte";
 import I18nTestContext from "./renderer/components/I18nTestContext.svelte";
 
 export interface APIMock {
-  initialized: boolean,
-  error: string,
-  log: string[]
+  initialized: boolean;
+  error: string;
+  log: string[];
 }
 
 const defaultAPIMock: APIMock = {
   initialized: false,
   error: "",
-  log: []
-}
+  log: [],
+};
 
 export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
-  const mockedAPI = {...defaultAPIMock, ...values}
-  vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(() => mockedAPI.initialized);
-  vi.spyOn(piranhaAPI, "error", "get").mockImplementation(() => mockedAPI.error);
-  vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() =>  mockedAPI.log);
+  const mockedAPI = { ...defaultAPIMock, ...values };
+  vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(
+    () => mockedAPI.initialized,
+  );
+  vi.spyOn(piranhaAPI, "error", "get").mockImplementation(
+    () => mockedAPI.error,
+  );
+  vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => mockedAPI.log);
   vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
   vi.spyOn(piranhaAPI, "testMessageMain").mockImplementation(() => {});
 };
@@ -40,7 +44,7 @@ export type Translations = Record<Partial<"en" | "fr" | "pt">, translation>;
  */
 export const expectTranslations = async (
   expectation: (text: translation) => void,
-  translations: Translations
+  translations: Translations,
 ): Promise<void> => {
   for (const lang of Object.keys(translations)) {
     i18n.lang = lang;
@@ -58,13 +62,16 @@ export const expectTranslations = async (
  * @param component Component to be tested
  * @param options Props and other options to be provided to the component mounted in context
  */
-export const renderInI18nTestContext = (component, options = {} as any) => {
+export const renderInI18nTestContext = (
+  component,
+  options = {} as any,
+): void => {
   const snippet = createRawSnippet(() => ({
     render: () => "<div></div>", // placeholder markup
     setup: (target) => {
-      const child = mount(component, {...options, target});
+      const child = mount(component, { ...options, target });
       return () => unmount(child);
-    }
+    },
   }));
   render(I18nTestContext, { children: snippet });
 };
