@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import Nav from "../../../../../src/renderer/src/components/nav/Nav.svelte";
 import {expectTranslations, renderInI18nTestContext} from "../../../utils";
+import {routerHelper} from "../../../../../src/renderer/src/lib/routerHelper.svelte";
 
 const { mockRouter} = vi.hoisted(() => {
   const mockRouter = {
@@ -36,15 +37,22 @@ describe("Nav", () => {
       fr: /Courez/,
       pt: /Corra/
     });
+    await expectTranslations((text) => expect(screen.getByRole("button")).toHaveTextContent(text), {
+      en: /en/,
+      fr: /fr/,
+      pt: /pt/
+    });
   });
 
-  test("navigates to current route on load, if not default route", () => {
+  test("navigates to current route on load, if initial navigation has been done", () => {
     mockRouter.path = "/test";
+    routerHelper.initialNavigationDone = true;
     render(Nav);
     expect(mockRouter.navigate).toHaveBeenCalledWith("/test");
   });
 
-  test("navigates to run on load, if default route", () => {
+  test("navigates to run on load, if initial navigation has not been done", () => {
+    routerHelper.initialNavigationDone = false;
     render(Nav);
     expect(mockRouter.navigate).toHaveBeenCalledWith("/run")
   });
