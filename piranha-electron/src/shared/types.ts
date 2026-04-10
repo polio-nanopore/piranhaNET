@@ -6,3 +6,7 @@ export interface PiranhaRunOptions {
   positiveControl?: string;
   negativeControl?: string;
 }
+
+export interface FileDialogOptions {
+  selectFolder: boolean
+}

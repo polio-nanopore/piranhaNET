@@ -1,10 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
-import { PiranhaRunOptions } from "../shared/types";
+import {FileDialogOptions, PiranhaRunOptions } from "../shared/types";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {
@@ -55,6 +55,20 @@ function createWindow(): void {
    */
   ipcMain.on("test-message", async () => {
     console.log("Message received from renderer");
+  });
+
+  /**
+   * Display a native file dialog and return selection to renderer
+   */
+  ipcMain.handle("show-file-dialog", async (_event, options: FileDialogOptions) => {
+    console.log("receiveddialog message")
+    // TODO: include other options - file type, starting folder etc
+    const openType = options.selectFolder ? "openDirectory" : "openFile";
+    const result = await dialog.showOpenDialog({
+      properties: [ openType ],
+      filters: []
+    });
+    return result.filePaths.length ? result.filePaths[0] : null;
   });
 
   /**
