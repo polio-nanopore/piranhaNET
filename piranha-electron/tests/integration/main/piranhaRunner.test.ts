@@ -31,7 +31,7 @@ describe("piranhaRunner", () => {
     const testDataPath = join(__dirname, "../../../../test-data");
     await runner.runPiranha(
       {
-        runPath: testDataPath,
+        barcodesFilePath: join(testDataPath, "barcodes.csv"),
         baseCalledPath: join(testDataPath, "demultiplexed"),
         outputPath: join(__dirname, "../../../../test-results"),
         positiveControl: "Pos1,P2",

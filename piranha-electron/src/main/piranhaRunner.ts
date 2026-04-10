@@ -39,7 +39,7 @@ export class PiranhaRunner {
       `NEGATIVE_CONTROL=${options.negativeControl}`,
     ];
 
-    const containerRunPath = "/data/run_data/analysis";
+    const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
@@ -50,13 +50,13 @@ export class PiranhaRunner {
       {
         Env: env,
         Volumes: {
-          containerRunPath: {},
+          containerBarcodesFilePath: {},
           containerBaseCalledPath: {},
           containerOutputPath: {},
         },
         HostConfig: {
           Binds: [
-            `${options.runPath}:${containerRunPath}`,
+            `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
             `${options.baseCalledPath}:${containerBaseCalledPath}`,
             `${options.outputPath}:${containerOutputPath}`,
           ],

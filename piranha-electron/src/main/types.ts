@@ -1,5 +1,5 @@
 export interface PiranhaRunOptions {
-  runPath: string;
+  barcodesFilePath: string;
   baseCalledPath: string;
   outputPath: string;
   threads?: number;

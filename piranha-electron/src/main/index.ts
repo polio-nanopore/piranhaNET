@@ -78,7 +78,7 @@ function createWindow(): void {
     try {
       await runner.runPiranha(
         {
-          runPath: testDataPath,
+          barcodesFilePath: join(testDataPath, "barcodes.csv"),
           baseCalledPath: join(testDataPath, "demultiplexed"),
           outputPath: join(__dirname, "../../../test-results"),
           positiveControl: "Pos1,P2",
