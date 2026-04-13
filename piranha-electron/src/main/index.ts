@@ -50,18 +50,10 @@ function createWindow(): void {
   }
 
   /**
-   * Handles request from renderer to log a test message. This is intended as a temporary
-   * proof of concept that the main process is still responsive while running a piranha job.
-   */
-  ipcMain.on("test-message", async () => {
-    console.log("Message received from renderer");
-  });
-
-  /**
    * Display a native file dialog and return selection to renderer
    */
   ipcMain.handle("show-file-dialog", async (_event, options: FileDialogOptions) => {
-    // TODO: include other options - file type, starting folder etc
+    // TODO: file type (for csv)
     const openType = options.selectFolder ? "openDirectory" : "openFile";
     const result = await dialog.showOpenDialog({
       title: options.title,

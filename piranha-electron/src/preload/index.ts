@@ -5,7 +5,6 @@ import {FileDialogOptions, PiranhaRunOptions } from "../shared/types";
 const api = {
   runPiranha: (options: PiranhaRunOptions) =>
     ipcRenderer.send("run-piranha", options),
-  testMessage: () => ipcRenderer.send("test-message"),
   versions: process.versions,
   showFileDialog: (options: FileDialogOptions) => ipcRenderer.invoke("show-file-dialog", options),
   onInitialized: (callback) =>

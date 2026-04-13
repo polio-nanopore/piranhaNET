@@ -2,8 +2,9 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "about": "À propos",
   "initializing": "Initialisation",
+  "newRun": "Nouvelle course",
+  "newSequencingRun": "Nouvelle séquence",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
-  "testMessageMain": "Envoyer un message de test",
-  "welcome": "Bienvenue à PiranhaNET"
+  "sequencingRunProgress": "État d'avancement du séquençage"
 }

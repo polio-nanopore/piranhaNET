@@ -45,25 +45,12 @@ export class PiranhaAPI {
   runPiranha(options: PiranhaRunOptions): void {
     // TODO throw error if we're already running
     this.#log = [];
-    // Pre-canned run with test data, to be replaced with user-selected parameters
-    /*const testDataPath = "/home/emmarussell/dev/piranhaNET/test-data/";
-    const options = {
-      barcodesFilePath: `${testDataPath}barcodes.csv`,
-      baseCalledPath: `${testDataPath}demultiplexed`,
-      outputPath: "/home/emmarussell/dev/piranhaNET/test-results",
-      positiveControl: "Pos1,P2",
-      negativeControl: "my negative control",
-      threads: 1,
-    };*/
-    //   /home/emmarussell/dev/piranhaNET/test-data/barcodes.csv
     window.api.runPiranha(options);
     this.#running = true;
   }
 
-  testMessageMain(): void {
-    // Prove that we can still message main while piranha is running
-    // - should see it log a message to the console
-    window.api.testMessage();
+  clearLog(): void {
+    this.#log = [];
   }
 }
 

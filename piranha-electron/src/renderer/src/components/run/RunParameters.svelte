@@ -42,6 +42,7 @@
   // TODO: translations!
   // TODO:Enable and disable button on update
 </script>
+<div data-testid="new-run-title">{m.newSequencingRun()}</div>
 <form onsubmit={onSubmit}>
   <FormField label="name" error={errors.name}>
     <Input bind:value={runParameters.name}></Input>
