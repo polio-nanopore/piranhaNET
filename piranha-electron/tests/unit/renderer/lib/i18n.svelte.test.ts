@@ -5,7 +5,7 @@ import { i18n } from "../../../../src/renderer/src/lib/i18n.svelte";
 const { setItemSpy } = vi.hoisted(() => {
   vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => "fr");
   return {
-    setItemSpy: vi.spyOn(Storage.prototype, "setItem")
+    setItemSpy: vi.spyOn(Storage.prototype, "setItem"),
   };
 });
 

@@ -10,30 +10,33 @@ export class PiranhaRunner {
   }
 
   public async pullPiranhaImage(
-    outputStream: NodeJS.WritableStream = process.stdout
+    outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.docker.pull(this.imageRef, (err: string, stream: NodeJS.ReadableStream) => {
-        if (err) {
-          return reject(err);
-        } else {
-          stream.on("end", () => {
-            resolve();
-          });
-          stream.pipe(outputStream);
-        }
-      });
+      this.docker.pull(
+        this.imageRef,
+        (err: string, stream: NodeJS.ReadableStream) => {
+          if (err) {
+            return reject(err);
+          } else {
+            stream.on("end", () => {
+              resolve();
+            });
+            stream.pipe(outputStream);
+          }
+        },
+      );
     });
   }
 
   public async runPiranha(
     options: PiranhaRunOptions,
-    outputStream: NodeJS.WritableStream = process.stdout
+    outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
     const env = [
       `THREADS=${options.threads || 1}`,
       `POSITIVE_CONTROL=${options.positiveControl}`,
-      `NEGATIVE_CONTROL=${options.negativeControl}`
+      `NEGATIVE_CONTROL=${options.negativeControl}`,
     ];
 
     const containerRunPath = "/data/run_data/analysis";
@@ -49,17 +52,17 @@ export class PiranhaRunner {
         Volumes: {
           containerRunPath: {},
           containerBaseCalledPath: {},
-          containerOutputPath: {}
+          containerOutputPath: {},
         },
         HostConfig: {
           Binds: [
             `${options.runPath}:${containerRunPath}`,
             `${options.baseCalledPath}:${containerBaseCalledPath}`,
-            `${options.outputPath}:${containerOutputPath}`
+            `${options.outputPath}:${containerOutputPath}`,
           ],
-          AutoRemove: true // rm
-        }
-      }
+          AutoRemove: true, // rm
+        },
+      },
     );
     outputStream.end();
   }

@@ -16,8 +16,8 @@ function createWindow(): void {
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
-      sandbox: false
-    }
+      sandbox: false,
+    },
   });
 
   mainWindow.on("ready-to-show", async () => {
@@ -27,7 +27,11 @@ function createWindow(): void {
       await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
     } catch (e) {
-      mainWindow.webContents.send("error", "Initialization error", (e as Error).message);
+      mainWindow.webContents.send(
+        "error",
+        "Initialization error",
+        (e as Error).message,
+      );
     }
   });
 
@@ -66,7 +70,7 @@ function createWindow(): void {
         console.log("finished running piranha");
         mainWindow.webContents.send("stream-end");
         callback();
-      }
+      },
     });
 
     // Pre-canned run with test data, to be replaced with user-selected parameters
@@ -79,12 +83,16 @@ function createWindow(): void {
           outputPath: join(__dirname, "../../../test-results"),
           positiveControl: "Pos1,P2",
           negativeControl: "my negative control",
-          threads: 1
+          threads: 1,
         },
-        writable
+        writable,
       );
     } catch (e) {
-      mainWindow.webContents.send("error", "Piranha Run error", (e as Error).message);
+      mainWindow.webContents.send(
+        "error",
+        "Piranha Run error",
+        (e as Error).message,
+      );
     }
   });
 }

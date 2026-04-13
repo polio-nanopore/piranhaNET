@@ -54,6 +54,12 @@ key block tied to that value:
 
 `i18n` also provides an array of `allLanguages`, which it reads from Paraglide.
 
+### UI Components
+
+We're using [shadcn-svelte](https://www.shadcn-svelte.com) for components. Default components are added to the project
+manually as needed e.g. `npx shadcn-svelte@latest add button`. See the [installation instructions](https://www.shadcn-svelte.com/docs/installation/manual)
+for more details.
+
 ### Tests
 
 Run unit tests with `npm run test:unit`.

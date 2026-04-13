@@ -1,13 +1,16 @@
 import { defineConfig } from "vitest/config";
+import path from "path";
+import tailwindcss from "@tailwindcss/vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { svelteTesting } from "@testing-library/svelte/vite";
 
 export default defineConfig({
+  plugins: [tailwindcss()],
   test: {
     coverage: {
       provider: "istanbul",
       include: ["src/**/**.{js,ts}"],
-      exclude: ["tests"]
+      exclude: ["tests"],
     },
     projects: [
       {
@@ -17,8 +20,13 @@ export default defineConfig({
           environment: "jsdom",
           clearMocks: true,
           include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
-          setupFiles: ["./vitest-setup-client.ts"]
-        }
+          setupFiles: ["./vitest-setup-client.ts"],
+        },
+        resolve: {
+          alias: {
+            $lib: path.resolve(__dirname, "src/renderer/src/lib"),
+          },
+        },
       },
       {
         plugins: [],
@@ -27,9 +35,9 @@ export default defineConfig({
           environment: "node",
           clearMocks: true,
           include: ["tests/integration/main/**/**.{test,spec}.{js,ts}"],
-          setupFiles: []
-        }
-      }
-    ]
-  }
+          setupFiles: [],
+        },
+      },
+    ],
+  },
 });
