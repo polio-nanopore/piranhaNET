@@ -31,6 +31,8 @@ describe("piranhaRunner", () => {
     const testDataPath = join(__dirname, "../../../../test-data");
     await runner.runPiranha(
       {
+        name: "test_name",
+        notes: "test notes",
         barcodesFilePath: join(testDataPath, "barcodes.csv"),
         baseCalledPath: join(testDataPath, "demultiplexed"),
         outputPath: join(__dirname, "../../../../test-results"),
@@ -43,6 +45,8 @@ describe("piranhaRunner", () => {
 
     outputText = runOutput.readBuffer();
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
+    expect(outputText).toContain("Setting runname: test_name");
+    expect(outputText).toContain("Setting notes: test notes");
     expect(outputText).toMatch(
       /\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/,
     ); //output report

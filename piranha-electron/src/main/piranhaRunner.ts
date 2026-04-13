@@ -34,6 +34,8 @@ export class PiranhaRunner {
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
     const env = [
+      `RUNNAME=${options.name}`,
+      `NOTES=${options.notes}`,
       `THREADS=${options.threads || 1}`,
       `POSITIVE_CONTROL=${options.positiveControl}`,
       `NEGATIVE_CONTROL=${options.negativeControl}`,
