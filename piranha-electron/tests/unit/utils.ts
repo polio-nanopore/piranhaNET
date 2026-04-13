@@ -1,8 +1,8 @@
 import { createRawSnippet, mount, unmount } from "svelte";
 import { vi } from "vitest";
-import { i18n } from "../../src/renderer/src/lib/i18n.svelte";
+import { i18n } from "$lib//i18n.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import { piranhaAPI } from "../../src/renderer/src/lib/piranhaAPI.svelte";
+import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import I18nTestContext from "./renderer/components/I18nTestContext.svelte";
 
 export interface APIMock {
