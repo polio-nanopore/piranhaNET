@@ -63,7 +63,7 @@ describe("Nav", () => {
   test("navigates to run on load, if initial navigation has not been done", () => {
     routerHelper.initialNavigationDone = false;
     render(Nav);
-    expect(mockRouter.navigate).toHaveBeenCalledWith("/run");
+    expect(mockRouter.navigate).toHaveBeenCalledWith("/");
   });
 
   test("navigates to run on click run link", async () => {
@@ -71,7 +71,7 @@ describe("Nav", () => {
     render(Nav);
     await user.click(screen.getByTestId("nav-run"));
     expect(mockRouter.navigate).toHaveBeenCalledTimes(2);
-    expect(mockRouter.navigate.mock.calls[1]).toStrictEqual(["/run"]);
+    expect(mockRouter.navigate.mock.calls[1]).toStrictEqual(["/"]);
   });
 
   test("navigate to about on click about link", async () => {

@@ -15,7 +15,7 @@
       <div class="error">Error: {piranhaAPI.error}</div>
     {/if}
     {#if piranhaAPI.initialized}
-      <Route path="/run" component={Run} />
+      <Route path="/" component={Run} />
       <Route path="/about" component={About} />
     {:else}
       <div class="container mx-auto p-4">

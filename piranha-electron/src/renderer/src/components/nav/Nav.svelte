@@ -9,8 +9,8 @@
   const router = useTinyRouter();
 
   // We may be on first load or reloading due to language change - retain the route in latter case, otherwise navigate
-  // to default /run route
-  const route = routerHelper.initialNavigationDone ? router.path : "/run";
+  // to default / route
+  const route = routerHelper.initialNavigationDone ? router.path : "/";
   router.navigate(route);
   routerHelper.initialNavigationDone = true;
 </script>
@@ -27,7 +27,7 @@
     </NavigationMenu.Item>
   </NavigationMenu.List>
   <NavigationMenu.List>
-    <NavLink route="/run" textKey="run" {router} />
+    <NavLink route="/" textKey="run" {router} />
   </NavigationMenu.List>
   <NavigationMenu.List>
     <NavLink route="/about" textKey="about" {router} />
