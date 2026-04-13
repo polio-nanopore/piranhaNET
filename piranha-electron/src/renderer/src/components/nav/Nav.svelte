@@ -4,7 +4,7 @@
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
   import NavLink from "./NavLink.svelte";
   import LanguageSelect from "./LanguageSelect.svelte";
-  import { routerHelper } from "../../lib/routerHelper.svelte";
+  import { routerHelper } from "$lib//routerHelper.svelte";
 
   const router = useTinyRouter();
 

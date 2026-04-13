@@ -2,7 +2,7 @@
   import { Button } from "$lib/shadcn/ui/button";
   import { m } from "../../../../paraglide/messages";
   import * as ansi_up from "ansi_up";
-  import { piranhaAPI } from "../../lib/piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib//piranhaAPI.svelte";
 
   const ansi = new ansi_up.AnsiUp();
 </script>

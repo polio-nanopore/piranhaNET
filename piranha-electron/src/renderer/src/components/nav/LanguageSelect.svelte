@@ -2,7 +2,7 @@
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
   import * as DropdownMenu from "$lib/shadcn/ui/dropdown-menu";
   import { ChevronDown } from "@lucide/svelte";
-  import { i18n } from "../../lib/i18n.svelte";
+  import { i18n } from "$lib/i18n.svelte";
 
   const closeContent = (event): void => {
     // This handler is to work around a bug in shadcn which causes "pointer-events: none;" to be left on <body> after
