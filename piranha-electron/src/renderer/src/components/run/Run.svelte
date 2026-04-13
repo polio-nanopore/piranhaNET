@@ -3,7 +3,6 @@
   import { m } from "../../../../paraglide/messages";
   import * as ansi_up from "ansi_up";
   import { piranhaAPI } from "../../lib/piranhaAPI.svelte";
-  import FileSelectField from "../forms/FileSelectField.svelte";
   import RunParameters from "./RunParameters.svelte";
 
   const ansi = new ansi_up.AnsiUp();

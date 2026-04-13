@@ -7,6 +7,7 @@
   import {runParameters, settings} from "../../lib/store.svelte";
   import {createPiranhaRunOptions} from "../../types";
   import {piranhaAPI} from "../../lib/piranhaAPI.svelte";
+  import FileSelect from "../forms/FileSelect.svelte";
 
   const formSchema = z.object({
     name: z.string().nonempty(),
@@ -46,13 +47,16 @@
     <Input bind:value={runParameters.name}></Input>
   </FormField>
   <FormField label="barcodesFilePath" error={errors.barcodesFilePath}>
-    <Input bind:value={runParameters.barcodesFilePath}></Input>
+    <!--<Input bind:value={runParameters.barcodesFilePath}></Input>-->
+    <FileSelect title="barcodesFile" selectFolder={false} bind:value={runParameters.barcodesFilePath}></FileSelect>
   </FormField>
   <FormField label="minKnowFolderPath" error={errors.minKnowFolderPath}>
-    <Input bind:value={runParameters.minKnowFolderPath}></Input>
+    <!--<Input bind:value={runParameters.minKnowFolderPath}></Input>-->
+    <FileSelect title="minKnowFolder" selectFolder={true} bind:value={runParameters.minKnowFolderPath}></FileSelect>
   </FormField>
   <FormField label="outputFolderPath" error={errors.minKnowFolderPath}>
-    <Input bind:value={runParameters.outputFolderPath}></Input>
+    <!--<Input bind:value={runParameters.outputFolderPath}></Input>-->
+    <FileSelect title="outputFolder" selectFolder={true} bind:value={runParameters.outputFolderPath}></FileSelect>
   </FormField>
   <FormField label="notes" error={errors.notes}>
     <Input bind:value={runParameters.notes}></Input>

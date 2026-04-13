@@ -61,10 +61,11 @@ function createWindow(): void {
    * Display a native file dialog and return selection to renderer
    */
   ipcMain.handle("show-file-dialog", async (_event, options: FileDialogOptions) => {
-    console.log("receiveddialog message")
     // TODO: include other options - file type, starting folder etc
     const openType = options.selectFolder ? "openDirectory" : "openFile";
     const result = await dialog.showOpenDialog({
+      title: options.title,
+      defaultPath: options.defaultPath,
       properties: [ openType ],
       filters: []
     });
