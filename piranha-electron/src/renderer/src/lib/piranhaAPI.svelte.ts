@@ -1,3 +1,5 @@
+import type {PiranhaRunOptions} from "../../../shared/types";
+
 export class PiranhaAPI {
   #initialized = $state(false);
   #running = $state(false);
@@ -40,11 +42,11 @@ export class PiranhaAPI {
     return this.#log;
   }
 
-  runPiranha(): void {
+  runPiranha(options: PiranhaRunOptions): void {
     // TODO throw error if we're already running
     this.#log = [];
     // Pre-canned run with test data, to be replaced with user-selected parameters
-    const testDataPath = "/home/emmarussell/dev/piranhaNET/test-data/";
+    /*const testDataPath = "/home/emmarussell/dev/piranhaNET/test-data/";
     const options = {
       barcodesFilePath: `${testDataPath}barcodes.csv`,
       baseCalledPath: `${testDataPath}demultiplexed`,
@@ -52,7 +54,8 @@ export class PiranhaAPI {
       positiveControl: "Pos1,P2",
       negativeControl: "my negative control",
       threads: 1,
-    };
+    };*/
+    //   /home/emmarussell/dev/piranhaNET/test-data/barcodes.csv
     window.api.runPiranha(options);
     this.#running = true;
   }

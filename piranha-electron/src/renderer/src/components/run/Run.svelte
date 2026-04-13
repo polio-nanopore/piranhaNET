@@ -11,13 +11,7 @@
 
 <div class="container mx-auto p-4">
   <div data-testid="welcome">{m.welcome()}</div>
-  <div class="actions">
-    <Button
-      class="action"
-      onclick={() => piranhaAPI.runPiranha()}
-      data-testid="run">{m.runPiranha()}</Button
-    >
-  </div>
+  <RunParameters/>
   <div>
     <code class="piranha-logs" data-testid="logs">
       {#each piranhaAPI.log as logentry, index (index)}
@@ -41,5 +35,4 @@
     File:
     <FileSelect selectFolder={false} />
   </div>-->
-  <RunParameters/>
 </div>

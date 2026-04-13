@@ -33,13 +33,20 @@ export class PiranhaRunner {
     options: PiranhaRunOptions,
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
-    const env = [
-      `RUNNAME=${options.name}`,
-      `NOTES=${options.notes}`,
+    // TODO: confirm desired behaviour for escaping spaces in options - this is what old PiranhaGUI does!
+    const escapeOption = (o: string) =>  o.replaceAll(" ", "_");
+
+    const envString = [
       `THREADS=${options.threads || 1}`,
-      `POSITIVE_CONTROL=${options.positiveControl}`,
-      `NEGATIVE_CONTROL=${options.negativeControl}`,
-    ];
+      `--runname ${escapeOption(options.name)}`,
+      `--notes ${escapeOption(options.notes)}`,
+      `-pc ${escapeOption(options.positiveControl || "")}`,
+      `-nc ${escapeOption(options.negativeControl || "")}`
+    ].join(" ");
+
+    console.log(envString)
+
+    const env = [envString]
 
     const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";
     const containerBaseCalledPath = "/data/run_data/basecalled";
@@ -59,8 +66,8 @@ export class PiranhaRunner {
         HostConfig: {
           Binds: [
             `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
-            `${options.baseCalledPath}:${containerBaseCalledPath}`,
-            `${options.outputPath}:${containerOutputPath}`,
+            `${options.minKnowFolderPath}:${containerBaseCalledPath}`,
+            `${options.outputFolderPath}:${containerOutputPath}`,
           ],
           AutoRemove: true, // rm
         },

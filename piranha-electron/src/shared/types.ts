@@ -2,8 +2,8 @@ export interface PiranhaRunOptions {
   name: string;
   notes: string;
   barcodesFilePath: string;
-  baseCalledPath: string;
-  outputPath: string;
+  minKnowFolderPath: string;
+  outputFolderPath: string;
   threads?: number;
   positiveControl?: string;
   negativeControl?: string;
