@@ -47,15 +47,12 @@
     <Input bind:value={runParameters.name}></Input>
   </FormField>
   <FormField label="barcodesFilePath" error={errors.barcodesFilePath}>
-    <!--<Input bind:value={runParameters.barcodesFilePath}></Input>-->
     <FileSelect title="barcodesFile" selectFolder={false} bind:value={runParameters.barcodesFilePath}></FileSelect>
   </FormField>
   <FormField label="minKnowFolderPath" error={errors.minKnowFolderPath}>
-    <!--<Input bind:value={runParameters.minKnowFolderPath}></Input>-->
     <FileSelect title="minKnowFolder" selectFolder={true} bind:value={runParameters.minKnowFolderPath}></FileSelect>
   </FormField>
   <FormField label="outputFolderPath" error={errors.minKnowFolderPath}>
-    <!--<Input bind:value={runParameters.outputFolderPath}></Input>-->
     <FileSelect title="outputFolder" selectFolder={true} bind:value={runParameters.outputFolderPath}></FileSelect>
   </FormField>
   <FormField label="notes" error={errors.notes}>
