@@ -55,7 +55,7 @@ jobs:
       #    fail_ci_if_error: true
       #    files: ./coverage/coverage-final.json
       #    token: ${{ secrets.CODECOV_TOKEN }}
-  electron-build:
+  electron-build-installers:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
