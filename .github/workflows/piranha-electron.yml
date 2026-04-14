@@ -70,7 +70,7 @@ jobs:
           cache: npm
           cache-dependency-path: piranha-electron/package-lock.json
       - name: Build/release Electron app
-        uses: x6Pnda/action-electron-compiler@v1
+        uses: sudovijay/action-electron-builder@v1.7.4
         with:
           package_root: './piranha-electron'
           # GitHub token, automatically provided to the action
