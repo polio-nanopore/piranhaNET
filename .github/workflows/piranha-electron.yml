@@ -69,10 +69,13 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: piranha-electron/package-lock.json
+      - name: Run build
+        run: npm run build
       - name: Build/release Electron app
         uses: sudovijay/action-electron-builder@v1.7.4
         with:
           package_root: './piranha-electron'
+          skip_build: true
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
