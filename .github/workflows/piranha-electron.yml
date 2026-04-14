@@ -1,7 +1,7 @@
 name: Piranha Electron
 on:
   push:
-    branches: [ main ]
+    branches: [ main, mrc-6899-installers ]
   pull_request:
     paths:
       - 'piranha-electron/**'
