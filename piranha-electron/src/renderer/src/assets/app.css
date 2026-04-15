@@ -240,13 +240,18 @@
   font-variant-caps: all-small-caps;
 }
 
+input, textarea {
+  background-color: white;
+}
+
 code {
   display: block;
   font-weight: 600;
   padding: 3px 5px;
   border-radius: 2px;
   border-width: 1px;
-  background-color: white;
+  background-color: black;
+  color: white;
   font-family:
     ui-monospace,
     SFMono-Regular,

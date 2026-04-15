@@ -4,6 +4,12 @@
   "initializing": "Initialisation",
   "newRun": "Nouvelle course",
   "newSequencingRun": "Nouvelle séquence",
+  "parameterBarcodesFile": "Fichier de codes-barres",
+  "parameterMinKnowFolder": "Dossier MinKnow",
+  "parameterName": "Nom",
+  "parameterNotes": "Notes",
+  "parameterOutputFolder": "Dossier de sortie",
+  "parameterThreads": "Threads d'analyse",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
   "sequencingRunProgress": "État d'avancement du séquençage"

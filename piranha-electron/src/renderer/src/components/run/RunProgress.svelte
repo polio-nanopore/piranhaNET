@@ -7,14 +7,14 @@
   const ansi = new ansi_up.AnsiUp();
 </script>
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
-<div>
-  <code class="piranha-logs" data-testid="logs">
+<div class="space-y-2">
+  <code class="piranha-logs mt-2" data-testid="logs">
     {#each piranhaAPI.log as logentry, index (index)}
       <!-- eslint-disable  svelte/no-at-html-tags -->
       {@html ansi.ansi_to_html(logentry)}<br />
     {/each}
   </code>
   {#if !piranhaAPI.running}
-    <Button class="action" onclick={() => piranhaAPI.clearLog()}>{m.newRun()}</Button>
+    <Button class="action float-end" onclick={() => piranhaAPI.clearLog()}>{m.newRun()}</Button>
   {/if}
 </div>

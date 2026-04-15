@@ -4,6 +4,12 @@
   "initializing": "Inicializando",
   "newRun": "Nova corrida",
   "newSequencingRun": "Nova execução de sequenciação",
+  "parameterBarcodesFile": "Ficheiro de códigos de barras",
+  "parameterMinKnowFolder": "Pasta MinKnow",
+  "parameterName": "Nome",
+  "parameterNotes": "Notas",
+  "parameterOutputFolder": "Pasta de saída",
+  "parameterThreads": "Fios de execução de análise",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
   "sequencingRunProgress": "Progresso da execução do sequenciamento"

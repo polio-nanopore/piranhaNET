@@ -14,8 +14,8 @@
   } = $props();
 </script>
 
-<div class="space-y-2">
-  <Label class={error ? "text-destructive" : ""}>{label}</Label>
+<div class="space-y-2 py-2">
+  <Label class={["font-light", error && "text-destructive"]}>{label}</Label>
 
   {@render children()}
 

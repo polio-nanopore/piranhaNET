@@ -4,6 +4,12 @@
   "initializing": "Initializing",
   "newRun": "New Run",
   "newSequencingRun": "New Sequencing Run",
+  "parameterBarcodesFile": "Barcodes file",
+  "parameterMinKnowFolder": "MinKnow folder",
+  "parameterName": "Name",
+  "parameterNotes": "Notes",
+  "parameterOutputFolder": "Output folder",
+  "parameterThreads": "Analysis threads",
   "run": "Run",
   "runPiranha": "Run Piranha",
   "sequencingRunProgress": "Sequencing run progress"

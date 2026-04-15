@@ -3,6 +3,7 @@
   import { m } from "../../../../paraglide/messages";
   import {Button} from "$lib/shadcn/ui/button";
   import {Input} from "$lib/shadcn/ui/input";
+  import {Textarea} from "$lib/shadcn/ui/textarea";
   import FormField from "../forms/FormField.svelte";
   import {runParameters, settings} from "../../lib/store.svelte";
   import {createPiranhaRunOptions} from "../../types";
@@ -43,27 +44,27 @@
   // TODO:Enable and disable button on update
 </script>
 <div data-testid="new-run-title">{m.newSequencingRun()}</div>
-<form onsubmit={onSubmit}>
-  <FormField label="name" error={errors.name}>
+<form onsubmit={onSubmit} >
+  <FormField label={m.parameterName()} error={errors.name}>
     <Input bind:value={runParameters.name}></Input>
   </FormField>
-  <FormField label="barcodesFilePath" error={errors.barcodesFilePath}>
+  <FormField label={m.parameterBarcodesFile()} error={errors.barcodesFilePath}>
     <FileSelect title="barcodesFile" selectFolder={false} bind:value={runParameters.barcodesFilePath}></FileSelect>
   </FormField>
-  <FormField label="minKnowFolderPath" error={errors.minKnowFolderPath}>
+  <FormField label={m.parameterMinKnowFolder()} error={errors.minKnowFolderPath}>
     <FileSelect title="minKnowFolder" selectFolder={true} bind:value={runParameters.minKnowFolderPath}></FileSelect>
   </FormField>
-  <FormField label="outputFolderPath" error={errors.minKnowFolderPath}>
+  <FormField label={m.parameterOutputFolder()} error={errors.minKnowFolderPath}>
     <FileSelect title="outputFolder" selectFolder={true} bind:value={runParameters.outputFolderPath}></FileSelect>
   </FormField>
-  <FormField label="notes" error={errors.notes}>
-    <Input bind:value={runParameters.notes}></Input>
+  <FormField label={m.parameterNotes()} error={errors.notes}>
+    <Textarea bind:value={runParameters.notes}></Textarea>
   </FormField>
-  <FormField label="threads" error={errors.threads}>
+  <FormField label={m.parameterThreads()} error={errors.threads}>
     <Input type="number" bind:value={runParameters.threads}></Input>
   </FormField>
   <Button
-    class="action"
+    class="action float-end"
     type="submit"
     data-testid="run">{m.runPiranha()}
   </Button>
