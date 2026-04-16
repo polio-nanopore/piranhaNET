@@ -14,9 +14,15 @@
     }
   };
 
+  let placeholder = $derived(selectFolder ? "No folder chosen" : "No file chosen");
+
   // TODO: translate titles
-  // TODO: translate button text
+  // TODO: translate button & placeholder text
   // TODO: Make accessible
 </script>
-<Button  onclick={showDialog}>{ selectFolder ? "Choose folder" : "Choose File" }</Button>
-<span>{value}</span>
+<div class="flex">
+  <Button class="rounded-r-none border-0" onclick={showDialog}>{ selectFolder ? "Choose folder" : "Choose File" }</Button>
+  <div class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light">
+    {value || placeholder }
+  </div>
+</div>
