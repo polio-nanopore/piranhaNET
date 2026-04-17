@@ -55,11 +55,11 @@ function createWindow(): void {
   ipcMain.handle("show-file-dialog", async (_event, options: FileDialogOptions) => {
     // TODO: file type (for csv)
     const openType = options.selectFolder ? "openDirectory" : "openFile";
-    const result = await dialog.showOpenDialog({
+    const result = await dialog.showOpenDialog(mainWindow, {
       title: options.title,
       defaultPath: options.defaultPath,
       properties: [ openType ],
-      filters: []
+      filters: options.filters || []
     });
     return result.filePaths.length ? result.filePaths[0] : null;
   });

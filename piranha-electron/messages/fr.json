@@ -1,6 +1,10 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "about": "À propos",
+  "formsChooseFile": "Choisir un fichier",
+  "formsChooseFolder": "Choisir un dossier",
+  "formsNoFileChosen": "Aucun fichier sélectionné",
+  "formsNoFolderChosen": "Aucun dossier sélectionné",
   "initializing": "Initialisation",
   "newRun": "Nouvelle course",
   "newSequencingRun": "Nouvelle séquence",

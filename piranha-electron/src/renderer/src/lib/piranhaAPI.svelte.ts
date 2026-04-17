@@ -14,7 +14,8 @@ export class PiranhaAPI {
 
     window.api?.onChunk((chunk) => {
       const textChunk = this.#decoder.decode(chunk, { stream: true });
-      this.#log.push(`${textChunk}`);
+      const lines = textChunk.split("\n");
+      this.#log.push(...lines);
     });
     window.api?.onEnd(() => {
       this.#log.push("Piranha Run Finished");

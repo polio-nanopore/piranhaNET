@@ -15,53 +15,72 @@
     barcodesFilePath: z.string().nonempty(),
     minKnowFolderPath: z.string().nonempty(),
     outputFolderPath: z.string().nonempty(),
-    notes: z.string().optional(),
+    notes: z.string().nonempty(),
     threads: z.number().min(1).max(20)
   });
 
   let errors = $state<Record<string, string[]>>({});
 
-  let enableRun = $state(false);
+  let doneInitialSubmit = $state(false);
 
-  function onSubmit(e: SubmitEvent) {
-    console.log("submitting")
-    e.preventDefault();
+  function validate(): boolean {
     const result = formSchema.safeParse(runParameters);
-    console.log("Submit:", result);
     if (!result.success) {
-      console.log("submit failed")
       errors = result.error.flatten().fieldErrors;
-      enableRun = false;
     } else {
       errors = {};
-      const runOptions = createPiranhaRunOptions(runParameters, settings);
-      piranhaAPI.runPiranha(runOptions);
-      enableRun = true;
+    }
+    return result.success;
+  }
+
+  function onChange() {
+    // validate after every change after initial failed submit, so user
+    // can see when form becomes valid;
+    if (doneInitialSubmit) {
+      validate()
     }
   }
 
-  // TODO: translations!
-  // TODO:Enable and disable button on update
+  function onSubmit(e: SubmitEvent) {
+    e.preventDefault();
+    const valid = validate();
+    if (valid) {
+      const runOptions = createPiranhaRunOptions(runParameters, settings);
+      piranhaAPI.runPiranha(runOptions);
+    }
+    doneInitialSubmit = true;
+  }
+
 </script>
 <div data-testid="new-run-title">{m.newSequencingRun()}</div>
 <form onsubmit={onSubmit} >
   <FormField label={m.parameterName()} error={errors.name}>
-    <Input bind:value={runParameters.name}></Input>
+    <Input bind:value={runParameters.name} onchange={onChange}></Input>
   </FormField>
   <FormField label={m.parameterBarcodesFile()} error={errors.barcodesFilePath}>
-    <FileSelect title="barcodesFile" selectFolder={false} bind:value={runParameters.barcodesFilePath}></FileSelect>
+    <FileSelect title={m.parameterBarcodesFile()}
+                selectFolder={false}
+                filters={[{name: "csv", extensions: ["csv"]}]}
+                onchange={onChange}
+                bind:value={runParameters.barcodesFilePath}></FileSelect>
   </FormField>
   <FormField label={m.parameterMinKnowFolder()} error={errors.minKnowFolderPath}>
-    <FileSelect title="minKnowFolder" selectFolder={true} bind:value={runParameters.minKnowFolderPath}></FileSelect>
+    <FileSelect title={m.parameterMinKnowFolder()}
+                selectFolder={true}
+                onchange={onChange}
+                bind:value={runParameters.minKnowFolderPath}></FileSelect>
   </FormField>
-  <FormField label={m.parameterOutputFolder()} error={errors.minKnowFolderPath}>
-    <FileSelect title="outputFolder" selectFolder={true} bind:value={runParameters.outputFolderPath}></FileSelect>
+  <FormField label={m.parameterOutputFolder()} error={errors.outputFolderPath}>
+    <FileSelect title={m.parameterOutputFolder()}
+                selectFolder={true}
+                onchange={onChange}
+                bind:value={runParameters.outputFolderPath}></FileSelect>
   </FormField>
   <FormField label={m.parameterNotes()} error={errors.notes}>
-    <Textarea bind:value={runParameters.notes}></Textarea>
+    <Textarea bind:value={runParameters.notes} onchange={onChange}></Textarea>
   </FormField>
   <FormField label={m.parameterThreads()} error={errors.threads}>
-    <Input type="number" bind:value={runParameters.threads}></Input>
+    <Input type="number" bind:value={runParameters.threads} onchange={onChange}></Input>
   </FormField>
   <Button
     class="action float-end"

@@ -1,27 +1,29 @@
 <script>
   import { Button } from "$lib/shadcn/ui/button";
+  import { m } from "../../../../paraglide/messages";
 
-  let { titleKey, selectFolder, value = $bindable() } = $props();
+  let { title, selectFolder, filters, onchange, value = $bindable() } = $props();
 
   const showDialog = async () => {
     const selected = await window.api.showFileDialog({
-      titleKey,
+      title,
       selectFolder,
+      filters,
       defaultPath: value
     });
     if (selected !== null) {
       value = selected;
+      if (onchange) {
+        onchange();
+      }
     }
   };
 
-  let placeholder = $derived(selectFolder ? "No folder chosen" : "No file chosen");
+  let placeholder = $derived(selectFolder ? m.formsNoFolderChosen() : m.formsNoFileChosen());
 
-  // TODO: translate titles
-  // TODO: translate button & placeholder text
-  // TODO: Make accessible
 </script>
 <div class="flex">
-  <Button class="rounded-r-none border-0" onclick={showDialog}>{ selectFolder ? "Choose folder" : "Choose File" }</Button>
+  <Button class="rounded-r-none border-0" onclick={showDialog}>{ selectFolder ? m.formsChooseFolder() : m.formsChooseFile() }</Button>
   <div class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light">
     {value || placeholder }
   </div>

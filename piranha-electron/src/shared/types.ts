@@ -12,5 +12,9 @@ export interface PiranhaRunOptions {
 export interface FileDialogOptions {
   title: string,
   defaultPath: string,
-  selectFolder: boolean
+  selectFolder: boolean,
+  filters?: {
+    name: string,
+    extensions: string[]
+  }[]
 }
