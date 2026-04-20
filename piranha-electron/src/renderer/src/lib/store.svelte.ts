@@ -11,7 +11,12 @@ export const settings: PiranhaSettings = $state({
   negativeControl: "my negative control",
 });
 
-export const runParameters: PiranhaRunParameters = $state({
+// TODO: types
+export const appState = $state({
+  doneInitialSubmit: false
+});
+
+const defaultRunParameters = () => ({
   name: "",
   notes: "",
   barcodesFilePath: "",
@@ -19,3 +24,5 @@ export const runParameters: PiranhaRunParameters = $state({
   outputFolderPath: "",
   threads: 10
 });
+
+export const runParameters: PiranhaRunParameters = $state(defaultRunParameters());

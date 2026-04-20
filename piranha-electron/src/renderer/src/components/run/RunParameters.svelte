@@ -5,23 +5,29 @@
   import {Input} from "$lib/shadcn/ui/input";
   import {Textarea} from "$lib/shadcn/ui/textarea";
   import FormField from "../forms/FormField.svelte";
-  import {runParameters, settings} from "../../lib/store.svelte";
+  import {runParameters, settings, appState} from "../../lib/store.svelte";
   import {createPiranhaRunOptions} from "../../types";
   import {piranhaAPI} from "../../lib/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
 
+  const THREADS_MIN = 1;
+  const THREADS_MAX = 20;
+
+  const requiredString = () => z.string().nonempty(m.formsErrorRequiredValue());
+  const threadsRangeError = m.formsErrorRange({min: THREADS_MIN, max: THREADS_MAX});
+
   const formSchema = z.object({
-    name: z.string().nonempty(),
-    barcodesFilePath: z.string().nonempty(),
-    minKnowFolderPath: z.string().nonempty(),
-    outputFolderPath: z.string().nonempty(),
-    notes: z.string().nonempty(),
-    threads: z.number().min(1).max(20)
+    name: requiredString(),
+    barcodesFilePath: requiredString(),
+    minKnowFolderPath:requiredString(),
+    outputFolderPath: requiredString(),
+    notes: requiredString(),
+    threads: z.number(m.formsErrorNumberRequired())
+              .min(THREADS_MIN, {error: threadsRangeError})
+              .max(THREADS_MAX, {error: threadsRangeError})
   });
 
   let errors = $state<Record<string, string[]>>({});
-
-  let doneInitialSubmit = $state(false);
 
   function validate(): boolean {
     const result = formSchema.safeParse(runParameters);
@@ -36,7 +42,7 @@
   function onChange() {
     // validate after every change after initial failed submit, so user
     // can see when form becomes valid;
-    if (doneInitialSubmit) {
+    if (appState.doneInitialSubmit) {
       validate()
     }
   }
@@ -48,7 +54,12 @@
       const runOptions = createPiranhaRunOptions(runParameters, settings);
       piranhaAPI.runPiranha(runOptions);
     }
-    doneInitialSubmit = true;
+    appState.doneInitialSubmit = true;
+  }
+
+  // We may be reloading after a language change - validate in new language if initial submit has been done
+  if (appState.doneInitialSubmit) {
+    validate();
   }
 
 </script>
