@@ -1,4 +1,5 @@
 import type {PiranhaRunOptions} from "../../../shared/types";
+import { m } from "../../../paraglide/messages";
 
 export class PiranhaAPI {
   #initialized = $state(false);
@@ -44,7 +45,9 @@ export class PiranhaAPI {
   }
 
   runPiranha(options: PiranhaRunOptions): void {
-    // TODO throw error if we're already running
+    if (this.#running) {
+      throw new Error(m.apiErrorAlreadyRunning());
+    }
     this.#log = [];
     window.api.runPiranha(options);
     this.#running = true;

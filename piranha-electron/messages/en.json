@@ -1,6 +1,7 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "about": "About",
+  "apiErrorAlreadyRunning": "Piranha is already running",
   "formsChooseFile": "Choose file",
   "formsChooseFolder": "Choose folder",
   "formsNoFileChosen": "No file chosen",

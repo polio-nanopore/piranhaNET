@@ -1,5 +1,9 @@
 import type { PiranhaRunOptions } from "../../shared/types";
 
+export interface AppState {
+  doneInitialSubmit: boolean
+}
+
 export interface PiranhaRunParameters {
   name: string;
   notes: string;
