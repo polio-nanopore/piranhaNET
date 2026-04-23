@@ -5,17 +5,19 @@
 
   let {
     label,
+    labelFor,
     error,
     children
   }: {
     label: string;
+    for: string;
     error?: string[];
     children: Snippet
   } = $props();
 </script>
 
 <div class="space-y-2 py-3">
-  <Label class={["font-light", error && "text-destructive"]}>{label}</Label>
+  <Label class={["font-light", error && "text-destructive"]} for={labelFor}>{label}</Label>
 
   {@render children()}
 

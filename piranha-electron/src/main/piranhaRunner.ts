@@ -33,7 +33,8 @@ export class PiranhaRunner {
     options: PiranhaRunOptions,
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
-    // TODO: confirm desired behaviour for escaping spaces in options - this is what old PiranhaGUI does!
+    // TODO: use yaml file to pass parameters in API Docker image - for now use same approach as PiranhaGUI of "escaping"
+    // arg strings with underscores
     const escapeOption = (o: string) =>  o.replaceAll(" ", "_");
 
     const envString = [

@@ -65,33 +65,36 @@
 </script>
 <div data-testid="new-run-title">{m.newSequencingRun()}</div>
 <form onsubmit={onSubmit} >
-  <FormField label={m.parameterName()} error={errors.name}>
-    <Input bind:value={runParameters.name} onchange={onChange}></Input>
+  <FormField label={m.parameterName()} error={errors.name} labelFor="name-field">
+    <Input id="name-field" bind:value={runParameters.name} onchange={onChange}></Input>
   </FormField>
-  <FormField label={m.parameterBarcodesFile()} error={errors.barcodesFilePath}>
-    <FileSelect title={m.parameterBarcodesFile()}
+  <FormField label={m.parameterBarcodesFile()} error={errors.barcodesFilePath} labelFor="barcodes-file-field">
+    <FileSelect id="barcodes-file-field"
+                title={m.parameterBarcodesFile()}
                 selectFolder={false}
                 filters={[{name: "csv", extensions: ["csv"]}]}
                 onchange={onChange}
                 bind:value={runParameters.barcodesFilePath}></FileSelect>
   </FormField>
-  <FormField label={m.parameterMinKnowFolder()} error={errors.minKnowFolderPath}>
-    <FileSelect title={m.parameterMinKnowFolder()}
+  <FormField label={m.parameterMinKnowFolder()} error={errors.minKnowFolderPath} labelFor="minknow-folder-field">
+    <FileSelect id="minknow-folder-field"
+                title={m.parameterMinKnowFolder()}
                 selectFolder={true}
                 onchange={onChange}
                 bind:value={runParameters.minKnowFolderPath}></FileSelect>
   </FormField>
-  <FormField label={m.parameterOutputFolder()} error={errors.outputFolderPath}>
-    <FileSelect title={m.parameterOutputFolder()}
+  <FormField label={m.parameterOutputFolder()} error={errors.outputFolderPath} labelFor="output-folder-field" >
+    <FileSelect id="output-folder-field"
+                title={m.parameterOutputFolder()}
                 selectFolder={true}
                 onchange={onChange}
                 bind:value={runParameters.outputFolderPath}></FileSelect>
   </FormField>
-  <FormField label={m.parameterNotes()} error={errors.notes}>
-    <Textarea bind:value={runParameters.notes} onchange={onChange}></Textarea>
+  <FormField label={m.parameterNotes()} error={errors.notes} labelFor="notes-field">
+    <Textarea id="notes-field" bind:value={runParameters.notes} onchange={onChange}></Textarea>
   </FormField>
-  <FormField label={m.parameterThreads()} error={errors.threads}>
-    <Input type="number" bind:value={runParameters.threads} onchange={onChange}></Input>
+  <FormField label={m.parameterThreads()} error={errors.threads} labelFor="threads-field">
+    <Input id="threads-field" type="number" bind:value={runParameters.threads} onchange={onChange}></Input>
   </FormField>
   <Button
     class="action float-end"

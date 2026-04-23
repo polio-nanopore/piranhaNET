@@ -53,7 +53,6 @@ function createWindow(): void {
    * Display a native file dialog and return selection to renderer
    */
   ipcMain.handle("show-file-dialog", async (_event, options: FileDialogOptions) => {
-    // TODO: file type (for csv)
     const openType = options.selectFolder ? "openDirectory" : "openFile";
     const result = await dialog.showOpenDialog(mainWindow, {
       title: options.title,
