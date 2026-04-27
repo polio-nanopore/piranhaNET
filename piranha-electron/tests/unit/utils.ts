@@ -30,6 +30,7 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => mockedAPI.log);
   vi.spyOn(piranhaAPI, "running", "get").mockImplementation(() => mockedAPI.running);
   vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
+  vi.spyOn(piranhaAPI, "clearLog");
 };
 
 type translation = string | RegExp;
