@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Button } from "$lib/shadcn/ui/button";
   import { m } from "../../../../paraglide/messages";
 
