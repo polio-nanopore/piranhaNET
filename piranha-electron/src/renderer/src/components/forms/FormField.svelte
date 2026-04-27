@@ -7,21 +7,28 @@
     label,
     labelFor,
     error,
-    children
+    children,
   }: {
     label: string;
     for: string;
     error?: string[];
-    children: Snippet
+    children: Snippet;
   } = $props();
 </script>
 
 <div class="space-y-2 py-3">
-  <Label class={["font-light", error && "text-destructive"]} for={labelFor}>{label}</Label>
+  <Label class={["font-light", error && "text-destructive"]} for={labelFor}
+    >{label}</Label
+  >
 
   {@render children()}
 
   {#if error}
-    <p data-testid={`${labelFor}-error`} class="text-sm font-medium text-destructive">{error[0]}</p>
+    <p
+      data-testid={`${labelFor}-error`}
+      class="text-sm font-medium text-destructive"
+    >
+      {error[0]}
+    </p>
   {/if}
 </div>

@@ -240,7 +240,8 @@
   font-variant-caps: all-small-caps;
 }
 
-input, textarea {
+input,
+textarea {
   background-color: white;
 }
 
