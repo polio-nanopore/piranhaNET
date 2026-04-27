@@ -18,6 +18,6 @@ describe("FormField", () => {
     });
     const input = screen.getByLabelText("Test Label");
     expect(input).toHaveAttribute("id", "test-input");
-    expect(screen.queryByTestId("field-error")).toHaveTextContent("a test error");
+    expect(screen.queryByTestId("test-input-error")).toHaveTextContent("a test error");
   });
 });
