@@ -26,12 +26,14 @@ describe("piranhaAPI", () => {
     expect(sut.log).toStrictEqual([]);
     const addChunk = window.api.onChunk.mock.calls[0][0];
     const encoder = new TextEncoder("utf-8");
-    addChunk(encoder.encode("test log message"));
-    expect(sut.log).toStrictEqual(["test log message"]);
+    // Should split on newlines
+    addChunk(encoder.encode("test log message 1\ntest log message 2"));
+    const expectedLog = ["test log message 1", "test log message 2"];
+    expect(sut.log).toStrictEqual(expectedLog);
 
     const end = window.api.onEnd.mock.calls[0][0];
     end();
-    expect(sut.log).toStrictEqual(["test log message", "Piranha Run Finished"]);
+    expect(sut.log).toStrictEqual([...expectedLog, "Piranha Run Finished"]);
 
     expect(sut.error).toBe("");
     const setError = window.api.onError.mock.calls[0][0];
@@ -45,8 +47,9 @@ describe("piranhaAPI", () => {
   test("runPiranha calls api", () => {
     expect(sut.running).toBe(false);
     sut.log.push("Earlier run message");
-    sut.runPiranha();
-    expect(window.api.runPiranha).toHaveBeenCalled();
+    const testOptions = {"test": "value"} as any;
+    sut.runPiranha(testOptions);
+    expect(window.api.runPiranha).toHaveBeenCalledWith(testOptions);
     expect(sut.log).toStrictEqual([]);
     expect(sut.running).toBe(true);
 
@@ -56,9 +59,18 @@ describe("piranhaAPI", () => {
     expect(sut.running).toBe(false);
   });
 
-  test("testMessageMain calls api", () => {
+  test("runPiranha throws error if already running", () => {
+    const testOptions = {"test": "value"} as any;
+    sut.runPiranha(testOptions);
+    expect(() => sut.runPiranha(testOptions)).toThrow("Piranha is already running");
+  });
+
+  test("clears log", () => {
     expect(window.api.testMessage).not.toHaveBeenCalled();
-    sut.testMessageMain();
-    expect(window.api.testMessage).toHaveBeenCalled();
+    sut.log.push("log msg 1");
+    sut.log.push("log msg 2");
+    expect(sut.log.length).toBe(2);
+    sut.clearLog();
+    expect(sut.log.length).toBe(0);
   });
 });
