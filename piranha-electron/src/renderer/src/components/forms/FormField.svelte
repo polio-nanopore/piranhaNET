@@ -22,6 +22,6 @@
   {@render children()}
 
   {#if error}
-    <p class="text-sm font-medium text-destructive">{error[0]}</p>
+    <p data-testid={`${labelFor}-error`} class="text-sm font-medium text-destructive">{error[0]}</p>
   {/if}
 </div>

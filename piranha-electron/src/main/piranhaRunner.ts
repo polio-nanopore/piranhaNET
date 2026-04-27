@@ -45,8 +45,6 @@ export class PiranhaRunner {
       `-nc ${escapeOption(options.negativeControl || "")}`
     ].join(" ");
 
-    console.log(envString)
-
     const env = [envString]
 
     const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";

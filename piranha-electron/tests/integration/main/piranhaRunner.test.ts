@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
+import * as AnsiParser from "ansi-parser";
 
 describe("piranhaRunner", () => {
   const getWritableWithBuffer = (): {
@@ -34,19 +35,20 @@ describe("piranhaRunner", () => {
         name: "test_name",
         notes: "test notes",
         barcodesFilePath: join(testDataPath, "barcodes.csv"),
-        baseCalledPath: join(testDataPath, "demultiplexed"),
-        outputPath: join(__dirname, "../../../../test-results"),
+        minKnowFolderPath: join(testDataPath, "demultiplexed"),
+        outputFolderPath: join(__dirname, "../../../../test-results"),
         positiveControl: "Pos1,P2",
         negativeControl: "my negative control",
-        threads: 1,
+        threads: 10,
       },
       runOutput.writable,
     );
 
     outputText = runOutput.readBuffer();
+    outputText = AnsiParser.removeAnsi(outputText);
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
     expect(outputText).toContain("Setting runname: test_name");
-    expect(outputText).toContain("Setting notes: test notes");
+    expect(outputText).toContain("Setting notes: test_notes");
     expect(outputText).toMatch(
       /\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/,
     ); //output report

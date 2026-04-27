@@ -15,7 +15,7 @@ export const appState: AppState = $state({
   doneInitialSubmit: false
 });
 
-const defaultRunParameters = () => ({
+export const defaultRunParameters = () => ({
   name: "",
   notes: "",
   barcodesFilePath: "",

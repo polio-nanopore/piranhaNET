@@ -5,7 +5,7 @@
   "formsChooseFile": "Selecione o ficheiro",
   "formsChooseFolder": "Selecione a pasta",
   "formsNoFileChosen": "Nenhum ficheiro selecionado",
-  "formsErrorNumberRequired": "O valor deve ser um número",
+  "formsErrorNumberRequired": "O valor deve ser um número inteiro",
   "formsErrorRange": "O valor deve estar entre {min} e {max}",
   "formsNoFolderChosen": "Nenhuma pasta selecionada",
   "formsErrorRequiredValue": "Valor obrigatório",

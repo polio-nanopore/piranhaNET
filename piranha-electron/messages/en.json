@@ -6,7 +6,7 @@
   "formsChooseFolder": "Choose folder",
   "formsNoFileChosen": "No file chosen",
   "formsNoFolderChosen": "No folder chosen",
-  "formsErrorNumberRequired": "Value must be a number",
+  "formsErrorNumberRequired": "Value must be a whole number",
   "formsErrorRange": "Value must be between {min} and {max}",
   "formsErrorRequiredValue": "Required value",
   "initializing": "Initializing",

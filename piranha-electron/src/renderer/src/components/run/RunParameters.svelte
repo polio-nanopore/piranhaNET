@@ -22,7 +22,7 @@
     minKnowFolderPath:requiredString(),
     outputFolderPath: requiredString(),
     notes: requiredString(),
-    threads: z.number(m.formsErrorNumberRequired())
+    threads: z.int(m.formsErrorNumberRequired())
               .min(THREADS_MIN, {error: threadsRangeError})
               .max(THREADS_MAX, {error: threadsRangeError})
   });

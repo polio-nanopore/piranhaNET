@@ -6,7 +6,7 @@
   "formsChooseFolder": "Choisir un dossier",
   "formsNoFileChosen": "Aucun fichier sélectionné",
   "formsNoFolderChosen": "Aucun dossier sélectionné",
-  "formsErrorNumberRequired": "La valeur doit être un nombre",
+  "formsErrorNumberRequired": "La valeur doit être un nombre entier",
   "formsErrorRange": "La valeur doit être comprise entre {min} et {max}",
   "formsErrorRequiredValue": "Valeur requise",
   "initializing": "Initialisation",

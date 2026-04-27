@@ -24,7 +24,7 @@
 </script>
 <div id={`${id}-container`} class="flex">
   <Button id={id} class="rounded-r-none border-0" onclick={showDialog}>{ selectFolder ? m.formsChooseFolder() : m.formsChooseFile() }</Button>
-  <div class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light">
+  <div data-testid={`${id}-value`} class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light">
     {value || placeholder }
   </div>
 </div>
