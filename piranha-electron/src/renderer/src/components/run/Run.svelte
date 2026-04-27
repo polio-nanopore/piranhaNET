@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { m } from "../../../../paraglide/messages";
   import { piranhaAPI } from "$lib//piranhaAPI.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";

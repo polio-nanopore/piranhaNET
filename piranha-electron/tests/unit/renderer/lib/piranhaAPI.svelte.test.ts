@@ -47,7 +47,7 @@ describe("piranhaAPI", () => {
   test("runPiranha calls api", () => {
     expect(sut.running).toBe(false);
     sut.log.push("Earlier run message");
-    const testOptions = {"test": "value"} as any;
+    const testOptions = { test: "value" } as any;
     sut.runPiranha(testOptions);
     expect(window.api.runPiranha).toHaveBeenCalledWith(testOptions);
     expect(sut.log).toStrictEqual([]);
@@ -60,9 +60,11 @@ describe("piranhaAPI", () => {
   });
 
   test("runPiranha throws error if already running", () => {
-    const testOptions = {"test": "value"} as any;
+    const testOptions = { test: "value" } as any;
     sut.runPiranha(testOptions);
-    expect(() => sut.runPiranha(testOptions)).toThrow("Piranha is already running");
+    expect(() => sut.runPiranha(testOptions)).toThrow(
+      "Piranha is already running",
+    );
   });
 
   test("clears log", () => {

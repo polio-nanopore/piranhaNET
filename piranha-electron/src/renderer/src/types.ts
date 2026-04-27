@@ -1,7 +1,7 @@
 import type { PiranhaRunOptions } from "../../shared/types";
 
 export interface AppState {
-  doneInitialSubmit: boolean
+  doneInitialSubmit: boolean;
 }
 
 export interface PiranhaRunParameters {
@@ -21,9 +21,12 @@ export interface PiranhaSettings {
 /**
  * Combine settings and per-run parameters to make the full Piranha options required by the runner
  */
-export const createPiranhaRunOptions = (params: PiranhaRunParameters, settings: PiranhaSettings): PiranhaRunOptions => {
+export const createPiranhaRunOptions = (
+  params: PiranhaRunParameters,
+  settings: PiranhaSettings,
+): PiranhaRunOptions => {
   return {
     ...params,
-    ...settings
+    ...settings,
   };
 };

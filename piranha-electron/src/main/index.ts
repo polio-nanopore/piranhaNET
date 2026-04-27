@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
-import {FileDialogOptions, PiranhaRunOptions } from "../shared/types";
+import { FileDialogOptions, PiranhaRunOptions } from "../shared/types";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {
@@ -52,16 +52,19 @@ function createWindow(): void {
   /**
    * Display a native file dialog and return selection to renderer
    */
-  ipcMain.handle("show-file-dialog", async (_event, options: FileDialogOptions) => {
-    const openType = options.selectFolder ? "openDirectory" : "openFile";
-    const result = await dialog.showOpenDialog(mainWindow, {
-      title: options.title,
-      defaultPath: options.defaultPath,
-      properties: [ openType ],
-      filters: options.filters || []
-    });
-    return result.filePaths.length ? result.filePaths[0] : null;
-  });
+  ipcMain.handle(
+    "show-file-dialog",
+    async (_event, options: FileDialogOptions) => {
+      const openType = options.selectFolder ? "openDirectory" : "openFile";
+      const result = await dialog.showOpenDialog(mainWindow, {
+        title: options.title,
+        defaultPath: options.defaultPath,
+        properties: [openType],
+        filters: options.filters || [],
+      });
+      return result.filePaths.length ? result.filePaths[0] : null;
+    },
+  );
 
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window

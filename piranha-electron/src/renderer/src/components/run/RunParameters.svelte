@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {z} from "zod";
+  import {z, type ZodString} from "zod";
   import { m } from "../../../../paraglide/messages";
   import {Button} from "$lib/shadcn/ui/button";
   import {Input} from "$lib/shadcn/ui/input";
@@ -13,7 +13,7 @@
   const THREADS_MIN = 1;
   const THREADS_MAX = 20;
 
-  const requiredString = () => z.string().nonempty(m.formsErrorRequiredValue());
+  const requiredString = (): ZodString => z.string().nonempty(m.formsErrorRequiredValue());
   const threadsRangeError = m.formsErrorRange({min: THREADS_MIN, max: THREADS_MAX});
 
   const formSchema = z.object({
@@ -39,7 +39,7 @@
     return result.success;
   }
 
-  function onChange() {
+  function onChange(): void {
     // validate after every change after initial failed submit, so user
     // can see when form becomes valid;
     if (appState.doneInitialSubmit) {
@@ -47,7 +47,7 @@
     }
   }
 
-  function onSubmit(e: SubmitEvent) {
+  function onSubmit(e: SubmitEvent): void {
     e.preventDefault();
     const valid = validate();
     if (valid) {

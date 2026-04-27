@@ -1,15 +1,23 @@
-import { describe, expect, test, beforeEach, vi} from "vitest";
+import { describe, expect, test, beforeEach, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import {cleanup, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import RunParameters from "../../../../../src/renderer/src/components/run/RunParameters.svelte";
-import {expectTranslations, renderInI18nTestContext, mockPiranhaAPI} from "../../../utils";
-import {screen} from "@testing-library/svelte";
+import {
+  expectTranslations,
+  renderInI18nTestContext,
+  mockPiranhaAPI,
+} from "../../../utils";
+import { screen } from "@testing-library/svelte";
 import { i18n } from "$lib/i18n.svelte";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
-import {defaultRunParameters, runParameters, appState} from "../../../../../src/renderer/src/lib/store.svelte"
+import {
+  defaultRunParameters,
+  runParameters,
+  appState,
+} from "../../../../../src/renderer/src/lib/store.svelte";
 
 describe("RunParameters", () => {
-  let user = userEvent.setup();
+  const user = userEvent.setup();
   beforeEach(() => {
     i18n.lang = "en";
     mockPiranhaAPI({});
@@ -23,7 +31,8 @@ describe("RunParameters", () => {
   test("renders as expected", async () => {
     renderInI18nTestContext(RunParameters);
     await expectTranslations(
-      (text) => expect(screen.getByLabelText(text)).toHaveAttribute("id", "name-field"),
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute("id", "name-field"),
       {
         en: /Name/,
         fr: /Nom/,
@@ -31,7 +40,11 @@ describe("RunParameters", () => {
       },
     );
     await expectTranslations(
-      (text) => expect(screen.getByLabelText(text)).toHaveAttribute("id", "barcodes-file-field"),
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "id",
+          "barcodes-file-field",
+        ),
       {
         en: /Barcodes file/,
         fr: /Fichier de codes-barres/,
@@ -39,7 +52,11 @@ describe("RunParameters", () => {
       },
     );
     await expectTranslations(
-      (text) => expect(screen.getByLabelText(text)).toHaveAttribute("id", "minknow-folder-field"),
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "id",
+          "minknow-folder-field",
+        ),
       {
         en: /MinKnow folder/,
         fr: /Dossier MinKnow/,
@@ -47,7 +64,11 @@ describe("RunParameters", () => {
       },
     );
     await expectTranslations(
-      (text) => expect(screen.getByLabelText(text)).toHaveAttribute("id", "notes-field"),
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "id",
+          "notes-field",
+        ),
       {
         en: /Notes/,
         fr: /Notes/,
@@ -78,7 +99,8 @@ describe("RunParameters", () => {
 
   test("does not validate before Run button pressed, and does not submit Run if form is not valid", async () => {
     render(RunParameters);
-    const expectNoErrors =  () => expect(screen.queryByText(/Required value/)).toBeNull();
+    const expectNoErrors = (): void =>
+      expect(screen.queryByText(/Required value/)).toBeNull();
 
     await expectNoErrors();
 
@@ -93,20 +115,20 @@ describe("RunParameters", () => {
   });
 
   test("submits run if form is validly completed", async () => {
-    const mockShowFileDialog = vi.fn().mockImplementation((options) =>  {
+    const mockShowFileDialog = vi.fn().mockImplementation((options) => {
       if (options.title == "Barcodes file") {
-        return "/test/barcodes.csv"
+        return "/test/barcodes.csv";
       }
       if (options.title == "MinKnow folder") {
         return "/test/MinKnow";
       }
       if (options.title == "Output folder") {
-        return "/test/output"
+        return "/test/output";
       }
-      throw new Error("unexpected title")
+      throw new Error("unexpected title");
     });
     window.api = {
-      showFileDialog: mockShowFileDialog
+      showFileDialog: mockShowFileDialog,
     };
 
     render(RunParameters);
@@ -124,7 +146,7 @@ describe("RunParameters", () => {
       outputFolderPath: "/test/output",
       threads: 10,
       positiveControl: "Pos1,P2",
-      negativeControl: "my negative control"
+      negativeControl: "my negative control",
     });
   });
 
@@ -138,9 +160,15 @@ describe("RunParameters", () => {
     render(RunParameters);
     expect(screen.getByLabelText("Name").value).toBe("store name");
     // This gets the button element, we actually want to check the div which is its sibling
-    expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent("/store/barcodes.csv");
-    expect(screen.getByTestId("minknow-folder-field-value")).toHaveTextContent("/store/MinKnow");
-    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent("/store/output");
+    expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
+      "/store/barcodes.csv",
+    );
+    expect(screen.getByTestId("minknow-folder-field-value")).toHaveTextContent(
+      "/store/MinKnow",
+    );
+    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent(
+      "/store/output",
+    );
     expect(screen.getByLabelText("Notes").value).toBe("store notes");
     expect(screen.getByLabelText("Analysis threads").value).toBe("11");
   });
@@ -152,21 +180,29 @@ describe("RunParameters", () => {
     const threadsInput = screen.getByLabelText("Analysis threads");
     await user.clear(threadsInput);
     await user.type(threadsInput, "-1[Tab]");
-    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(/Value must be between 1 and 20/);
+    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
+      /Value must be between 1 and 20/,
+    );
 
     await user.clear(threadsInput);
     await user.type(threadsInput, "5.5[Tab]");
-    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(/Value must be a whole number/);
+    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
+      /Value must be a whole number/,
+    );
 
     await user.clear(threadsInput);
     await user.type(threadsInput, "21[Tab]");
-    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(/Value must be between 1 and 20/);
+    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
+      /Value must be between 1 and 20/,
+    );
   });
 
   test("validates on load if initial submit has been done", async () => {
     runParameters.threads = 21;
     appState.doneInitialSubmit = true;
     render(RunParameters);
-    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(/Value must be between 1 and 20/);
+    expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
+      /Value must be between 1 and 20/,
+    );
   });
 });

@@ -4,6 +4,6 @@ export default defineConfig({
   testDir: "tests/e2e",
   timeout: 600_000,
   use: {
-    screenshot: "only-on-failure"
-  }
+    screenshot: "only-on-failure",
+  },
 });

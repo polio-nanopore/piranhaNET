@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
   expectTranslations,
   mockPiranhaAPI,
@@ -6,14 +6,8 @@ import {
 } from "../../../utils";
 import Run from "../../../../../src/renderer/src/components/run/Run.svelte";
 import { screen, render } from "@testing-library/svelte";
-import userEvent from "@testing-library/user-event";
 
 describe("Run", () => {
-  let user;
-  beforeEach(() => {
-    user = userEvent.setup();
-  });
-
   test("renders as expected when piranha has not started running", async () => {
     mockPiranhaAPI({ running: false });
     renderInI18nTestContext(Run);
@@ -30,7 +24,7 @@ describe("Run", () => {
   });
 
   test("render as expected when piranha has started running", async () => {
-    mockPiranhaAPI({running: true, log: ["log entry 1", "log entry 2"]});
+    mockPiranhaAPI({ running: true, log: ["log entry 1", "log entry 2"] });
     render(Run);
     expect(screen.getByTestId("logs")).toHaveTextContent(
       /log entry 1log entry 2/,

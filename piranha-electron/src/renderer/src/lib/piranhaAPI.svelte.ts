@@ -1,4 +1,4 @@
-import type {PiranhaRunOptions} from "../../../shared/types";
+import type { PiranhaRunOptions } from "../../../shared/types";
 import { m } from "../../../paraglide/messages";
 
 export class PiranhaAPI {

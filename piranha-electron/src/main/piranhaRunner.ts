@@ -35,17 +35,17 @@ export class PiranhaRunner {
   ): Promise<void> {
     // TODO: use yaml file to pass parameters in API Docker image - for now use same approach as PiranhaGUI of "escaping"
     // arg strings with underscores
-    const escapeOption = (o: string) =>  o.replaceAll(" ", "_");
+    const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
     const envString = [
       `THREADS=${options.threads || 1}`,
       `--runname ${escapeOption(options.name)}`,
       `--notes ${escapeOption(options.notes)}`,
       `-pc ${escapeOption(options.positiveControl || "")}`,
-      `-nc ${escapeOption(options.negativeControl || "")}`
+      `-nc ${escapeOption(options.negativeControl || "")}`,
     ].join(" ");
 
-    const env = [envString]
+    const env = [envString];
 
     const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";
     const containerBaseCalledPath = "/data/run_data/basecalled";

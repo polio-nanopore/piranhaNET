@@ -1,4 +1,4 @@
-import type {AppState, PiranhaRunParameters, PiranhaSettings} from "../types";
+import type { AppState, PiranhaRunParameters, PiranhaSettings } from "../types";
 
 export const routerHelper = $state({
   // Whether we've initialised the router to default route "/" - we need to do this because the router in electron
@@ -12,16 +12,18 @@ export const settings: PiranhaSettings = $state({
 });
 
 export const appState: AppState = $state({
-  doneInitialSubmit: false
+  doneInitialSubmit: false,
 });
 
-export const defaultRunParameters = () => ({
+export const defaultRunParameters = (): PiranhaRunParameters => ({
   name: "",
   notes: "",
   barcodesFilePath: "",
   minKnowFolderPath: "",
   outputFolderPath: "",
-  threads: 10
+  threads: 10,
 });
 
-export const runParameters: PiranhaRunParameters = $state(defaultRunParameters());
+export const runParameters: PiranhaRunParameters = $state(
+  defaultRunParameters(),
+);

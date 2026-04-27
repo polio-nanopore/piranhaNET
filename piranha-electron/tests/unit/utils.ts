@@ -16,7 +16,7 @@ const defaultAPIMock: APIMock = {
   initialized: false,
   error: "",
   log: [],
-  running: false
+  running: false,
 };
 
 export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
@@ -28,7 +28,9 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
     () => mockedAPI.error,
   );
   vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => mockedAPI.log);
-  vi.spyOn(piranhaAPI, "running", "get").mockImplementation(() => mockedAPI.running);
+  vi.spyOn(piranhaAPI, "running", "get").mockImplementation(
+    () => mockedAPI.running,
+  );
   vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
   vi.spyOn(piranhaAPI, "clearLog");
 };

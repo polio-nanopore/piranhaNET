@@ -1,11 +1,8 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import { screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import {
-  expectTranslations,
-  renderInI18nTestContext,
-} from "../../../utils";
-import FileSelect from "../../../../../src/renderer/src/components/forms/FileSelect.svelte"
+import { expectTranslations, renderInI18nTestContext } from "../../../utils";
+import FileSelect from "../../../../../src/renderer/src/components/forms/FileSelect.svelte";
 
 describe("FileSelect", () => {
   let user;
@@ -14,50 +11,58 @@ describe("FileSelect", () => {
   });
   test("renders as expected for folder select", async () => {
     renderInI18nTestContext(FileSelect, {
-      props:{
+      props: {
         selectFolder: true,
         filters: [],
-        value: "/default"
-      }
+        value: "/default",
+      },
     });
-    await expectTranslations((text) =>  expect(screen.getByText(text)).toBeVisible(), {
-      en: /Choose folder/,
-      fr: /Choisir un dossier/,
-      pt: /Selecione a pasta/
-    });
+    await expectTranslations(
+      (text) => expect(screen.getByText(text)).toBeVisible(),
+      {
+        en: /Choose folder/,
+        fr: /Choisir un dossier/,
+        pt: /Selecione a pasta/,
+      },
+    );
     expect(screen.getByText("/default")).toBeVisible();
   });
 
   test("renders as expected for file select", async () => {
     renderInI18nTestContext(FileSelect, {
-      props:{
+      props: {
         selectFolder: false,
         filters: [],
-        value: "/default/barcodes.csv"
-      }
+        value: "/default/barcodes.csv",
+      },
     });
-    await expectTranslations((text) =>  expect(screen.getByText(text)).toBeVisible(), {
-      en: /Choose file/,
-      fr: /Choisir un fichier/,
-      pt: /Selecione o ficheiro/
-    });
+    await expectTranslations(
+      (text) => expect(screen.getByText(text)).toBeVisible(),
+      {
+        en: /Choose file/,
+        fr: /Choisir un fichier/,
+        pt: /Selecione o ficheiro/,
+      },
+    );
     expect(screen.getByText("/default/barcodes.csv")).toBeVisible();
   });
 
   test("shows dialog, updates values and calls onchange", async () => {
     const mockOnChange = vi.fn();
-    const mockShowFileDialog = vi.fn().mockImplementation(() =>  "/selected/file.csv");
+    const mockShowFileDialog = vi
+      .fn()
+      .mockImplementation(() => "/selected/file.csv");
     window.api = {
-      showFileDialog: mockShowFileDialog
+      showFileDialog: mockShowFileDialog,
     };
     renderInI18nTestContext(FileSelect, {
-      props:{
+      props: {
         title: "Test Title",
         selectFolder: false,
-        filters: [{name: "csv", extensions: ["csv"]}],
+        filters: [{ name: "csv", extensions: ["csv"] }],
         onchange: mockOnChange,
-        value: "/default/barcodes.csv"
-      }
+        value: "/default/barcodes.csv",
+      },
     });
 
     const button = screen.getByRole("button");
@@ -65,34 +70,34 @@ describe("FileSelect", () => {
     expect(mockShowFileDialog).toHaveBeenCalledWith({
       title: "Test Title",
       selectFolder: false,
-      filters: [{name: "csv", extensions: ["csv"]}],
-      defaultPath: "/default/barcodes.csv"
+      filters: [{ name: "csv", extensions: ["csv"] }],
+      defaultPath: "/default/barcodes.csv",
     });
 
-    expect(mockOnChange).toHaveBeenCalled()
+    expect(mockOnChange).toHaveBeenCalled();
     expect(screen.getByText("/selected/file.csv")).toBeVisible();
   });
 
   test("does no update if dialog is cancelled", async () => {
     const mockOnChange = vi.fn();
-    const mockShowFileDialog = vi.fn().mockImplementation(() =>  null);
+    const mockShowFileDialog = vi.fn().mockImplementation(() => null);
     window.api = {
-      showFileDialog: mockShowFileDialog
+      showFileDialog: mockShowFileDialog,
     };
     renderInI18nTestContext(FileSelect, {
-      props:{
+      props: {
         title: "Test Title",
         selectFolder: false,
-        filters: [{name: "csv", extensions: ["csv"]}],
+        filters: [{ name: "csv", extensions: ["csv"] }],
         onchange: mockOnChange,
-        value: "/default/barcodes.csv"
-      }
+        value: "/default/barcodes.csv",
+      },
     });
 
     const button = screen.getByRole("button");
     await user.click(button);
 
-    expect(mockOnChange).not.toHaveBeenCalled()
+    expect(mockOnChange).not.toHaveBeenCalled();
     expect(screen.getByText("/default/barcodes.csv")).toBeVisible();
   });
 });

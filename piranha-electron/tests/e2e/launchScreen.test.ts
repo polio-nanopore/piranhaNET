@@ -28,10 +28,10 @@ test.beforeEach(async () => {
   electronApp = await launchApp();
   await electronApp.evaluate(({ app, ipcMain }) => {
     ipcMain.removeHandler("show-file-dialog");
-    ipcMain.handle('show-file-dialog', async (_event, options) => {
+    ipcMain.handle("show-file-dialog", async (_event, options) => {
       const currentDir = app.getAppPath();
 
-      const join = (...args) => {
+      const join = (...args): string => {
         return args.join("/");
       };
 
@@ -63,23 +63,34 @@ const getWindow = async (): Promise<Page> => {
   return await electronApp.firstWindow();
 };
 
-const getRunButton = async (win: Page) => await win.getByRole("button", { name: /Run Piranha/ });
-const getNameInput = async (win: Page) => await win.getByLabel(/Name/);
-const getBarcodesFileButton = async (win: Page) => await win.getByLabel(/Barcodes file/);
-const getMinKnowFolderButton = async (win: Page) => await win.getByLabel(/MinKnow folder/);
-const getOutputFolderButton = async (win: Page) => await win.getByLabel(/Output folder/);
-const getNotesInput = async (win: Page) => win.getByLabel(/Notes/);
+const getRunButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Run Piranha/ });
+const getNameInput = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Name/);
+const getBarcodesFileButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Barcodes file/);
+const getMinKnowFolderButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/MinKnow folder/);
+const getOutputFolderButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Output folder/);
+const getNotesInput = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Notes/);
 
-const getFieldFromDialogButton  = (buttonElement: Locator) => buttonElement.locator("..");
-const expectErrorMessage = async (fieldElement: Locator, expectError = true, expectedErrorMsg = "Required value") => {
+const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
+  buttonElement.locator("..");
+const expectErrorMessage = async (
+  fieldElement: Locator,
+  expectError = true,
+  expectedErrorMsg = "Required value",
+): Promise<void> => {
   // error is in <p> following field
-  const errorEl = fieldElement.locator('//following-sibling::p');
+  const errorEl = fieldElement.locator("//following-sibling::p");
   if (expectError) {
     await expect(errorEl).toHaveText(expectedErrorMsg);
   } else {
     await expect(errorEl).not.toBeVisible();
   }
-}
+};
 
 test("can see main window, fill in parameters form and run Piranha", async () => {
   const win = await getWindow();
@@ -175,13 +186,21 @@ test("can see errors when submit incomplete parameters", async () => {
   const threadsInput = await win.locator("#threads-field");
   await threadsInput.fill("-1");
   await threadsInput.blur();
-  await expectErrorMessage(threadsInput, true, "Value must be between 1 and 20");
+  await expectErrorMessage(
+    threadsInput,
+    true,
+    "Value must be between 1 and 20",
+  );
   await threadsInput.fill("");
   await threadsInput.blur();
   await expectErrorMessage(threadsInput, true, "Value must be a number");
   await threadsInput.fill("21");
   await threadsInput.blur();
-  await expectErrorMessage(threadsInput, true, "Value must be between 1 and 20");
+  await expectErrorMessage(
+    threadsInput,
+    true,
+    "Value must be between 1 and 20",
+  );
 
   // correct value and see threads error disappear
   await threadsInput.fill("20");

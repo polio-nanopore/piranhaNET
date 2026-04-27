@@ -4,7 +4,7 @@
 
   let { title, id, selectFolder, filters, onchange, value = $bindable() } = $props();
 
-  const showDialog = async () => {
+  const showDialog = async (): Promise<void> => {
     const selected = await window.api.showFileDialog({
       title,
       selectFolder,
