@@ -193,7 +193,7 @@ test("can see errors when submit incomplete parameters", async () => {
   );
   await threadsInput.fill("");
   await threadsInput.blur();
-  await expectErrorMessage(threadsInput, true, "Value must be a number");
+  await expectErrorMessage(threadsInput, true, "Value must be a whole number");
   await threadsInput.fill("21");
   await threadsInput.blur();
   await expectErrorMessage(
