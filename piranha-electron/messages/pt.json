@@ -20,5 +20,6 @@
   "parameterThreads": "Fios de execução de análise",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
-  "sequencingRunProgress": "Progresso da execução do sequenciamento"
+  "sequencingRunProgress": "Progresso da execução do sequenciamento",
+  "settings": "Configurações"
 }

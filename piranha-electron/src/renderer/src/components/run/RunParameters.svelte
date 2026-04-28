@@ -9,12 +9,12 @@
   import { createPiranhaRunOptions } from "../../types";
   import { piranhaAPI } from "../../lib/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
+  import {requiredString} from "../utils";
+  import Settings, {settingsFormSchema} from "./Settings.svelte";
 
   const THREADS_MIN = 1;
   const THREADS_MAX = 20;
 
-  const requiredString = (): ZodString =>
-    z.string().nonempty(m.formsErrorRequiredValue());
   const threadsRangeError = m.formsErrorRange({
     min: THREADS_MIN,
     max: THREADS_MAX,
@@ -30,12 +30,13 @@
       .int(m.formsErrorNumberRequired())
       .min(THREADS_MIN, { error: threadsRangeError })
       .max(THREADS_MAX, { error: threadsRangeError }),
+    ...settingsFormSchema
   });
 
   let errors = $state<Record<string, string[]>>({});
 
   function validate(): boolean {
-    const result = formSchema.safeParse(runParameters);
+    const result = formSchema.safeParse({...runParameters, ...settings});
     if (!result.success) {
       errors = result.error.flatten().fieldErrors;
     } else {
@@ -141,6 +142,7 @@
       onchange={onChange}
     ></Input>
   </FormField>
+  <Settings error={errors} onchange={onChange}></Settings>
   <Button class="action float-end" type="submit" data-testid="run"
     >{m.runPiranha()}
   </Button>

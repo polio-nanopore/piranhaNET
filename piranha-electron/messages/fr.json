@@ -20,5 +20,6 @@
   "parameterThreads": "Threads d'analyse",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
-  "sequencingRunProgress": "État d'avancement du séquençage"
+  "sequencingRunProgress": "État d'avancement du séquençage",
+  "settings": "Paramètres"
 }

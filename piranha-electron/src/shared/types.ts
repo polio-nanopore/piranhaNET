@@ -5,6 +5,7 @@ export interface PiranhaRunOptions {
   minKnowFolderPath: string;
   outputFolderPath: string;
   threads?: number;
+  protocol: "stool" | "environmental" | "isolate";
   positiveControl?: string;
   negativeControl?: string;
 }

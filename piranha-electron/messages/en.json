@@ -20,5 +20,6 @@
   "parameterThreads": "Analysis threads",
   "run": "Run",
   "runPiranha": "Run Piranha",
-  "sequencingRunProgress": "Sequencing run progress"
+  "sequencingRunProgress": "Sequencing run progress",
+  "settings": "Settings"
 }
