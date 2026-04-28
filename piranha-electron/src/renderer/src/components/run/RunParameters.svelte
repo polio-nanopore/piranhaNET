@@ -5,9 +5,9 @@
   import { Input } from "$lib/shadcn/ui/input";
   import { Textarea } from "$lib/shadcn/ui/textarea";
   import FormField from "../forms/FormField.svelte";
-  import { runParameters, settings, appState } from "../../lib/store.svelte";
+  import { runParameters, settings, appState } from "$lib/store.svelte";
   import { createPiranhaRunOptions } from "../../types";
-  import { piranhaAPI } from "../../lib/piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
 
   const THREADS_MIN = 1;
