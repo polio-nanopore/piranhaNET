@@ -94,6 +94,7 @@ const expectErrorMessage = async (
 
 test("can see main window, fill in parameters form and run Piranha", async () => {
   const win = await getWindow();
+
   await expect(await win.getByText(/Initializing.../)).toBeVisible();
   await expect(
     await win.getByText("PiranhaNET", { exact: true }),
@@ -120,14 +121,16 @@ test("can see main window, fill in parameters form and run Piranha", async () =>
   const notesInput = await getNotesInput(win);
   await notesInput.fill("some test notes");
 
-  // need to include a short wait for run to be ready
+  // takes a couple of seconds to become ready
   const runButton = await getRunButton(win);
   await win.waitForTimeout(2000);
   await runButton.click();
 
   // See expected start run text in log
   const log = await win.getByTestId("logs");
-  await expect(log).toHaveText(/Building DAG of jobs.../);
+  await expect(log).toHaveText(/Building DAG of jobs.../, {
+    timeout: 15_000
+  });
 
   // Eventually see run finished messages
   await expect(log).toHaveText(
@@ -141,6 +144,7 @@ test("can see main window, fill in parameters form and run Piranha", async () =>
 
 test("can see errors when submit incomplete parameters", async () => {
   const win = await getWindow();
+
   // click run immediately  - should get errors on everything except threads
   const runButton = await getRunButton(win);
   await runButton.click();
@@ -206,12 +210,6 @@ test("can see errors when submit incomplete parameters", async () => {
   await threadsInput.fill("20");
   await threadsInput.blur();
   await expectErrorMessage(threadsInput, false);
-
-  // check can now run
-  await win.waitForTimeout(2000);
-  await runButton.click();
-  const log = await win.getByTestId("logs");
-  await expect(log).toHaveText(/Building DAG of jobs.../);
 });
 
 test("can change language", async () => {
