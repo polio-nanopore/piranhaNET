@@ -20,6 +20,10 @@
   "parameterThreads": "Fios de execução de análise",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
+  "runSettings": "Configurações de execução",
   "sequencingRunProgress": "Progresso da execução do sequenciamento",
-  "settings": "Configurações"
+  "settings": "Configurações",
+  "settingNegativeControl": "Controle negativo",
+  "settingPositiveControl": "Controle positivo",
+  "settingProtocol": "Protocolo"
 }

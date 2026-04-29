@@ -20,6 +20,10 @@
   "parameterThreads": "Analysis threads",
   "run": "Run",
   "runPiranha": "Run Piranha",
+  "runSettings": "Run Settings",
   "sequencingRunProgress": "Sequencing run progress",
-  "settings": "Settings"
+  "settings": "Settings",
+  "settingNegativeControl": "Negative control",
+  "settingPositiveControl": "Positive control",
+  "settingProtocol": "Protocol"
 }

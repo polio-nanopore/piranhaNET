@@ -20,6 +20,10 @@
   "parameterThreads": "Threads d'analyse",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
+  "runSettings": "Paramètres d'exécution",
   "sequencingRunProgress": "État d'avancement du séquençage",
-  "settings": "Paramètres"
+  "settings": "Paramètres",
+  "settingNegativeControl": "Contrôle négatif",
+  "settingPositiveControl": "Contrôle positif",
+  "settingProtocol": "Protocole"
 }

@@ -18,7 +18,7 @@ export interface PiranhaRunParameters {
 export enum PiranhaProtocol {
   Stool = "stool",
   Environmental = "environmental",
-  Isolate = "isoltate"
+  Isolate = "isolate"
 }
 
 export interface PiranhaSettings {

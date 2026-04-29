@@ -142,7 +142,7 @@
       onchange={onChange}
     ></Input>
   </FormField>
-  <Settings error={errors} onchange={onChange}></Settings>
+  <Settings errors={errors} onchange={onChange}></Settings>
   <Button class="action float-end" type="submit" data-testid="run"
     >{m.runPiranha()}
   </Button>
