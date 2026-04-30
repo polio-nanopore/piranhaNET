@@ -24,7 +24,6 @@
     name: requiredString(),
     barcodesFilePath: requiredString(),
     minKnowFolderPath: requiredString(),
-    outputFolderPath: requiredString(),
     notes: requiredString(),
     threads: z
       .int(m.formsErrorNumberRequired())
@@ -104,19 +103,6 @@
       selectFolder={true}
       onchange={onChange}
       bind:value={runParameters.minKnowFolderPath}
-    ></FileSelect>
-  </FormField>
-  <FormField
-    label={m.parameterOutputFolder()}
-    error={errors.outputFolderPath}
-    labelFor="output-folder-field"
-  >
-    <FileSelect
-      id="output-folder-field"
-      title={m.parameterOutputFolder()}
-      selectFolder={true}
-      onchange={onChange}
-      bind:value={runParameters.outputFolderPath}
     ></FileSelect>
   </FormField>
   <FormField

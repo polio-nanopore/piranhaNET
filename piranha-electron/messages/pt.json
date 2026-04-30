@@ -16,15 +16,17 @@
   "parameterMinKnowFolder": "Pasta MinKnow",
   "parameterName": "Nome",
   "parameterNotes": "Notas",
-  "parameterOutputFolder": "Pasta de saída",
   "parameterThreads": "Fios de execução de análise",
+  "persistentSettings": "Opções persistentes",
   "piranhaOutputSettings": "Configurações de Saída do Piranha",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
   "runSettings": "Configurações de execução",
   "sequencingRunProgress": "Progresso da execução do sequenciamento",
   "settings": "Configurações",
+  "settingInstitue": "Instituto",
   "settingNegativeControl": "Controle negativo",
+  "settingOutputFolder": "Pasta de saída",
   "settingPositiveControl": "Controle positivo",
   "settingProtocol": "Protocolo",
   "settingOrientation": "Orientação",
@@ -32,5 +34,6 @@
   "settingOverwriteOutput": "Esmague a saída",
   "settingOutputIntermediateFiles": "Ficheiros intermediários de saída",
   "settingAllMetadataToHeader": "Todos os metadados nos cabeçalhos",
-  "settingDateStamp": "Carimbo de data"
+  "settingDateStamp": "Carimbo de data",
+  "settingUserName": "Nome de utilizador"
 }

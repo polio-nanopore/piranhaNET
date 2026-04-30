@@ -1,11 +1,58 @@
 <script lang="ts">
+  import { z, type ZodString } from "zod";
+  import { Button } from "$lib/shadcn/ui/button";
   import { piranhaAPI } from "$lib//piranhaAPI.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
+  import {persistentSettingStore} from "$lib/persistentSettingsStore";
+  import PersistentSettings, {persistentSettingsFormSchema} from "./PersistentSettings.svelte";
+  import {runParameters, settings} from "../../lib/store.svelte";
+
+  let needsFirstPersist = $state(!persistentSettingStore.loadSettings());
+  let errors = $state<Record<string, string[]>>({});
+  let validateOnEachChange = false;
+
+  const formSchema = z.object(persistentSettingsFormSchema);
+
+  function validate(): boolean {
+    const result = formSchema.safeParse({...runParameters, ...settings});
+    if (!result.success) {
+      errors = result.error.flatten().fieldErrors;
+    } else {
+      errors = {};
+    }
+    return result.success;
+  }
+
+  const onSubmit = (e: SubmitEvent) => {
+    e.preventDefault();
+    validateOnEachChange = true;
+    const valid = validate();
+    if (valid) {
+      needsFirstPersist = false;
+    }
+  };
+
+  const onChange = () => {
+    if (validateOnEachChange) {
+      validate();
+    }
+  };
 </script>
 
 <div class="container mx-auto p-4">
-  {#if !piranhaAPI.running && !piranhaAPI.log.length}
+  {#if needsFirstPersist}
+  <!-- TODO: put this form in its own component -->
+  <!-- TODO: Translate -->
+  <div class="justify-center">
+    <h1 class="text-2xl mb-4">Welcome to PiranhaNET</h1>
+    <p>Please enter some details before proceeding. You can always alter these later.</p>
+    <form onsubmit={onSubmit}>
+      <PersistentSettings errors={errors} onchange={onChange}></PersistentSettings>
+      <Button class="action float-end" type="submit">OK</Button>
+    </form>
+  </div>
+  {:else if !piranhaAPI.running && !piranhaAPI.log.length}
     <RunParameters />
   {:else}
     <RunProgress />

@@ -16,15 +16,17 @@
   "parameterMinKnowFolder": "Dossier MinKnow",
   "parameterName": "Nom",
   "parameterNotes": "Notes",
-  "parameterOutputFolder": "Dossier de sortie",
   "parameterThreads": "Threads d'analyse",
+  "persistentSettings": "Options persistantes",
   "piranhaOutputSettings": "Options de Sortie Piranha",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
   "runSettings": "Paramètres d'exécution",
   "sequencingRunProgress": "État d'avancement du séquençage",
   "settings": "Paramètres",
+  "settingInstitute": "Institut",
   "settingNegativeControl": "Contrôle négatif",
+  "settingOutputFolder": "Dossier de sortie",
   "settingPositiveControl": "Contrôle positif",
   "settingProtocol": "Protocole",
   "settingOrientation": "Orientation",
@@ -32,5 +34,6 @@
   "settingOverwriteOutput": "Écraser la sortie",
   "settingOutputIntermediateFiles": "Sortez des fichiers intermédiaires",
   "settingAllMetadataToHeader": "Toutes des métadonnées à les en-têtes",
-  "settingDateStamp": "Horodatage"
+  "settingDateStamp": "Horodatage",
+  "settingUserName": "Nom d'utilisateur"
 }

@@ -9,7 +9,6 @@ export interface PiranhaRunParameters {
   notes: string;
   barcodesFilePath: string;
   minKnowFolderPath: string;
-  outputFolderPath: string; // This will eventually move into settings, but it's easier to provide in form for now
   threads: number;
 }
 
@@ -26,7 +25,13 @@ export enum PiranhaOrientation {
   Horizontal = "horizontal"
 }
 
-export interface PiranhaSettings {
+export interface PersistentSettings {
+  userName: string;
+  institute: string;
+  outputFolderPath: string;
+}
+
+export interface PiranhaSettings extends PersistentSettings {
   // Run Settings
   protocol: PiranhaProtocol;
   positiveControl?: string;

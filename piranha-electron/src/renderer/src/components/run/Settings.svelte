@@ -13,6 +13,7 @@
 <script module lang="ts">
   import {requiredString} from "../utils";
   import * as z from "zod";
+  import PersistentSettings, {persistentSettingsFormSchema} from "./PersistentSettings.svelte";
 
   export const settingsFormSchema = {
     protocol: requiredString(),
@@ -23,7 +24,8 @@
     overwriteOutput: z.boolean(),
     outputIntermediateFiles: z.boolean(),
     allMetadataToHeader: z.boolean(),
-    dateStamp: z.boolean()
+    dateStamp: z.boolean(),
+    ...persistentSettingsFormSchema
   };
 </script>
 <Accordion.Root class="mb-4">
@@ -31,6 +33,12 @@
     <Accordion.Trigger class="accordion-trigger rounded-none">{m.settings()}</Accordion.Trigger>
     <Accordion.Content class="flex flex-col gap-4 text-balance p-2">
       <Accordion.Root type="multiple" defaultValue={["runSettings"]}>
+        <Accordion.Item value="persistentSettings">
+          <Accordion.Trigger class="bg-muted accordion-trigger rounded-none">{m.persistentSettings()}</Accordion.Trigger>
+          <Accordion.Content class="flex flex-col gap-4 text-balance border-muted-foreground">
+            <PersistentSettings errors={errors} onchange={onchange} ></PersistentSettings>
+          </Accordion.Content>
+        </Accordion.Item>
         <!-- TODO: why doesn't this open by default?? -->
         <Accordion.Item value="runSettings">
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none">{m.runSettings()}</Accordion.Trigger>
