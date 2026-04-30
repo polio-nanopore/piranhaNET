@@ -21,7 +21,7 @@ function createWindow(): void {
     },
   });
 
-  mainWindow.on("ready-to-show", async () => {
+  mainWindow.webContents.once("did-finish-load", async () => {
     mainWindow.show();
 
     try {
@@ -34,6 +34,15 @@ function createWindow(): void {
         (e as Error).message,
       );
     }
+  });
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error(`Load failed: ${errorDescription} (${errorCode}) at ${validatedURL}`);
+  });
+
+// Also check for renderer process crashes
+  mainWindow.webContents.on('render-process-gone', (event, details) => {
+    console.error(`Renderer process crashed: ${details.reason}`);
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

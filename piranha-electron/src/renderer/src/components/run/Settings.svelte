@@ -2,19 +2,28 @@
   import * as Accordion from "$lib/shadcn/ui/accordion";
   import * as Select from "$lib/shadcn/ui/select";
   import { Input } from "$lib/shadcn/ui/input";
+  import { Switch } from "$lib/shadcn/ui/switch";
   import { m } from "../../../../paraglide/messages";
   import {settings} from "$lib/store.svelte";
   import FormField from "../forms/FormField.svelte";
-  import {PiranhaProtocol} from "../../types";
+  import {PiranhaProtocol, PiranhaOrientation} from "../../types";
 
   const { errors, onchange } = $props();
 </script>
 <script module lang="ts">
   import {requiredString} from "../utils";
+  import * as z from "zod";
+
   export const settingsFormSchema = {
     protocol: requiredString(),
     positiveControl: requiredString(),
-    negativeControl: requiredString()
+    negativeControl: requiredString(),
+    orientation: requiredString(),
+    outputPrefix: z.string(),
+    overwriteOutput: z.boolean(),
+    outputIntermediateFiles: z.boolean(),
+    allMetadataToHeader: z.boolean(),
+    dateStamp: z.boolean()
   };
 </script>
 <Accordion.Root class="mb-4">
@@ -61,6 +70,67 @@
           </Accordion.Content>
         </Accordion.Item>
       </Accordion.Root>
+      <Accordion.Item value="piranhaOutputSettings">
+        <Accordion.Trigger class="bg-muted accordion-trigger rounded-none">{m.piranhaOutputSettings()}</Accordion.Trigger>
+        <Accordion.Content class="flex flex-col gap-4 text-balance border-muted-foreground">
+          <FormField
+            label={m.settingOrientation()}
+            error={errors.orientation}
+            labelFor="orientation-field"
+          >
+            <Select.Root type="single" id="protocol-field" bind:value={settings.orientation} onchange={onchange}
+            >
+              <Select.Trigger class="w-full">{settings.orientation}</Select.Trigger>
+              <Select.Content>
+                <!-- TODO: check if orientation should be translated - it isn't in old GUI -->
+                {#each Object.values(PiranhaOrientation) as orientation}
+                  <Select.Item value={orientation} label={orientation}>{orientation}</Select.Item>
+                {/each}
+              </Select.Content>
+            </Select.Root>
+          </FormField>
+          <FormField
+            label={m.settingOutputPrefix()}
+            error={errors.outputPrefix}
+            labelFor="output-prefix-field"
+          >
+            <Input id="output-prefix-field" bind:value={settings.outputPrefix} onchange={onchange}
+            ></Input>
+          </FormField>
+          <FormField
+            label={m.settingOverwriteOutput()}
+            error={errors.overwriteOutput}
+            labelFor="overwrite-output-field"
+          >
+            <Switch id="overwrite-output-field" bind:checked={settings.overwriteOutput} onchange={onchange}
+            ></Switch>
+          </FormField>
+          <FormField
+            label={m.settingOutputIntermediateFiles()}
+            error={errors.outputIntermediateFiles}
+            labelFor="output-intermediate-files-field"
+          >
+            <Switch id="output-intermediate-files-field" bind:checked={settings.outputIntermediateFiles} onchange={onchange}
+            ></Switch>
+          </FormField>
+          <FormField
+            label={m.settingAllMetadataToHeader()}
+            error={errors.allMetadataToHeader}
+            labelFor="all-metadata-to-header-field"
+          >
+            <Switch id="all-metadata-to-header-field" bind:checked={settings.allMetadataToHeader} onchange={onchange}
+            ></Switch>
+          </FormField>
+          <FormField
+            label={m.settingDateStamp()}
+            error={errors.dateStamp}
+            labelFor="date-stamp-field"
+          >
+            <Switch id="date-stamp-field" bind:checked={settings.dateStamp} onchange={onchange}
+            ></Switch>
+          </FormField>
+        </Accordion.Content>
+      </Accordion.Item>
     </Accordion.Content>
   </Accordion.Item>
 </Accordion.Root>

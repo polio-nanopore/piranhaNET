@@ -1,5 +1,5 @@
 import type {AppState, PiranhaRunParameters, PiranhaSettings} from "../types";
-import {PiranhaProtocol} from "../types";
+import {PiranhaOrientation, PiranhaProtocol} from "../types";
 
 export const routerHelper = $state({
   // Whether we've initialised the router to default route "/" - we need to do this because the router in electron
@@ -11,6 +11,12 @@ export const settings: PiranhaSettings = $state({
   protocol: PiranhaProtocol.Stool,
   positiveControl: "positive",
   negativeControl: "negative",
+  orientation: PiranhaOrientation.Vertical,
+  outputPrefix: "analysis",
+  overwriteOutput: false,
+  outputIntermediateFiles: false,
+  allMetadataToHeader: false,
+  dateStamp: false
 });
 
 export const appState: AppState = $state({

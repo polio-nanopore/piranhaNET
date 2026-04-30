@@ -1,3 +1,5 @@
+import {PiranhaOrientation} from "../renderer/src/types";
+
 export interface PiranhaRunOptions {
   name: string;
   notes: string;
@@ -8,6 +10,12 @@ export interface PiranhaRunOptions {
   protocol: "stool" | "environmental" | "isolate";
   positiveControl?: string;
   negativeControl?: string;
+  orientation: "vertical" | "horizontal";
+  outputPrefix?: string;
+  overwriteOutput: boolean;
+  outputIntermediateFiles: boolean;
+  allMetadataToHeader: boolean;
+  dateStamp: boolean;
 }
 
 export interface FileDialogOptions {

@@ -18,6 +18,7 @@
   "parameterNotes": "Notes",
   "parameterOutputFolder": "Dossier de sortie",
   "parameterThreads": "Threads d'analyse",
+  "piranhaOutputSettings": "Options de Sortie Piranha",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
   "runSettings": "Paramètres d'exécution",
@@ -25,5 +26,11 @@
   "settings": "Paramètres",
   "settingNegativeControl": "Contrôle négatif",
   "settingPositiveControl": "Contrôle positif",
-  "settingProtocol": "Protocole"
+  "settingProtocol": "Protocole",
+  "settingOrientation": "Orientation",
+  "settingOutputPrefix": "Préfixe de sortie",
+  "settingOverwriteOutput": "Écraser la sortie",
+  "settingOutputIntermediateFiles": "Sortez des fichiers intermédiaires",
+  "settingAllMetadataToHeader": "Toutes des métadonnées à les en-têtes",
+  "settingDateStamp": "Horodatage"
 }

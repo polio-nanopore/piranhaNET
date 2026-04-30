@@ -21,10 +21,23 @@ export enum PiranhaProtocol {
   Isolate = "isolate"
 }
 
+export enum PiranhaOrientation {
+  Vertical = "vertical",
+  Horizontal = "horizontal"
+}
+
 export interface PiranhaSettings {
+  // Run Settings
   protocol: PiranhaProtocol;
   positiveControl?: string;
   negativeControl?: string;
+  // Piranha Output Settings
+  orientation: PiranhaOrientation;
+  outputPrefix?: string;
+  overwriteOutput: boolean;
+  outputIntermediateFiles: boolean;
+  allMetadataToHeader: boolean;
+  dateStamp: boolean;
 }
 
 /**
