@@ -45,6 +45,9 @@ export class PiranhaRunner {
       `--notes ${escapeOption(options.notes)}`,
       `-pc ${escapeOption(options.positiveControl || "")}`,
       `-nc ${escapeOption(options.negativeControl || "")}`,
+      `--institute ${escapeOption(options.institute || "")}`,
+      `--username ${escapeOption(options.userName || "")}`,
+      `--orientation ${escapeOption(options.orientation || "")}`
     ].join(" ");
 
     const env = [envString];

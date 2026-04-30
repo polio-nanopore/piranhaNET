@@ -38,7 +38,6 @@ export const defaultRunParameters = (): PiranhaRunParameters => ({
   notes: "",
   barcodesFilePath: "",
   minKnowFolderPath: "",
-  outputFolderPath: "",
   threads: 10,
 });
 

@@ -16,6 +16,8 @@ export interface PiranhaRunOptions {
   outputIntermediateFiles: boolean;
   allMetadataToHeader: boolean;
   dateStamp: boolean;
+  userName: string;
+  institute: string;
 }
 
 export interface FileDialogOptions {
