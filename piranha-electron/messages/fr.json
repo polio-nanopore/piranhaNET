@@ -19,6 +19,7 @@
   "parameterThreads": "Threads d'analyse",
   "persistentSettings": "Options persistantes",
   "piranhaOutputSettings": "Options de Sortie Piranha",
+  "provideInitialSettings": "Veuillez saisir quelques informations avant de continuer. Vous pourrez les modifier ultérieurement.",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
   "runSettings": "Paramètres d'exécution",
@@ -35,5 +36,6 @@
   "settingOutputIntermediateFiles": "Sortez des fichiers intermédiaires",
   "settingAllMetadataToHeader": "Toutes des métadonnées à les en-têtes",
   "settingDateStamp": "Horodatage",
-  "settingUserName": "Nom d'utilisateur"
+  "settingUserName": "Nom d'utilisateur",
+  "welcome": "Bienvenue sur PiranhaNET"
 }

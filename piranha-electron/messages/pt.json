@@ -19,6 +19,7 @@
   "parameterThreads": "Fios de execução de análise",
   "persistentSettings": "Opções persistentes",
   "piranhaOutputSettings": "Configurações de Saída do Piranha",
+  "provideInitialSettings": "Por favor, introduza alguns dados antes de prosseguir. Poderá alterá-los posteriormente.",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
   "runSettings": "Configurações de execução",
@@ -35,5 +36,6 @@
   "settingOutputIntermediateFiles": "Ficheiros intermediários de saída",
   "settingAllMetadataToHeader": "Todos os metadados nos cabeçalhos",
   "settingDateStamp": "Carimbo de data",
-  "settingUserName": "Nome de utilizador"
+  "settingUserName": "Nome de utilizador",
+  "welcome": "Bem-vindo ao PiranhaNET"
 }

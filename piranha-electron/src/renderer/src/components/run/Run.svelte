@@ -1,5 +1,6 @@
 <script lang="ts">
   import { z, type ZodString } from "zod";
+  import { m } from "../../../../paraglide/messages";
   import { Button } from "$lib/shadcn/ui/button";
   import { piranhaAPI } from "$lib//piranhaAPI.svelte";
   import RunParameters from "./RunParameters.svelte";
@@ -45,8 +46,8 @@
   <!-- TODO: put this form in its own component -->
   <!-- TODO: Translate -->
   <div class="justify-center">
-    <h1 class="text-2xl mb-4">Welcome to PiranhaNET</h1>
-    <p>Please enter some details before proceeding. You can always alter these later.</p>
+    <h1 class="text-2xl mb-4">{m.welcome()}</h1>
+    <p>{m.provideInitialSettings()}</p>
     <form onsubmit={onSubmit}>
       <PersistentSettings errors={errors} onchange={onChange}></PersistentSettings>
       <Button class="action float-end" type="submit">OK</Button>
