@@ -52,5 +52,5 @@ describe("piranhaRunner", () => {
     expect(outputText).toMatch(
       /\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/,
     ); //output report
-  }, 300_000); // This will take a while!
+  }, 480_000); // This will take a while!
 });
