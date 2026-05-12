@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { z, type ZodString } from "zod";
   import { m } from "../../../../paraglide/messages";
   import { Button } from "$lib/shadcn/ui/button";
   import { Input } from "$lib/shadcn/ui/input";
@@ -9,28 +8,7 @@
   import { createPiranhaRunOptions } from "../../types";
   import { piranhaAPI } from "$lib/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
-
-  const THREADS_MIN = 1;
-  const THREADS_MAX = 20;
-
-  const requiredString = (): ZodString =>
-    z.string().nonempty(m.formsErrorRequiredValue());
-  const threadsRangeError = m.formsErrorRange({
-    min: THREADS_MIN,
-    max: THREADS_MAX,
-  });
-
-  const formSchema = z.object({
-    name: requiredString(),
-    barcodesFilePath: requiredString(),
-    minKnowFolderPath: requiredString(),
-    outputFolderPath: requiredString(),
-    notes: requiredString(),
-    threads: z
-      .int(m.formsErrorNumberRequired())
-      .min(THREADS_MIN, { error: threadsRangeError })
-      .max(THREADS_MAX, { error: threadsRangeError }),
-  });
+  import formSchema from "./RunParametersSchema";
 
   let errors = $state<Record<string, string[]>>({});
 
