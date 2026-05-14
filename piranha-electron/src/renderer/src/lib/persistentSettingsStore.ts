@@ -1,8 +1,8 @@
-import type {PersistentSettings} from "../types";
+import type { PersistentSettings } from "../types";
 
 const KEY = "persistentSettings";
 export class PersistentSettingsStore {
-  loadSettings (): PersistentSettings | null {
+  loadSettings(): PersistentSettings | null {
     const stored = localStorage.getItem(KEY);
     return stored ? JSON.parse(stored) : null;
   }
@@ -13,7 +13,7 @@ export class PersistentSettingsStore {
     const stored: PersistentSettings = {
       userName: settings.userName,
       institute: settings.institute,
-      outputFolderPath: settings.outputFolderPath
+      outputFolderPath: settings.outputFolderPath,
     };
     localStorage.setItem(KEY, JSON.stringify(stored));
   }

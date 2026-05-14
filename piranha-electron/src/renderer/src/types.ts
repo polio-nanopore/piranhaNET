@@ -17,12 +17,12 @@ export interface PiranhaRunParameters {
 export enum PiranhaProtocol {
   Stool = "stool",
   Environmental = "environmental",
-  Isolate = "isolate"
+  Isolate = "isolate",
 }
 
 export enum PiranhaOrientation {
   Vertical = "vertical",
-  Horizontal = "horizontal"
+  Horizontal = "horizontal",
 }
 
 export interface PersistentSettings {

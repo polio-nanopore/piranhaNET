@@ -9,8 +9,8 @@
   import { createPiranhaRunOptions } from "../../types";
   import { piranhaAPI } from "../../lib/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
-  import {requiredString} from "../utils";
-  import Settings, {settingsFormSchema} from "./Settings.svelte";
+  import { requiredString } from "../utils";
+  import Settings, { settingsFormSchema } from "./Settings.svelte";
 
   const THREADS_MIN = 1;
   const THREADS_MAX = 20;
@@ -29,13 +29,13 @@
       .int(m.formsErrorNumberRequired())
       .min(THREADS_MIN, { error: threadsRangeError })
       .max(THREADS_MAX, { error: threadsRangeError }),
-    ...settingsFormSchema
+    ...settingsFormSchema,
   });
 
   let errors = $state<Record<string, string[]>>({});
 
   function validate(): boolean {
-    const result = formSchema.safeParse({...runParameters, ...settings});
+    const result = formSchema.safeParse({ ...runParameters, ...settings });
     if (!result.success) {
       errors = result.error.flatten().fieldErrors;
     } else {
@@ -70,6 +70,7 @@
 
 <div data-testid="new-run-title">{m.newSequencingRun()}</div>
 <form onsubmit={onSubmit}>
+  <div id="scrolling-container" class="max-h-[calc(100vh-10rem)] overflow-y-auto">
   <FormField
     label={m.parameterName()}
     error={errors.name}
@@ -128,7 +129,8 @@
       onchange={onChange}
     ></Input>
   </FormField>
-  <Settings errors={errors} onchange={onChange}></Settings>
+  <Settings {errors} onchange={onChange}></Settings>
+  </div>
   <Button class="action float-end" type="submit" data-testid="run"
     >{m.runPiranha()}
   </Button>

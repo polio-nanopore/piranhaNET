@@ -22,6 +22,7 @@ function createWindow(): void {
   });
 
   mainWindow.webContents.once("did-finish-load", async () => {
+    mainWindow.maximize();
     mainWindow.show();
 
     try {
@@ -36,12 +37,17 @@ function createWindow(): void {
     }
   });
 
-  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
-    console.error(`Load failed: ${errorDescription} (${errorCode}) at ${validatedURL}`);
-  });
+  mainWindow.webContents.on(
+    "did-fail-load",
+    (event, errorCode, errorDescription, validatedURL) => {
+      console.error(
+        `Load failed: ${errorDescription} (${errorCode}) at ${validatedURL}`,
+      );
+    },
+  );
 
-// Also check for renderer process crashes
-  mainWindow.webContents.on('render-process-gone', (event, details) => {
+  // Also check for renderer process crashes
+  mainWindow.webContents.on("render-process-gone", (event, details) => {
     console.error(`Renderer process crashed: ${details.reason}`);
   });
 

@@ -1,4 +1,4 @@
-import {PiranhaOrientation} from "../renderer/src/types";
+import { PiranhaOrientation } from "../renderer/src/types";
 
 export interface PiranhaRunOptions {
   name: string;
