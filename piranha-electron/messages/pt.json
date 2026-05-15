@@ -1,9 +1,24 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "about": "Sobre",
+  "apiErrorAlreadyRunning": "Piranha já está em execução",
+  "formsChooseFile": "Selecione o ficheiro",
+  "formsChooseFolder": "Selecione a pasta",
+  "formsNoFileChosen": "Nenhum ficheiro selecionado",
+  "formsErrorNumberRequired": "O valor deve ser um número inteiro",
+  "formsErrorRange": "O valor deve estar entre {min} e {max}",
+  "formsNoFolderChosen": "Nenhuma pasta selecionada",
+  "formsErrorRequiredValue": "Valor obrigatório",
   "initializing": "Inicializando",
+  "newRun": "Nova corrida",
+  "newSequencingRun": "Nova execução de sequenciação",
+  "parameterBarcodesFile": "Ficheiro de códigos de barras",
+  "parameterMinKnowFolder": "Pasta MinKnow",
+  "parameterName": "Nome",
+  "parameterNotes": "Notas",
+  "parameterOutputFolder": "Pasta de saída",
+  "parameterThreads": "Fios de execução de análise",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
-  "testMessageMain": "Enviar mensagem de teste",
-  "welcome": "Bem-vindo ao PiranhaNET"
+  "sequencingRunProgress": "Progresso da execução do sequenciamento"
 }

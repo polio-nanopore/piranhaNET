@@ -1,4 +1,4 @@
-import type { PiranhaRunOptions } from "./types.js";
+import type { PiranhaRunOptions } from "../shared/types";
 import Docker from "dockerode";
 
 // Class for pulling piranha docker image and using it to run piranha jobs, used by Electron main process
@@ -33,13 +33,21 @@ export class PiranhaRunner {
     options: PiranhaRunOptions,
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
-    const env = [
-      `THREADS=${options.threads || 1}`,
-      `POSITIVE_CONTROL=${options.positiveControl}`,
-      `NEGATIVE_CONTROL=${options.negativeControl}`,
-    ];
+    // TODO: use yaml file to pass parameters in API Docker image - for now use same approach as PiranhaGUI of "escaping"
+    // arg strings with underscores
+    const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
-    const containerRunPath = "/data/run_data/analysis";
+    const envString = [
+      `THREADS=${options.threads || 1}`,
+      `--runname ${escapeOption(options.name)}`,
+      `--notes ${escapeOption(options.notes)}`,
+      `-pc ${escapeOption(options.positiveControl || "")}`,
+      `-nc ${escapeOption(options.negativeControl || "")}`,
+    ].join(" ");
+
+    const env = [envString];
+
+    const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
@@ -50,15 +58,15 @@ export class PiranhaRunner {
       {
         Env: env,
         Volumes: {
-          containerRunPath: {},
+          containerBarcodesFilePath: {},
           containerBaseCalledPath: {},
           containerOutputPath: {},
         },
         HostConfig: {
           Binds: [
-            `${options.runPath}:${containerRunPath}`,
-            `${options.baseCalledPath}:${containerBaseCalledPath}`,
-            `${options.outputPath}:${containerOutputPath}`,
+            `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
+            `${options.minKnowFolderPath}:${containerBaseCalledPath}`,
+            `${options.outputFolderPath}:${containerOutputPath}`,
           ],
           AutoRemove: true, // rm
         },

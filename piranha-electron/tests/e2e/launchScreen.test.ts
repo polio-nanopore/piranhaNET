@@ -2,6 +2,7 @@ import {
   test,
   expect,
   _electron as electron,
+  Locator,
   Page,
   ElectronApplication,
 } from "@playwright/test";
@@ -25,6 +26,31 @@ test.beforeEach(async () => {
   // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
   // permission-related failures on CI.
   electronApp = await launchApp();
+  await electronApp.evaluate(({ app, ipcMain }) => {
+    ipcMain.removeHandler("show-file-dialog");
+    ipcMain.handle("show-file-dialog", async (_event, options) => {
+      const currentDir = app.getAppPath();
+
+      const join = (...args): string => {
+        return args.join("/");
+      };
+
+      const sourceDir = join(...currentDir.split("/").slice(0, -3));
+
+      const testDataDir = join(sourceDir, "test-data");
+      if (options.title === "Barcodes file") {
+        return join(testDataDir, "barcodes.csv");
+      }
+      if (options.title === "MinKnow folder") {
+        return join(testDataDir, "demultiplexed");
+      }
+      if (options.title === "Output folder") {
+        return join(sourceDir, "test-results");
+      }
+      //throw new Error("unknown title");
+      return "unknown title";
+    });
+  });
 });
 
 test.afterEach(async () => {
@@ -37,8 +63,38 @@ const getWindow = async (): Promise<Page> => {
   return await electronApp.firstWindow();
 };
 
-test("can see main window and run Piranha", async () => {
+const getRunButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Run Piranha/ });
+const getNameInput = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Name/);
+const getBarcodesFileButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Barcodes file/);
+const getMinKnowFolderButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/MinKnow folder/);
+const getOutputFolderButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Output folder/);
+const getNotesInput = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Notes/);
+
+const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
+  buttonElement.locator("..");
+const expectErrorMessage = async (
+  fieldElement: Locator,
+  expectError = true,
+  expectedErrorMsg = "Required value",
+): Promise<void> => {
+  // error is in <p> following field
+  const errorEl = fieldElement.locator("//following-sibling::p");
+  if (expectError) {
+    await expect(errorEl).toHaveText(expectedErrorMsg);
+  } else {
+    await expect(errorEl).not.toBeVisible();
+  }
+};
+
+test("can see main window, fill in parameters form and run Piranha", async () => {
   const win = await getWindow();
+
   await expect(await win.getByText(/Initializing.../)).toBeVisible();
   await expect(
     await win.getByText("PiranhaNET", { exact: true }),
@@ -49,12 +105,32 @@ test("can see main window and run Piranha", async () => {
     timeout: 300_000,
   });
 
-  // click run button
-  await win.getByRole("button", { name: /Run Piranha/ }).click();
+  // Fill in parameters
+  const nameInput = await getNameInput(win);
+  await nameInput.fill("Test Name");
+
+  const barcodesFileButton = await getBarcodesFileButton(win);
+  await barcodesFileButton.click();
+
+  const minKnowFolderButton = await getMinKnowFolderButton(win);
+  await minKnowFolderButton.click();
+
+  const outputFolderButton = await getOutputFolderButton(win);
+  await outputFolderButton.click();
+
+  const notesInput = await getNotesInput(win);
+  await notesInput.fill("some test notes");
+
+  // takes a couple of seconds to become ready
+  const runButton = await getRunButton(win);
+  await win.waitForTimeout(2000);
+  await runButton.click();
 
   // See expected start run text in log
   const log = await win.getByTestId("logs");
-  await expect(log).toHaveText(/Building DAG of jobs.../);
+  await expect(log).toHaveText(/Building DAG of jobs.../, {
+    timeout: 15_000,
+  });
 
   // Eventually see run finished messages
   await expect(log).toHaveText(
@@ -66,31 +142,97 @@ test("can see main window and run Piranha", async () => {
   await expect(log).toHaveText(/Piranha Run Finished/);
 });
 
+test("can see errors when submit incomplete parameters", async () => {
+  const win = await getWindow();
+
+  // click run immediately  - should get errors on everything except threads
+  const runButton = await getRunButton(win);
+  await runButton.click();
+
+  const nameInput = await getNameInput(win);
+  await expectErrorMessage(nameInput);
+
+  const barcodesFileButton = await getBarcodesFileButton(win);
+  const barcodesFileField = getFieldFromDialogButton(barcodesFileButton);
+  await expectErrorMessage(barcodesFileField);
+
+  const minKnowFolderButton = await getMinKnowFolderButton(win);
+  const minKnowFolderField = getFieldFromDialogButton(minKnowFolderButton);
+  await expectErrorMessage(minKnowFolderField);
+
+  const outputFolderButton = await getOutputFolderButton(win);
+  const outputFolderField = getFieldFromDialogButton(outputFolderButton);
+  await expectErrorMessage(outputFolderField);
+
+  const notesInput = await getNotesInput(win);
+  await expectErrorMessage(notesInput);
+
+  // correct values and see errors disappear
+  await nameInput.fill("test name");
+  // Need to lose focus for update to occur
+  await nameInput.blur();
+  await expectErrorMessage(nameInput, false);
+
+  await barcodesFileButton.click();
+  await expectErrorMessage(barcodesFileField, false);
+
+  await minKnowFolderButton.click();
+  await expectErrorMessage(minKnowFolderField, false);
+
+  await outputFolderButton.click();
+  await expectErrorMessage(outputFolderField, false);
+
+  await notesInput.fill("test notes");
+  await notesInput.blur();
+  await expectErrorMessage(notesInput, false);
+
+  // put in an invalid threads value - see threads error
+  const threadsInput = await win.locator("#threads-field");
+  await threadsInput.fill("-1");
+  await threadsInput.blur();
+  await expectErrorMessage(
+    threadsInput,
+    true,
+    "Value must be between 1 and 20",
+  );
+  await threadsInput.fill("");
+  await threadsInput.blur();
+  await expectErrorMessage(threadsInput, true, "Value must be a whole number");
+  await threadsInput.fill("21");
+  await threadsInput.blur();
+  await expectErrorMessage(
+    threadsInput,
+    true,
+    "Value must be between 1 and 20",
+  );
+
+  // correct value and see threads error disappear
+  await threadsInput.fill("20");
+  await threadsInput.blur();
+  await expectErrorMessage(threadsInput, false);
+});
+
 test("can change language", async () => {
   let win = await getWindow();
-  let welcome = await win.getByTestId("welcome");
-  await expect(welcome).toHaveText(/Welcome to Piranha/);
+  let title = await win.getByTestId("new-run-title");
+  await expect(title).toHaveText(/New Sequencing Run/);
 
   //change to French
   let langLink = await win.getByRole("button", { name: "en", exact: true });
   await langLink.click();
   const frItem = await win.getByTestId("lang-fr");
   await frItem.click();
-  await expect(welcome).toHaveText(/Bienvenue à PiranhaNET/);
+  await expect(title).toHaveText(/Nouvelle séquence/);
   const run = await win.getByTestId("run");
   await expect(run).toHaveText(/Courez Piranha/);
-  const testMsg = await win.getByTestId("test-msg");
-  await expect(testMsg).toHaveText(/Envoyer un message de test/);
 
   //change to Portuguese
   langLink = await win.getByRole("button", { name: "fr" });
   await langLink.click();
   const ptItem = await win.getByTestId("lang-pt");
   await ptItem.click();
-  await expect(welcome).toHaveText(/Bem-vindo ao PiranhaNET/);
+  await expect(title).toHaveText(/Nova execução de sequenciação/);
   await expect(run).toHaveText(/Corra Piranha/);
-  await expect(run).toHaveText(/Corra Piranha/);
-  await expect(testMsg).toHaveText(/Enviar mensagem de teste/);
 
   // Test language is retained on restart
   await electronApp.close();
@@ -98,16 +240,13 @@ test("can change language", async () => {
   win = await getWindow();
   langLink = await win.getByRole("button", { name: "pt" });
   expect(langLink).toBeEnabled();
-  welcome = await win.getByTestId("welcome");
-  await expect(welcome).toHaveText(/Bem-vindo ao PiranhaNET/);
+  title = await win.getByTestId("new-run-title");
+  await expect(title).toHaveText(/Nova execução de sequenciação/);
 
   // change back to English
   await langLink.click();
   const enItem = await win.getByTestId("lang-en");
   await enItem.click();
-  await expect(welcome).toHaveText(/Welcome to Piranha/);
+  await expect(title).toHaveText(/New Sequencing Run/);
   await expect(await win.getByTestId("run")).toHaveText(/Run Piranha/);
-  await expect(await win.getByTestId("test-msg")).toHaveText(
-    /Send test message/,
-  );
 });

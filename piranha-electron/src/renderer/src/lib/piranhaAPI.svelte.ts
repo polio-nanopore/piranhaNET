@@ -1,3 +1,6 @@
+import type { PiranhaRunOptions } from "../../../shared/types";
+import { m } from "../../../paraglide/messages";
+
 export class PiranhaAPI {
   #initialized = $state(false);
   #running = $state(false);
@@ -12,7 +15,8 @@ export class PiranhaAPI {
 
     window.api?.onChunk((chunk) => {
       const textChunk = this.#decoder.decode(chunk, { stream: true });
-      this.#log.push(`${textChunk}`);
+      const lines = textChunk.split("\n");
+      this.#log.push(...lines);
     });
     window.api?.onEnd(() => {
       this.#log.push("Piranha Run Finished");
@@ -40,17 +44,17 @@ export class PiranhaAPI {
     return this.#log;
   }
 
-  runPiranha(): void {
-    // TODO throw error if we're already running
+  runPiranha(options: PiranhaRunOptions): void {
+    if (this.#running) {
+      throw new Error(m.apiErrorAlreadyRunning());
+    }
     this.#log = [];
-    window.api.runPiranha();
+    window.api.runPiranha(options);
     this.#running = true;
   }
 
-  testMessageMain(): void {
-    // Prove that we can still message main while piranha is running
-    // - should see it log a message to the console
-    window.api.testMessage();
+  clearLog(): void {
+    this.#log = [];
   }
 }
 

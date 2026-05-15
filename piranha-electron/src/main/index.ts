@@ -1,16 +1,17 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
+import { FileDialogOptions, PiranhaRunOptions } from "../shared/types";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: 1200,
+    height: 900,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
@@ -49,17 +50,26 @@ function createWindow(): void {
   }
 
   /**
-   * Handles request from renderer to log a test message. This is intended as a temporary
-   * proof of concept that the main process is still responsive while running a piranha job.
+   * Display a native file dialog and return selection to renderer
    */
-  ipcMain.on("test-message", async () => {
-    console.log("Message received from renderer");
-  });
+  ipcMain.handle(
+    "show-file-dialog",
+    async (_event, options: FileDialogOptions) => {
+      const openType = options.selectFolder ? "openDirectory" : "openFile";
+      const result = await dialog.showOpenDialog(mainWindow, {
+        title: options.title,
+        defaultPath: options.defaultPath,
+        properties: [openType],
+        filters: options.filters || [],
+      });
+      return result.filePaths.length ? result.filePaths[0] : null;
+    },
+  );
 
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.on("run-piranha", async () => {
+  ipcMain.on("run-piranha", async (_event, options: PiranhaRunOptions) => {
     const writable = new Writable({
       write(chunk, _, callback) {
         // Send each chunk to the renderer
@@ -73,20 +83,8 @@ function createWindow(): void {
       },
     });
 
-    // Pre-canned run with test data, to be replaced with user-selected parameters
-    const testDataPath = join(__dirname, "../../../test-data");
     try {
-      await runner.runPiranha(
-        {
-          runPath: testDataPath,
-          baseCalledPath: join(testDataPath, "demultiplexed"),
-          outputPath: join(__dirname, "../../../test-results"),
-          positiveControl: "Pos1,P2",
-          negativeControl: "my negative control",
-          threads: 1,
-        },
-        writable,
-      );
+      await runner.runPiranha(options, writable);
     } catch (e) {
       mainWindow.webContents.send(
         "error",

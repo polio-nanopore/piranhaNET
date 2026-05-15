@@ -1,10 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { FileDialogOptions, PiranhaRunOptions } from "../shared/types";
 
 // Custom APIs for renderer
 const api = {
-  runPiranha: () => ipcRenderer.send("run-piranha"),
-  testMessage: () => ipcRenderer.send("test-message"),
+  runPiranha: (options: PiranhaRunOptions) =>
+    ipcRenderer.send("run-piranha", options),
   versions: process.versions,
+  showFileDialog: (options: FileDialogOptions) =>
+    ipcRenderer.invoke("show-file-dialog", options),
   onInitialized: (callback) =>
     ipcRenderer.on("initialized", (_event) => callback()),
   onChunk: (callback) =>
