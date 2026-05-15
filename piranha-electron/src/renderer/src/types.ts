@@ -2,6 +2,7 @@ import type { PiranhaRunOptions } from "../../shared/types";
 
 export interface AppState {
   doneInitialSubmit: boolean;
+  doneInitialValidate: boolean;
 }
 
 export interface PiranhaRunParameters {
@@ -25,18 +26,20 @@ export enum PiranhaOrientation {
   Horizontal = "horizontal",
 }
 
-export interface PersistentSettings {
+export interface UserSettings {
   userName: string;
   institute: string;
   outputFolderPath: string;
 }
 
-export interface PiranhaSettings extends PersistentSettings {
-  // Run Settings
+export interface RunSettings {
   protocol: PiranhaProtocol;
   positiveControl?: string;
   negativeControl?: string;
-  // Piranha Output Settings
+}
+
+export interface PiranhaSettings extends UserSettings, RunSettings {
+  // Piranha Output Settings - unlike UserSettings and RunSetttings these are not persisted between runs
   orientation: PiranhaOrientation;
   outputPrefix?: string;
   overwriteOutput: boolean;

@@ -1,21 +1,30 @@
 <script module lang="ts">
   import { requiredString } from "../utils";
+  import { tick } from "svelte";
   import * as z from "zod";
-  import PersistentSettings, {
-    persistentSettingsFormSchema,
-  } from "./PersistentSettings.svelte";
+  import UserSettings, {
+    userSettingsFormSchema,
+  } from "./UserSettings.svelte";
 
-  export const settingsFormSchema = {
+  const runSettingsFormSchema = {
     protocol: requiredString(),
     positiveControl: requiredString(),
-    negativeControl: requiredString(),
+    negativeControl: requiredString()
+  };
+
+  const piranhaOutputSettingsFormSchema = {
     orientation: requiredString(),
     outputPrefix: z.string(),
     overwriteOutput: z.boolean(),
     outputIntermediateFiles: z.boolean(),
     allMetadataToHeader: z.boolean(),
-    dateStamp: z.boolean(),
-    ...persistentSettingsFormSchema,
+    dateStamp: z.boolean()
+  };
+
+  export const settingsFormSchema = {
+    ...runSettingsFormSchema,
+    ...piranhaOutputSettingsFormSchema,
+    ...userSettingsFormSchema,
   };
 </script>
 
@@ -25,32 +34,50 @@
   import { Input } from "$lib/shadcn/ui/input";
   import { Switch } from "$lib/shadcn/ui/switch";
   import { m } from "../../../../paraglide/messages";
-  import { settings } from "$lib/store.svelte";
+  import { settings, appState } from "$lib/store.svelte";
   import FormField from "../forms/FormField.svelte";
   import { PiranhaProtocol, PiranhaOrientation } from "../../types";
+  import {persistentSettingStore} from "../../lib/persistentSettingsStore";
+
+  const RUN_SETTINGS_SECTION = "runSettings";
+  const PIRANHA_OUTPUT_SETTINGS_SECTION = "piranhaOutputSettings";
+  const USER_SETTINGS_SECTION = "userSettings";
 
   const { errors, onchange } = $props();
-</script>
+  // check if run settings are uninitialised on load - open RunSettings section by default if so
+  const runSettingsUninitialised = !persistentSettingStore.loadRunSettings();
 
-<Accordion.Root class="mb-4">
-  <Accordion.Item>
+  const sectionNameIfErrors = (sectionSchema, sectionName) =>
+    Object.keys(sectionSchema).some((key) => Object.keys(errors).includes(key)) ? sectionName : null;
+  const sectionsWithError = $derived([
+    sectionNameIfErrors(runSettingsFormSchema, RUN_SETTINGS_SECTION),
+    sectionNameIfErrors(piranhaOutputSettingsFormSchema, PIRANHA_OUTPUT_SETTINGS_SECTION),
+    sectionNameIfErrors(userSettingsFormSchema, USER_SETTINGS_SECTION),
+  ].filter((s) => !!s));
+
+  // If we've already validated, open any sections with errors, otherwise open runSettings if they haven't been initialised
+  const openSections = $derived.by(() => {
+    console.log(`Sections updated: ${Date.now()}`);
+    if (appState.doneInitialValidate) {
+      return sectionsWithError;
+    } else {
+      return runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : [];
+    }
+  });
+
+  const handleRunSettingsChange = () => {
+    persistentSettingStore.saveRunSettings(settings);
+    onchange();
+  };
+</script>
+<Accordion.Root class="mb-4" type="single" value={(openSections || []).length ? "settings" : ""}>
+  <Accordion.Item value="settings">
     <Accordion.Trigger class="accordion-trigger rounded-none px-2"
       >{m.settings()}</Accordion.Trigger
     >
     <Accordion.Content class="flex flex-col gap-4 text-balance p-2">
-      <Accordion.Root type="multiple" defaultValue={["runSettings"]}>
-        <Accordion.Item value="persistentSettings">
-          <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
-            >{m.persistentSettings()}</Accordion.Trigger
-          >
-          <Accordion.Content
-            class="flex flex-col gap-4 text-balance border-muted-foreground px-2"
-          >
-            <PersistentSettings {errors} {onchange}></PersistentSettings>
-          </Accordion.Content>
-        </Accordion.Item>
-        <!-- TODO: why doesn't this open by default?? -->
-        <Accordion.Item value="runSettings">
+      <Accordion.Root type="multiple" value={openSections || []}>
+        <Accordion.Item value={RUN_SETTINGS_SECTION}>
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
             >{m.runSettings()}</Accordion.Trigger
           >
@@ -66,7 +93,7 @@
                 type="single"
                 id="protocol-field"
                 bind:value={settings.protocol}
-                {onchange}
+                onchange={handleRunSettingsChange}
               >
                 <Select.Trigger class="w-full"
                   >{settings.protocol}</Select.Trigger
@@ -89,7 +116,7 @@
               <Input
                 id="positive-control-field"
                 bind:value={settings.positiveControl}
-                {onchange}
+                onchange={handleRunSettingsChange}
               ></Input>
             </FormField>
             <FormField
@@ -100,13 +127,13 @@
               <Input
                 id="negative-control-field"
                 bind:value={settings.negativeControl}
-                {onchange}
+                onchange={handleRunSettingsChange}
               ></Input>
             </FormField>
           </Accordion.Content>
         </Accordion.Item>
 
-        <Accordion.Item value="piranhaOutputSettings">
+        <Accordion.Item value={PIRANHA_OUTPUT_SETTINGS_SECTION}>
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
             >{m.piranhaOutputSettings()}</Accordion.Trigger
           >
@@ -194,6 +221,16 @@
               ></Switch>
             </FormField>
             </div>
+          </Accordion.Content>
+        </Accordion.Item>
+        <Accordion.Item value={USER_SETTINGS_SECTION}>
+          <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
+          >{m.userSettings()}</Accordion.Trigger
+          >
+          <Accordion.Content
+            class="flex flex-col gap-4 text-balance border-muted-foreground px-2"
+          >
+            <UserSettings {errors} {onchange}></UserSettings>
           </Accordion.Content>
         </Accordion.Item>
       </Accordion.Root>

@@ -6,16 +6,16 @@
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
   import { persistentSettingStore } from "$lib/persistentSettingsStore";
-  import PersistentSettings, {
-    persistentSettingsFormSchema,
-  } from "./PersistentSettings.svelte";
-  import { runParameters, settings } from "../../lib/store.svelte";
+  import UserSettings, {
+    userSettingsFormSchema,
+  } from "./UserSettings.svelte";
+  import { appState, runParameters, settings } from "../../lib/store.svelte";
 
-  let needsFirstPersist = $state(!persistentSettingStore.loadSettings());
+  let needsFirstPersist = $state(!persistentSettingStore.loadUserSettings());
   let errors = $state<Record<string, string[]>>({});
   let validateOnEachChange = false;
 
-  const formSchema = z.object(persistentSettingsFormSchema);
+  const formSchema = z.object(userSettingsFormSchema);
 
   function validate(): boolean {
     const result = formSchema.safeParse({ ...runParameters, ...settings });
@@ -50,8 +50,8 @@
       <h1 class="text-2xl mb-4">{m.welcome()}</h1>
       <p>{m.provideInitialSettings()}</p>
       <form onsubmit={onSubmit}>
-        <PersistentSettings {errors} onchange={onChange}></PersistentSettings>
-        <Button class="action float-end" type="submit">OK</Button>
+        <UserSettings {errors} onchange={onChange}></UserSettings>
+        <Button class="action float-end" type="submit">{m.continue()}</Button>
       </form>
     </div>
   {:else if !piranhaAPI.running && !piranhaAPI.log.length}

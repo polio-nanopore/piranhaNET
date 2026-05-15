@@ -8,29 +8,37 @@ export const routerHelper = $state({
   initialNavigationDone: false,
 });
 
-const defaultPersistentSettings = {
+const defaultUserSettings = {
   userName: "",
   institute: "",
   outputFolderPath: "",
 };
 
-const persistentSettings =
-  persistentSettingStore.loadSettings() ?? defaultPersistentSettings;
+const defaultRunSettings = {
+  protocol: PiranhaProtocol.Stool,
+  positiveControl: "",
+  negativeControl: ""
+};
+
+const userSettings =
+  persistentSettingStore.loadUserSettings() ?? defaultUserSettings;
+
+const runSettings =
+  persistentSettingStore.loadRunSettings() ?? defaultRunSettings;
 
 export const settings: PiranhaSettings = $state({
-  protocol: PiranhaProtocol.Stool,
-  positiveControl: "positive",
-  negativeControl: "negative",
+  ...userSettings,
+  ...runSettings,
   orientation: PiranhaOrientation.Vertical,
   outputPrefix: "analysis",
   overwriteOutput: false,
   outputIntermediateFiles: false,
   allMetadataToHeader: false,
-  dateStamp: false,
-  ...persistentSettings,
+  dateStamp: false
 });
 
 export const appState: AppState = $state({
+  doneInitialValidate: false,
   doneInitialSubmit: false,
 });
 

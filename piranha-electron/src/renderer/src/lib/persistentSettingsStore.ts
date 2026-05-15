@@ -1,21 +1,28 @@
-import type { PersistentSettings } from "../types";
+import type { UserSettings, RunSettings } from "../types";
 
-const KEY = "persistentSettings";
+const USER_SETTINGS_KEY = "userSettings";
+const RUN_SETTINGS_KEY = "runSettings";
 export class PersistentSettingsStore {
-  loadSettings(): PersistentSettings | null {
-    const stored = localStorage.getItem(KEY);
+  loadUserSettings(): UserSettings | null {
+    const stored = localStorage.getItem(USER_SETTINGS_KEY);
     return stored ? JSON.parse(stored) : null;
   }
 
-  saveSettings(settings: PersistentSettings) {
-    // TODO: tidy this up
+  saveUserSettings(settings: UserSettings) {
     // Don't save any extraneous values
-    const stored: PersistentSettings = {
-      userName: settings.userName,
-      institute: settings.institute,
-      outputFolderPath: settings.outputFolderPath,
-    };
-    localStorage.setItem(KEY, JSON.stringify(stored));
+    const {userName, institute, outputFolderPath} = settings;
+    localStorage.setItem(USER_SETTINGS_KEY, JSON.stringify({userName, institute, outputFolderPath}));
+  }
+
+  loadRunSettings(): RunSettings | null {
+    const stored = localStorage.getItem(RUN_SETTINGS_KEY);
+    return stored ? JSON.parse(stored) : null;
+  }
+
+  saveRunSettings(settings: RunSettings) {
+    // Don't save any extraneous values
+    const {protocol, positiveControl, negativeControl} = settings;
+    localStorage.setItem(RUN_SETTINGS_KEY, JSON.stringify({protocol, positiveControl, negativeControl}));
   }
 }
 

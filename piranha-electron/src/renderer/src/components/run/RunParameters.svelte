@@ -41,6 +41,7 @@
     } else {
       errors = {};
     }
+    appState.doneInitialValidate = true;
     return result.success;
   }
 
@@ -131,7 +132,9 @@
   </FormField>
   <Settings {errors} onchange={onChange}></Settings>
   </div>
-  <Button class="action float-end" type="submit" data-testid="run"
+  <!-- Use mousedown for submit to avoid race conditions from logic which opens accordion sections in error - these
+   prevent submit happening if newly fixed error has not been blurred-->
+  <Button class="action float-end mt-2" onmousedown={onSubmit} data-testid="run"
     >{m.runPiranha()}
   </Button>
 </form>

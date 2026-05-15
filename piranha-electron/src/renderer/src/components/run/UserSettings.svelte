@@ -1,7 +1,8 @@
 <script module lang="ts">
   import { requiredString } from "../utils";
 
-  export const persistentSettingsFormSchema = {
+  // TODO: move this into schema module as for basic run params
+  export const userSettingsFormSchema = {
     userName: requiredString(),
     institute: requiredString(),
     outputFolderPath: requiredString(),
@@ -19,7 +20,7 @@
   const { errors, onchange } = $props();
 
   const handleChange = () => {
-    persistentSettingStore.saveSettings(settings);
+    persistentSettingStore.saveUserSettings(settings);
     onchange();
   };
 </script>
