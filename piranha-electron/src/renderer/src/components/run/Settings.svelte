@@ -22,9 +22,9 @@
   const sectionNameIfErrors = (sectionSchema, sectionName) =>
     Object.keys(sectionSchema).some((key) => Object.keys(errors).includes(key)) ? sectionName : null;
   const sectionsWithError = $derived([
-    sectionNameIfErrors(runSettingsFormSchema, RUN_SETTINGS_SECTION),
-    sectionNameIfErrors(piranhaOutputSettingsFormSchema, PIRANHA_OUTPUT_SETTINGS_SECTION),
-    sectionNameIfErrors(userSettingsFormSchema, USER_SETTINGS_SECTION),
+    sectionNameIfErrors(runSettingsFormSchema(), RUN_SETTINGS_SECTION),
+    sectionNameIfErrors(piranhaOutputSettingsFormSchema(), PIRANHA_OUTPUT_SETTINGS_SECTION),
+    sectionNameIfErrors(userSettingsFormSchema(), USER_SETTINGS_SECTION),
   ].filter((s) => !!s));
 
   // If we've already validated, open any sections with errors, otherwise open runSettings if they haven't been initialised

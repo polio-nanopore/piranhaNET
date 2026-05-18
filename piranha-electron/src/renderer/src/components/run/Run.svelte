@@ -14,7 +14,7 @@
   let errors = $state<Record<string, string[]>>({});
   let validateOnEachChange = false;
 
-  const formSchema = z.object(userSettingsFormSchema);
+  const formSchema = z.object(userSettingsFormSchema());
 
   function validate(): boolean {
     const result = formSchema.safeParse({ ...runParameters, ...settings });

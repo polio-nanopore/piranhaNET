@@ -14,7 +14,7 @@
   let errors = $state<Record<string, string[]>>({});
 
   function validate(): boolean {
-    const result = runParametersSchema.safeParse({ ...runParameters, ...settings });
+    const result = runParametersSchema().safeParse({ ...runParameters, ...settings });
     if (!result.success) {
       errors = result.error.flatten().fieldErrors;
     } else {
