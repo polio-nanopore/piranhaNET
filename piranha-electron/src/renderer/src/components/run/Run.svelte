@@ -6,9 +6,8 @@
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
   import { persistentSettingStore } from "$lib/persistentSettingsStore";
-  import UserSettings, {
-    userSettingsFormSchema,
-  } from "./UserSettings.svelte";
+  import UserSettings from "./UserSettings.svelte";
+  import {userSettingsFormSchema} from "./RunFormSchema";
   import { appState, runParameters, settings } from "../../lib/store.svelte";
 
   let needsFirstPersist = $state(!persistentSettingStore.loadUserSettings());

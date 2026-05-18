@@ -1,33 +1,3 @@
-<script module lang="ts">
-  import { requiredString } from "../utils";
-  import { tick } from "svelte";
-  import * as z from "zod";
-  import UserSettings, {
-    userSettingsFormSchema,
-  } from "./UserSettings.svelte";
-
-  const runSettingsFormSchema = {
-    protocol: requiredString(),
-    positiveControl: requiredString(),
-    negativeControl: requiredString()
-  };
-
-  const piranhaOutputSettingsFormSchema = {
-    orientation: requiredString(),
-    outputPrefix: z.string(),
-    overwriteOutput: z.boolean(),
-    outputIntermediateFiles: z.boolean(),
-    allMetadataToHeader: z.boolean(),
-    dateStamp: z.boolean()
-  };
-
-  export const settingsFormSchema = {
-    ...runSettingsFormSchema,
-    ...piranhaOutputSettingsFormSchema,
-    ...userSettingsFormSchema,
-  };
-</script>
-
 <script lang="ts">
   import * as Accordion from "$lib/shadcn/ui/accordion";
   import * as Select from "$lib/shadcn/ui/select";
@@ -38,6 +8,8 @@
   import FormField from "../forms/FormField.svelte";
   import { PiranhaProtocol, PiranhaOrientation } from "../../types";
   import {persistentSettingStore} from "../../lib/persistentSettingsStore";
+  import {runSettingsFormSchema, piranhaOutputSettingsFormSchema, userSettingsFormSchema} from "./RunFormSchema";
+  import UserSettings from "./UserSettings.svelte";
 
   const RUN_SETTINGS_SECTION = "runSettings";
   const PIRANHA_OUTPUT_SETTINGS_SECTION = "piranhaOutputSettings";

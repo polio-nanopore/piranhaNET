@@ -1,14 +1,3 @@
-<script module lang="ts">
-  import { requiredString } from "../utils";
-
-  // TODO: move this into schema module as for basic run params
-  export const userSettingsFormSchema = {
-    userName: requiredString(),
-    institute: requiredString(),
-    outputFolderPath: requiredString(),
-  };
-</script>
-
 <script lang="ts">
   import { m } from "../../../../paraglide/messages";
   import FormField from "../forms/FormField.svelte";

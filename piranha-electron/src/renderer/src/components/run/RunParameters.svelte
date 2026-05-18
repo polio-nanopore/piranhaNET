@@ -1,41 +1,20 @@
 <script lang="ts">
-  import { z, type ZodString } from "zod";
   import { m } from "../../../../paraglide/messages";
   import { Button } from "$lib/shadcn/ui/button";
   import { Input } from "$lib/shadcn/ui/input";
   import { Textarea } from "$lib/shadcn/ui/textarea";
   import FormField from "../forms/FormField.svelte";
-  import { runParameters, settings, appState } from "../../lib/store.svelte";
+  import { runParameters, settings, appState } from "$lib/store.svelte";
   import { createPiranhaRunOptions } from "../../types";
-  import { piranhaAPI } from "../../lib/piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
-  import { requiredString } from "../utils";
-  import Settings, { settingsFormSchema } from "./Settings.svelte";
-
-  const THREADS_MIN = 1;
-  const THREADS_MAX = 20;
-
-  const threadsRangeError = m.formsErrorRange({
-    min: THREADS_MIN,
-    max: THREADS_MAX,
-  });
-
-  const formSchema = z.object({
-    name: requiredString(),
-    barcodesFilePath: requiredString(),
-    minKnowFolderPath: requiredString(),
-    notes: requiredString(),
-    threads: z
-      .int(m.formsErrorNumberRequired())
-      .min(THREADS_MIN, { error: threadsRangeError })
-      .max(THREADS_MAX, { error: threadsRangeError }),
-    ...settingsFormSchema,
-  });
+  import {runParametersSchema} from "./RunFormSchema";
+  import Settings from "./Settings.svelte";
 
   let errors = $state<Record<string, string[]>>({});
 
   function validate(): boolean {
-    const result = formSchema.safeParse({ ...runParameters, ...settings });
+    const result = runParametersSchema.safeParse({ ...runParameters, ...settings });
     if (!result.success) {
       errors = result.error.flatten().fieldErrors;
     } else {
