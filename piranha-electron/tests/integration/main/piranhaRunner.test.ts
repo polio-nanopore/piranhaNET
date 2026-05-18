@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
 import * as AnsiParser from "ansi-parser";
+import {PiranhaOrientation} from "../../../src/renderer/src/types";
 
 describe("piranhaRunner", () => {
   const getWritableWithBuffer = (): {
@@ -40,6 +41,9 @@ describe("piranhaRunner", () => {
         positiveControl: "Pos1,P2",
         negativeControl: "my negative control",
         threads: 10,
+        institute: "Test Institute",
+        userName: "Test User",
+        orientation: "horizontal"
       },
       runOutput.writable,
     );
@@ -49,6 +53,9 @@ describe("piranhaRunner", () => {
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
     expect(outputText).toContain("Setting runname: test_name");
     expect(outputText).toContain("Setting notes: test_notes");
+    expect(outputText).toContain("Setting username: Test_User");
+    expect(outputText).toContain("Setting institute: Test_Institute");
+    expect(outputText).toContain("Setting ");
     expect(outputText).toMatch(
       /\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/,
     ); //output report

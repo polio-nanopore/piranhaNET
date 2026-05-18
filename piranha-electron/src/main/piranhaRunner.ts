@@ -33,8 +33,6 @@ export class PiranhaRunner {
     options: PiranhaRunOptions,
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
-    console.log("RUNNING WITH");
-    console.log(JSON.stringify(options));
     // TODO: use yaml file to pass parameters in API Docker image - for now use same approach as PiranhaGUI of "escaping"
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
