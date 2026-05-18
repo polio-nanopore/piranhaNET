@@ -29,7 +29,6 @@
 
   // If we've already validated, open any sections with errors, otherwise open runSettings if they haven't been initialised
   const openSections = $derived.by(() => {
-    console.log(`Sections updated: ${Date.now()}`);
     if (appState.doneInitialValidate) {
       return sectionsWithError;
     } else {

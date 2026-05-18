@@ -50,7 +50,7 @@
 
 <div data-testid="new-run-title">{m.newSequencingRun()}</div>
 <form onsubmit={onSubmit}>
-  <div id="scrolling-container" class="max-h-[calc(100vh-10rem)] overflow-y-auto">
+  <div id="scrolling-container" class="max-h-[calc(100vh-10rem)] overflow-y-auto px-2">
   <FormField
     label={m.parameterName()}
     error={errors.name}
