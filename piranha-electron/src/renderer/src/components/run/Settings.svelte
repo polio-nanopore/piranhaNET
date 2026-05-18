@@ -19,6 +19,8 @@
   // check if run settings are uninitialised on load - open RunSettings section by default if so
   const runSettingsUninitialised = !persistentSettingStore.loadRunSettings();
 
+  let openSections = $state(runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : []);
+
   const sectionNameIfErrors = (sectionSchema, sectionName) =>
     Object.keys(sectionSchema).some((key) => Object.keys(errors).includes(key)) ? sectionName : null;
   const sectionsWithError = $derived([
@@ -27,13 +29,9 @@
     sectionNameIfErrors(userSettingsFormSchema(), USER_SETTINGS_SECTION),
   ].filter((s) => !!s));
 
-  // If we've already validated, open any sections with errors, otherwise open runSettings if they haven't been initialised
-  const openSections = $derived.by(() => {
-    if (appState.doneInitialValidate) {
-      return sectionsWithError;
-    } else {
-      return runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : [];
-    }
+  // on sectionsWithError change - add any sections with error to openSections which are not currently open
+  $effect(() => {
+    sectionsWithError.filter((s) => !openSections.includes(s)).forEach((s) => openSections.push(s));
   });
 
   const handleRunSettingsChange = () => {
@@ -41,13 +39,13 @@
     onchange();
   };
 </script>
-<Accordion.Root class="mb-4" type="single" value={(openSections || []).length ? "settings" : ""}>
+<Accordion.Root class="mb-4" type="single" value={(openSections.length ? "settings" : "")}>
   <Accordion.Item value="settings">
     <Accordion.Trigger class="accordion-trigger rounded-none px-2"
       >{m.settings()}</Accordion.Trigger
     >
     <Accordion.Content class="flex flex-col gap-4 text-balance p-2">
-      <Accordion.Root type="multiple" value={openSections || []}>
+      <Accordion.Root type="multiple" bind:value={openSections}>
         <Accordion.Item value={RUN_SETTINGS_SECTION}>
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
             >{m.runSettings()}</Accordion.Trigger
