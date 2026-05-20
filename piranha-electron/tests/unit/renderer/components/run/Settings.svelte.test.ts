@@ -134,7 +134,7 @@ describe("Settings", () => {
 
   test("renders expected settings values", () => {
     mockPersistentSettingsStore({});
-    renderInI18nTestContext(Settings, {props: { errors: {} }});
+    render(Settings, {props: { errors: {} }});
 
     // Open Settings accordion item
     user.click(screen.getByTestId("settings"));
@@ -197,7 +197,7 @@ describe("Settings", () => {
   test("handles updates to run settings by saving settings and calling onchange", () => {
     mockPersistentSettingsStore({runSettings: defaultSettings});
     const onchange = vi.fn();
-    renderInI18nTestContext(Settings, {props: { errors: {}, onchange }});
+    render(Settings, {props: { errors: {}, onchange }});
 
     // Open Settings accordion item
     user.click(screen.getByTestId("settings"));
@@ -243,7 +243,7 @@ describe("Settings", () => {
   test("handles updates to piranha output settings by calling onchange", () => {
     mockPersistentSettingsStore({runSettings: defaultSettings});
     const onchange = vi.fn();
-    renderInI18nTestContext(Settings, {props: { errors: {}, onchange }});
+    render(Settings, {props: { errors: {}, onchange }});
 
     // Open Settings accordion item
     user.click(screen.getByTestId("settings"));
