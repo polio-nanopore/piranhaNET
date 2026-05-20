@@ -26,4 +26,4 @@ export class PersistentSettingsStore {
   }
 }
 
-export const persistentSettingStore = new PersistentSettingsStore();
+export const persistentSettingsStore = new PersistentSettingsStore();

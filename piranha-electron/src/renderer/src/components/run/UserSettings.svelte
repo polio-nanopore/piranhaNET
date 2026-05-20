@@ -4,12 +4,12 @@
   import FileSelect from "../forms/FileSelect.svelte";
   import { Input } from "$lib/shadcn/ui/input";
   import { settings } from "$lib/store.svelte";
-  import { persistentSettingStore } from "$lib/persistentSettingsStore";
+  import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
   const { errors, onchange } = $props();
 
   const handleChange = () => {
-    persistentSettingStore.saveUserSettings(settings);
+    persistentSettingsStore.saveUserSettings(settings);
     onchange();
   };
 </script>

@@ -7,7 +7,7 @@
   import { settings, appState } from "$lib/store.svelte";
   import FormField from "../forms/FormField.svelte";
   import { PiranhaProtocol, PiranhaOrientation } from "../../types";
-  import {persistentSettingStore} from "../../lib/persistentSettingsStore";
+  import {persistentSettingsStore} from "../../lib/persistentSettingsStore";
   import {runSettingsFormSchema, piranhaOutputSettingsFormSchema, userSettingsFormSchema} from "./RunFormSchema";
   import UserSettings from "./UserSettings.svelte";
 
@@ -17,7 +17,7 @@
 
   const { errors, onchange } = $props();
   // check if run settings are uninitialised on load - open RunSettings section by default if so
-  const runSettingsUninitialised = !persistentSettingStore.loadRunSettings();
+  const runSettingsUninitialised = !persistentSettingsStore.loadRunSettings();
 
   let openSections = $state(runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : []);
 
@@ -35,18 +35,18 @@
   });
 
   const handleRunSettingsChange = () => {
-    persistentSettingStore.saveRunSettings(settings);
+    persistentSettingsStore.saveRunSettings(settings);
     onchange();
   };
 </script>
-<Accordion.Root class="mb-4" type="single" value={(openSections.length ? "settings" : "")}>
+<Accordion.Root data-testid="settings" class="mb-4" type="single" value={(openSections.length ? "settings" : "")}>
   <Accordion.Item value="settings">
     <Accordion.Trigger class="accordion-trigger rounded-none px-2"
       >{m.settings()}</Accordion.Trigger
     >
     <Accordion.Content class="flex flex-col gap-4 text-balance p-2">
       <Accordion.Root type="multiple" bind:value={openSections}>
-        <Accordion.Item value={RUN_SETTINGS_SECTION}>
+        <Accordion.Item data-testid={RUN_SETTINGS_SECTION}  value={RUN_SETTINGS_SECTION}>
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
             >{m.runSettings()}</Accordion.Trigger
           >
@@ -102,7 +102,7 @@
           </Accordion.Content>
         </Accordion.Item>
 
-        <Accordion.Item value={PIRANHA_OUTPUT_SETTINGS_SECTION}>
+        <Accordion.Item data-testid={PIRANHA_OUTPUT_SETTINGS_SECTION} value={PIRANHA_OUTPUT_SETTINGS_SECTION}>
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
             >{m.piranhaOutputSettings()}</Accordion.Trigger
           >
@@ -192,7 +192,7 @@
             </div>
           </Accordion.Content>
         </Accordion.Item>
-        <Accordion.Item value={USER_SETTINGS_SECTION}>
+        <Accordion.Item data-testid={USER_SETTINGS_SECTION} value={USER_SETTINGS_SECTION}>
           <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
           >{m.userSettings()}</Accordion.Trigger
           >

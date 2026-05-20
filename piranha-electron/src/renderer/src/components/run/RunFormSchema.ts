@@ -20,8 +20,8 @@ export const userSettingsFormSchema = () => ({
 
 export const runSettingsFormSchema = () => ({
   protocol: requiredString(),
-  positiveControl: requiredString(),
-  negativeControl: requiredString()
+  positiveControl: z.string(),
+  negativeControl: z.string()
 });
 
 export const piranhaOutputSettingsFormSchema = () => ({

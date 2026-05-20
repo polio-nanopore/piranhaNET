@@ -3,9 +3,9 @@
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
   import Welcome from "./Welcome.svelte";
-  import { persistentSettingStore } from "$lib/persistentSettingsStore";
+  import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
-  let needsFirstPersist = $state(!persistentSettingStore.loadUserSettings());
+  let needsFirstPersist = $state(!persistentSettingsStore.loadUserSettings());
   const onFirstPersist = () => {
     needsFirstPersist = false;
   }

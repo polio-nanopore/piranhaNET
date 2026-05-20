@@ -37,6 +37,6 @@
   "settingAllMetadataToHeader": "Todos os metadados nos cabeçalhos",
   "settingDateStamp": "Carimbo de data",
   "settingUserName": "Nome de utilizador",
-  "persistentSettings": "Opções do utilizador",
+  "userSettings": "Opções do utilizador",
   "welcome": "Bem-vindo ao PiranhaNET"
 }

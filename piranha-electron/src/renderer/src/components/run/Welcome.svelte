@@ -38,7 +38,7 @@
   };
 </script>
 <div class="justify-center">
-  <h1 class="text-2xl mb-4">{m.welcome()}</h1>
+  <h1 class="text-2xl mb-4" data-testid="welcome">{m.welcome()}</h1>
   <p>{m.provideInitialSettings()}</p>
   <form onsubmit={onSubmit}>
     <UserSettings {errors} onchange={onChange}></UserSettings>

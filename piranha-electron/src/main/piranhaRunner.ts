@@ -37,6 +37,7 @@ export class PiranhaRunner {
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
+    // TODO: all other settings into Piranha run!!!!!!!
     const envString = [
       `THREADS=${options.threads || 1}`,
       `--runname ${escapeOption(options.name)}`,

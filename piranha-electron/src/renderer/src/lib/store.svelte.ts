@@ -1,6 +1,6 @@
 import type { AppState, PiranhaRunParameters, PiranhaSettings } from "../types";
 import { PiranhaOrientation, PiranhaProtocol } from "../types";
-import { persistentSettingStore } from "./persistentSettingsStore";
+import { persistentSettingsStore } from "./persistentSettingsStore";
 
 export const routerHelper = $state({
   // Whether we've initialised the router to default route "/" - we need to do this because the router in electron
@@ -21,10 +21,10 @@ const defaultRunSettings = {
 };
 
 const userSettings =
-  persistentSettingStore.loadUserSettings() ?? defaultUserSettings;
+  persistentSettingsStore.loadUserSettings() ?? defaultUserSettings;
 
 const runSettings =
-  persistentSettingStore.loadRunSettings() ?? defaultRunSettings;
+  persistentSettingsStore.loadRunSettings() ?? defaultRunSettings;
 
 export const settings: PiranhaSettings = $state({
   ...userSettings,

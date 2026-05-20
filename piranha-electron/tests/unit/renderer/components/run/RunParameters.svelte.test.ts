@@ -159,7 +159,6 @@ describe("RunParameters", () => {
     runParameters.threads = 11;
     render(RunParameters);
     expect(screen.getByLabelText("Name").value).toBe("store name");
-    // This gets the button element, we actually want to check the div which is its sibling
     expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
       "/store/barcodes.csv",
     );
