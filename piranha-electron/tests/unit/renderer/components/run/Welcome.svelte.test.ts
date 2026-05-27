@@ -1,32 +1,24 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import { i18n } from "$lib/i18n.svelte";
 import Welcome from "../../../../../src/renderer/src/components/run/Welcome.svelte";
-import {expectTranslations, renderInI18nTestContext} from "../../../utils";
-import {render} from "@testing-library/svelte";
+import {expectTranslations, renderInI18nTestContext, expectErrorFor, expectNoErrors, expectNoErrorFor} from "../../../utils";
+import {render, screen} from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
+import {settings} from "../../../../../src/renderer/src/lib/store.svelte";
 
 describe("Welcome", () => {
   let user;
   beforeEach(() => {
     i18n.lang = "en";
     user = userEvent.setup();
+
+    settings.userName = "";
+    settings.institute = "";
+    settings.outputFolderPath = "";
   });
 
-  const expectNoErrors = () => {
-    expect(screen.locator(`.${ERROR_CLASS}`)).toBeNull();
-  };
-
-  const errorLocator = "//following-sibling::p";
-  const expectErrorFor = (field: HTMLElement) => {
-    expect(field.locator(errorLocator)).toHaveTextContent("Required field");
-  };
-
-  const expectNoErrorFor = (field: HTMLElement) => {
-    expect(field.locator(errorLocator)).toBeNull();
-  }
-
   test("renders as expected", async () => {
-    renderInI18nTestContext(Welcome);
+    const {container } = renderInI18nTestContext(Welcome);
     await expectTranslations((text) => {
       expect(screen.getByTestId("welcome")).toHaveTextContent(text);
       },
@@ -44,17 +36,17 @@ describe("Welcome", () => {
       pt: /Nome de utilizador/
     });
     await expectTranslations((text) => {
-      expect(screen.getByRole("button")).toHaveTextContent(text);
+      expect(screen.getByTestId("continue")).toHaveTextContent(text);
     }, {
       en: /Continue/,
       fr: /Continuez/,
       pt: /Continue/,
     })
 
-    expectNoErrors();
+    expectNoErrors(container);
   });
 
-  test("submit form persists when valid", () => {
+  test("submit form persists when valid", async () => {
     const mockShowFileDialog = vi
       .fn()
       .mockImplementation(() => "/newOut");
@@ -64,41 +56,47 @@ describe("Welcome", () => {
 
     const onpersist = vi.fn();
 
-    render(Welcome, {props: {onpersist}});
-    user.type(screen.getByLabelText("User name"), "New name");
-    user.type(screen.getByLabelText("Institute"), "New Inst");
-    user.click(screen.getByLabelText("Output folder"));
-    user.click(screen.getByRole("button"));
+    const {container} = render(Welcome, {props: {onpersist}});
+    await user.type(screen.getByLabelText("User name"), "New name");
+    await user.type(screen.getByLabelText("Institute"), "New Inst");
+    await user.click(screen.getByTestId("output-folder-field"));
+    expect(mockShowFileDialog).toHaveBeenCalled();
 
+    await user.click(screen.getByTestId("continue"));
     expect(onpersist).toHaveBeenCalled();
-    expectNoErrors();
+    expectNoErrors(container);
   });
 
-  test("submit form displays errors when invalid, and updates on every change", () => {
+  test("submit form displays errors when invalid, and updates on every change", async () => {
     const onpersist = vi.fn();
-    render(Welcome, {props: {onpersist}});
-    user.click(screen.getByRole("button"));
+    const { container } = render(Welcome, {props: {onpersist}});
+    await user.click(screen.getByTestId("continue"));
 
-    const nameField = screen.getByLabelText("User name")
-    const instField = screen.getByLabelText("Institute")
-    const outField = screen.getByLabelText("Output folder")
-    expectErrorFor(nameField);
-    expectErrorFor(instField  );
-    expectErrorFor(outField);
+    const nameField = screen.getByLabelText("User name");
+    const instField = screen.getByLabelText("Institute");
+    const outField = screen.getByLabelText("Output folder");
 
-    user.type(nameField, "New name");
-    expectNoErrorFor(nameField)
-    expectErrorFor(instField);
-    expectErrorFor(outField);
+    const nameFieldName = "user-name-field";
+    const instituteFieldName = "institute-field";
+    const outputFolderFieldName = "output-folder-field";
 
-    user.type(instField, "New Inst");
-    expectNoErrorFor(nameField);
-    expectNoErrorFor(instField);
-    expectErrorFor(outField);
+    expectErrorFor(container, nameFieldName);
+    expectErrorFor(container, instituteFieldName);
+    expectErrorFor(container, outputFolderFieldName);
 
-    user.click(outField);
-    expectNoErrors();
-    user.click(screen.getByRole("button"));
+    await user.type(nameField, "New name[Tab]");
+    expectNoErrorFor(container, nameFieldName);
+    expectErrorFor(container, instituteFieldName);
+    expectErrorFor(container, outputFolderFieldName);
+
+    await user.type(instField, "New Inst[Tab]");
+    expectNoErrorFor(container, nameFieldName);
+    expectNoErrorFor(container, instituteFieldName);
+    expectErrorFor(container, outputFolderFieldName);
+
+    await user.click(outField);
+    expectNoErrors(container);
+    await user.click(screen.getByTestId("continue"));
     expect(onpersist).toHaveBeenCalled();
   });
 });

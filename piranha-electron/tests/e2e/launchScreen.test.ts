@@ -84,7 +84,7 @@ const expectErrorMessage = async (
   expectedErrorMsg = "Required value",
 ): Promise<void> => {
   // error is in <p> following field
-  const errorEl = fieldElement.locator("//following-sibling::p");
+  const errorEl = fieldElement.locator("+ p");
   if (expectError) {
     await expect(errorEl).toHaveText(expectedErrorMsg);
   } else {

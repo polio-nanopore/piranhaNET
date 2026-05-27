@@ -19,7 +19,7 @@
 </script>
 
 <div class={`space-y-2 py-3 ${className ?? ""}`}>
-  <Label class={["font-light", error && "text-destructive"]} for={labelFor}
+  <Label data-testid={`${labelFor}-label`} class={["font-light", error && "text-destructive"]} for={labelFor}
     >{label}</Label
   >
 

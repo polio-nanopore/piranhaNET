@@ -4,7 +4,7 @@ import { screen, render } from "@testing-library/svelte";
 import {PiranhaOrientation, PiranhaProtocol, PiranhaSettings} from "../../../../../src/renderer/src/types";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import {settings} from "../../../../../src/renderer/src/lib/store.svelte";
-import {expectTranslations, mockPersistentSettingsStore, renderInI18nTestContext} from "../../../utils";
+import {expectTranslations, mockPersistentSettingsStore, renderInI18nTestContext, ERROR_CLASS, expectNoErrors} from "../../../utils";
 import {persistentSettingsStore} from "../../../../../src/renderer/src/lib/persistentSettingsStore";
 import {i18n} from "*.svelte";
 
@@ -26,8 +26,6 @@ describe("Settings", () => {
     allMetadataToHeader: true,
     dateStamp: true
   };
-
-  const ERROR_CLASS = "text-destructive";
 
   const user = userEvent.setup();
   beforeEach(() => {
@@ -79,12 +77,9 @@ describe("Settings", () => {
     }
   };
 
-  const expectNoErrorsDisplayed = async () => {
-    expect(screen.querySelector(ERROR_CLASS)).not.toBeInTheDocument();
-  };
-
   interface ExpectedError {
     fieldName: string;
+    fieldLabel: string;
     errorText: string;
   }
 
@@ -92,18 +87,20 @@ describe("Settings", () => {
     ["runSettings", "userSettings", "piranhaOutputSettings"].forEach((section) => {
       const sectionEl = screen.getByTestId(section);
       const foundErrorEls = [];
-      const allErrors = section.locator(ERROR_CLASS);
+      const allErrors = section.querySelector(`.${ERROR_CLASS}`);
       if (Object.keys(expectedErrors).includes(section)) {
 
         for (const error of expectedErrors[section]) {
-          // Expect that for each expected field name in error, you'll find a label with that text, which has the error class
-``        const label = sectionEl.getByText(error.fieldName);
+          // Expect that for each expected field name in error, you'll find a label which has the error class
+``        const label = sectionEl.getByTestId(`${error.fieldName}-label`);
+          expect(label).toHaveTextContent(error.fieldLabel);
           expect(label.classList).toContain(ERROR_CLASS);
-          foundErrorEls.push(label);
+          foundErrorEls.push(label);s
 
-          //.. and that label will have a sibling paragraph which also has the error class, and the expected error message
-          const errorMsg = label.locator("//following-sibling::p");
+          //..and the error text in an element which also has the error class
+          const errorMsg = sectionEl.getByTestId(`${error.fieldName}-error`);
           expect(errorMsg).toHaveTextContent(error.errorText);
+          expect(errorMsg.classList).toContain(ERROR_CLASS);
           foundErrorEls.push(errorMsg);
         }
 
@@ -126,10 +123,10 @@ describe("Settings", () => {
 
   test("renders as expected when run settings have not been initialised and there are no errors", async () => {
     mockPersistentSettingsStore({});
-    renderInI18nTestContext(Settings, {props: { errors: {} }});
+    const {container} = renderInI18nTestContext(Settings, {props: { errors: {} }});
     // runSettings section should be open, with no errors displayed
     await expectOpenSections(["runSettings"]);
-    await expectNoErrorsDisplayed();
+    expectNoErrors(container);
   });
 
   test("renders expected settings values", () => {
@@ -169,7 +166,7 @@ describe("Settings", () => {
       negativeControl: ["Negative control error"]
     };
     mockPersistentSettingsStore({runSettings: defaultSettings});
-    const {rerender} = renderInI18nTestContext(Settings, {props: { errors }});
+    const {rerender, container} = renderInI18nTestContext(Settings, {props: { errors }});
 
     await expectOpenSections(["runSettings", "userSettings"]);
 
@@ -191,7 +188,7 @@ describe("Settings", () => {
     // correct all errors - should *not* auto-close
     rerender({errors: {}});
     await expectOpenSections(["runSettings", "userSettings", "piranhaOutputSettings"]);
-    expectNoErrorsDisplayed();
+    expectNoErrors(container);
   });
 
   test("handles updates to run settings by saving settings and calling onchange", () => {

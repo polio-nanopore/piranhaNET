@@ -20,6 +20,15 @@ const defaultRunSettings = {
   negativeControl: ""
 };
 
+export const defaultPiranhaOutputSettings = {
+  orientation: PiranhaOrientation.Vertical,
+  outputPrefix: "analysis",
+  overwriteOutput: false,
+  outputIntermediateFiles: false,
+  allMetadataToHeader: false,
+  dateStamp: false
+};
+
 const userSettings =
   persistentSettingsStore.loadUserSettings() ?? defaultUserSettings;
 
@@ -29,12 +38,7 @@ const runSettings =
 export const settings: PiranhaSettings = $state({
   ...userSettings,
   ...runSettings,
-  orientation: PiranhaOrientation.Vertical,
-  outputPrefix: "analysis",
-  overwriteOutput: false,
-  outputIntermediateFiles: false,
-  allMetadataToHeader: false,
-  dateStamp: false
+  ...defaultPiranhaOutputSettings
 });
 
 export const appState: AppState = $state({

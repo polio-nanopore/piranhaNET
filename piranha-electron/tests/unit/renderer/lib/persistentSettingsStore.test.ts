@@ -18,7 +18,7 @@ describe("persistentSettingsStore", () => {
 
   test("can save userSettings", () => {
     persistentSettingsStore.saveUserSettings({
-      ...testUserSettings
+      ...testUserSettings,
       someOtherKey: "some value"
     });
     expect(mockSetItem).toHaveBeenCalledWith("userSettings", JSON.stringify(test))

@@ -1,7 +1,7 @@
 import { createRawSnippet, mount, unmount } from "svelte";
-import { vi } from "vitest";
+import {expect, test, vi } from "vitest";
 import { i18n } from "$lib//i18n.svelte";
-import { render, waitFor } from "@testing-library/svelte";
+import { render, screen, waitFor } from "@testing-library/svelte";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import I18nTestContext from "./renderer/components/I18nTestContext.svelte";
 import {PersistentSettingsStore, persistentSettingsStore} from "../../src/renderer/src/lib/persistentSettingsStore";
@@ -100,3 +100,21 @@ export const renderInI18nTestContext = (
   }));
   return render(I18nTestContext, { children: snippet });
 };
+
+export const ERROR_CLASS = "text-destructive";
+export const expectNoErrors = (container) => {
+  expect(container.querySelector(`.${ERROR_CLASS}`)).toBeNull();
+};
+
+//TODO: remove these container params
+export const expectErrorFor = (container: HTMLElement, fieldName: string, expectedError = "Required value") => {
+  expect(screen.getByTestId(`${fieldName}-label`).classList).toContain(ERROR_CLASS);
+  const error = screen.getByTestId(`${fieldName}-error`);
+  expect(error).toHaveTextContent(expectedError);
+  expect(error.classList).toContain(ERROR_CLASS);
+};
+
+export const expectNoErrorFor = (container: HTMLElement, fieldName: string) => {
+  expect(screen.queryByTestId(`${fieldName}-error`)).toBeNull();
+  expect(screen.getByTestId(`${fieldName}-label`).classList).not.toContain(ERROR_CLASS);
+}

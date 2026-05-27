@@ -42,6 +42,6 @@
   <p>{m.provideInitialSettings()}</p>
   <form onsubmit={onSubmit}>
     <UserSettings {errors} onchange={onChange}></UserSettings>
-    <Button class="action float-end" type="submit">{m.continue()}</Button>
+    <Button class="action float-end" data-testid="continue" type="submit">{m.continue()}</Button>
   </form>
 </div>
