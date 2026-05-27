@@ -1,12 +1,11 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import UserSettings from "../../../../../src/renderer/src/components/run/UserSettings.svelte";
 import {settings} from "../../../../../src/renderer/src/lib/store.svelte";
-import {i18n} from "*.svelte";
+import { i18n } from "$lib/i18n.svelte";
 import {expectTranslations, mockPersistentSettingsStore, renderInI18nTestContext} from "../../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import {render} from "@testing-library/svelte";
 import {persistentSettingsStore} from "../../../../../src/renderer/src/lib/persistentSettingsStore";
-import {PiranhaProtocol} from "../../../../../src/renderer/src/types";
 
 describe("UserSettings", () => {
   beforeEach(() => {
