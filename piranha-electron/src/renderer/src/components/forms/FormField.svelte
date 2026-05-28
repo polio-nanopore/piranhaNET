@@ -8,7 +8,7 @@
     labelFor,
     error,
     children,
-    class: className
+    class: className,
   }: {
     label: string;
     for: string;
@@ -19,8 +19,10 @@
 </script>
 
 <div class={`space-y-2 py-3 ${className ?? ""}`}>
-  <Label data-testid={`${labelFor}-label`} class={["font-light", error && "text-destructive"]} for={labelFor}
-    >{label}</Label
+  <Label
+    data-testid={`${labelFor}-label`}
+    class={["font-light", error && "text-destructive"]}
+    for={labelFor}>{label}</Label
   >
 
   {@render children()}

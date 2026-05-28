@@ -7,8 +7,12 @@
   import { settings } from "$lib/store.svelte";
   import FormField from "../forms/FormField.svelte";
   import { PiranhaProtocol, PiranhaOrientation } from "../../types";
-  import {persistentSettingsStore} from "../../lib/persistentSettingsStore";
-  import {runSettingsFormSchema, piranhaOutputSettingsFormSchema, userSettingsFormSchema} from "./RunFormSchema";
+  import { persistentSettingsStore } from "../../lib/persistentSettingsStore";
+  import {
+    runSettingsFormSchema,
+    piranhaOutputSettingsFormSchema,
+    userSettingsFormSchema,
+  } from "./RunFormSchema";
   import UserSettings from "./UserSettings.svelte";
 
   const RUN_SETTINGS_SECTION = "runSettings";
@@ -19,20 +23,31 @@
   // check if run settings are uninitialised on load - open RunSettings section by default if so
   const runSettingsUninitialised = !persistentSettingsStore.loadRunSettings();
 
-  let openSections = $state(runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : []);
+  let openSections = $state(
+    runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : [],
+  );
 
   const sectionNameIfErrors = (sectionSchema, sectionName): string | null =>
-    Object.keys(sectionSchema).some((key) => Object.keys(errors).includes(key)) ? sectionName : null;
+    Object.keys(sectionSchema).some((key) => Object.keys(errors).includes(key))
+      ? sectionName
+      : null;
 
-  const sectionsWithError: string[] = $derived([
-    sectionNameIfErrors(runSettingsFormSchema(), RUN_SETTINGS_SECTION),
-    sectionNameIfErrors(piranhaOutputSettingsFormSchema(), PIRANHA_OUTPUT_SETTINGS_SECTION),
-    sectionNameIfErrors(userSettingsFormSchema(), USER_SETTINGS_SECTION),
-  ].filter((s) => !!s));
+  const sectionsWithError: string[] = $derived(
+    [
+      sectionNameIfErrors(runSettingsFormSchema(), RUN_SETTINGS_SECTION),
+      sectionNameIfErrors(
+        piranhaOutputSettingsFormSchema(),
+        PIRANHA_OUTPUT_SETTINGS_SECTION,
+      ),
+      sectionNameIfErrors(userSettingsFormSchema(), USER_SETTINGS_SECTION),
+    ].filter((s) => !!s),
+  );
 
   // on sectionsWithError change - add any sections with error to openSections which are not currently open
   $effect(() => {
-    sectionsWithError.filter((s) => !openSections.includes(s)).forEach((s) => openSections.push(s));
+    sectionsWithError
+      .filter((s) => !openSections.includes(s))
+      .forEach((s) => openSections.push(s));
   });
 
   const handleRunSettingsChange = (): void => {
@@ -49,7 +64,7 @@
       return;
     }
     handleRunSettingsChange();
-  })
+  });
   let initialPiranhaOutputSettings = true;
   $effect(() => {
     void settings.orientation;
@@ -64,15 +79,25 @@
     onchange();
   });
 </script>
-<Accordion.Root data-testid="settings" class="mb-4" type="single" value={(openSections.length ? "settings" : "")}>
+
+<Accordion.Root
+  data-testid="settings"
+  class="mb-4"
+  type="single"
+  value={openSections.length ? "settings" : ""}
+>
   <Accordion.Item value="settings">
     <Accordion.Trigger class="accordion-trigger rounded-none px-2"
       >{m.settings()}</Accordion.Trigger
     >
     <Accordion.Content class="flex flex-col gap-4 text-balance p-2">
       <Accordion.Root type="multiple" bind:value={openSections}>
-        <Accordion.Item data-testid={RUN_SETTINGS_SECTION}  value={RUN_SETTINGS_SECTION}>
-          <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
+        <Accordion.Item
+          data-testid={RUN_SETTINGS_SECTION}
+          value={RUN_SETTINGS_SECTION}
+        >
+          <Accordion.Trigger
+            class="bg-muted accordion-trigger rounded-none px-2"
             >{m.runSettings()}</Accordion.Trigger
           >
           <Accordion.Content
@@ -83,10 +108,7 @@
               error={errors.protocol}
               labelFor="protocol-field"
             >
-              <Select.Root
-                type="single"
-                bind:value={settings.protocol}
-              >
+              <Select.Root type="single" bind:value={settings.protocol}>
                 <Select.Trigger class="w-full" id="protocol-field"
                   >{settings.protocol}</Select.Trigger
                 >
@@ -124,8 +146,12 @@
           </Accordion.Content>
         </Accordion.Item>
 
-        <Accordion.Item data-testid={PIRANHA_OUTPUT_SETTINGS_SECTION} value={PIRANHA_OUTPUT_SETTINGS_SECTION}>
-          <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
+        <Accordion.Item
+          data-testid={PIRANHA_OUTPUT_SETTINGS_SECTION}
+          value={PIRANHA_OUTPUT_SETTINGS_SECTION}
+        >
+          <Accordion.Trigger
+            class="bg-muted accordion-trigger rounded-none px-2"
             >{m.piranhaOutputSettings()}</Accordion.Trigger
           >
           <Accordion.Content
@@ -136,10 +162,7 @@
               error={errors.orientation}
               labelFor="orientation-field"
             >
-              <Select.Root
-                type="single"
-                bind:value={settings.orientation}
-              >
+              <Select.Root type="single" bind:value={settings.orientation}>
                 <Select.Trigger class="w-full" id="orientation-field"
                   >{settings.orientation}</Select.Trigger
                 >
@@ -164,56 +187,60 @@
               ></Input>
             </FormField>
             <div class="flex space-x-10">
-            <FormField
-              label={m.settingOverwriteOutput()}
-              error={errors.overwriteOutput}
-              labelFor="overwrite-output-field"
-            >
-              <Switch
-                id="overwrite-output-field"
-                bind:checked={settings.overwriteOutput}
-                {onchange}
-              ></Switch>
-            </FormField>
-            <FormField
-              label={m.settingOutputIntermediateFiles()}
-              error={errors.outputIntermediateFiles}
-              labelFor="output-intermediate-files-field"
-            >
-              <Switch
-                id="output-intermediate-files-field"
-                bind:checked={settings.outputIntermediateFiles}
-                {onchange}
-              ></Switch>
-            </FormField>
-            <FormField
-              label={m.settingAllMetadataToHeader()}
-              error={errors.allMetadataToHeader}
-              labelFor="all-metadata-to-header-field"
-            >
-              <Switch
-                id="all-metadata-to-header-field"
-                bind:checked={settings.allMetadataToHeader}
-                {onchange}
-              ></Switch>
-            </FormField>
-            <FormField
-              label={m.settingDateStamp()}
-              error={errors.dateStamp}
-              labelFor="date-stamp-field"
-            >
-              <Switch
-                id="date-stamp-field"
-                bind:checked={settings.dateStamp}
-                {onchange}
-              ></Switch>
-            </FormField>
+              <FormField
+                label={m.settingOverwriteOutput()}
+                error={errors.overwriteOutput}
+                labelFor="overwrite-output-field"
+              >
+                <Switch
+                  id="overwrite-output-field"
+                  bind:checked={settings.overwriteOutput}
+                  {onchange}
+                ></Switch>
+              </FormField>
+              <FormField
+                label={m.settingOutputIntermediateFiles()}
+                error={errors.outputIntermediateFiles}
+                labelFor="output-intermediate-files-field"
+              >
+                <Switch
+                  id="output-intermediate-files-field"
+                  bind:checked={settings.outputIntermediateFiles}
+                  {onchange}
+                ></Switch>
+              </FormField>
+              <FormField
+                label={m.settingAllMetadataToHeader()}
+                error={errors.allMetadataToHeader}
+                labelFor="all-metadata-to-header-field"
+              >
+                <Switch
+                  id="all-metadata-to-header-field"
+                  bind:checked={settings.allMetadataToHeader}
+                  {onchange}
+                ></Switch>
+              </FormField>
+              <FormField
+                label={m.settingDateStamp()}
+                error={errors.dateStamp}
+                labelFor="date-stamp-field"
+              >
+                <Switch
+                  id="date-stamp-field"
+                  bind:checked={settings.dateStamp}
+                  {onchange}
+                ></Switch>
+              </FormField>
             </div>
           </Accordion.Content>
         </Accordion.Item>
-        <Accordion.Item data-testid={USER_SETTINGS_SECTION} value={USER_SETTINGS_SECTION}>
-          <Accordion.Trigger class="bg-muted accordion-trigger rounded-none px-2"
-          >{m.userSettings()}</Accordion.Trigger
+        <Accordion.Item
+          data-testid={USER_SETTINGS_SECTION}
+          value={USER_SETTINGS_SECTION}
+        >
+          <Accordion.Trigger
+            class="bg-muted accordion-trigger rounded-none px-2"
+            >{m.userSettings()}</Accordion.Trigger
           >
           <Accordion.Content
             class="flex flex-col gap-4 text-balance border-muted-foreground px-2"

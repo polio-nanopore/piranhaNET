@@ -22,7 +22,7 @@ export class PersistentSettingsStore {
     return stored ? JSON.parse(stored) : null;
   }
 
-  saveRunSettings(settings: RunSettings): void{
+  saveRunSettings(settings: RunSettings): void {
     // Don't save any extraneous values
     const { protocol, positiveControl, negativeControl } = settings;
     localStorage.setItem(

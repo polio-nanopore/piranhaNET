@@ -8,7 +8,7 @@
   let needsFirstPersist = $state(!persistentSettingsStore.loadUserSettings());
   const onFirstPersist = (): void => {
     needsFirstPersist = false;
-  }
+  };
 </script>
 
 <div class="container mx-auto p-4">
