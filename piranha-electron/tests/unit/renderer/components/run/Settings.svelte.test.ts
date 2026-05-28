@@ -72,9 +72,9 @@ describe("Settings", () => {
       const expectFieldInSection = async (section, sectionFn, translations) => {
         await expectTranslations((text) => {
           if (expectedSections.includes(section)){
-            expect(sectionFn()).toHaveTextContent(text);
+            expect(within(sectionFn()).getByText(text)).toBeVisible();
           } else {
-            expect(sectionFn()).not.toHaveTextContent(text)
+            expect(within(sectionFn()).getByText(text)).not.toBeVisible();
           }
         }, translations);
       };
@@ -138,7 +138,7 @@ describe("Settings", () => {
 
   test("renders expected settings values", async () => {
     mockPersistentSettingsStore({});
-    render(Settings, {props: { errors: {} }});
+    const {container} = render(Settings, {props: { errors: {} }});
 
     // Open Settings accordion item
     await user.click(screen.getByTestId("settings"));
@@ -151,13 +151,13 @@ describe("Settings", () => {
 
     // Open Run Settings accordion item
     await user.click(screen.getByTestId("runSettings"));
-    expect(screen.getByLabelText("Protocol").value).toBe("stool");
+    expect(container.querySelector("#protocol-field")).toHaveTextContent("stool");
     expect(screen.getByLabelText("Positive control").value).toBe("pos");
     expect(screen.getByLabelText("Negative control").value).toBe("neg");
 
     // Open Piranha Output Settings accordion item
     await user.click(screen.getByTestId("piranhaOutputSettings"));
-    expect(screen.getByLabelText("Orientation").value).toBe("horizontal");
+    expect(container.querySelector("#orientation-field")).toHaveTextContent("horizontal");
     expect(screen.getByLabelText("Output prefix").value).toBe("op");
     expect(screen.getByLabelText("Overwrite output")).toHaveAttribute("data-state", "unchecked");
     expect(screen.getByLabelText("Output intermediate files")).toHaveAttribute("data-state", "unchecked");
@@ -165,16 +165,17 @@ describe("Settings", () => {
     expect(screen.getByLabelText("Date stamp")).toHaveAttribute("data-state", "checked");
   })
 
-  const errors = {
+  const testErrors = () => ({
     institute: ["Institute error"],
     positiveControl: ["Positive control error"],
     negativeControl: ["Negative control error"]
-  };
+  });
   test("renders with expected open sections when there are errors in settings", async () => {
     // any sections with errors should be opened - runSettings and userSettings
     mockPersistentSettingsStore({runSettings: defaultSettings});
-    renderInI18nTestContext(Settings, {props: { errors }});
-    const {rerender} = await expectOpenSections(["runSettings", "userSettings"]);
+    const errors = testErrors();
+    const {rerender} = renderInI18nTestContext(Settings, {props: { errors }});
+    await expectOpenSections(["runSettings", "userSettings"]);
 
     // should update to open new error sections when errors update with new sections -
     // add piranhaOutput setting error - all sections should be open
@@ -188,6 +189,7 @@ describe("Settings", () => {
   });
 
   test("renders with expected errors when there are errors in settings", async () => {
+    const errors = testErrors();
     const expectedErrors = {
       userSettings: [{fieldName: "institute-field", fieldLabel: "Institute", errorText: "Institute error"}],
       runSettings: [{fieldName: "positive-control-field", fieldLabel: "Positive control", errorText: "Positive control error"},

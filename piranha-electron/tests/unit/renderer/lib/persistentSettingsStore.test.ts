@@ -12,8 +12,8 @@ describe("persistentSettingsStore", () => {
 
   const testRunSettings = {
     protocol: "isolate",
+    positiveControl: "pos",
     negativeControl: "neg",
-    positiveControl: "pos"
   };
 
   test("can save userSettings", () => {
@@ -21,7 +21,7 @@ describe("persistentSettingsStore", () => {
       ...testUserSettings,
       someOtherKey: "some value"
     });
-    expect(mockSetItem).toHaveBeenCalledWith("userSettings", JSON.stringify(test))
+    expect(mockSetItem).toHaveBeenCalledWith("userSettings", JSON.stringify(testUserSettings))
   });
 
   test("can load userSettings", () => {
@@ -42,7 +42,7 @@ describe("persistentSettingsStore", () => {
       ...testRunSettings,
       someOtherKey: "some value"
     });
-    expect(mockSetItem).toHaveBeenCalledWith("runSettings", JSON.stringify({testRunSettings}));
+    expect(mockSetItem).toHaveBeenCalledWith("runSettings", JSON.stringify(testRunSettings));
   });
 
   test("can load runSettings", () => {
