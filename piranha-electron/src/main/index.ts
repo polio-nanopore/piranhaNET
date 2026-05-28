@@ -39,7 +39,7 @@ function createWindow(): void {
 
   mainWindow.webContents.on(
     "did-fail-load",
-    (event, errorCode, errorDescription, validatedURL) => {
+    (_event, errorCode, errorDescription, validatedURL) => {
       console.error(
         `Load failed: ${errorDescription} (${errorCode}) at ${validatedURL}`,
       );
@@ -47,7 +47,7 @@ function createWindow(): void {
   );
 
   // Also check for renderer process crashes
-  mainWindow.webContents.on("render-process-gone", (event, details) => {
+  mainWindow.webContents.on("render-process-gone", (_event, details) => {
     console.error(`Renderer process crashed: ${details.reason}`);
   });
 
