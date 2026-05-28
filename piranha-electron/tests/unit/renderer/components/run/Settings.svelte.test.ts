@@ -212,7 +212,7 @@ describe("Settings", () => {
   test("handles updates to run settings by saving settings and calling onchange", async () => {
     mockPersistentSettingsStore({runSettings: defaultSettings});
     const onchange = vi.fn();
-    render(Settings, {props: { errors: {}, onchange }});
+    const {container} = render(Settings, {props: { errors: {}, onchange }});
 
     // Open Settings accordion item
     await user.click(screen.getByTestId("settings"));
@@ -220,10 +220,16 @@ describe("Settings", () => {
     await user.click(screen.getByTestId("runSettings"));
 
     // protocol
-    const protocolSelect = screen.getByLabelText("Protocol");
-    await user.selectOptions(protocolSelect, ["isolate"]);
+    await user.click(container.querySelector("#protocol-field"));
+    expect(container.querySelector("#protocol-field")).toHaveAttribute("data-state", "open");
+    await user.keyboard('{ArrowDown}')
+    await user.keyboard('{ArrowDown}')
+    await user.keyboard('{Enter}');
+    await user.keyboard('{Tab}');
+    expect(settings.protocol).toBe(PiranhaProtocol.Isolate);
     expect(onchange).toHaveBeenCalledTimes(1);
     expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+      ...defaultSettings,
       protocol: PiranhaProtocol.Isolate,
       positiveControl: "pos",
       negativeControl: "neg",
@@ -231,9 +237,11 @@ describe("Settings", () => {
 
     // positiveControl
     const posControlInput = screen.getByLabelText("Positive control");
+    await user.clear(posControlInput);
     await user.type(posControlInput, "new pos");
-    expect(onchange).toHaveBeenCalledTimes(2);
+    expect(onchange).toHaveBeenCalledTimes(9); // get one change per keystroke...
     expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+      ...defaultSettings,
       protocol: PiranhaProtocol.Isolate,
       positiveControl: "new pos",
       negativeControl: "neg",
@@ -241,9 +249,11 @@ describe("Settings", () => {
 
     // negativeControl
     const negControlInput = screen.getByLabelText("Negative control");
+    await user.clear(negControlInput);
     await user.type(negControlInput, "new neg");
-    expect(onchange).toHaveBeenCalledTimes(3);
+    expect(onchange).toHaveBeenCalledTimes(18);
     expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+      ...defaultSettings,
       protocol: PiranhaProtocol.Isolate,
       positiveControl: "new pos",
       negativeControl: "new neg",
@@ -256,7 +266,6 @@ describe("Settings", () => {
   });
 
   test("handles updates to piranha output settings by calling onchange", async () => {
-    expect(settings.orientation).toBe(PiranhaOrientation.Horizontal);
     mockPersistentSettingsStore({runSettings: defaultSettings});
     const onchange = vi.fn();
     const {container} = render(Settings, {props: { errors: {}, onchange }});
@@ -278,7 +287,6 @@ describe("Settings", () => {
     await user.keyboard('{ArrowUp}');
     await user.keyboard('{Enter}');
     expect(settings.orientation).toBe(PiranhaOrientation.Vertical);
-    await tick();
     expect(onchange).toHaveBeenCalledTimes(2);
 
     // using fireEvent here rather than userEvent, which objects to pointer-events:none on this element

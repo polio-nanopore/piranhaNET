@@ -84,10 +84,9 @@
             >
               <Select.Root
                 type="single"
-                id="protocol-field"
                 bind:value={settings.protocol}
               >
-                <Select.Trigger class="w-full"
+                <Select.Trigger class="w-full" id="protocol-field"
                   >{settings.protocol}</Select.Trigger
                 >
                 <Select.Content>
