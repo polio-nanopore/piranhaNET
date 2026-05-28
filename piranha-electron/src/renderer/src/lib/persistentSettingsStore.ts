@@ -8,10 +8,13 @@ export class PersistentSettingsStore {
     return stored ? JSON.parse(stored) : null;
   }
 
-  saveUserSettings(settings: UserSettings) {
+  saveUserSettings(settings: UserSettings): void {
     // Don't save any extraneous values
-    const {userName, institute, outputFolderPath} = settings;
-    localStorage.setItem(USER_SETTINGS_KEY, JSON.stringify({userName, institute, outputFolderPath}));
+    const { userName, institute, outputFolderPath } = settings;
+    localStorage.setItem(
+      USER_SETTINGS_KEY,
+      JSON.stringify({ userName, institute, outputFolderPath }),
+    );
   }
 
   loadRunSettings(): RunSettings | null {
@@ -19,10 +22,13 @@ export class PersistentSettingsStore {
     return stored ? JSON.parse(stored) : null;
   }
 
-  saveRunSettings(settings: RunSettings) {
+  saveRunSettings(settings: RunSettings): void{
     // Don't save any extraneous values
-    const {protocol, positiveControl, negativeControl} = settings;
-    localStorage.setItem(RUN_SETTINGS_KEY, JSON.stringify({protocol, positiveControl, negativeControl}));
+    const { protocol, positiveControl, negativeControl } = settings;
+    localStorage.setItem(
+      RUN_SETTINGS_KEY,
+      JSON.stringify({ protocol, positiveControl, negativeControl }),
+    );
   }
 }
 

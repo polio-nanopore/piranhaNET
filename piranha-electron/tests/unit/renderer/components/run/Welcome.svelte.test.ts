@@ -1,10 +1,16 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import { i18n } from "$lib/i18n.svelte";
 import Welcome from "../../../../../src/renderer/src/components/run/Welcome.svelte";
-import {expectTranslations, renderInI18nTestContext, expectErrorFor, expectNoErrors, expectNoErrorFor} from "../../../utils";
-import {render, screen} from "@testing-library/svelte";
+import {
+  expectTranslations,
+  renderInI18nTestContext,
+  expectErrorFor,
+  expectNoErrors,
+  expectNoErrorFor,
+} from "../../../utils";
+import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import {settings} from "../../../../../src/renderer/src/lib/store.svelte";
+import { settings } from "../../../../../src/renderer/src/lib/store.svelte";
 
 describe("Welcome", () => {
   let user;
@@ -18,45 +24,50 @@ describe("Welcome", () => {
   });
 
   test("renders as expected", async () => {
-    const {container } = renderInI18nTestContext(Welcome);
-    await expectTranslations((text) => {
-      expect(screen.getByTestId("welcome")).toHaveTextContent(text);
+    const { container } = renderInI18nTestContext(Welcome);
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByTestId("welcome")).toHaveTextContent(text);
       },
       {
         en: /Welcome to PiranhaNET/,
         fr: /Bienvenue sur PiranhaNET/,
         pt: /Bem-vindo ao PiranhaNET/,
-      }
-      );
-    await expectTranslations((text) => {
-      expect(screen.getByLabelText(text)).toBeInTheDocument();
-    }, {
-      en: /User name/,
-      fr: /Nom d'utilisateur/,
-      pt: /Nome de utilizador/
-    });
-    await expectTranslations((text) => {
-      expect(screen.getByTestId("continue")).toHaveTextContent(text);
-    }, {
-      en: /Continue/,
-      fr: /Continuez/,
-      pt: /Continue/,
-    })
+      },
+    );
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByLabelText(text)).toBeInTheDocument();
+      },
+      {
+        en: /User name/,
+        fr: /Nom d'utilisateur/,
+        pt: /Nome de utilizador/,
+      },
+    );
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByTestId("continue")).toHaveTextContent(text);
+      },
+      {
+        en: /Continue/,
+        fr: /Continuez/,
+        pt: /Continue/,
+      },
+    );
 
     expectNoErrors(container);
   });
 
   test("submit form persists when valid", async () => {
-    const mockShowFileDialog = vi
-      .fn()
-      .mockImplementation(() => "/newOut");
+    const mockShowFileDialog = vi.fn().mockImplementation(() => "/newOut");
     window.api = {
       showFileDialog: mockShowFileDialog,
     };
 
     const onpersist = vi.fn();
 
-    const {container} = render(Welcome, {props: {onpersist}});
+    const { container } = render(Welcome, { props: { onpersist } });
     await user.type(screen.getByLabelText("User name"), "New name");
     await user.type(screen.getByLabelText("Institute"), "New Inst");
     await user.click(screen.getByTestId("output-folder-field"));
@@ -69,7 +80,7 @@ describe("Welcome", () => {
 
   test("submit form displays errors when invalid, and updates on every change", async () => {
     const onpersist = vi.fn();
-    const { container } = render(Welcome, {props: {onpersist}});
+    const { container } = render(Welcome, { props: { onpersist } });
     await user.click(screen.getByTestId("continue"));
 
     const nameField = screen.getByLabelText("User name");

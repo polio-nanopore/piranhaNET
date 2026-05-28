@@ -22,7 +22,7 @@
     return result.success;
   }
 
-  const onSubmit = (e: SubmitEvent) => {
+  const onSubmit = (e: SubmitEvent): void => {
     e.preventDefault();
     validateOnEachChange = true;
     const valid = validate();
@@ -31,7 +31,7 @@
     }
   };
 
-  const onChange = () => {
+  const onChange = (): void => {
     if (validateOnEachChange) {
       validate();
     }

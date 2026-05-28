@@ -14,9 +14,10 @@ import {
   defaultRunParameters,
   runParameters,
   settings,
-  appState, defaultPiranhaOutputSettings,
+  appState,
+  defaultPiranhaOutputSettings,
 } from "../../../../../src/renderer/src/lib/store.svelte";
-import {PiranhaProtocol} from "../../../../../src/renderer/src/types";
+import { PiranhaProtocol } from "../../../../../src/renderer/src/types";
 
 describe("RunParameters", () => {
   const user = userEvent.setup();
@@ -110,8 +111,8 @@ describe("RunParameters", () => {
       {
         en: /Settings/,
         fr: /Paramètres/,
-        pt: /Configurações/
-      }
+        pt: /Configurações/,
+      },
     );
   });
 
@@ -164,7 +165,7 @@ describe("RunParameters", () => {
       userName: "Test User",
       institute: "Test Institute",
       outputFolderPath: "/test/output",
-      ...defaultPiranhaOutputSettings
+      ...defaultPiranhaOutputSettings,
     });
   });
 

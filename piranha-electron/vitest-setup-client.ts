@@ -20,8 +20,10 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 // Polyfill for Pointer Events missing in jsdom/happy-dom
-if (typeof window !== 'undefined') {
-  window.HTMLElement.prototype.hasPointerCapture = vi.fn().mockReturnValue(false);
+if (typeof window !== "undefined") {
+  window.HTMLElement.prototype.hasPointerCapture = vi
+    .fn()
+    .mockReturnValue(false);
   window.HTMLElement.prototype.setPointerCapture = vi.fn();
   window.HTMLElement.prototype.releasePointerCapture = vi.fn();
   window.HTMLElement.prototype.scrollIntoView = vi.fn();

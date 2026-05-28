@@ -17,7 +17,7 @@ const defaultUserSettings = {
 const defaultRunSettings = {
   protocol: PiranhaProtocol.Stool,
   positiveControl: "",
-  negativeControl: ""
+  negativeControl: "",
 };
 
 export const defaultPiranhaOutputSettings = {
@@ -26,7 +26,7 @@ export const defaultPiranhaOutputSettings = {
   overwriteOutput: false,
   outputIntermediateFiles: false,
   allMetadataToHeader: false,
-  dateStamp: false
+  dateStamp: false,
 };
 
 const userSettings =
@@ -38,7 +38,7 @@ const runSettings =
 export const settings: PiranhaSettings = $state({
   ...userSettings,
   ...runSettings,
-  ...defaultPiranhaOutputSettings
+  ...defaultPiranhaOutputSettings,
 });
 
 export const appState: AppState = $state({

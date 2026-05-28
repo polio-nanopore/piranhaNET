@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
-  expectTranslations, mockPersistentSettingsStore,
+  expectTranslations,
+  mockPersistentSettingsStore,
   mockPiranhaAPI,
   renderInI18nTestContext,
 } from "../../../utils";
@@ -12,12 +13,12 @@ describe("Run", () => {
     userSettings: {
       userName: "test_user",
       institute: "test_inst",
-      outputFolderPath: "./test"
-    }
+      outputFolderPath: "./test",
+    },
   };
 
   test("renders as expected when user settings have not been persisted", async () => {
-    mockPersistentSettingsStore({userSettings: null});
+    mockPersistentSettingsStore({ userSettings: null });
     mockPiranhaAPI({ running: false });
     renderInI18nTestContext(Run);
     await expectTranslations(

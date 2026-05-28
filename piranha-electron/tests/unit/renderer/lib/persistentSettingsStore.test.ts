@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
 describe("persistentSettingsStore", () => {
@@ -7,7 +7,7 @@ describe("persistentSettingsStore", () => {
   const testUserSettings = {
     userName: "Test User",
     institute: "Test Inst",
-    outputFolderPath: "/testOut"
+    outputFolderPath: "/testOut",
   };
 
   const testRunSettings = {
@@ -19,13 +19,18 @@ describe("persistentSettingsStore", () => {
   test("can save userSettings", () => {
     persistentSettingsStore.saveUserSettings({
       ...testUserSettings,
-      someOtherKey: "some value"
+      someOtherKey: "some value",
     });
-    expect(mockSetItem).toHaveBeenCalledWith("userSettings", JSON.stringify(testUserSettings))
+    expect(mockSetItem).toHaveBeenCalledWith(
+      "userSettings",
+      JSON.stringify(testUserSettings),
+    );
   });
 
   test("can load userSettings", () => {
-    const mockGetItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => JSON.stringify(testUserSettings));
+    const mockGetItem = vi
+      .spyOn(Storage.prototype, "getItem")
+      .mockImplementation(() => JSON.stringify(testUserSettings));
     const result = persistentSettingsStore.loadUserSettings();
     expect(result).toStrictEqual(testUserSettings);
     expect(mockGetItem).toHaveBeenCalledWith("userSettings");
@@ -40,13 +45,18 @@ describe("persistentSettingsStore", () => {
   test("can save runSettings", () => {
     persistentSettingsStore.saveRunSettings({
       ...testRunSettings,
-      someOtherKey: "some value"
+      someOtherKey: "some value",
     });
-    expect(mockSetItem).toHaveBeenCalledWith("runSettings", JSON.stringify(testRunSettings));
+    expect(mockSetItem).toHaveBeenCalledWith(
+      "runSettings",
+      JSON.stringify(testRunSettings),
+    );
   });
 
   test("can load runSettings", () => {
-    const mockGetItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => JSON.stringify(testRunSettings));
+    const mockGetItem = vi
+      .spyOn(Storage.prototype, "getItem")
+      .mockImplementation(() => JSON.stringify(testRunSettings));
     const result = persistentSettingsStore.loadRunSettings();
     expect(result).toStrictEqual(testRunSettings);
     expect(mockGetItem).toHaveBeenCalledWith("runSettings");

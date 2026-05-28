@@ -3,7 +3,6 @@ import { describe, expect, test } from "vitest";
 import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
 import * as AnsiParser from "ansi-parser";
-import {PiranhaOrientation} from "../../../src/renderer/src/types";
 
 describe("piranhaRunner", () => {
   const getWritableWithBuffer = (): {
@@ -43,7 +42,7 @@ describe("piranhaRunner", () => {
         threads: 10,
         institute: "Test Institute",
         userName: "Test User",
-        orientation: "horizontal"
+        orientation: "horizontal",
       },
       runOutput.writable,
     );

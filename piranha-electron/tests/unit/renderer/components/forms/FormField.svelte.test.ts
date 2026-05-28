@@ -24,8 +24,8 @@ describe("FormField", () => {
   });
 
   test("renders with class", () => {
-    const {container} = render(TestFormField, {
-      props: {class: "test-class"}
+    const { container } = render(TestFormField, {
+      props: { class: "test-class" },
     });
     const divElement = container.firstChild;
     expect(divElement).toHaveClass("test-class");

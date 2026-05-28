@@ -8,7 +8,7 @@
 
   const { errors, onchange } = $props();
 
-  const handleChange = () => {
+  const handleChange = (): void => {
     persistentSettingsStore.saveUserSettings(settings);
     onchange();
   };

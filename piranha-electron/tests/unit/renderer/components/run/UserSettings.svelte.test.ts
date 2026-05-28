@@ -1,11 +1,16 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import UserSettings from "../../../../../src/renderer/src/components/run/UserSettings.svelte";
-import {settings} from "../../../../../src/renderer/src/lib/store.svelte";
+import { settings } from "../../../../../src/renderer/src/lib/store.svelte";
 import { i18n } from "$lib/i18n.svelte";
-import {expectTranslations, mockPersistentSettingsStore, renderInI18nTestContext, ERROR_CLASS, expectErrorFor} from "../../../utils";
+import {
+  expectTranslations,
+  mockPersistentSettingsStore,
+  renderInI18nTestContext,
+  expectErrorFor,
+} from "../../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import {render, screen} from "@testing-library/svelte";
-import {persistentSettingsStore} from "../../../../../src/renderer/src/lib/persistentSettingsStore";
+import { render, screen } from "@testing-library/svelte";
+import { persistentSettingsStore } from "../../../../../src/renderer/src/lib/persistentSettingsStore";
 
 describe("UserSettings", () => {
   beforeEach(() => {
@@ -16,18 +21,26 @@ describe("UserSettings", () => {
   });
 
   test("renders values as expected", async () => {
-    renderInI18nTestContext(UserSettings, {props: {errors: {}}});
-    await expectTranslations((text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
-      { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/},
+    renderInI18nTestContext(UserSettings, { props: { errors: {} } });
+    await expectTranslations(
+      (text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
+      { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/ },
     );
-    await expectTranslations((text) => expect(screen.getByLabelText(text).value).toBe("Test Inst"),
-      { en: /Institute/, fr: /Institut/, pt: /Instituto/},
+    await expectTranslations(
+      (text) => expect(screen.getByLabelText(text).value).toBe("Test Inst"),
+      { en: /Institute/, fr: /Institut/, pt: /Instituto/ },
     );
-    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent("/testOut");
-    await expectTranslations((text) => {
-        expect(screen.getByLabelText(text)).toHaveAttribute("data-testid", "output-folder-field");
+    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent(
+      "/testOut",
+    );
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "data-testid",
+          "output-folder-field",
+        );
       },
-      { en: /Output folder/, fr: /Dossier de sortie/, pt: /Pasta de saída/}
+      { en: /Output folder/, fr: /Dossier de sortie/, pt: /Pasta de saída/ },
     );
   });
 
@@ -35,9 +48,9 @@ describe("UserSettings", () => {
     const errors = {
       userName: ["User name error"],
       institute: ["Institute error"],
-      outputFolderPath: ["Output error"]
+      outputFolderPath: ["Output error"],
     };
-    renderInI18nTestContext(UserSettings, {props: {errors}});
+    renderInI18nTestContext(UserSettings, { props: { errors } });
     expectErrorFor("user-name-field", "User name error");
     expectErrorFor("institute-field", "Institute error");
     expectErrorFor("output-folder-field", "Output error");
@@ -48,14 +61,12 @@ describe("UserSettings", () => {
     const user = userEvent.setup();
     mockPersistentSettingsStore({});
 
-    const mockShowFileDialog = vi
-      .fn()
-      .mockImplementation(() => "/newOut");
+    const mockShowFileDialog = vi.fn().mockImplementation(() => "/newOut");
     window.api = {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(UserSettings, {props: {onchange, errors: {}}})
+    render(UserSettings, { props: { onchange, errors: {} } });
 
     const nameField = screen.getByLabelText("User name");
     await user.clear(nameField);
@@ -66,7 +77,7 @@ describe("UserSettings", () => {
       ...settings,
       userName: "New name",
       institute: "Test Inst",
-      outputFolderPath: "/testOut"
+      outputFolderPath: "/testOut",
     });
 
     const instField = screen.getByLabelText("Institute");
@@ -78,7 +89,7 @@ describe("UserSettings", () => {
       ...settings,
       userName: "New name",
       institute: "New Inst",
-      outputFolderPath: "/testOut"
+      outputFolderPath: "/testOut",
     });
 
     await user.click(screen.getByLabelText("Output folder"));
@@ -88,7 +99,7 @@ describe("UserSettings", () => {
       ...settings,
       userName: "New name",
       institute: "New Inst",
-      outputFolderPath: "/newOut"
+      outputFolderPath: "/newOut",
     });
   });
 });

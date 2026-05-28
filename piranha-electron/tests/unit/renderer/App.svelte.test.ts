@@ -18,7 +18,7 @@ describe("App", () => {
       {
         en: /Welcome to PiranhaNET/,
         fr: /Bienvenue sur PiranhaNET/,
-        pt: /Bem-vindo ao PiranhaNET/
+        pt: /Bem-vindo ao PiranhaNET/,
       },
     );
   };

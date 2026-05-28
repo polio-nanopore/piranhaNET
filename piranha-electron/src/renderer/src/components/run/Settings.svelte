@@ -4,7 +4,7 @@
   import { Input } from "$lib/shadcn/ui/input";
   import { Switch } from "$lib/shadcn/ui/switch";
   import { m } from "../../../../paraglide/messages";
-  import { settings, appState } from "$lib/store.svelte";
+  import { settings } from "$lib/store.svelte";
   import FormField from "../forms/FormField.svelte";
   import { PiranhaProtocol, PiranhaOrientation } from "../../types";
   import {persistentSettingsStore} from "../../lib/persistentSettingsStore";
@@ -21,9 +21,10 @@
 
   let openSections = $state(runSettingsUninitialised ? [RUN_SETTINGS_SECTION] : []);
 
-  const sectionNameIfErrors = (sectionSchema, sectionName) =>
+  const sectionNameIfErrors = (sectionSchema, sectionName): string | null =>
     Object.keys(sectionSchema).some((key) => Object.keys(errors).includes(key)) ? sectionName : null;
-  const sectionsWithError = $derived([
+
+  const sectionsWithError: string[] = $derived([
     sectionNameIfErrors(runSettingsFormSchema(), RUN_SETTINGS_SECTION),
     sectionNameIfErrors(piranhaOutputSettingsFormSchema(), PIRANHA_OUTPUT_SETTINGS_SECTION),
     sectionNameIfErrors(userSettingsFormSchema(), USER_SETTINGS_SECTION),
@@ -34,7 +35,7 @@
     sectionsWithError.filter((s) => !openSections.includes(s)).forEach((s) => openSections.push(s));
   });
 
-  const handleRunSettingsChange = () => {
+  const handleRunSettingsChange = (): void => {
     persistentSettingsStore.saveRunSettings(settings);
     onchange();
   };
@@ -90,7 +91,7 @@
                   >{settings.protocol}</Select.Trigger
                 >
                 <Select.Content>
-                  {#each Object.values(PiranhaProtocol) as protocol}
+                  {#each Object.values(PiranhaProtocol) as protocol (protocol)}
                     <Select.Item value={protocol} label={protocol}
                       >{protocol}</Select.Item
                     >
@@ -143,8 +144,7 @@
                   >{settings.orientation}</Select.Trigger
                 >
                 <Select.Content>
-                  <!-- TODO: check if orientation should be translated - it isn't in old GUI -->
-                  {#each Object.values(PiranhaOrientation) as orientation}
+                  {#each Object.values(PiranhaOrientation) as orientation (orientation)}
                     <Select.Item value={orientation} label={orientation}
                       >{orientation}</Select.Item
                     >

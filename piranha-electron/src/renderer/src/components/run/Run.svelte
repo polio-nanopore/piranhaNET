@@ -6,7 +6,7 @@
   import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
   let needsFirstPersist = $state(!persistentSettingsStore.loadUserSettings());
-  const onFirstPersist = () => {
+  const onFirstPersist = (): void => {
     needsFirstPersist = false;
   }
 </script>
