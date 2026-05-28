@@ -37,16 +37,25 @@ export class PiranhaRunner {
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
-    // TODO: all other settings into Piranha run!!!!!!!
     const envString = [
+      // run parameters
       `THREADS=${options.threads || 1}`,
       `--runname ${escapeOption(options.name)}`,
       `--notes ${escapeOption(options.notes)}`,
-      `-pc ${escapeOption(options.positiveControl || "")}`,
-      `-nc ${escapeOption(options.negativeControl || "")}`,
-      `--institute ${escapeOption(options.institute || "")}`,
+      // run settings
+      `--sample-type ${options.protocol)}`,
+      `--positive-control ${escapeOption(options.positiveControl || "")}`,
+      `--negative-control ${escapeOption(options.negativeControl || "")}`,
+      // piranha output settings
+      `--orientation ${options.orientation}`,
+      `--output-prefix ${escapeOption(options.outputPrefix || "")}`,
+      `--overwrite ${options.overwriteOutput}`,
+      `--no-temp ${options.outputIntermediateFiles}`,
+      `--all-metadata-to-header ${options.allMetadataToHeader}`,
+      `--datestamp ${options.dateStamp}`
+      // user settings
       `--username ${escapeOption(options.userName || "")}`,
-      `--orientation ${escapeOption(options.orientation || "")}`,
+      `--institute ${escapeOption(options.institute || "")}`,
     ].join(" ");
 
     const env = [envString];
