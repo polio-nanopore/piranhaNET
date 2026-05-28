@@ -107,14 +107,14 @@ export const expectNoErrors = (container) => {
 };
 
 //TODO: remove these container params
-export const expectErrorFor = (container: HTMLElement, fieldName: string, expectedError = "Required value") => {
+export const expectErrorFor = (fieldName: string, expectedError = "Required value") => {
   expect(screen.getByTestId(`${fieldName}-label`).classList).toContain(ERROR_CLASS);
   const error = screen.getByTestId(`${fieldName}-error`);
   expect(error).toHaveTextContent(expectedError);
   expect(error.classList).toContain(ERROR_CLASS);
 };
 
-export const expectNoErrorFor = (container: HTMLElement, fieldName: string) => {
+export const expectNoErrorFor = (fieldName: string) => {
   expect(screen.queryByTestId(`${fieldName}-error`)).toBeNull();
   expect(screen.getByTestId(`${fieldName}-label`).classList).not.toContain(ERROR_CLASS);
 }

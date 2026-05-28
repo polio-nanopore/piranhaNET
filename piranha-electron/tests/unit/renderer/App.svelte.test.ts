@@ -16,9 +16,9 @@ describe("App", () => {
     await expectTranslations(
       (text) => expect(screen.getByText(text)).toBeVisible(),
       {
-        en: /Run Piranha/,
-        fr: /Courez Piranha/,
-        pt: /Corra Piranha/,
+        en: /Welcome to PiranhaNET/,
+        fr: /Bienvenue sur PiranhaNET/,
+        pt: /Bem-vindo ao PiranhaNET/
       },
     );
   };

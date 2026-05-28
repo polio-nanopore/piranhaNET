@@ -4,7 +4,7 @@ import {settings} from "../../../../../src/renderer/src/lib/store.svelte";
 import { i18n } from "$lib/i18n.svelte";
 import {expectTranslations, mockPersistentSettingsStore, renderInI18nTestContext, ERROR_CLASS, expectErrorFor} from "../../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import {render} from "@testing-library/svelte";
+import {render, screen} from "@testing-library/svelte";
 import {persistentSettingsStore} from "../../../../../src/renderer/src/lib/persistentSettingsStore";
 
 describe("UserSettings", () => {
@@ -16,16 +16,16 @@ describe("UserSettings", () => {
   });
 
   test("renders values as expected", async () => {
-    renderInI18nTestContext(UserSettings);
+    renderInI18nTestContext(UserSettings, {props: {errors: {}}});
     await expectTranslations((text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
       { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/},
     );
     await expectTranslations((text) => expect(screen.getByLabelText(text).value).toBe("Test Inst"),
       { en: /Institute/, fr: /Institut/, pt: /Instituto/},
     );
-    expect(screen.getByTestId("output-folder-field-value").value).toBe("/testOut");
+    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent("/testOut");
     await expectTranslations((text) => {
-        expect(screen.getByLabelText(text)).toHaveAttribute("role", "button");
+        expect(screen.getByLabelText(text)).toHaveAttribute("data-testid", "output-folder-field");
       },
       { en: /Output folder/, fr: /Dossier de sortie/, pt: /Pasta de saída/}
     );
@@ -37,14 +37,13 @@ describe("UserSettings", () => {
       institute: ["Institute error"],
       outputFolderPath: ["Output error"]
     };
-    const {container} = renderInI18nTestContext(UserSettings, {props: {errors}});
-
-    expectErrorFor(container, "user-name-field", "User name error");
-    expectErrorFor(container, "institute-field", "Institute error");
-    expectErrorFor(container, "output-folder-field", "Output error");
+    renderInI18nTestContext(UserSettings, {props: {errors}});
+    expectErrorFor("user-name-field", "User name error");
+    expectErrorFor("institute-field", "Institute error");
+    expectErrorFor("output-folder-field", "Output error");
   });
 
-  test("handles updates as expected", () => {
+  test("handles updates as expected", async () => {
     const onchange = vi.fn();
     const user = userEvent.setup();
     mockPersistentSettingsStore({});
@@ -56,29 +55,37 @@ describe("UserSettings", () => {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(UserSettings, {props: {onchange}})
-    user.type(screen.getByLabel("User name"), "New name");
+    render(UserSettings, {props: {onchange, errors: {}}})
+
+    const nameField = screen.getByLabelText("User name");
+    await user.clear(nameField);
+    await user.type(nameField, "New name[Tab]");
     expect(settings.userName).toBe("New name");
-    expect(onchange).toHaveBeenCalledTime(1);
-    expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+    expect(onchange).toHaveBeenCalledTimes(1);
+    expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
+      ...settings,
       userName: "New name",
       institute: "Test Inst",
       outputFolderPath: "/testOut"
     });
 
-    user.type(screen.getByLabel("Institute"), "New Inst");
+    const instField = screen.getByLabelText("Institute");
+    await user.clear(instField);
+    await user.type(instField, "New Inst[Tab]");
     expect(settings.institute).toBe("New Inst");
-    expect(onchange).toHaveBeenCalledTime(2);
-    expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+    expect(onchange).toHaveBeenCalledTimes(2);
+    expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
+      ...settings,
       userName: "New name",
       institute: "New Inst",
       outputFolderPath: "/testOut"
     });
 
-    user.click(screen.getByLabel("Output folder"));
+    await user.click(screen.getByLabelText("Output folder"));
     expect(settings.outputFolderPath).toBe("/newOut");
-    expect(onchange).toHaveBeenCalledTime(3);
-    expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+    expect(onchange).toHaveBeenCalledTimes(3);
+    expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
+      ...settings,
       userName: "New name",
       institute: "New Inst",
       outputFolderPath: "/newOut"

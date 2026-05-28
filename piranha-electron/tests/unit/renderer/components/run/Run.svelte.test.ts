@@ -12,7 +12,7 @@ describe("Run", () => {
     userSettings: {
       userName: "test_user",
       institute: "test_inst",
-      outputFolderPath: "./test";
+      outputFolderPath: "./test"
     }
   };
 
@@ -29,7 +29,7 @@ describe("Run", () => {
       },
     );
     await expectTranslations(
-      (text) => expect(screen.getByRole("button")).toHaveTextContent(text),
+      (text) => expect(screen.getByTestId("continue")).toHaveTextContent(text),
       {
         en: /Continue/,
         fr: /Continuez/,

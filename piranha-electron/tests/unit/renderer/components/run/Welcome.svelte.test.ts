@@ -80,19 +80,19 @@ describe("Welcome", () => {
     const instituteFieldName = "institute-field";
     const outputFolderFieldName = "output-folder-field";
 
-    expectErrorFor(container, nameFieldName);
-    expectErrorFor(container, instituteFieldName);
-    expectErrorFor(container, outputFolderFieldName);
+    expectErrorFor(nameFieldName);
+    expectErrorFor(instituteFieldName);
+    expectErrorFor(outputFolderFieldName);
 
     await user.type(nameField, "New name[Tab]");
-    expectNoErrorFor(container, nameFieldName);
-    expectErrorFor(container, instituteFieldName);
-    expectErrorFor(container, outputFolderFieldName);
+    expectNoErrorFor(nameFieldName);
+    expectErrorFor(instituteFieldName);
+    expectErrorFor(outputFolderFieldName);
 
     await user.type(instField, "New Inst[Tab]");
-    expectNoErrorFor(container, nameFieldName);
-    expectNoErrorFor(container, instituteFieldName);
-    expectErrorFor(container, outputFolderFieldName);
+    expectNoErrorFor(nameFieldName);
+    expectNoErrorFor(instituteFieldName);
+    expectErrorFor(outputFolderFieldName);
 
     await user.click(outField);
     expectNoErrors(container);

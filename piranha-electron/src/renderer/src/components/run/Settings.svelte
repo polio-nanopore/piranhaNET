@@ -38,6 +38,30 @@
     persistentSettingsStore.saveRunSettings(settings);
     onchange();
   };
+
+  // shadcn Select and Switch do not provide onchange, so spot when selected values change
+  let initialRunSettings = true;
+  $effect(() => {
+    void settings.protocol;
+    if (initialRunSettings) {
+      initialRunSettings = false;
+      return;
+    }
+    handleRunSettingsChange();
+  })
+  let initialPiranhaOutputSettings = true;
+  $effect(() => {
+    void settings.orientation;
+    void settings.overwriteOutput;
+    void settings.outputIntermediateFiles;
+    void settings.allMetadataToHeader;
+    void settings.dateStamp;
+    if (initialPiranhaOutputSettings) {
+      initialPiranhaOutputSettings = false;
+      return;
+    }
+    onchange();
+  });
 </script>
 <Accordion.Root data-testid="settings" class="mb-4" type="single" value={(openSections.length ? "settings" : "")}>
   <Accordion.Item value="settings">
@@ -62,13 +86,11 @@
                 type="single"
                 id="protocol-field"
                 bind:value={settings.protocol}
-                onchange={handleRunSettingsChange}
               >
                 <Select.Trigger class="w-full"
                   >{settings.protocol}</Select.Trigger
                 >
                 <Select.Content>
-                  <!-- TODO: check if protocol should be translated - it isn't in old GUI -->
                   {#each Object.values(PiranhaProtocol) as protocol}
                     <Select.Item value={protocol} label={protocol}
                       >{protocol}</Select.Item
@@ -116,11 +138,9 @@
             >
               <Select.Root
                 type="single"
-                id="protocol-field"
                 bind:value={settings.orientation}
-                {onchange}
               >
-                <Select.Trigger class="w-full"
+                <Select.Trigger class="w-full" id="orientation-field"
                   >{settings.orientation}</Select.Trigger
                 >
                 <Select.Content>
