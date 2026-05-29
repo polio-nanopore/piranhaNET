@@ -37,22 +37,24 @@ export class PiranhaRunner {
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
+    // TODO: include bool options with no arg if true
     const envString = [
       // run parameters
       `THREADS=${options.threads || 1}`,
       `--runname ${escapeOption(options.name)}`,
       `--notes ${escapeOption(options.notes)}`,
       // run settings
-      `--sample-type ${options.protocol)}`,
+      `--sample-type ${options.protocol}`,
       `--positive-control ${escapeOption(options.positiveControl || "")}`,
       `--negative-control ${escapeOption(options.negativeControl || "")}`,
       // piranha output settings
       `--orientation ${options.orientation}`,
       `--output-prefix ${escapeOption(options.outputPrefix || "")}`,
-      `--overwrite ${options.overwriteOutput}`,
-      `--no-temp ${options.outputIntermediateFiles}`,
-      `--all-metadata-to-header ${options.allMetadataToHeader}`,
-      `--datestamp ${options.dateStamp}`
+      `${options.overwriteOutput ? "--overwrite" : "" }`,
+      `${options.outputIntermediateFiles ? "--no-temp" : "" }`,
+      `${options.allMetadataToHeader ? "--all-metadata-to-header" : ""}`,
+      // TODO: Awaiting clarification from Aine about this, it seems datestamp is appended by Piranha if --datestamp is provided, but requires an arg
+      `${options.dateStamp ? "--datestamp True" : ""}`,
       // user settings
       `--username ${escapeOption(options.userName || "")}`,
       `--institute ${escapeOption(options.institute || "")}`,
