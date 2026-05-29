@@ -50,8 +50,8 @@ export class PiranhaRunner {
       // piranha output settings
       `--orientation ${options.orientation}`,
       `--output-prefix ${escapeOption(options.outputPrefix || "")}`,
-      `${options.overwriteOutput ? "--overwrite" : "" }`,
-      `${options.outputIntermediateFiles ? "--no-temp" : "" }`,
+      `${options.overwriteOutput ? "--overwrite" : ""}`,
+      `${options.outputIntermediateFiles ? "--no-temp" : ""}`,
       `${options.allMetadataToHeader ? "--all-metadata-to-header" : ""}`,
       // TODO: Awaiting clarification from Aine about this, it seems datestamp is appended by Piranha if --datestamp is provided, but requires an arg
       `${options.dateStamp ? "--datestamp True" : ""}`,
