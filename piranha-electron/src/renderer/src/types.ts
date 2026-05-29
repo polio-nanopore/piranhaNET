@@ -13,8 +13,6 @@ export interface PiranhaRunParameters {
   threads: number;
 }
 
-// Protocol does not correspond to a single input into Piranha but maps to a set of default option values. It is still
-// tbd where this mapping takes place
 export enum PiranhaProtocol {
   Stool = "stool",
   Environmental = "environmental",
