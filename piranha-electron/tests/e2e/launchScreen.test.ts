@@ -149,9 +149,19 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   const negControl = await runSettings.getByLabel("Negative control");
   await negControl.fill("neg");
 
-  // TODO: Open and edit Piranha Output settings
+  // Open and edit Piranha Output settings
+  const piranhaOutput = await settings.getByTestId("piranhaOutputSettings");
+  await piranhaOutput.click();
+  const overwriteOutput = await piranhaOutput.getByLabel("Overwrite output");
+  await overwriteOutput.click();
+  const allMetadataToHeader = await piranhaOutput.getByLabel("All metadata to header");
+  await allMetadataToHeader.click();
 
-  // TODO: Open and edit User Settings (these were the ones we originally entered in the Welcome screen)
+  // Open and edit User Settings (these were the ones we originally entered in the Welcome screen)
+  const userSettings = await settings.getByTestId("userSettings");
+  await userSettings.click();
+  const userNameInput = await getUserNameInput(win);
+  await userNameInput.fill("New Test User");
 
   const runButton = await getRunButton(win);
   await win.waitForTimeout(2000);
@@ -159,11 +169,17 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   // See expected start run text in log
   const log = await win.getByTestId("logs");
-  await expect(log).toHaveText(/Building DAG of jobs.../, {
-    timeout: 15_000,
-  });
+  await expect(log).toHaveText(/Building DAG of jobs.../, {timeout: 15_000});
 
-  // TODO: Expect to see parameters and settings being used in log
+  // Expect to see parameters and settings being used in log
+  await expect(log).toHaveText(/Setting username: New_Test_User/);
+  await expect(log).toHaveText(/Setting institute: Test_Institute/);
+  await expect(log).toHaveText(/Setting runname: Test_Name/);
+  await expect(log).toHaveText(/Setting notes: some_test_notes/);
+  await expect(log).toHaveText(/Setting positive_control: pos/);
+  await expect(log).toHaveText(/Setting negative_control: neg/);
+  await expect(log).toHaveText(/Setting overwrite: True/);
+  await expect(log).toHaveText(/Setting all_metadata_to_header: True/);
 
   // Eventually see run finished messages
   await expect(log).toHaveText(
@@ -194,7 +210,7 @@ test("can see errors when submit incomplete welcome screen settings", async () =
   await expectErrorMessage(outputFolderField);
 });
 
-test.only("can see errors when submit incomplete run parameters", async () => {
+test("can see errors when submit incomplete run parameters", async () => {
   const win = await getWindow();
   await completeWelcomeScreenForm(win);
 
@@ -216,7 +232,6 @@ test.only("can see errors when submit incomplete run parameters", async () => {
 
   const notesInput = await getNotesInput(win);
   await expectErrorMessage(notesInput);
-
 
   // correct values and see errors disappear
   await nameInput.fill("test name");
@@ -260,10 +275,30 @@ test.only("can see errors when submit incomplete run parameters", async () => {
   await expectErrorMessage(threadsInput, false);
 });
 
-// TODO: can see errors when submit incomplete piranha output and user settings
-/*test("can see errors when submit incomplete settings", async () => {
-  // Can see errors when enter
-})*/
+test("can see errors when submit incomplete settings", async () => {
+  const win = await getWindow();
+  await completeWelcomeScreenForm(win);
+  const userSettings = await win.getByTestId("userSettings");
+  await userSettings.click();
+  // Clear username and institute - should see errors on both when press Run
+  const userNameInput = await getUserNameInput(win);
+  await userNameInput.fill("");
+  const instituteInput = await getInstituteInput(win);
+  await instituteInput.fill("");
+
+  const runButton = await getRunButton(win);
+  await runButton.click();
+
+  await expectErrorMessage(userNameInput);
+  await expectErrorMessage(instituteInput);
+
+  await userNameInput.fill("Test User");
+  await userNameInput.blur();
+  await expectErrorMessage(userNameInput, false);
+  await instituteInput.fill("Test Institute");
+  await instituteInput.blur();
+  await expectErrorMessage(instituteInput, false);
+})
 
 test("can change language", async () => {
   let win = await getWindow();
