@@ -63,20 +63,11 @@ test.afterEach(async () => {
   }
 });
 
-const getWindow = async (): Promise<Page> => {
-  return await electronApp.firstWindow();
+const getWindow = async (app = electronApp): Promise<Page> => {
+  return await app.firstWindow();
 };
 
-const getUserNameInput = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/User name/);
-const getInstituteInput = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Institute/);
-const getContinueButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", { name: /Continue/ });
-const getOutputFolderButton = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Output folder/);
-const getRunButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", { name: /Run Piranha/ });
+// Run Parameters
 const getNameInput = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/Name/);
 const getBarcodesFileButton = async (win: Page): Promise<Locator> =>
@@ -85,6 +76,28 @@ const getMinKnowFolderButton = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/MinKnow folder/);
 const getNotesInput = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/Notes/);
+// User Settings
+const getUserSettings = async (win: Page): Promise<Locator> =>
+  await win.getByTestId("userSettings");
+const getUserNameInput = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/User name/);
+const getInstituteInput = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Institute/);
+const getOutputFolderButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Output folder/);
+// Run Settings
+const getRunSettings = async (win: Page): Promise<Locator> =>
+  await win.getByTestId("runSettings");
+const getProtocol = async(win:Page) => await win.getByLabel(/Protocol/);
+const getPositiveControl = async(win:Page) => await win.getByLabel(/Positive control/);
+const getNegativeControl = async(win:Page) => await win.getByLabel(/Negative control/);
+
+
+const getContinueButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Continue/ });
+const getRunButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Run Piranha/ });
+
 
 const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
   buttonElement.locator("..");
@@ -142,10 +155,9 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   // Also fill in run settings
   const settings = await win.getByTestId("settings");
-  const runSettings = await settings.getByTestId("runSettings");
-  const posControl = await runSettings.getByLabel("Positive control");
+  const posControl = await getPositiveControl(win);
   await posControl.fill("pos");
-  const negControl = await runSettings.getByLabel("Negative control");
+  const negControl = await getNegativeControl(win);
   await negControl.fill("neg");
 
   // Open and edit Piranha Output settings
@@ -159,7 +171,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   await allMetadataToHeader.click();
 
   // Open and edit User Settings (these were the ones we originally entered in the Welcome screen)
-  const userSettings = await settings.getByTestId("userSettings");
+  const userSettings = await getUserSettings(win);
   await userSettings.click();
   const userNameInput = await getUserNameInput(win);
   await userNameInput.fill("New Test User");
@@ -279,7 +291,7 @@ test.only("can see errors when submit incomplete run parameters", async () => {
 test("can see errors when submit incomplete settings", async () => {
   const win = await getWindow();
   await completeWelcomeScreenForm(win);
-  const userSettings = await win.getByTestId("userSettings");
+  const userSettings = await getUserSettings(win);
   await userSettings.click();
   // Clear username and institute - should see errors on both when press Run
   const userNameInput = await getUserNameInput(win);
@@ -341,3 +353,52 @@ test("can change language", async () => {
     /User name/,
   );
 });
+
+test.only("user and run settings are persisted", async () => {
+  let win = await getWindow();
+  await completeWelcomeScreenForm(win);
+  let protocol = await getProtocol(win)
+  await protocol.click();
+  const environmental = await win.getByText(/environmental/);
+  await environmental.click();
+  let posControl = await getPositiveControl(win);
+  await posControl.fill("test pos");
+  await posControl.blur();
+  let negControl = await getNegativeControl(win);
+  await negControl.fill("test neg");
+  await negControl.blur();
+
+  // restart app and test values have been persisted.
+  await electronApp.close();
+  const newApp = await launchApp();
+  win = await getWindow(newApp);
+
+  // should be taken to run screen immediately
+  const run = await getRunButton(win);
+  expect(run).toBeVisible();
+
+  const settings = await win.getByTestId("settings");
+  await settings.click();
+
+  // check user settings
+  const userSettings = await getUserSettings(win);
+  await userSettings.scrollIntoViewIfNeeded();
+  expect(userSettings).toBeVisible();
+  await userSettings.click();
+  const userNameInput = await getUserNameInput(win);
+  await expect(userNameInput).toHaveValue("Test User");
+  const instituteInput = await getInstituteInput(win);
+  await expect(instituteInput).toHaveValue("Test Institute");
+  const outputFolderField = await win.getByTestId("output-folder-field-value");
+  await expect(outputFolderField).toHaveText(/\/test-results/);
+
+  // check run settings
+  const runSettings = await getRunSettings(win);
+  await runSettings.click();
+  protocol = await getProtocol(win)
+  await expect(protocol).toHaveText(/environmental/);
+  posControl = await getPositiveControl(win);
+  await expect(posControl).toHaveValue("test pos");
+  negControl = await getNegativeControl(win);
+  await expect(negControl).toHaveValue("test neg");
+})
