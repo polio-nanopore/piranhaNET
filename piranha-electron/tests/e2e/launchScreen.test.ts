@@ -88,16 +88,17 @@ const getOutputFolderButton = async (win: Page): Promise<Locator> =>
 // Run Settings
 const getRunSettings = async (win: Page): Promise<Locator> =>
   await win.getByTestId("runSettings");
-const getProtocol = async(win:Page) => await win.getByLabel(/Protocol/);
-const getPositiveControl = async(win:Page) => await win.getByLabel(/Positive control/);
-const getNegativeControl = async(win:Page) => await win.getByLabel(/Negative control/);
-
+const getProtocol = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Protocol/);
+const getPositiveControl = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Positive control/);
+const getNegativeControl = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/Negative control/);
 
 const getContinueButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Continue/ });
 const getRunButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Run Piranha/ });
-
 
 const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
   buttonElement.locator("..");
@@ -357,7 +358,7 @@ test("can change language", async () => {
 test.only("user and run settings are persisted", async () => {
   let win = await getWindow();
   await completeWelcomeScreenForm(win);
-  let protocol = await getProtocol(win)
+  let protocol = await getProtocol(win);
   await protocol.click();
   const environmental = await win.getByText(/environmental/);
   await environmental.click();
@@ -395,10 +396,10 @@ test.only("user and run settings are persisted", async () => {
   // check run settings
   const runSettings = await getRunSettings(win);
   await runSettings.click();
-  protocol = await getProtocol(win)
+  protocol = await getProtocol(win);
   await expect(protocol).toHaveText(/environmental/);
   posControl = await getPositiveControl(win);
   await expect(posControl).toHaveValue("test pos");
   negControl = await getNegativeControl(win);
   await expect(negControl).toHaveValue("test neg");
-})
+});
