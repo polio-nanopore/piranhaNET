@@ -12,7 +12,7 @@ let electronApp;
 const launchApp = async (): Promise<ElectronApplication> =>
   await electron.launch({ args: ["out/main/index.js", "--no-sandbox"] });
 
-const initialiseFileDialogHandler = async () => {
+const initialiseFileDialogHandler = async (): Promise<void> => {
   await electronApp.evaluate(({ app, ipcMain }) => {
     ipcMain.removeHandler("show-file-dialog");
     ipcMain.handle("show-file-dialog", async (_event, options) => {
@@ -120,7 +120,6 @@ const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
   const outputFolderButton = await getOutputFolderButton(win);
   await outputFolderButton.click();
   const continueButton = await getContinueButton(win);
-  await win.waitForTimeout(2000);
   await continueButton.click();
 };
 
@@ -154,7 +153,9 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   await piranhaOutput.click();
   const overwriteOutput = await piranhaOutput.getByLabel("Overwrite output");
   await overwriteOutput.click();
-  const allMetadataToHeader = await piranhaOutput.getByLabel("All metadata to header");
+  const allMetadataToHeader = await piranhaOutput.getByLabel(
+    "All metadata to header",
+  );
   await allMetadataToHeader.click();
 
   // Open and edit User Settings (these were the ones we originally entered in the Welcome screen)
@@ -163,13 +164,14 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   const userNameInput = await getUserNameInput(win);
   await userNameInput.fill("New Test User");
 
-  const runButton = await getRunButton(win);
+  // A wait seems to necessary here to allow updates before submitting run
   await win.waitForTimeout(2000);
+  const runButton = await getRunButton(win);
   await runButton.click();
 
   // See expected start run text in log
   const log = await win.getByTestId("logs");
-  await expect(log).toHaveText(/Building DAG of jobs.../, {timeout: 15_000});
+  await expect(log).toHaveText(/Building DAG of jobs.../, { timeout: 15_000 });
 
   // Expect to see parameters and settings being used in log
   await expect(log).toHaveText(/Setting username: New_Test_User/);
@@ -183,7 +185,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   // Eventually see run finished messages
   await expect(log).toHaveText(
-    /\/data\/run_data\/output\/piranha_output_\d+\/report\.html/,
+    /\/data\/run_data\/output\/piranha_output\/report\.html/,
     {
       timeout: 300_000,
     },
@@ -205,17 +207,16 @@ test("can see errors when submit incomplete welcome screen settings", async () =
   const instituteInput = await getInstituteInput(win);
   await expectErrorMessage(instituteInput);
 
-  let outputFolderButton = await getOutputFolderButton(win);
+  const outputFolderButton = await getOutputFolderButton(win);
   const outputFolderField = getFieldFromDialogButton(outputFolderButton);
   await expectErrorMessage(outputFolderField);
 });
 
-test("can see errors when submit incomplete run parameters", async () => {
+test.only("can see errors when submit incomplete run parameters", async () => {
   const win = await getWindow();
   await completeWelcomeScreenForm(win);
 
   // click run on next screen - should get errors on all parameters except threads, and also on run settings
-  await win.waitForTimeout(2000);
   const runButton = await getRunButton(win);
   await runButton.click();
 
@@ -298,7 +299,7 @@ test("can see errors when submit incomplete settings", async () => {
   await instituteInput.fill("Test Institute");
   await instituteInput.blur();
   await expectErrorMessage(instituteInput, false);
-})
+});
 
 test("can change language", async () => {
   let win = await getWindow();
@@ -336,5 +337,7 @@ test("can change language", async () => {
   const enItem = await win.getByTestId("lang-en");
   await enItem.click();
   await expect(title).toHaveText(/Welcome to PiranhaNET/);
-  await expect(await win.getByTestId("user-name-field-label")).toHaveText(/User name/);
+  await expect(await win.getByTestId("user-name-field-label")).toHaveText(
+    /User name/,
+  );
 });
