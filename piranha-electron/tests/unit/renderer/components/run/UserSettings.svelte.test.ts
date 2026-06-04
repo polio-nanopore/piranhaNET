@@ -36,7 +36,7 @@ describe("UserSettings", () => {
     await expectTranslations(
       (text) => {
         expect(screen.getByLabelText(text)).toHaveAttribute(
-          "data-testid",
+          "id",
           "output-folder-field",
         );
       },
