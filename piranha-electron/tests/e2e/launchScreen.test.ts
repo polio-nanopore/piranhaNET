@@ -225,7 +225,7 @@ test("can see errors when submit incomplete welcome screen settings", async () =
   await expectErrorMessage(outputFolderField);
 });
 
-test.only("can see errors when submit incomplete run parameters", async () => {
+test("can see errors when submit incomplete run parameters", async () => {
   const win = await getWindow();
   await completeWelcomeScreenForm(win);
 
@@ -355,7 +355,7 @@ test("can change language", async () => {
   );
 });
 
-test.only("user and run settings are persisted", async () => {
+test("user and run settings are persisted", async () => {
   let win = await getWindow();
   await completeWelcomeScreenForm(win);
   let protocol = await getProtocol(win);
