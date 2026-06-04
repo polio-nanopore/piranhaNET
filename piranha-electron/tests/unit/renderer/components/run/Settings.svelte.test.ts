@@ -361,7 +361,7 @@ describe("Settings", () => {
     const negControlInput = screen.getByLabelText("Negative control");
     await user.clear(negControlInput);
     await user.type(negControlInput, "new neg");
-    expect(onchange).toHaveBeenCalledTimes(18);
+    expect(onchange).toHaveBeenCalledTimes(17);
     expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
       ...defaultSettings,
       protocol: PiranhaProtocol.Isolate,

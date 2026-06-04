@@ -32,10 +32,7 @@
 </script>
 
 <div id={`${id}-container`} class="flex">
-  <Button
-    {id}
-    class="rounded-r-none border-0"
-    onclick={showDialog}
+  <Button {id} class="rounded-r-none border-0" onclick={showDialog}
     >{selectFolder ? m.formsChooseFolder() : m.formsChooseFile()}</Button
   >
   <div

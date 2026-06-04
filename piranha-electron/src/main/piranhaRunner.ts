@@ -52,9 +52,7 @@ export class PiranhaRunner {
       `${options.overwriteOutput ? "--overwrite" : ""}`,
       `${options.outputIntermediateFiles ? "--no-temp" : ""}`,
       `${options.allMetadataToHeader ? "--all-metadata-to-header" : ""}`,
-      // Datestamp flag requires a "True" arg, unlike the other flags. Aine is aware of this and will fix in a future
-      // release.
-      `${options.dateStamp ? "--datestamp True" : ""}`,
+      `${options.dateStamp ? "--datestamp" : ""}`,
       // user settings
       `--username ${escapeOption(options.userName || "")}`,
       `--institute ${escapeOption(options.institute || "")}`,
