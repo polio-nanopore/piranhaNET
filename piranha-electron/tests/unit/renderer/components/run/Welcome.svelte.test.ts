@@ -95,12 +95,12 @@ describe("Welcome", () => {
     expectErrorFor(instituteFieldName);
     expectErrorFor(outputFolderFieldName);
 
-    await user.type(nameField, "New name[Tab]");
+    await user.type(nameField, "New name");
     expectNoErrorFor(nameFieldName);
     expectErrorFor(instituteFieldName);
     expectErrorFor(outputFolderFieldName);
 
-    await user.type(instField, "New Inst[Tab]");
+    await user.type(instField, "New Inst");
     expectNoErrorFor(nameFieldName);
     expectNoErrorFor(instituteFieldName);
     expectErrorFor(outputFolderFieldName);

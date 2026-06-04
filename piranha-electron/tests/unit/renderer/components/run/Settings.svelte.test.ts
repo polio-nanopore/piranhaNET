@@ -387,8 +387,8 @@ describe("Settings", () => {
 
     const outputPrefixInput = screen.getByLabelText("Output prefix");
     await user.clear(outputPrefixInput);
-    await user.type(outputPrefixInput, "new op[Tab]");
-    expect(onchange).toHaveBeenCalledTimes(1);
+    await user.type(outputPrefixInput, "new op");
+    expect(onchange).toHaveBeenCalledTimes(7);
 
     expect(settings.orientation).toBe(PiranhaOrientation.Horizontal);
     await user.click(container.querySelector("#orientation-field"));
@@ -400,20 +400,20 @@ describe("Settings", () => {
     await user.keyboard("{ArrowUp}");
     await user.keyboard("{Enter}");
     expect(settings.orientation).toBe(PiranhaOrientation.Vertical);
-    expect(onchange).toHaveBeenCalledTimes(2);
+    expect(onchange).toHaveBeenCalledTimes(8);
 
     // using fireEvent here rather than userEvent, which objects to pointer-events:none on this element
     fireEvent.click(screen.getByLabelText("Overwrite output"));
-    expect(onchange).toHaveBeenCalledTimes(3);
+    expect(onchange).toHaveBeenCalledTimes(9);
 
     fireEvent.click(screen.getByLabelText("Output intermediate files"));
-    expect(onchange).toHaveBeenCalledTimes(4);
+    expect(onchange).toHaveBeenCalledTimes(10);
 
     fireEvent.click(screen.getByLabelText("All metadata to header"));
-    expect(onchange).toHaveBeenCalledTimes(5);
+    expect(onchange).toHaveBeenCalledTimes(11);
 
     fireEvent.click(screen.getByLabelText("Date stamp"));
-    expect(onchange).toHaveBeenCalledTimes(6);
+    expect(onchange).toHaveBeenCalledTimes(12);
 
     // Test settings have been updated
     expect(settings.orientation).toBe(PiranhaOrientation.Vertical);

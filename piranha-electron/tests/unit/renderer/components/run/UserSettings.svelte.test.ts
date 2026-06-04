@@ -70,9 +70,9 @@ describe("UserSettings", () => {
 
     const nameField = screen.getByLabelText("User name");
     await user.clear(nameField);
-    await user.type(nameField, "New name[Tab]");
+    await user.type(nameField, "New name");
     expect(settings.userName).toBe("New name");
-    expect(onchange).toHaveBeenCalledTimes(1);
+    expect(onchange).toHaveBeenCalledTimes(9);
     expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
       ...settings,
       userName: "New name",
@@ -82,9 +82,9 @@ describe("UserSettings", () => {
 
     const instField = screen.getByLabelText("Institute");
     await user.clear(instField);
-    await user.type(instField, "New Inst[Tab]");
+    await user.type(instField, "New Inst");
     expect(settings.institute).toBe("New Inst");
-    expect(onchange).toHaveBeenCalledTimes(2);
+    expect(onchange).toHaveBeenCalledTimes(18);
     expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
       ...settings,
       userName: "New name",
@@ -94,7 +94,7 @@ describe("UserSettings", () => {
 
     await user.click(screen.getByLabelText("Output folder"));
     expect(settings.outputFolderPath).toBe("/newOut");
-    expect(onchange).toHaveBeenCalledTimes(3);
+    expect(onchange).toHaveBeenCalledTimes(19);
     expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
       ...settings,
       userName: "New name",

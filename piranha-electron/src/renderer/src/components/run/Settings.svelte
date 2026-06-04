@@ -167,7 +167,7 @@
               <Input
                 id="output-prefix-field"
                 bind:value={settings.outputPrefix}
-                {onchange}
+                oninput={onchange}
               ></Input>
             </FormField>
             <div class="flex space-x-10">
