@@ -124,7 +124,7 @@ describe("RunParameters", () => {
     await expectNoErrors();
 
     // Fill in one value and blur - should see no error message for others
-    await user.type(screen.getByLabelText("Name"), "test name for errors[Tab]");
+    await user.type(screen.getByLabelText("Name"), "test name for errors");
     await expectNoErrors();
 
     // Press Run button - should see errors
@@ -193,19 +193,19 @@ describe("RunParameters", () => {
 
     const threadsInput = screen.getByLabelText("Analysis threads");
     await user.clear(threadsInput);
-    await user.type(threadsInput, "-1[Tab]");
+    await user.type(threadsInput, "-1");
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be between 1 and 20/,
     );
 
     await user.clear(threadsInput);
-    await user.type(threadsInput, "5.5[Tab]");
+    await user.type(threadsInput, "5.5");
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be a whole number/,
     );
 
     await user.clear(threadsInput);
-    await user.type(threadsInput, "21[Tab]");
+    await user.type(threadsInput, "21");
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be between 1 and 20/,
     );

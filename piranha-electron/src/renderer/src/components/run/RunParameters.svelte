@@ -62,7 +62,7 @@
       error={errors.name}
       labelFor="name-field"
     >
-      <Input id="name-field" bind:value={runParameters.name} onchange={onChange}
+      <Input id="name-field" bind:value={runParameters.name} oninput={onChange}
       ></Input>
     </FormField>
     <FormField
@@ -112,7 +112,7 @@
         id="threads-field"
         type="number"
         bind:value={runParameters.threads}
-        onchange={onChange}
+        oninput={onChange}
       ></Input>
     </FormField>
     <Settings {errors} onchange={onChange}></Settings>

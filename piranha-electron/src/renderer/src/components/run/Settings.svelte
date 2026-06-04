@@ -54,30 +54,6 @@
     persistentSettingsStore.saveRunSettings(settings);
     onchange();
   };
-
-  // shadcn Select and Switch do not provide onchange, so spot when selected values change
-  let initialRunSettings = true;
-  $effect(() => {
-    void settings.protocol;
-    if (initialRunSettings) {
-      initialRunSettings = false;
-      return;
-    }
-    handleRunSettingsChange();
-  });
-  let initialPiranhaOutputSettings = true;
-  $effect(() => {
-    void settings.orientation;
-    void settings.overwriteOutput;
-    void settings.outputIntermediateFiles;
-    void settings.allMetadataToHeader;
-    void settings.dateStamp;
-    if (initialPiranhaOutputSettings) {
-      initialPiranhaOutputSettings = false;
-      return;
-    }
-    onchange();
-  });
 </script>
 
 <Accordion.Root
@@ -108,7 +84,11 @@
               error={errors.protocol}
               labelFor="protocol-field"
             >
-              <Select.Root type="single" bind:value={settings.protocol}>
+              <Select.Root
+                type="single"
+                bind:value={settings.protocol}
+                onValueChange={handleRunSettingsChange}
+              >
                 <Select.Trigger class="w-full" id="protocol-field"
                   >{settings.protocol}</Select.Trigger
                 >
@@ -129,7 +109,7 @@
               <Input
                 id="positive-control-field"
                 bind:value={settings.positiveControl}
-                onchange={handleRunSettingsChange}
+                oninput={handleRunSettingsChange}
               ></Input>
             </FormField>
             <FormField
@@ -140,7 +120,7 @@
               <Input
                 id="negative-control-field"
                 bind:value={settings.negativeControl}
-                onchange={handleRunSettingsChange}
+                oninput={handleRunSettingsChange}
               ></Input>
             </FormField>
           </Accordion.Content>
@@ -162,7 +142,11 @@
               error={errors.orientation}
               labelFor="orientation-field"
             >
-              <Select.Root type="single" bind:value={settings.orientation}>
+              <Select.Root
+                type="single"
+                bind:value={settings.orientation}
+                onValueChange={onchange}
+              >
                 <Select.Trigger class="w-full" id="orientation-field"
                   >{settings.orientation}</Select.Trigger
                 >
@@ -183,7 +167,7 @@
               <Input
                 id="output-prefix-field"
                 bind:value={settings.outputPrefix}
-                {onchange}
+                oninput={onchange}
               ></Input>
             </FormField>
             <div class="flex space-x-10">
@@ -195,7 +179,7 @@
                 <Switch
                   id="overwrite-output-field"
                   bind:checked={settings.overwriteOutput}
-                  {onchange}
+                  onCheckedChange={onchange}
                 ></Switch>
               </FormField>
               <FormField
@@ -206,7 +190,7 @@
                 <Switch
                   id="output-intermediate-files-field"
                   bind:checked={settings.outputIntermediateFiles}
-                  {onchange}
+                  onCheckedChange={onchange}
                 ></Switch>
               </FormField>
               <FormField
@@ -217,7 +201,7 @@
                 <Switch
                   id="all-metadata-to-header-field"
                   bind:checked={settings.allMetadataToHeader}
-                  {onchange}
+                  onCheckedChange={onchange}
                 ></Switch>
               </FormField>
               <FormField
@@ -228,7 +212,7 @@
                 <Switch
                   id="date-stamp-field"
                   bind:checked={settings.dateStamp}
-                  {onchange}
+                  onCheckedChange={onchange}
                 ></Switch>
               </FormField>
             </div>

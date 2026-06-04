@@ -22,7 +22,7 @@
   <Input
     id="user-name-field"
     bind:value={settings.userName}
-    onchange={handleChange}
+    oninput={handleChange}
   ></Input>
 </FormField>
 <FormField
@@ -33,7 +33,7 @@
   <Input
     id="institute-field"
     bind:value={settings.institute}
-    onchange={handleChange}
+    oninput={handleChange}
   ></Input>
 </FormField>
 

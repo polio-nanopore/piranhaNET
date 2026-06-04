@@ -70,7 +70,7 @@ describe("Welcome", () => {
     const { container } = render(Welcome, { props: { onpersist } });
     await user.type(screen.getByLabelText("User name"), "New name");
     await user.type(screen.getByLabelText("Institute"), "New Inst");
-    await user.click(screen.getByTestId("output-folder-field"));
+    await user.click(screen.getByLabelText("Output folder"));
     expect(mockShowFileDialog).toHaveBeenCalled();
 
     await user.click(screen.getByTestId("continue"));
@@ -95,12 +95,12 @@ describe("Welcome", () => {
     expectErrorFor(instituteFieldName);
     expectErrorFor(outputFolderFieldName);
 
-    await user.type(nameField, "New name[Tab]");
+    await user.type(nameField, "New name");
     expectNoErrorFor(nameFieldName);
     expectErrorFor(instituteFieldName);
     expectErrorFor(outputFolderFieldName);
 
-    await user.type(instField, "New Inst[Tab]");
+    await user.type(instField, "New Inst");
     expectNoErrorFor(nameFieldName);
     expectNoErrorFor(instituteFieldName);
     expectErrorFor(outputFolderFieldName);
