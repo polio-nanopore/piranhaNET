@@ -5,7 +5,8 @@
     "svelte-app/src/**/*",
     "piranha-electron/src/renderer/src/**/*",
     "piranha-electron/src/renderer/src/**/*.svelte",
-    "piranha-electron/src/preload/*.d.ts"
+    "piranha-electron/src/preload/*.d.ts",
+    "piranha-web/src/**/*"
   ],
   "compilerOptions": {
     "verbatimModuleSyntax": true,
