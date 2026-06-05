@@ -35,7 +35,9 @@ export default defineConfig({
           name: "main",
           environment: "node",
           clearMocks: true,
-          include: ["piranha-electron/tests/integration/main/**/**.{test,spec}.{js,ts}"],
+          include: [
+            "piranha-electron/tests/integration/main/**/**.{test,spec}.{js,ts}",
+          ],
           setupFiles: [],
         },
       },

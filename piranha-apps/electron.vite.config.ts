@@ -11,10 +11,10 @@ export default defineConfig({
       emptyOutDir: true,
       rollupOptions: {
         input: {
-          index: path.resolve(__dirname, "piranha-electron/src/main/index.ts")
-        }
-      }
-    }
+          index: path.resolve(__dirname, "piranha-electron/src/main/index.ts"),
+        },
+      },
+    },
   },
   preload: {
     root: path.resolve(__dirname, "piranha-electron/src/preload"),
@@ -22,10 +22,13 @@ export default defineConfig({
       emptyOutDir: true,
       rollupOptions: {
         input: {
-          index: path.resolve(__dirname, "piranha-electron/src/preload/index.ts")
-        }
-      }
-    }
+          index: path.resolve(
+            __dirname,
+            "piranha-electron/src/preload/index.ts",
+          ),
+        },
+      },
+    },
   },
   renderer: {
     root: path.resolve(__dirname, "piranha-electron/src/renderer"),
@@ -33,9 +36,12 @@ export default defineConfig({
       emptyOutDir: true,
       rollupOptions: {
         input: {
-          index:  path.resolve(__dirname, "piranha-electron/src/renderer/index.html")
-        }
-      }
+          index: path.resolve(
+            __dirname,
+            "piranha-electron/src/renderer/index.html",
+          ),
+        },
+      },
     },
     plugins: [
       svelte(),

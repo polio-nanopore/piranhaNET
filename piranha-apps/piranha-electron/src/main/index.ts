@@ -4,7 +4,10 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
-import { FileDialogOptions, PiranhaRunOptions } from "../../../svelte-app/src/shared/types";
+import {
+  FileDialogOptions,
+  PiranhaRunOptions,
+} from "../../../svelte-app/src/shared/types";
 
 const runner = new PiranhaRunner();
 function createWindow(): void {

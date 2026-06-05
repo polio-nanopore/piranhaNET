@@ -1,5 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { FileDialogOptions, PiranhaRunOptions } from "../../../svelte-app/src/shared/types";
+import {
+  FileDialogOptions,
+  PiranhaRunOptions,
+} from "../../../svelte-app/src/shared/types";
 
 // Custom APIs for renderer
 const api = {

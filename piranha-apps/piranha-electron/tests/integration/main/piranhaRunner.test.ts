@@ -29,14 +29,14 @@ describe("piranhaRunner", () => {
     expect(outputText).toContain("Pulling from polionanopore/piranha");
 
     const runOutput = getWritableWithBuffer();
-    const testDataPath = join(__dirname, "../../../../test-data");
+    const testDataPath = join(__dirname, "../../../../../test-data");
     await runner.runPiranha(
       {
         name: "test_name",
         notes: "test notes",
         barcodesFilePath: join(testDataPath, "barcodes.csv"),
         minKnowFolderPath: join(testDataPath, "demultiplexed"),
-        outputFolderPath: join(__dirname, "../../../../test-results"),
+        outputFolderPath: join(__dirname, "../../../../../test-results"),
         threads: 10,
         //run settings
         positiveControl: "pos",
