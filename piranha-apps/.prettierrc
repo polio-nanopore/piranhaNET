@@ -1,4 +1,4 @@
 {
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "./src/renderer/src/assets/app.css"
+  "tailwindStylesheet": "./svelte-app/src/assets/app.css"
 }

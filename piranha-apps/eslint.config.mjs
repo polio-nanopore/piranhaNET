@@ -29,7 +29,7 @@ export default defineConfig(
     },
   },
   {
-    files: ["tests/**/*"],
+    files: ["**/tests/**/*"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     },

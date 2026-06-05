@@ -1,10 +1,11 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
-    "src/renderer/src/env.d.ts",
-    "src/renderer/src/**/*",
-    "src/renderer/src/**/*.svelte",
-    "src/preload/*.d.ts"
+    "svelte-app/src/env.d.ts",
+    "svelte-app/src/**/*",
+    "piranha-electron/src/renderer/src/**/*",
+    "piranha-electron/src/renderer/src/**/*.svelte",
+    "piranha-electron/src/preload/*.d.ts"
   ],
   "compilerOptions": {
     "verbatimModuleSyntax": true,
@@ -15,8 +16,8 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "compilerOptions": {
       "paths": {
-        "$lib": ["./src/renderer/src/lib"],
-        "$lib/*": ["./src/renderer/src/lib/*"]
+        "$lib": ["./svelte-app/src/lib"],
+        "$lib/*": ["./svelte-app/src/lib/*"]
       }
     }
   }

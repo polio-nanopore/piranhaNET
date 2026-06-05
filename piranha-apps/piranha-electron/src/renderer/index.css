@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "../../../node_modules/tw-animate-css/dist/tw-animate.css";
+@import "../../../svelte-app/src/assets/app.css";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+@source "../../../svelte-app/src/**/*.svelte";

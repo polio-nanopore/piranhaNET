@@ -9,8 +9,8 @@ export default defineConfig({
   test: {
     coverage: {
       provider: "istanbul",
-      include: ["src/**/**.{js,ts}"],
-      exclude: ["tests"],
+      include: ["**/src/**/**.{js,ts}"],
+      exclude: ["**/tests"],
     },
     projects: [
       {
@@ -20,12 +20,12 @@ export default defineConfig({
           environment: "jsdom",
           globals: true,
           clearMocks: true,
-          include: ["tests/unit/renderer/**/**.{test,spec}.{js,ts}"],
+          include: ["svelte-app/tests/unit/**/**.{test,spec}.{js,ts}"],
           setupFiles: ["./vitest-setup-client.ts"],
         },
         resolve: {
           alias: {
-            $lib: path.resolve(__dirname, "src/renderer/src/lib"),
+            $lib: path.resolve(__dirname, "svelte-app/src/lib"),
           },
         },
       },
@@ -35,7 +35,7 @@ export default defineConfig({
           name: "main",
           environment: "node",
           clearMocks: true,
-          include: ["tests/integration/main/**/**.{test,spec}.{js,ts}"],
+          include: ["piranha-electron/tests/integration/main/**/**.{test,spec}.{js,ts}"],
           setupFiles: [],
         },
       },
