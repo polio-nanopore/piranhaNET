@@ -4,11 +4,9 @@ import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 
-const root = path.resolve(__dirname, "piranha-electron");
-
 export default defineConfig({
   main: {
-    root,
+    root: path.resolve(__dirname, "piranha-electron/src/main"),
     build: {
       emptyOutDir: true,
       rollupOptions: {
@@ -19,7 +17,7 @@ export default defineConfig({
     }
   },
   preload: {
-    root,
+    root: path.resolve(__dirname, "piranha-electron/src/preload"),
     build: {
       emptyOutDir: true,
       rollupOptions: {
@@ -30,7 +28,7 @@ export default defineConfig({
     }
   },
   renderer: {
-    root,
+    root: path.resolve(__dirname, "piranha-electron/src/renderer"),
     build: {
       emptyOutDir: true,
       rollupOptions: {
