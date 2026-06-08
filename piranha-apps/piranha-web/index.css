@@ -1,6 +1,9 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
 @import "../node_modules/tw-animate-css/dist/tw-animate.css";
-@import "../svelte-app/src/assets/app.css";
+@import "../svelte-app/src/assets/app.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 @source "../svelte-app/src/**/*.svelte";
