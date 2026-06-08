@@ -2,6 +2,7 @@ import type { PiranhaRunOptions } from "../../shared/types";
 
 export interface AppState {
   doneInitialSubmit: boolean;
+  doneInitialValidate: boolean;
 }
 
 export interface PiranhaRunParameters {
@@ -9,13 +10,40 @@ export interface PiranhaRunParameters {
   notes: string;
   barcodesFilePath: string;
   minKnowFolderPath: string;
-  outputFolderPath: string; // This will eventually move into settings, but it's easier to provide in form for now
   threads: number;
 }
 
-export interface PiranhaSettings {
+export enum PiranhaProtocol {
+  Stool = "stool",
+  Environmental = "environmental",
+  Isolate = "isolate",
+}
+
+export enum PiranhaOrientation {
+  Vertical = "vertical",
+  Horizontal = "horizontal",
+}
+
+export interface UserSettings {
+  userName: string;
+  institute: string;
+  outputFolderPath: string;
+}
+
+export interface RunSettings {
+  protocol: PiranhaProtocol;
   positiveControl?: string;
   negativeControl?: string;
+}
+
+export interface PiranhaSettings extends UserSettings, RunSettings {
+  // Piranha Output Settings - unlike UserSettings and RunSetttings these are not persisted between runs
+  orientation: PiranhaOrientation;
+  outputPrefix?: string;
+  overwriteOutput: boolean;
+  outputIntermediateFiles: boolean;
+  allMetadataToHeader: boolean;
+  dateStamp: boolean;
 }
 
 /**

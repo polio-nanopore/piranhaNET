@@ -22,4 +22,12 @@ describe("FormField", () => {
       "a test error",
     );
   });
+
+  test("renders with class", () => {
+    const { container } = render(TestFormField, {
+      props: { class: "test-class" },
+    });
+    const divElement = container.firstChild;
+    expect(divElement).toHaveClass("test-class");
+  });
 });

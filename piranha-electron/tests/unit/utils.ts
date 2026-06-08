@@ -1,9 +1,16 @@
 import { createRawSnippet, mount, unmount } from "svelte";
-import { vi } from "vitest";
+import { expect, vi } from "vitest";
 import { i18n } from "$lib//i18n.svelte";
-import { render, waitFor } from "@testing-library/svelte";
+import {
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/svelte";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import I18nTestContext from "./renderer/components/I18nTestContext.svelte";
+import { persistentSettingsStore } from "../../src/renderer/src/lib/persistentSettingsStore";
+import { RunSettings, UserSettings } from "../../src/renderer/src/types";
 
 export interface APIMock {
   initialized: boolean;
@@ -33,6 +40,30 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   );
   vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
   vi.spyOn(piranhaAPI, "clearLog");
+};
+
+export interface PersistentSettingsStoreMock {
+  runSettings: RunSettings | null;
+  userSettings: UserSettings | null;
+}
+
+const defaultPersistentSettingsStoreMock: PersistentSettingsStoreMock = {
+  runSettings: null,
+  userSettings: null,
+};
+
+export const mockPersistentSettingsStore = (
+  values: Partial<PersistentSettingsStoreMock>,
+): void => {
+  const mockedStore = { ...defaultPersistentSettingsStoreMock, ...values };
+  vi.spyOn(persistentSettingsStore, "loadUserSettings").mockImplementation(
+    () => mockedStore.userSettings,
+  );
+  vi.spyOn(persistentSettingsStore, "saveUserSettings");
+  vi.spyOn(persistentSettingsStore, "loadRunSettings").mockImplementation(
+    () => mockedStore.runSettings,
+  );
+  vi.spyOn(persistentSettingsStore, "saveRunSettings");
 };
 
 type translation = string | RegExp;
@@ -70,7 +101,7 @@ export const expectTranslations = async (
 export const renderInI18nTestContext = (
   component,
   options = {} as any,
-): void => {
+): RenderResult<any> => {
   const snippet = createRawSnippet(() => ({
     render: () => "<div></div>", // placeholder markup
     setup: (target) => {
@@ -78,5 +109,29 @@ export const renderInI18nTestContext = (
       return () => unmount(child);
     },
   }));
-  render(I18nTestContext, { children: snippet });
+  return render(I18nTestContext, { children: snippet });
+};
+
+export const ERROR_CLASS = "text-destructive";
+export const expectNoErrors = (container): void => {
+  expect(container.querySelector(`.${ERROR_CLASS}`)).toBeNull();
+};
+
+export const expectErrorFor = (
+  fieldName: string,
+  expectedError = "Required value",
+): void => {
+  expect(screen.getByTestId(`${fieldName}-label`).classList).toContain(
+    ERROR_CLASS,
+  );
+  const error = screen.getByTestId(`${fieldName}-error`);
+  expect(error).toHaveTextContent(expectedError);
+  expect(error.classList).toContain(ERROR_CLASS);
+};
+
+export const expectNoErrorFor = (fieldName: string): void => {
+  expect(screen.queryByTestId(`${fieldName}-error`)).toBeNull();
+  expect(screen.getByTestId(`${fieldName}-label`).classList).not.toContain(
+    ERROR_CLASS,
+  );
 };

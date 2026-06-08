@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
   expectTranslations,
+  mockPersistentSettingsStore,
   mockPiranhaAPI,
   renderInI18nTestContext,
 } from "../../../utils";
@@ -8,7 +9,40 @@ import Run from "../../../../../src/renderer/src/components/run/Run.svelte";
 import { screen, render } from "@testing-library/svelte";
 
 describe("Run", () => {
+  const mockSettings = {
+    userSettings: {
+      userName: "test_user",
+      institute: "test_inst",
+      outputFolderPath: "./test",
+    },
+  };
+
+  test("renders as expected when user settings have not been persisted", async () => {
+    mockPersistentSettingsStore({ userSettings: null });
+    mockPiranhaAPI({ running: false });
+    renderInI18nTestContext(Run);
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("welcome")).toHaveTextContent(text),
+      {
+        en: /Welcome to PiranhaNET/,
+        fr: /Bienvenue sur PiranhaNET/,
+        pt: /Bem-vindo ao PiranhaNET/,
+      },
+    );
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("continue")).toHaveTextContent(text),
+      {
+        en: /Continue/,
+        fr: /Continuez/,
+        pt: /Continue/,
+      },
+    );
+    expect(screen.queryByTestId("run")).toBeNull();
+    expect(screen.queryByTestId("logs")).toBeNull();
+  });
+
   test("renders as expected when piranha has not started running", async () => {
+    mockPersistentSettingsStore(mockSettings);
     mockPiranhaAPI({ running: false });
     renderInI18nTestContext(Run);
     await expectTranslations(
@@ -19,7 +53,7 @@ describe("Run", () => {
         pt: /Corra Piranha/,
       },
     );
-
+    expect(screen.queryByTestId("welcome")).toBeNull();
     expect(screen.queryByTestId("logs")).toBeNull();
   });
 

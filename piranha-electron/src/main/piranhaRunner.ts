@@ -38,11 +38,24 @@ export class PiranhaRunner {
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
     const envString = [
+      // run parameters
       `THREADS=${options.threads || 1}`,
       `--runname ${escapeOption(options.name)}`,
       `--notes ${escapeOption(options.notes)}`,
-      `-pc ${escapeOption(options.positiveControl || "")}`,
-      `-nc ${escapeOption(options.negativeControl || "")}`,
+      // run settings
+      `--sample-type ${options.protocol}`,
+      `--positive-control ${escapeOption(options.positiveControl || "")}`,
+      `--negative-control ${escapeOption(options.negativeControl || "")}`,
+      // piranha output settings
+      `--orientation ${options.orientation}`,
+      `--output-prefix ${escapeOption(options.outputPrefix || "")}`,
+      `${options.overwriteOutput ? "--overwrite" : ""}`,
+      `${options.outputIntermediateFiles ? "--no-temp" : ""}`,
+      `${options.allMetadataToHeader ? "--all-metadata-to-header" : ""}`,
+      `${options.dateStamp ? "--datestamp" : ""}`,
+      // user settings
+      `--username ${escapeOption(options.userName || "")}`,
+      `--institute ${escapeOption(options.institute || "")}`,
     ].join(" ");
 
     const env = [envString];

@@ -2,10 +2,19 @@
   import { piranhaAPI } from "$lib//piranhaAPI.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
+  import Welcome from "./Welcome.svelte";
+  import { persistentSettingsStore } from "$lib/persistentSettingsStore";
+
+  let needsFirstPersist = $state(!persistentSettingsStore.loadUserSettings());
+  const onFirstPersist = (): void => {
+    needsFirstPersist = false;
+  };
 </script>
 
 <div class="container mx-auto p-4">
-  {#if !piranhaAPI.running && !piranhaAPI.log.length}
+  {#if needsFirstPersist}
+    <Welcome onpersist={onFirstPersist} />
+  {:else if !piranhaAPI.running && !piranhaAPI.log.length}
     <RunParameters />
   {:else}
     <RunProgress />

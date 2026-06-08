@@ -8,17 +8,21 @@
     labelFor,
     error,
     children,
+    class: className,
   }: {
     label: string;
     for: string;
     error?: string[];
     children: Snippet;
+    className: string;
   } = $props();
 </script>
 
-<div class="space-y-2 py-3">
-  <Label class={["font-light", error && "text-destructive"]} for={labelFor}
-    >{label}</Label
+<div class={`space-y-2 py-3 ${className ?? ""}`}>
+  <Label
+    data-testid={`${labelFor}-label`}
+    class={["font-light", error && "text-destructive"]}
+    for={labelFor}>{label}</Label
   >
 
   {@render children()}

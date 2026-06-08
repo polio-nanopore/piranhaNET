@@ -244,6 +244,15 @@ input,
 textarea {
   background-color: white;
 }
+.accordion-trigger {
+  border-bottom: 2px solid;
+  border-bottom-color: oklch(0.9 0 0);
+}
+
+.accordion-trigger:hover {
+  text-decoration: none;
+  background-color: oklch(0.985 0 0);
+}
 
 code {
   display: block;

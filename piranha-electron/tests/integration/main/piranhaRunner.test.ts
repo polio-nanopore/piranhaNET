@@ -37,9 +37,21 @@ describe("piranhaRunner", () => {
         barcodesFilePath: join(testDataPath, "barcodes.csv"),
         minKnowFolderPath: join(testDataPath, "demultiplexed"),
         outputFolderPath: join(__dirname, "../../../../test-results"),
-        positiveControl: "Pos1,P2",
-        negativeControl: "my negative control",
         threads: 10,
+        //run settings
+        positiveControl: "pos",
+        negativeControl: "neg",
+        protocol: "stool",
+        //piranha output settings
+        orientation: "horizontal",
+        outputPrefix: "testOut",
+        overwriteOutput: true,
+        outputIntermediateFiles: true,
+        allMetadataToHeader: true,
+        dateStamp: true,
+        //user settings
+        institute: "Test Institute",
+        userName: "Test User",
       },
       runOutput.writable,
     );
@@ -49,8 +61,19 @@ describe("piranhaRunner", () => {
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
     expect(outputText).toContain("Setting runname: test_name");
     expect(outputText).toContain("Setting notes: test_notes");
+    // run settings
+    expect(outputText).toContain("Setting positive_control: pos");
+    expect(outputText).toContain("Setting negative_control: neg");
+    // piranha output settings
+    expect(outputText).toContain("Setting overwrite: True");
+    expect(outputText).toContain("Setting no_temp: True");
+    expect(outputText).toContain("Setting all_metadata_to_header: True");
+    expect(outputText).toContain("Setting datestamp: True");
+    // user settings
+    expect(outputText).toContain("Setting username: Test_User");
+    expect(outputText).toContain("Setting institute: Test_Institute");
     expect(outputText).toMatch(
-      /\/data\/run_data\/output\/piranha_output_?\d*\/report\.html/,
+      /Generating: \/data\/run_data\/output\/piranha_output_\d{4}-\d{2}-\d{2}\/report.html/,
     ); //output report
   }, 480_000); // This will take a while!
 });

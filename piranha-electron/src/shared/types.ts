@@ -5,8 +5,17 @@ export interface PiranhaRunOptions {
   minKnowFolderPath: string;
   outputFolderPath: string;
   threads?: number;
+  protocol: "stool" | "environmental" | "isolate";
   positiveControl?: string;
   negativeControl?: string;
+  orientation: "vertical" | "horizontal";
+  outputPrefix?: string;
+  overwriteOutput: boolean;
+  outputIntermediateFiles: boolean;
+  allMetadataToHeader: boolean;
+  dateStamp: boolean;
+  userName: string;
+  institute: string;
 }
 
 export interface FileDialogOptions {

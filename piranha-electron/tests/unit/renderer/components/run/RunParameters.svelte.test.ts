@@ -13,8 +13,11 @@ import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import {
   defaultRunParameters,
   runParameters,
+  settings,
   appState,
+  defaultPiranhaOutputSettings,
 } from "../../../../../src/renderer/src/lib/store.svelte";
+import { PiranhaProtocol } from "../../../../../src/renderer/src/types";
 
 describe("RunParameters", () => {
   const user = userEvent.setup();
@@ -23,6 +26,13 @@ describe("RunParameters", () => {
     mockPiranhaAPI({});
     // reset runParameters in store
     const defaultValues = defaultRunParameters();
+    // set user and run settings - they are tested elsewhere
+    settings.userName = "Test User";
+    settings.institute = "Test Institute";
+    settings.outputFolderPath = "/test/output";
+    settings.positiveControl = "pos";
+    settings.negativeControl = "neg";
+
     Object.keys(defaultValues).forEach((key) => {
       runParameters[key] = defaultValues[key];
     });
@@ -34,9 +44,9 @@ describe("RunParameters", () => {
       (text) =>
         expect(screen.getByLabelText(text)).toHaveAttribute("id", "name-field"),
       {
-        en: /Name/,
-        fr: /Nom/,
-        pt: /Nome/,
+        en: "Name",
+        fr: "Nom",
+        pt: "Nome",
       },
     );
     await expectTranslations(
@@ -95,6 +105,15 @@ describe("RunParameters", () => {
         pt: /Corra/,
       },
     );
+
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("settings")).toHaveTextContent(text),
+      {
+        en: /Settings/,
+        fr: /Paramètres/,
+        pt: /Configurações/,
+      },
+    );
   });
 
   test("does not validate before Run button pressed, and does not submit Run if form is not valid", async () => {
@@ -105,12 +124,12 @@ describe("RunParameters", () => {
     await expectNoErrors();
 
     // Fill in one value and blur - should see no error message for others
-    await user.type(screen.getByLabelText("Name"), "test name for errors[Tab]");
+    await user.type(screen.getByLabelText("Name"), "test name for errors");
     await expectNoErrors();
 
     // Press Run button - should see errors
     await user.click(screen.getByTestId("run"));
-    expect(screen.getAllByText(/Required value/).length).toBe(4);
+    expect(screen.getAllByText(/Required value/).length).toBe(3);
     expect(piranhaAPI.runPiranha).not.toHaveBeenCalled();
   });
 
@@ -122,9 +141,6 @@ describe("RunParameters", () => {
       if (options.title == "MinKnow folder") {
         return "/test/MinKnow";
       }
-      if (options.title == "Output folder") {
-        return "/test/output";
-      }
       throw new Error("unexpected title");
     });
     window.api = {
@@ -135,7 +151,6 @@ describe("RunParameters", () => {
     await user.type(screen.getByLabelText("Name"), "test name");
     await user.click(screen.getByLabelText("Barcodes file"));
     await user.click(screen.getByLabelText("MinKnow folder"));
-    await user.click(screen.getByLabelText("Output folder"));
     await user.type(screen.getByLabelText("Notes"), "test notes");
     await user.click(screen.getByTestId("run"));
     expect(piranhaAPI.runPiranha).toHaveBeenCalledWith({
@@ -143,10 +158,14 @@ describe("RunParameters", () => {
       notes: "test notes",
       barcodesFilePath: "/test/barcodes.csv",
       minKnowFolderPath: "/test/MinKnow",
-      outputFolderPath: "/test/output",
       threads: 10,
-      positiveControl: "Pos1,P2",
-      negativeControl: "my negative control",
+      protocol: PiranhaProtocol.Stool,
+      positiveControl: "pos",
+      negativeControl: "neg",
+      userName: "Test User",
+      institute: "Test Institute",
+      outputFolderPath: "/test/output",
+      ...defaultPiranhaOutputSettings,
     });
   });
 
@@ -155,19 +174,14 @@ describe("RunParameters", () => {
     runParameters.notes = "store notes";
     runParameters.barcodesFilePath = "/store/barcodes.csv";
     runParameters.minKnowFolderPath = "/store/MinKnow";
-    runParameters.outputFolderPath = "/store/output";
     runParameters.threads = 11;
     render(RunParameters);
     expect(screen.getByLabelText("Name").value).toBe("store name");
-    // This gets the button element, we actually want to check the div which is its sibling
     expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
       "/store/barcodes.csv",
     );
     expect(screen.getByTestId("minknow-folder-field-value")).toHaveTextContent(
       "/store/MinKnow",
-    );
-    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent(
-      "/store/output",
     );
     expect(screen.getByLabelText("Notes").value).toBe("store notes");
     expect(screen.getByLabelText("Analysis threads").value).toBe("11");
@@ -179,19 +193,19 @@ describe("RunParameters", () => {
 
     const threadsInput = screen.getByLabelText("Analysis threads");
     await user.clear(threadsInput);
-    await user.type(threadsInput, "-1[Tab]");
+    await user.type(threadsInput, "-1");
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be between 1 and 20/,
     );
 
     await user.clear(threadsInput);
-    await user.type(threadsInput, "5.5[Tab]");
+    await user.type(threadsInput, "5.5");
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be a whole number/,
     );
 
     await user.clear(threadsInput);
-    await user.type(threadsInput, "21[Tab]");
+    await user.type(threadsInput, "21");
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be between 1 and 20/,
     );
