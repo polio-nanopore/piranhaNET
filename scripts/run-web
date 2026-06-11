@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -ex
+
+npm ci --prefix piranha-apps
+npm run build-web --prefix piranha-apps
+npm run dev-web --prefix piranha-apps

@@ -1,0 +1,9 @@
+import { defineConfig } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "piranha-electron/tests/e2e",
+  timeout: 600_000,
+  use: {
+    screenshot: "only-on-failure",
+  },
+});
