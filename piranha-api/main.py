@@ -1,6 +1,8 @@
-def main():
-    print("Hello from piranha-api!")
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+def read_root():
+    return "Welcome to PiranhaNET API";
