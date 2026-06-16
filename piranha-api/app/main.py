@@ -22,15 +22,15 @@ def read_root():
 
 async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: str) -> AsyncGenerator[str, None] :
     # TODO: use f"" formatting
-    yield "{} Starting fake Piranha process\n".format(run_id)
+    yield "{} Starting fake Piranha process".format(run_id)
     await asyncio.sleep(2)
-    yield "{} Fake Piranha update 1\n".format(run_id)
+    yield "{} Fake Piranha update 1".format(run_id)
     await asyncio.sleep(2)
-    yield "{} Fake Piranha update 2\n".format(run_id)
+    yield "{} Fake Piranha update 2".format(run_id)
     await asyncio.sleep(2)
-    yield "{} Barcodes filename is {}\n".format(run_id, barcodes_file.filename)
-    yield "{} MinKnow zipname is {}\n".format(run_id, minknow_zip.filename)
-    yield "{} Fake Piranha completed\n".format(run_id)
+    yield "{} Barcodes filename is {}".format(run_id, barcodes_file.filename)
+    yield "{} MinKnow zipname is {}".format(run_id, minknow_zip.filename)
+    yield "{} Fake Piranha completed".format(run_id)
 
 # TODO: how to be pythonic and jsonic with parameter names..?
 @app.post("/run")
