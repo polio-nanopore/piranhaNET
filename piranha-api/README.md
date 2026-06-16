@@ -10,3 +10,7 @@ This project is managed with [uv](https://docs.astral.sh/uv/).
 
 You can run the API outside docker with `uv run fastapi dev`. However, it will only be able to interact with Piranha
 when run within the Docker container (not yet implemented).
+
+## Tests
+
+Run tests with `uv run pytest`. The API must be running for the integration tests to pass.
