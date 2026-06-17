@@ -3,10 +3,15 @@ from os import path, makedirs
 from zipfile import ZipFile, BadZipFile
 from fastapi import UploadFile, HTTPException
 
+REPORT_FILENAME = "report.html"
+
 class FileManager:
   def __init__(self, input_root, output_root):
     self.input_root = input_root
     self.output_root = output_root
+
+  def output_dir(self, run_id: str):
+      return path.join(self.output_root, run_id)
 
   # TODO: unmagic the folder strings
   # TODO: what's the correct way to raise exception in the case of a streaming response?
@@ -34,3 +39,18 @@ class FileManager:
     with open(barcodes_file_path, "wb") as saved_barcodes_file:
         barcodes_content = await barcodes_file.read()
         saved_barcodes_file.write(barcodes_content)
+
+  def save_output(self, run_id):
+      # Currently just write out a fake report.html
+      out_dir = self.output_dir(run_id)
+      makedirs(out_dir)
+      report_file_path = path.join(out_dir, REPORT_FILENAME)
+      lines = [
+        "<!doctype html>",
+        "<html lang='en'>",
+        "<head><meta charset='utf-8'><title>Fake Piranha report</title></head>",
+        f"<body><h1>Fake Piranha report</h1><p>Report for run {run_id}</p></body>",
+        "</html>"
+      ]
+      with open(report_file_path, "w") as report_file:
+          report_file.writelines(lines)
