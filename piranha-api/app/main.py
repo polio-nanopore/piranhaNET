@@ -4,11 +4,15 @@ from datetime import datetime
 from typing import Annotated, AsyncGenerator
 from fastapi import FastAPI, UploadFile, Depends
 from fastapi.responses import StreamingResponse
+from app.settings import settings
+from app.file_manager import FileManager
 
 app = FastAPI()
+file_manager = FileManager(settings.input_dir, settings.output_dir)
 
 def generate_run_id() -> str:
   # TODO: use utc?
+  # TODO: uid bbit could be shorter!
   now = datetime.now()
   return "{year}-{month}-{day}_{hour}-{minute}-{second}_{uuid}".format(
     year=now.strftime("%Y"), month=now.strftime("%m"), day=now.strftime("%d"),
@@ -23,6 +27,8 @@ def read_root():
 async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: str) -> AsyncGenerator[str, None] :
     # TODO: use f"" formatting
     yield "{} Starting fake Piranha process".format(run_id)
+    yield f"{run_id} Saving input files"
+    await file_manager.save_input(run_id, barcodes_file, minknow_zip)
     await asyncio.sleep(2)
     yield "{} Fake Piranha update 1".format(run_id)
     await asyncio.sleep(2)
@@ -34,9 +40,11 @@ async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_z
 
 # TODO: how to be pythonic and jsonic with parameter names..?
 @app.post("/run")
-async def run(run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: Annotated[str, Depends(generate_run_id)]):
-    # TODO: Make this Depends on FileManager
-    # NB The type of UploadFile is SpooledTemporaryFile
+async def run(
+  run_name: str,
+  barcodes_file: UploadFile,
+  minknow_zip: UploadFile,
+  run_id: Annotated[str, Depends(generate_run_id)]):
     return StreamingResponse(
       fake_log_generator(run_name, barcodes_file, minknow_zip, run_id),
       media_type="text/plain"
