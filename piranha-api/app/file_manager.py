@@ -40,8 +40,9 @@ class FileManager:
         barcodes_content = await barcodes_file.read()
         saved_barcodes_file.write(barcodes_content)
 
-  def save_output(self, run_id):
-      # Currently just write out a fake report.html
+  def save_output(self, run_id: str):
+      # Currently just write out a fake report.html and a csv file in a subfolder
+      # These will be zipped for results download
       out_dir = self.output_dir(run_id)
       makedirs(out_dir)
       report_file_path = path.join(out_dir, REPORT_FILENAME)
@@ -54,3 +55,8 @@ class FileManager:
       ]
       with open(report_file_path, "w") as report_file:
           report_file.writelines(lines)
+
+  def read_output_report(self, run_id: str):
+      report_file_path = path.join(self.output_dir(run_id), REPORT_FILENAME)
+      with open(report_file_path, "r") as report_file:
+          return report_file.read()

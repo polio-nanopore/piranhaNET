@@ -3,7 +3,7 @@ from uuid import uuid4
 from datetime import datetime
 from typing import Annotated, AsyncGenerator
 from fastapi import FastAPI, UploadFile, Depends
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, HTMLResponse
 from app.settings import settings
 from app.file_manager import FileManager
 
@@ -50,6 +50,13 @@ async def run(
   run_id: Annotated[str, Depends(generate_run_id)]):
     return StreamingResponse(
       fake_log_generator(run_name, barcodes_file, minknow_zip, run_id),
+      headers={"piranhanet-run-id": run_id}, # Return the run id in header, as response body is streamed log
       media_type="text/plain"
     )
+
+# TODO: error handling
+@app.get("/results/{run_id}")
+def results(run_id: str, response_class = HTMLResponse):
+    return file_manager.read_output_report(run_id)
+
 
