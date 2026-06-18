@@ -27,8 +27,6 @@ async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_z
     yield f"{run_id} Starting fake Piranha process"
     yield f"{run_id} Barcodes filename is {barcodes_file.filename}"
     yield f"{run_id} MinKnow zipname is {minknow_zip.filename}"
-    yield f"{run_id} Saving input files"
-    await file_manager.save_input(run_id, barcodes_file, minknow_zip)
     # Fake the long-running Piranha process by doing some sleeps
     await asyncio.sleep(2)
     yield f"{run_id} Fake Piranha update 1"
@@ -40,20 +38,22 @@ async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_z
     yield f"{run_id} Fake Piranha completed"
     print(f"{run_id} Finished run")
 
-# TODO: how to be pythonic and jsonic with parameter names..?
+# TODO: use a pydantic model for the run parameters when we're using full Piranha parameter set
 @app.post("/run")
 async def run(
   run_name: str,
   barcodes_file: UploadFile,
   minknow_zip: UploadFile,
   run_id: Annotated[str, Depends(generate_run_id)]):
+    # Save input files before start response so we can raise any errors related to bad file input before we start
+    # streaming output
+    await file_manager.save_input(run_id, barcodes_file, minknow_zip)
     return StreamingResponse(
       fake_log_generator(run_name, barcodes_file, minknow_zip, run_id),
       headers={"piranhanet-run-id": run_id}, # Return the run id in header, as response body is streamed log
       media_type="text/plain"
     )
 
-# TODO: error handling
 @app.get("/results/{run_id}")
 def results(run_id: str, response_class = HTMLResponse):
     return file_manager.read_output_report(run_id)

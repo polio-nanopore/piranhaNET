@@ -10,27 +10,23 @@ class FileManager:
     self.input_root = input_root
     self.output_root = output_root
 
+  def input_dir(self, run_id: str):
+    return path.join(self.input_root, run_id)
   def output_dir(self, run_id: str):
-      return path.join(self.output_root, run_id)
+    return path.join(self.output_root, run_id)
 
-  # TODO: unmagic the folder strings
-  # TODO: what's the correct way to raise exception in the case of a streaming response?
   async def save_input(self, run_id: str, barcodes_file: UploadFile, minknow_zip: UploadFile):
-    if not minknow_zip.filename.endswith(".zip"): # TODO: case insensitive, or test content type instead
-      raise HTTPException(status_code=400, detail="File must be a ZIP archive.")
     # Create minknow folder
-
-    run_dir = path.join(self.input_root, run_id)
+    run_dir = self.input_dir(run_id)
     minknow_dir = path.join(run_dir, "minknow")
     print(f"Creating dir {minknow_dir}")
     makedirs(minknow_dir)
     # Unzip minknow to minknow folder
-    minknow_contents = minknow_zip.read()
     try:
       with ZipFile(minknow_zip.file) as zip_file: #
         zip_file.extractall(minknow_dir)
     except BadZipFile:
-        raise HTTPException(status_code=400, detail="Invalid ZIP file.")
+        raise HTTPException(status_code=400, detail="Invalid zip file.")
     finally:
         await minknow_zip.close()
 
@@ -57,6 +53,12 @@ class FileManager:
           report_file.writelines(lines)
 
   def read_output_report(self, run_id: str):
-      report_file_path = path.join(self.output_dir(run_id), REPORT_FILENAME)
+      input_dir = self.input_dir(run_id)
+      if (not path.exists(input_dir)):
+          raise HTTPException(status_code=400, detail=f"Run ID {run_id} not found.")
+      output_dir = self.output_dir(run_id)
+      report_file_path = path.join(output_dir, REPORT_FILENAME)
+      if (not path.exists(report_file_path)):
+          raise HTTPException(status_code=400, detail=f"Run {run_id} has not completed.")
       with open(report_file_path, "r") as report_file:
           return report_file.read()
