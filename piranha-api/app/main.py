@@ -25,6 +25,7 @@ def read_root():
     return "Welcome to PiranhaNET API"
 
 async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: str) -> AsyncGenerator[str, None] :
+    print(f"{run_id} Starting run")
     # TODO: use f"" formatting
     yield "{} Starting fake Piranha process".format(run_id)
     yield "{} Barcodes filename is {}".format(run_id, barcodes_file.filename)
@@ -40,6 +41,7 @@ async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_z
     yield f"{run_id} Saving output files"
     file_manager.save_output(run_id)
     yield "{} Fake Piranha completed".format(run_id)
+    print(f"{run_id} Finished run")
 
 # TODO: how to be pythonic and jsonic with parameter names..?
 @app.post("/run")
