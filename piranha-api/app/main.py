@@ -1,6 +1,6 @@
 import asyncio
-from uuid import uuid4
-from datetime import datetime
+from shortuuid import uuid
+from datetime import datetime, timezone
 from typing import Annotated, AsyncGenerator
 from fastapi import FastAPI, UploadFile, Depends
 from fastapi.responses import StreamingResponse, HTMLResponse
@@ -11,13 +11,11 @@ app = FastAPI()
 file_manager = FileManager(settings.input_dir, settings.output_dir)
 
 def generate_run_id() -> str:
-  # TODO: use utc?
-  # TODO: uid bbit could be shorter!
-  now = datetime.now()
+  now = datetime.now(timezone.utc)
   return "{year}-{month}-{day}_{hour}-{minute}-{second}_{uuid}".format(
     year=now.strftime("%Y"), month=now.strftime("%m"), day=now.strftime("%d"),
     hour=now.strftime("%H"), minute=now.strftime("%M"), second=now.strftime("%S"),
-    uuid=uuid4().hex
+    uuid=uuid()
   )
 
 @app.get("/")
@@ -26,21 +24,20 @@ def read_root():
 
 async def fake_log_generator(run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: str) -> AsyncGenerator[str, None] :
     print(f"{run_id} Starting run")
-    # TODO: use f"" formatting
-    yield "{} Starting fake Piranha process".format(run_id)
-    yield "{} Barcodes filename is {}".format(run_id, barcodes_file.filename)
-    yield "{} MinKnow zipname is {}".format(run_id, minknow_zip.filename)
+    yield f"{run_id} Starting fake Piranha process"
+    yield f"{run_id} Barcodes filename is {barcodes_file.filename}"
+    yield f"{run_id} MinKnow zipname is {minknow_zip.filename}"
     yield f"{run_id} Saving input files"
     await file_manager.save_input(run_id, barcodes_file, minknow_zip)
     # Fake the long-running Piranha process by doing some sleeps
     await asyncio.sleep(2)
-    yield "{} Fake Piranha update 1".format(run_id)
+    yield f"{run_id} Fake Piranha update 1"
     await asyncio.sleep(2)
-    yield "{} Fake Piranha update 2".format(run_id)
+    yield f"{run_id} Fake Piranha update 2"
     await asyncio.sleep(2)
     yield f"{run_id} Saving output files"
     file_manager.save_output(run_id)
-    yield "{} Fake Piranha completed".format(run_id)
+    yield f"{run_id} Fake Piranha completed"
     print(f"{run_id} Finished run")
 
 # TODO: how to be pythonic and jsonic with parameter names..?

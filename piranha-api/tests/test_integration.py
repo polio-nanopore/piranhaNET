@@ -23,14 +23,12 @@ def create_files():
       "minknow_zip": ("minknow.zip", minknow_zip, "application/zip")
     }
 
-
 async def stream_to_list(response, list):
     async for line in response.aiter_text():
       list.append(line)
 
 # TODO: support async by default in toml file
 @pytest.mark.asyncio
-@pytest.mark.skip(reason="dev")
 async def test_run_streaming_response_and_get_results():
     params = {"run_name": "test run"}
     files = create_files()
@@ -40,12 +38,20 @@ async def test_run_streaming_response_and_get_results():
             assert response.status_code == 200
             assert response.headers["content-type"] == "text/plain; charset=utf-8"
             run_id = response.headers[RUN_ID_HEADER]
+            assert len(run_id) == 42
             lines = []
             async for line in response.aiter_text():
                 lines.append(line)
             # We'll need to change this when we're running the real Piranha process
             assert len(lines) == 8
-            # TODO: test line text matches expected
+            assert lines[0] == f"{run_id} Starting fake Piranha process"
+            assert lines[1] == f"{run_id} Barcodes filename is barcodes.csv"
+            assert lines[2] == f"{run_id} MinKnow zipname is minknow.zip"
+            assert lines[3] == f"{run_id} Saving input files"
+            assert lines[4] == f"{run_id} Fake Piranha update 1"
+            assert lines[5] == f"{run_id} Fake Piranha update 2"
+            assert lines[6] == f"{run_id} Saving output files"
+            assert lines[7] == f"{run_id} Fake Piranha completed"
 
     with httpx.Client(base_url=BASE_URL) as client:
         results_response = client.get(f"/results/{run_id}")
