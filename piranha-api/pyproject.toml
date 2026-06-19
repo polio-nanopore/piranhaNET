@@ -13,7 +13,45 @@ dependencies = [
 dev = [
     "httpx>=0.28.1",
     "pytest>=9.1.0",
+    "ruff>=0.15.18",
 ]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+    "A",
+    "ARG",
+    "B",
+    "C",
+    "DTZ",
+    "E",
+    "F",
+    "I",
+    "ICN",
+    "ISC",
+    "PLC",
+    "PLE",
+    "PLR",
+    "PLW",
+    "Q",
+    "RUF",
+    "T",
+    "UP",
+    "W",
+    "YTT",
+]
+ignore =[
+    "T201" # Allow print
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values
+"tests/*/" = ["PLR2004"]

@@ -14,3 +14,9 @@ when run within the Docker container (not yet implemented).
 ## Tests
 
 Run tests with `uv run pytest`. The API must be running for the integration tests to pass.
+
+## Lint
+
+Run a lint check with: `uv run ruff check .`
+Run a lint fix with: `uv run ruff check --fix .`
+Run formatting with: `uv run ruff format .`
