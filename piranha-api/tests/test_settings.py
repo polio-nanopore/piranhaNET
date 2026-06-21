@@ -1,6 +1,8 @@
 import os
 from unittest.mock import patch
+
 from app.settings import Settings
+
 
 @patch.dict("os.environ", {"INPUT_DIR": "/env/input"})
 @patch.dict("os.environ", {"OUTPUT_DIR": "/env/output"})

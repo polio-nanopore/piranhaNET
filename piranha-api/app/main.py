@@ -67,5 +67,5 @@ async def run(
 
 
 @app.get("/results/{run_id}")
-def results(run_id: str, response_class=HTMLResponse): # noqa: ARG001  Allow apparently unused response_class param
+def results(run_id: str, response_class=HTMLResponse):  # noqa: ARG001  Allow apparently unused response_class param
     return file_manager.read_output_report(run_id)

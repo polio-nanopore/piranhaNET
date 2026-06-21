@@ -1,13 +1,18 @@
 import os
-import pytest
-import fastapi
-from unittest.mock import call, patch, Mock, MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, Mock, call, patch
 from zipfile import BadZipFile
+
+import fastapi
+import pytest
+
 from app.file_manager import FileManager
 
 run_id = "1234"
+
+
 def get_sut():
     return FileManager("/test_input", "/test_output")
+
 
 @patch("builtins.open")
 @patch("app.file_manager.ZipFile")
@@ -53,7 +58,8 @@ async def test_save_input_raises_httpexception_on_bad_zipfile(mock_makedirs, moc
 
     sut = get_sut()
     with pytest.raises(fastapi.HTTPException) as exc_info:
-      await sut.save_input(run_id, mock_barcodes_upload, mock_minknow_upload)
+        await sut.save_input(run_id, mock_barcodes_upload, mock_minknow_upload)
+    mock_makedirs.assert_called_once()
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail == "Invalid zip file."
     mock_minknow_upload.close.assert_called_once()
@@ -73,7 +79,7 @@ def test_save_output(mock_makedirs, mock_open):
     mock_open.assert_called_once_with(os.path.join(expected_output_dir, "report.html"), "w")
     mock_report_writelines = mock_report_file.__enter__.return_value.writelines
     mock_report_writelines.assert_called_once()
-    args, kwargs = mock_report_writelines.call_args
+    args, _ = mock_report_writelines.call_args
     assert args[0][0] == "<!doctype html>"
 
 
@@ -87,10 +93,9 @@ def test_read_output_report(mock_path_exists, mock_open):
 
     sut = get_sut()
     result = sut.read_output_report(run_id)
-    mock_path_exists.assert_has_calls([
-        call(os.path.join("/test_input", run_id)),
-        call(os.path.join("/test_output", run_id, "report.html"))
-    ])
+    mock_path_exists.assert_has_calls(
+        [call(os.path.join("/test_input", run_id)), call(os.path.join("/test_output", run_id, "report.html"))]
+    )
     assert result == "mock file contents"
 
 
