@@ -25,6 +25,8 @@ jobs:
       - name: Format check
         run: uv run ruff format --check --diff
       - name: Run API
-        run: uv run fastapi dev
+        run: nohup uv run fastapi dev &
+      - name: Wait for API
+        run: sleep 2
       - name: Unit and integration test
         run: uv run pytest
