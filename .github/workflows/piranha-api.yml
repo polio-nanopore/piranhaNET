@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - 'piranha-api/**'
-      - './github/workflows/**'
+      - '.github/workflows/**'
 
 defaults:
   run:
