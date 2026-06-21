@@ -1,5 +1,8 @@
 import os
+import pytest
+import fastapi
 from unittest.mock import call, patch, Mock, MagicMock, AsyncMock
+from zipfile import BadZipFile
 from app.file_manager import FileManager
 
 run_id = "1234"
@@ -33,12 +36,28 @@ async def test_save_input(mock_makedirs, mock_zipfile_class, mock_open):
     mock_zipfile_class.assert_called_once_with(mock_minknow_zip_upload.file)
     # check __enter__.return_value here as these mocks are used as context managers (using "with")
     mock_minknow_zip_file.__enter__.return_value.extractall.assert_called_once_with(expected_minknow_dir)
+    mock_minknow_zip_upload.close.assert_called_once()
 
     expected_barcodes_file_path = os.path.join("/test_input", run_id, "test_barcodes.csv")
     mock_open.assert_called_once_with(expected_barcodes_file_path, "wb")
     mock_barcodes_file_saved.__enter__.return_value.write.assert_called_once_with(barcodes_file_content)
 
-# Test bad zipfile
+
+@patch("app.file_manager.ZipFile")
+@patch("app.file_manager.makedirs")
+async def test_save_input_raises_httpexception_on_bad_zipfile(mock_makedirs, mock_zipfile_class):
+    mock_zipfile_class.side_effect = BadZipFile("bad zip")
+    mock_barcodes_upload = Mock()
+    mock_minknow_upload = Mock()
+    mock_minknow_upload.close = AsyncMock()
+
+    sut = get_sut()
+    with pytest.raises(fastapi.HTTPException) as exc_info:
+      await sut.save_input(run_id, mock_barcodes_upload, mock_minknow_upload)
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Invalid zip file."
+    mock_minknow_upload.close.assert_called_once()
+
 
 @patch("builtins.open")
 @patch("app.file_manager.makedirs")
@@ -75,7 +94,21 @@ def test_read_output_report(mock_path_exists, mock_open):
     assert result == "mock file contents"
 
 
+@patch("app.file_manager.path.exists")
+def test_read_output_report_raises_httpexception_on_unknown_run_id(mock_path_exists):
+    mock_path_exists.return_value = False
+    sut = get_sut()
+    with pytest.raises(fastapi.HTTPException) as exc_info:
+        sut.read_output_report(run_id)
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Run ID 1234 not found."
 
-# Test run_id not found
 
-# Test run not completed
+@patch("app.file_manager.path.exists")
+def test_read_output_report_raises_httpexception_when_run_incomplete(mock_path_exists):
+    mock_path_exists.side_effect = [True, False]
+    sut = get_sut()
+    with pytest.raises(fastapi.HTTPException) as exc_info:
+        sut.read_output_report(run_id)
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Run 1234 has not completed."
