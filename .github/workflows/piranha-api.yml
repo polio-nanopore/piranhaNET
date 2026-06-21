@@ -1,0 +1,30 @@
+name: Piranha API
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    paths:
+      - 'piranha-api/**'
+      - './github/workflows/**'
+
+defaults:
+  run:
+    working-directory: ./piranha-api
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8
+      - name: Install the project
+        run: uv sync --locked
+      - name: Lint check
+        run: uv run ruff check .
+      - name: Format check
+        run: uv run ruff format --check --diff
+      - name: Run API
+        run: uv run fastapi dev
+      - name: Unit and integration test
+        run: uv run pytest
