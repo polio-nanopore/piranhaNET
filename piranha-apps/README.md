@@ -1,7 +1,13 @@
-# piranha-electron
+# piranha-apps
 
-An [Electron](https://www.electronjs.org/svelte) application with [Svelte](https://svelte.dev/) and
-[TypeScript](https://www.typescriptlang.org/) which enables desktop users to run [piranha](https://github.com/polio-nanopore/piranha).
+A [Svelte](https://svelte.dev/) app written in [TypeScript](https://www.typescriptlang.org/) which enables desktop users to run [piranha](https://github.com/polio-nanopore/piranha).
+
+This app can be run both within an [Electron](https://www.electronjs.org/svelte) application and as a web application.
+
+Source code is contained in the following folders:
+`svelte-app` - the shared Svelte application
+`piranha-electron` - the Electron app
+`piranha-web` - the web app
 
 ## Project Setup
 
@@ -12,9 +18,13 @@ $ npm install
 ```
 
 ### Development
-
+Run Electron app:
 ```bash
-$ npm run dev
+$ npm run dev-electron
+```
+Run web app:
+```bash
+$ npm run dev-web
 ```
 
 #### Troubleshooting
