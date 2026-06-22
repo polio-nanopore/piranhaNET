@@ -18,11 +18,15 @@ $ npm install
 ```
 
 ### Development
+
 Run Electron app:
+
 ```bash
 $ npm run dev-electron
 ```
+
 Run web app:
+
 ```bash
 $ npm run dev-web
 ```
