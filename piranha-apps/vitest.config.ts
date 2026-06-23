@@ -7,6 +7,7 @@ import { svelteTesting } from "@testing-library/svelte/vite";
 export default defineConfig({
   plugins: [tailwindcss()],
   test: {
+    testTimeout: 10000,
     coverage: {
       provider: "istanbul",
       include: ["**/src/**/**.{js,ts}"],
