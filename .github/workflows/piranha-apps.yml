@@ -45,6 +45,8 @@ jobs:
         run: npm run build-electron
       - name: Unit and integration test
         run: npm run coverage
+      - name: tmate
+        uses: mxschmitt/action-tmate@v3
       # TODO: add this when codecov token is available
       #- name: Upload coverage
       #  uses: codecov/codecov-action@v5
