@@ -43,8 +43,6 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build-electron
-      - name: tmate
-        uses: mxschmitt/action-tmate@v3
       - name: Unit and integration test
         run: npm run coverage
       # TODO: add this when codecov token is available
