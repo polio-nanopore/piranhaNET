@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
-docker run -d -p 8000:8000 --name pirsanha-api piranhaNET/piranha-api-dev
+docker run -d --name piranha-api \
+  -v /requests-data \
+  -e INPUT_DIR=/requests-data/input \
+  -e OUTPUT_DIR=/requests-data/output \
+  -p 8000:8000  \
+  piranhaNET/piranha-api-dev

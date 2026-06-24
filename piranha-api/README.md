@@ -6,10 +6,13 @@ A [FastAPI](https://fastapi.tiangolo.com/) interface allowing the PiranhaNET ele
 ## Requirements
 This project is managed with [uv](https://docs.astral.sh/uv/).
 
-## Run API
+## Docker
 
-You can run the API outside docker with `uv run fastapi dev`. However, it will only be able to interact with Piranha
-when run within the Docker container (not yet implemented).
+The API can only be run from within its docker container, where it is build with access to a Piranha environment.
+
+Build the docker image with `./scripts/build-docker-dev`
+Run the API container with `./scripts/run-docker-dev`
+Stop the docker container with `./scripts/stop-docker-dev`
 
 ## Tests
 
