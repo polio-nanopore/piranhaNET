@@ -14,13 +14,16 @@ class FileManager:
     def input_dir(self, run_id: str):
         return path.join(self.input_root, run_id)
 
+    def minknow_dir(self, run_id: str):
+        return path.join(self.input_dir(run_id), "minknow")
+
     def output_dir(self, run_id: str):
         return path.join(self.output_root, run_id)
 
     async def save_input(self, run_id: str, barcodes_file: UploadFile, minknow_zip: UploadFile):
         # Create minknow folder
         run_dir = self.input_dir(run_id)
-        minknow_dir = path.join(run_dir, "minknow")
+        minknow_dir = self.minknow_dir(run_id)
         print(f"Creating dir {minknow_dir}")
         makedirs(minknow_dir)
         # Unzip minknow to minknow folder
