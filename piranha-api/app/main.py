@@ -1,4 +1,5 @@
 import asyncio
+import aiofiles
 import os
 import subprocess
 from collections.abc import AsyncGenerator
@@ -33,6 +34,26 @@ def generate_run_id() -> str:
 def get_root():
     return "Welcome to PiranhaNET API"
 
+def get_piranha_env():
+    """Get the environment with /venv activated"""
+    # Source /venv and capture all environment variables
+    print("calling get_piranha_env")
+    result = subprocess.run(
+        ['/bin/bash', '-c', 'source /venv/bin/activate && env'],
+        capture_output=True,
+        text=True
+    )
+    print("called subproc")
+    print("result is")
+    print(result)
+    # Parse the env output into a dict
+    env_dict = {}
+    for line in result.stdout.split('\n'):
+        if '=' in line:
+            key, value = line.split('=', 1)
+            env_dict[key] = value
+    return env_dict
+
 
 # TODO: add these to settings and set in Dockerfile
 PIRANHA_ENV_PATH = "/venv/bin"
@@ -41,40 +62,108 @@ PIRANHA_BINARY = os.path.join(PIRANHA_ENV_PATH, "piranha")
 async def piranha_run_log_generator(
     run_id: str, run_name: str, barcodes_file_path: str, minknow_dir_path: str, output_dir_path: str
 ) -> AsyncGenerator[str, None]:
-    print(f"Starting run {run_name} with run id {run_id}")
+    start_line = f"Starting run {run_name} with run id {run_id}"
+    yield start_line
+    print(start_line)
 
-    piranha_env = os.environ.copy()
-    piranha_env["PATH"] = f"{PIRANHA_ENV_PATH}:{piranha_env['PATH']}"
-    cmd = [PIRANHA_BINARY, "-b", barcodes_file_path,  "-i", minknow_dir_path, "-o", output_dir_path]
+    #piranha_env = os.environ.copy()
+    #piranha_env["PATH"] = f"{PIRANHA_ENV_PATH}:{piranha_env['PATH']}"
+    # TODO: call this once
+    #piranha_env = get_piranha_env()
+    yield("calling get_piranha_env")
+    result = subprocess.run(
+        ['/bin/bash', '-c', 'source /venv/bin/activate && env'],
+        capture_output=True,
+        text=True
+    )
+    yield("called subproc")
+    #print("result is")
+    #print(result)
+    # Parse the env output into a dict
+    env_dict = {}
+    for line in result.stdout.split('\n'):
+        if '=' in line:
+            key, value = line.split('=', 1)
+            env_dict[key] = value
+            yield(f"{key}={value}")
 
+    piranha_env = env_dict
+    piranha_env['SHELL'] = '/bin/bash'
+    yield("got p env")
+
+    print("p env:")
+    print(piranha_env)
+    #cmd = [PIRANHA_BINARY, "-b", barcodes_file_path,  "-i", minknow_dir_path, "-o", output_dir_path, "-t", "10"]
+    # TODO: revert notempt and verbose
+    #piranha_cmd = f"source /venv/bin/activate && piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 --verbose --no-temp"
+    # TODO: Is /tmp best place for logfiles? Could put it in requests_data_out, and then they'd be saved if ever needed.
+    log_path = f"/tmp/subprocess_{run_id}.log"
+    piranha_cmd = f"source /venv/bin/activate && piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 --verbose --no-temp > {log_path} 2>&1"
+    #cmd = ["/bin/bash", "-lc", piranha_cmd]
+   # bash_wrap_cmd = f"bash -i -c '{piranha_cmd}'"
+
+    print("command is")
+    print(piranha_cmd)
     try:
       # start non-blocking process
-      process = await asyncio.create_subprocess_exec(
-          *cmd,
-          stdout=asyncio.subprocess.PIPE,
-          stderr=asyncio.subprocess.STDOUT,  # Merge stderr into stdout to catch errors
-          env=piranha_env
+      #process = await asyncio.create_subprocess_exec(
+      process = await asyncio.create_subprocess_shell(
+          piranha_cmd,
+          #bash_wrap_cmd,
+          #stdout=asyncio.subprocess.PIPE,
+          #stderr=asyncio.subprocess.STDOUT,  # Merge stderr into stdout to catch errors TODO: reinstate
+          stdin=asyncio.subprocess.DEVNULL,  # Also explicitly close stdin
+          env=piranha_env,
+          executable="/bin/bash",
+          #start_new_session=True
       )
-      if process.stdout is None:
-          yield "Error: Failed to open standard output stream.\n"
-          return
 
-      while True:
-          line = await process.stdout.readline()
-          if not line:
-              break
-          decoded_line = line.decode("utf-8")
-          yield decoded_line
+      # Wait a bit for the log file to be created
+      await asyncio.sleep(0.2)
 
-      return_code = await process.wait()
-      yield f"\n[INFO] Process finished with exit code: {return_code}\n"
+      pos = 0
+      while process.returncode is None:
+          try:
+              async with aiofiles.open(log_path, "r") as f: #TODO: put this context outside the while loop
+                  await f.seek(pos)
+                  new_content = await f.read()
+                  if new_content:
+                      yield new_content
+                      print(new_content)
+                      pos = await f.tell()
+          except FileNotFoundError:
+              # Log file not created yet
+              pass
+
+          await asyncio.sleep(0.2)  # Poll every 200ms
+
+      # Wait for process to fully finish
+      returncode = await process.wait()
+
+      # Read any remaining content
+      try:
+          async with aiofiles.open(log_path, "r") as f:
+              await f.seek(pos)
+              remaining = await f.read()
+              if remaining:
+                  yield remaining
+                  print(remaining)
+      except FileNotFoundError:
+          pass
+
+      # Final status message
+      final_msg = f"Workflow completed with exit code {returncode}\n"
+      yield final_msg
+      print(final_msg)
 
     except Exception as e:
       # TODO: how should we return error status in the case of piranha run error? Request has already gone at this point...
       # Error if don't have expected final line? Or make /status endpoint available?
       yield f"\n[ERROR] Exception encountered during execution: {str(e)}\n"
 
-    print(f"{run_id} Finished run")
+    final_line = f"{run_id} Finished run"
+    yield final_line
+    print(final_line)
 
 # TODO: use a pydantic model for the run parameters when we're using full Piranha parameter set
 @app.post("/run")
@@ -85,7 +174,7 @@ async def run(
     await file_manager.save_input(run_id, barcodes_file, minknow_zip)
     minknow_dir_path = file_manager.minknow_dir(run_id)
     barcodes_file_path = os.path.join(file_manager.input_dir(run_id), barcodes_file.filename)
-    output_dir_path = file_manager.output_dir(run_id)
+    output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
         piranha_run_log_generator(run_id, run_name, barcodes_file_path, minknow_dir_path, output_dir_path),
         headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log

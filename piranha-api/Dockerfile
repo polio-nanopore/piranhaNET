@@ -1,37 +1,15 @@
-# ==========================================
-# Stage 1: Build Piranha and pack environment
-# ==========================================
-FROM condaforge/mambaforge AS piranha-builder
-WORKDIR /data
-SHELL ["/bin/bash", "-c"]
-# ... (Fetch Piranha and install via conda-pack) ...
-RUN git clone https://github.com/polio-nanopore/piranha.git \
-    && cd piranha \
-    && mamba env create -f environment.yml \
-    && source /opt/conda/etc/profile.d/conda.sh \
-    && conda activate piranha \
-    #  Register piranha in the environment
-    && pip install . \
-    && conda install -y -c conda-forge conda-pack \
-    && conda-pack -n piranha -o /tmp/env.tar \
-    # Extract into /venv and fix paths locally via conda-unpack
-    && mkdir /venv && cd /venv && tar xf /tmp/env.tar \
-    && ./bin/conda-unpack
+FROM polionanopore/piranha:latest
 
+# /venv is already in PATH from the base image
+# Just add FastAPI to the same /venv
+RUN /venv/bin/pip install fastapi[standard] uvicorn shortuuid aiofiles
 
-
-# ==========================================
-# Stage 2: Copy and run the API
-# ==========================================
-FROM python:3.12-slim
-# TODO: do I need this?
-#RUN apt-get update && apt-get install -y --no-install-recommends curl
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-COPY --from=piranha-builder /venv /venv
+# Copy your FastAPI app
+COPY app/ /app/app/
 WORKDIR /app
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-cache --no-dev # install deps
-COPY app/ ./app/
-RUN mkdir /requests-data
+
 EXPOSE 8000
-CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["/venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["sleep", "infinity"]
+# Why uvicorn and not fastapi?
+# Any way to sync up with pyproject.toml? Pull the pip install packages from the dependencies section?

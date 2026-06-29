@@ -41,21 +41,10 @@ class FileManager:
             barcodes_content = await barcodes_file.read()
             saved_barcodes_file.write(barcodes_content)
 
-    def save_output(self, run_id: str):
-        # Currently just write out a fake report.html and a csv file in a subfolder
-        # These will be zipped for results download
-        out_dir = self.output_dir(run_id)
-        makedirs(out_dir)
-        report_file_path = path.join(out_dir, REPORT_FILENAME)
-        lines = [
-            "<!doctype html>",
-            "<html lang='en'>",
-            "<head><meta charset='utf-8'><title>Fake Piranha report</title></head>",
-            f"<body><h1>Fake Piranha report</h1><p>Report for run {run_id}</p></body>",
-            "</html>",
-        ]
-        with open(report_file_path, "w") as report_file:
-            report_file.writelines(lines)
+    def make_output_dir(self, run_id):
+        output_dir = self.output_dir(run_id)
+        makedirs(output_dir)
+        return output_dir
 
     def read_output_report(self, run_id: str):
         input_dir = self.input_dir(run_id)

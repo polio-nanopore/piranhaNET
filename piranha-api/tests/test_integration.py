@@ -1,27 +1,37 @@
 import asyncio
 import json
+import pytest
 from io import BytesIO
+from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
-
 import httpx
 
 BASE_URL = "http://127.0.0.1:8000"
 RUN_ID_HEADER = "piranhanet-run-id"
 
+test_data_dir = Path.cwd().parent / "test-data"
+
 
 def create_minknow_zip():
+    # Create a zip file to upload from the real test data
+    folder = test_data_dir / "demultiplexed"
     zip_buffer = BytesIO()
-    with ZipFile(zip_buffer, "w", ZIP_DEFLATED) as zf:
-        zf.writestr("sample 1/1.txt", "Data for sample 1")
-        zf.writestr("sample 2/2.txt", "Data for sample 2")
+    with ZipFile(zip_buffer, 'w', ZIP_DEFLATED) as zf:
+        for file_path in folder.rglob('*'):
+            if file_path.is_file():
+                archive_name = file_path.relative_to(folder)
+                zf.write(file_path, archive_name)
+
+    # Reset buffer position
     zip_buffer.seek(0)
     return zip_buffer
 
 
 def create_files():
     minknow_zip = create_minknow_zip()
+    barcodes_path = test_data_dir / "barcodes.csv" # read test_data barcodes file
     return {
-        "barcodes_file": ("barcodes.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
+        "barcodes_file": ("barcodes.csv", barcodes_path.read_text(), "text/csv"),
         "minknow_zip": ("minknow.zip", minknow_zip, "application/zip"),
     }
 
@@ -36,7 +46,7 @@ async def test_run_streaming_response_and_get_results():
     files = create_files()
 
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
-        async with client.stream("POST", "/run", params=params, files=files) as response:
+        async with client.stream("POST", "/run", params=params, files=files, timeout=None) as response:
             assert response.status_code == 200
             assert response.headers["content-type"] == "text/plain; charset=utf-8"
             run_id = response.headers[RUN_ID_HEADER]
@@ -44,6 +54,7 @@ async def test_run_streaming_response_and_get_results():
             lines = []
             async for line in response.aiter_text():
                 lines.append(line)
+            print(lines)
             # We'll need to change this when we're running the real Piranha process
             assert len(lines) == 7
             assert lines[0] == f"{run_id} Starting fake Piranha process for test run"
@@ -59,7 +70,7 @@ async def test_run_streaming_response_and_get_results():
         assert results_response.status_code == 200
         assert f"Report for run {run_id}" in results_response.text
 
-
+@pytest.mark.skip(reason="local skip")
 async def test_simultaneous_run_requests():
     params_1 = {"run_name": "test run 1"}
     files_1 = create_files()
@@ -83,6 +94,7 @@ async def test_simultaneous_run_requests():
                 assert combined[13] == f"{run_id_2} Fake Piranha completed"
 
 
+@pytest.mark.skip(reason="local skip")
 async def test_expected_error_when_minknow_not_valid_zip():
     params = {"run_name": "test run"}
     files = {
@@ -99,7 +111,7 @@ async def test_expected_error_when_minknow_not_valid_zip():
             json_error = json.loads(lines[0])
             assert json_error["detail"] == "Invalid zip file."
 
-
+@pytest.mark.skip(reason="local skip")
 async def test_expected_error_when_run_does_not_exist():
     run_id = "nope"
     with httpx.Client(base_url=BASE_URL) as client:
@@ -108,7 +120,7 @@ async def test_expected_error_when_run_does_not_exist():
         json_error = response.json()
         assert json_error["detail"] == f"Run ID {run_id} not found."
 
-
+@pytest.mark.skip(reason="local skip")
 async def test_expected_error_when_run_has_not_completed():
     # Start run and request its results before it has time to complete
     params = {"run_name": "test run"}

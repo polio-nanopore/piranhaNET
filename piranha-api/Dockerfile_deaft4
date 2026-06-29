@@ -1,0 +1,39 @@
+
+# ==========================================
+# Stage 2: Build FastAPI dependencies
+# ==========================================
+FROM python:3.12-slim AS fastapi-build
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-cache --no-dev # install deps
+COPY app/ ./app/
+
+# ==========================================
+# Stage 3: Final runtime
+# ==========================================
+#FROM debian:bullseye-slim
+FROM debian:trixie-slim
+
+# Install Python 3.12 runtime dependencies
+#RUN apt-get update && apt-get install -y --no-install-recommends \
+#    python3.12 \
+#    python3.12-minimal \
+#    && rm -rf /var/lib/apt/lists/*
+
+#RUN apt-get update && apt-get install -y \
+#    python3.12 \
+#    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy FastAPI code AND its .venv
+COPY --from=fastapi-build /app /app
+
+WORKDIR /app
+ENV PATH=/app/.venv/bin:/venv/bin:/root/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH
+ENV SHELL=/bin/bash
+
+#RUN mkdir /requests-data
+EXPOSE 8000
+#CMD ["/bin/bash", "-c", "exec /app/.venv/bin/python -m fastapi run main.py --port 8000 --host 0.0.0.0"]
+CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["sleep", "infinity"]

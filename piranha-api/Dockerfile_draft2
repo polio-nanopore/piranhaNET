@@ -1,0 +1,70 @@
+# ==========================================
+# Stage 1: Build Piranha and pack environment
+# This is taken directly from Stage 1 of the Piranha dockerfile
+# ==========================================
+FROM condaforge/mambaforge AS compile-image
+
+# set working directory
+WORKDIR /data
+
+# check for updates
+RUN apt-get update -y && \
+  apt-get upgrade -y && \
+  apt install build-essential -y --no-install-recommends && \
+  apt-get clean && apt-get autoclean
+
+# copy in piranha
+RUN git clone https://github.com/polio-nanopore/piranha.git && \
+  cd /data/piranha && \
+  mamba install conda -n base -c conda-forge -c defaults -c bioconda && \
+  mamba env create -f /data/piranha/environment.yml
+
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "piranha", "/bin/bash", "-c"]
+RUN mamba install -c conda-forge -n piranha python=3.12 conda-pack && \
+  cd /data/piranha && \
+  pip install .
+
+# Use conda-pack to create a standalone environment
+# in /venv:
+RUN conda list && \
+  conda-pack -n piranha -o /tmp/env.tar && \
+  mkdir /venv && cd /venv && tar xf /tmp/env.tar && \
+  rm /tmp/env.tar && /venv/bin/conda-unpack
+
+SHELL ["/bin/bash", "-c"]
+
+RUN conda clean --all &&\
+  conda remove --name piranha --all
+
+# build piranha
+WORKDIR /data/piranha
+RUN source /venv/bin/activate && pip install --user --no-cache-dir .
+
+# Run this to test piranha runs while have data before creating runtime image
+RUN source /venv/bin/activate && piranha -h && piranha -i /data/piranha/test_data/demultiplexed -b /data/piranha/test_data/barcodes.csv
+
+# ==========================================
+# Stage 2: Copy and run the API
+# ==========================================
+
+FROM python:3.12-slim AS runtime-image
+
+COPY --from=compile-image /root/.local /root/.local
+
+# Copy /venv from the previous stage:
+COPY --from=compile-image /venv /venv
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-cache --no-dev # install deps
+COPY app/ ./app/
+RUN mkdir /requests-data
+
+EXPOSE 8000
+ENV PATH=/venv/bin:/root/.local/bin:$PATH
+SHELL ["/bin/bash", "-c"]
+
+CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "8000", "--host", "0.0.0.0"]
