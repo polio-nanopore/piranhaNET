@@ -96,7 +96,12 @@ async def piranha_run_log_generator(
     #cmd = [PIRANHA_BINARY, "-b", barcodes_file_path,  "-i", minknow_dir_path, "-o", output_dir_path, "-t", "10"]
     # TODO: revert notempt and verbose
     #piranha_cmd = f"source /venv/bin/activate && piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 --verbose --no-temp"
-    # TODO: Is /tmp best place for logfiles? Could put it in requests_data_out, and then they'd be saved if ever needed.
+    # TODO: Is /tmp best place for logfiles? Could put it in requests_data/output, and then they'd be saved if ever needed. Actually,
+    # let's write this to output and include it in the download zip!
+    # We need to write to a log file because mafft (called fron piranha) assumes that the default stdout is available, and errors if it's being piped through the
+    # subprocess. So we do not set stdout or stderr on the process, but instead send all output to a log file which we poll and stream
+    # to the response. This has a nice consequence that we're naturally saving the logs to file, which we can include in the download
+    # zip of the run - it may be useful.
     log_path = f"/tmp/subprocess_{run_id}.log"
     piranha_cmd = f"source /venv/bin/activate && piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 --verbose --no-temp > {log_path} 2>&1"
     #cmd = ["/bin/bash", "-lc", piranha_cmd]
@@ -124,7 +129,7 @@ async def piranha_run_log_generator(
       pos = 0
       while process.returncode is None:
           try:
-              async with aiofiles.open(log_path, "r") as f: #TODO: put this context outside the while loop
+              async with aiofiles.open(log_path, "r") as f: #TODO: put this context outside the while loop, include tolerant wait for file to be available
                   await f.seek(pos)
                   new_content = await f.read()
                   if new_content:
