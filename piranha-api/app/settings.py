@@ -1,4 +1,4 @@
-from os import getcwd, path
+from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
@@ -8,8 +8,8 @@ DATA_ROOT = "requests-data"
 
 
 class Settings(BaseSettings):
-    input_dir: str = path.join(getcwd(), DATA_ROOT, "input")
-    output_dir: str = path.join(getcwd(), DATA_ROOT, "output")
+    input_dir: str = str(Path.cwd() / DATA_ROOT / "input")
+    output_dir: str = str(Path.cwd() / DATA_ROOT / "output")
 
 
 settings = Settings()

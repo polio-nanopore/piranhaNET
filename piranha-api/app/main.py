@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, UploadFile
@@ -11,7 +12,7 @@ from app.file_manager import FileManager
 from app.settings import settings
 
 app = FastAPI()
-file_manager = FileManager(settings.input_dir, settings.output_dir)
+file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
 
 def generate_run_id() -> str:
