@@ -65,9 +65,9 @@ async def test_save_input_raises_httpexception_on_bad_zipfile(mock_makedirs, moc
     mock_minknow_upload.close.assert_called_once()
 
 
-#@patch("builtins.open")
-#@patch("app.file_manager.makedirs")
-#def test_save_output(mock_makedirs, mock_open):
+# @patch("builtins.open")
+# @patch("app.file_manager.makedirs")
+# def test_save_output(mock_makedirs, mock_open):
 #    mock_report_file = MagicMock()
 #    mock_open.return_value = mock_report_file#
 
@@ -76,11 +76,11 @@ async def test_save_input_raises_httpexception_on_bad_zipfile(mock_makedirs, moc
 
 #    expected_output_dir = os.path.join("/test_output", run_id)
 #    mock_makedirs.assert_called_once_with(expected_output_dir)
- #   mock_open.assert_called_once_with(os.path.join(expected_output_dir, "report.html"), "w")
-  #  mock_report_writelines = mock_report_file.__enter__.return_value.writelines
-   # mock_report_writelines.assert_called_once()
-   # args, _ = mock_report_writelines.call_args
-   # assert args[0][0] == "<!doctype html>"
+#   mock_open.assert_called_once_with(os.path.join(expected_output_dir, "report.html"), "w")
+#  mock_report_writelines = mock_report_file.__enter__.return_value.writelines
+# mock_report_writelines.assert_called_once()
+# args, _ = mock_report_writelines.call_args
+# assert args[0][0] == "<!doctype html>"
 
 
 @patch("builtins.open")
