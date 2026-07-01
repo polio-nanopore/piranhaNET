@@ -10,6 +10,6 @@ DATA_ROOT = "requests-data"
 class Settings(BaseSettings):
     input_dir: str = str(Path.cwd() / DATA_ROOT / "input")
     output_dir: str = str(Path.cwd() / DATA_ROOT / "output")
-
+    piranha_env_path: str = "venv/bin"
 
 settings = Settings()
