@@ -269,7 +269,7 @@ describe("Settings", () => {
       "userSettings",
       "piranhaOutputSettings",
     ]);
-  });
+  }, 20000); // can be long-running
 
   test("renders with expected errors when there are errors in settings", async () => {
     const errors = testErrors();

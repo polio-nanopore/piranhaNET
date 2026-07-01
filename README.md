@@ -12,8 +12,11 @@ This monorepo contains the following components in its directories.
   * `svelte-app` - the front end svelte application code used by both applications
   * `piranha-electron` - the electron wrapper for `svelte-app`. Its vite config file is `electron.vite.config.ts`.
   * `piranha-web` - the web app wrapper for `svelte-app`. Its vite config file is `web.vite.config.ts`.
+* `piranha-api` - Python API, used by both the electron and web applications. 
+
 
 ## Quick start
+Run the API with: `./scripts/run-api`.
 
 Run the Electron app with: `./scripts/run-electron`.
 
