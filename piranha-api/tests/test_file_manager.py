@@ -1,5 +1,4 @@
-import os
-from unittest.mock import AsyncMock, MagicMock, Mock, call, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from zipfile import BadZipFile
 
 import fastapi
@@ -10,19 +9,17 @@ from app.file_manager import FileManager
 run_id = "1234"
 
 
-def get_sut():
-    return FileManager("/test_input", "/test_output")
+def get_sut(tmp_path):
+    return FileManager(tmp_path / "test_input", tmp_path / "test_output")
 
 
-@patch("builtins.open")
 @patch("app.file_manager.ZipFile")
-@patch("app.file_manager.makedirs")
-async def test_save_input(mock_makedirs, mock_zipfile_class, mock_open):
+async def test_save_input(mock_zipfile_class, tmp_path):
     mock_barcodes_file_upload = Mock()
     mock_barcodes_file_upload.filename = "test_barcodes.csv"
 
     barcodes_file_content = "1,2\nvalue 1, value2\n"
-    mock_barcodes_file_upload.read = AsyncMock(return_value=barcodes_file_content)
+    mock_barcodes_file_upload.read = AsyncMock(return_value=barcodes_file_content.encode())
     mock_minknow_zip_upload = Mock()
     mock_minknow_zip_upload.file = Mock()
     mock_minknow_zip_upload.close = AsyncMock()
@@ -30,89 +27,72 @@ async def test_save_input(mock_makedirs, mock_zipfile_class, mock_open):
     mock_minknow_zip_file = MagicMock()
     mock_zipfile_class.return_value = mock_minknow_zip_file
 
-    mock_barcodes_file_saved = MagicMock()
-    mock_open.return_value = mock_barcodes_file_saved
-
-    sut = get_sut()
+    sut = get_sut(tmp_path)
     await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
 
-    expected_minknow_dir = os.path.join("/test_input", run_id, "minknow")
-    mock_makedirs.assert_called_once_with(expected_minknow_dir)
+    expected_minknow_dir = tmp_path / "test_input" / run_id / "minknow"
+    # Expect minnow dir to have been created
+    assert expected_minknow_dir.exists()
     mock_zipfile_class.assert_called_once_with(mock_minknow_zip_upload.file)
+
     # check __enter__.return_value here as these mocks are used as context managers (using "with")
     mock_minknow_zip_file.__enter__.return_value.extractall.assert_called_once_with(expected_minknow_dir)
     mock_minknow_zip_upload.close.assert_called_once()
 
-    expected_barcodes_file_path = os.path.join("/test_input", run_id, "test_barcodes.csv")
-    mock_open.assert_called_once_with(expected_barcodes_file_path, "wb")
-    mock_barcodes_file_saved.__enter__.return_value.write.assert_called_once_with(barcodes_file_content)
+    # Expect barcodes file to have been written
+    expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
+    assert expected_barcodes_file.read_text() == barcodes_file_content
 
 
 @patch("app.file_manager.ZipFile")
-@patch("app.file_manager.makedirs")
-async def test_save_input_raises_httpexception_on_bad_zipfile(mock_makedirs, mock_zipfile_class):
+async def test_save_input_raises_httpexception_on_bad_zipfile(mock_zipfile_class, tmp_path):
     mock_zipfile_class.side_effect = BadZipFile("bad zip")
     mock_barcodes_upload = Mock()
     mock_minknow_upload = Mock()
     mock_minknow_upload.close = AsyncMock()
 
-    sut = get_sut()
+    sut = get_sut(tmp_path)
     with pytest.raises(fastapi.HTTPException) as exc_info:
         await sut.save_input(run_id, mock_barcodes_upload, mock_minknow_upload)
-    mock_makedirs.assert_called_once()
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail == "Invalid zip file."
     mock_minknow_upload.close.assert_called_once()
 
 
-# @patch("builtins.open")
-# @patch("app.file_manager.makedirs")
-# def test_save_output(mock_makedirs, mock_open):
-#    mock_report_file = MagicMock()
-#    mock_open.return_value = mock_report_file#
-
-#    sut = get_sut()
+#def test_save_output(tmp_path):
+#    sut = get_sut(tmp_path)
 #    sut.save_output(run_id)
-
-#    expected_output_dir = os.path.join("/test_output", run_id)
-#    mock_makedirs.assert_called_once_with(expected_output_dir)
-#   mock_open.assert_called_once_with(os.path.join(expected_output_dir, "report.html"), "w")
-#  mock_report_writelines = mock_report_file.__enter__.return_value.writelines
-# mock_report_writelines.assert_called_once()
-# args, _ = mock_report_writelines.call_args
-# assert args[0][0] == "<!doctype html>"
+#
+#    expected_output_report = tmp_path / "test_output" / run_id / "report.html"
+#    assert expected_output_report.read_text().startswith("<!doctype html>")
 
 
-@patch("builtins.open")
-@patch("app.file_manager.path.exists")
-def test_read_output_report(mock_path_exists, mock_open):
-    mock_path_exists.return_value = True
-    mock_report_file = MagicMock()
-    mock_open.return_value = mock_report_file
-    mock_report_file.__enter__.return_value.read.return_value = "mock file contents"
+def test_read_output_report(tmp_path):
+    test_input_dir = tmp_path / "test_input" / run_id
+    test_input_dir.mkdir(parents=True)
+    test_report_content = "<not an html report>"
+    test_report_dir = tmp_path / "test_output" / run_id
+    test_report_dir.mkdir(parents=True)
+    test_report = test_report_dir / "report.html"
+    test_report.write_text(test_report_content)
 
-    sut = get_sut()
+    sut = get_sut(tmp_path)
     result = sut.read_output_report(run_id)
-    mock_path_exists.assert_has_calls(
-        [call(os.path.join("/test_input", run_id)), call(os.path.join("/test_output", run_id, "report.html"))]
-    )
-    assert result == "mock file contents"
+    assert result == test_report_content
 
 
-@patch("app.file_manager.path.exists")
-def test_read_output_report_raises_httpexception_on_unknown_run_id(mock_path_exists):
-    mock_path_exists.return_value = False
-    sut = get_sut()
+def test_read_output_report_raises_httpexception_on_unknown_run_id(tmp_path):
+    sut = get_sut(tmp_path)
     with pytest.raises(fastapi.HTTPException) as exc_info:
         sut.read_output_report(run_id)
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail == "Run ID 1234 not found."
 
 
-@patch("app.file_manager.path.exists")
-def test_read_output_report_raises_httpexception_when_run_incomplete(mock_path_exists):
-    mock_path_exists.side_effect = [True, False]
-    sut = get_sut()
+def test_read_output_report_raises_httpexception_when_run_incomplete(tmp_path):
+    test_input_dir = tmp_path / "test_input" / run_id
+    test_input_dir.mkdir(parents=True)
+    sut = get_sut(tmp_path)
     with pytest.raises(fastapi.HTTPException) as exc_info:
         sut.read_output_report(run_id)
     assert exc_info.value.status_code == 400

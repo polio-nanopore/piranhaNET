@@ -15,7 +15,7 @@ from app.file_manager import FileManager
 from app.settings import settings
 
 app = FastAPI()
-file_manager = FileManager(settings.input_dir, settings.output_dir)
+file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
 
 def get_piranha_env():
