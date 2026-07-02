@@ -54,21 +54,18 @@ async def test_run_streaming_response_and_get_results():
             lines = []
             async for line in response.aiter_text():
                 lines.append(line)
+            # TODO: remove!
             print(lines)
-            # We'll need to change this when we're running the real Piranha process
-            assert len(lines) == 7
-            assert lines[0] == f"{run_id} Starting fake Piranha process for test run"
-            assert lines[1] == f"{run_id} Barcodes filename is barcodes.csv"
-            assert lines[2] == f"{run_id} MinKnow zipname is minknow.zip"
-            assert lines[3] == f"{run_id} Fake Piranha update 1"
-            assert lines[4] == f"{run_id} Fake Piranha update 2"
-            assert lines[5] == f"{run_id} Saving output files"
-            assert lines[6] == f"{run_id} Fake Piranha completed"
+
+            assert len(lines) > 1000 # This is going to be changeable, but it should be a lot!
+            assert lines[0] == f"Starting run test run with run id {run_id}"
+            assert "Building DAG of jobs..." in lines # This indicates snakemake was called
+            assert lines[-1] == f"Piranha run completed with exit code 0"
 
     with httpx.Client(base_url=BASE_URL) as client:
         results_response = client.get(f"/results/{run_id}")
         assert results_response.status_code == 200
-        assert f"Report for run {run_id}" in results_response.text
+        assert "Sequencing report: polioDDNS" in results_response.text
 
 
 @pytest.mark.skip(reason="local skip")

@@ -10,19 +10,6 @@ class PiranhaRunner:
     def __init__(self, piranha_env_path: Path):
         self.piranha_env_path = piranha_env_path
         self.piranha_activate_path = Path(piranha_env_path / "activate")
-        self.piranha_env = self.get_piranha_env()
-
-    def get_piranha_env(self):
-         # TODO: nicer version of this?
-         """Get the environment with /venv activated"""
-         result = subprocess.run(["/bin/bash", "-c", f"source {self.piranha_activate_path} && env"], capture_output=True, text=True)
-         # Parse the env output into a dict
-         env_dict = {}
-         for line in result.stdout.split("\n"):
-             if "=" in line:
-                 key, value = line.split("=", 1)
-                 env_dict[key] = value
-         return env_dict
 
     async def wait_for_log_file(self, log_path: Path):
         # Wait for the log file to be created
@@ -45,8 +32,6 @@ class PiranhaRunner:
     ) -> AsyncGenerator[str, None]:
          yield self.log_line(run_id, f"Starting run {run_name} with run id {run_id}")
 
-         # TODO: revert notempt and verbose
-         # piranha_cmd = f"source /venv/bin/activate && piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 --verbose --no-temp"
          # TODO: Is /tmp best place for logfiles? Could put it in requests_data/output, and then they'd be saved if ever needed. Actually,
          # let's write this to output and include it in the download zip!
 
@@ -54,12 +39,16 @@ class PiranhaRunner:
          # subprocess. So we do not set stdout or stderr on the process, but instead send all output to a log file which we poll and stream
          # to the response. This has a nice consequence that we're naturally saving the logs to file, which we can include in the download
          # zip of the run - it may be useful.
-         log_path = Path(f"/tmp/subprocess_{run_id}.log")
-         piranha_cmd = f"source {self.piranha_activate_path} && piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 > {log_path} 2>&1"
+         log_path = Path(output_dir_path) / "piranha.log"
+         piranha_cmd = (f"source {self.piranha_activate_path} && "
+                        f"piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 "
+                        # this option ensures piranha write to our run_id output dir, not a new dir with _1 appended
+                        "--overwrite "
+                         f"> {log_path} 2>&1")
 
          try:
              # start non-blocking process
-             process = await asyncio.create_subprocess_shell(piranha_cmd, env=self.piranha_env, executable="/bin/bash")
+             process = await asyncio.create_subprocess_shell(piranha_cmd, executable="/bin/bash")
 
              await self.wait_for_log_file(log_path)
 
