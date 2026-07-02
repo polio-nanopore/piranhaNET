@@ -54,8 +54,6 @@ async def test_run_streaming_response_and_get_results():
             lines = []
             async for line in response.aiter_text():
                 lines.append(line)
-            # TODO: remove!
-            print(lines)
 
             assert len(lines) > 1000 # This is going to be changeable, but it should be a lot!
             assert lines[0] == f"Starting run test run with run id {run_id}"
@@ -68,31 +66,33 @@ async def test_run_streaming_response_and_get_results():
         assert "Sequencing report: polioDDNS" in results_response.text
 
 
-@pytest.mark.skip(reason="local skip")
 async def test_simultaneous_run_requests():
     params_1 = {"run_name": "test run 1"}
     files_1 = create_files()
     params_2 = {"run_name": "test run 2"}
     files_2 = create_files()
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
-        async with client.stream("POST", "/run", params=params_1, files=files_1) as response_1:
-            async with client.stream("POST", "/run", params=params_2, files=files_2) as response_2:
+        async with client.stream("POST", "/run", params=params_1, files=files_1, timeout=None) as response_1:
+            async with client.stream("POST", "/run", params=params_2, files=files_2, timeout=None) as response_2:
                 assert response_1.status_code == 200
                 assert response_2.status_code == 200
                 run_id_1 = response_1.headers[RUN_ID_HEADER]
                 run_id_2 = response_2.headers[RUN_ID_HEADER]
+                assert run_id_1 != run_id_2
                 combined = []
                 await asyncio.gather(stream_to_list(response_1, combined), stream_to_list(response_2, combined))
                 # Expect interleaved streamed response list to show that responses were collecting concurrently
-                # We'll need to change this when we're running the real Piranha process
-                assert len(combined) == 14
-                assert combined[0] == f"{run_id_1} Starting fake Piranha process for test run 1"
-                assert combined[3] == f"{run_id_2} Starting fake Piranha process for test run 2"
-                assert combined[11] == f"{run_id_1} Fake Piranha completed"
-                assert combined[13] == f"{run_id_2} Fake Piranha completed"
+                print(combined)
+                assert len(combined) > 2000
+                assert combined[0] == f"Starting run test run 1 with run id {run_id_1}"
+                assert combined[1] == f"Starting run test run 2 with run id {run_id_2}"
+                # Piranha logs include ANSI escape codes
+                assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_1}/report.html" in combined
+                assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_2}/report.html" in combined
+                assert combined.count("Piranha run completed with exit code 0") == 2
 
 
-@pytest.mark.skip(reason="local skip")
+
 async def test_expected_error_when_minknow_not_valid_zip():
     params = {"run_name": "test run"}
     files = {
@@ -110,7 +110,6 @@ async def test_expected_error_when_minknow_not_valid_zip():
             assert json_error["detail"] == "Invalid zip file."
 
 
-@pytest.mark.skip(reason="local skip")
 async def test_expected_error_when_run_does_not_exist():
     run_id = "nope"
     with httpx.Client(base_url=BASE_URL) as client:
@@ -120,14 +119,13 @@ async def test_expected_error_when_run_does_not_exist():
         assert json_error["detail"] == f"Run ID {run_id} not found."
 
 
-@pytest.mark.skip(reason="local skip")
 async def test_expected_error_when_run_has_not_completed():
     # Start run and request its results before it has time to complete
     params = {"run_name": "test run"}
     files = create_files()
 
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
-        async with client.stream("POST", "/run", params=params, files=files) as response:
+        async with client.stream("POST", "/run", params=params, files=files, timeout=None) as response:
             run_id = response.headers[RUN_ID_HEADER]
             await asyncio.sleep(1)  # give it time to save run id folder
             with httpx.Client(base_url=BASE_URL) as results_client:

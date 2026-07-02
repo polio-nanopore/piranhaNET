@@ -32,9 +32,6 @@ class PiranhaRunner:
     ) -> AsyncGenerator[str, None]:
          yield self.log_line(run_id, f"Starting run {run_name} with run id {run_id}")
 
-         # TODO: Is /tmp best place for logfiles? Could put it in requests_data/output, and then they'd be saved if ever needed. Actually,
-         # let's write this to output and include it in the download zip!
-
          # We need to write to a log file because mafft (called fron piranha) assumes that the default stdout is available, and errors if it's being piped through the
          # subprocess. So we do not set stdout or stderr on the process, but instead send all output to a log file which we poll and stream
          # to the response. This has a nice consequence that we're naturally saving the logs to file, which we can include in the download

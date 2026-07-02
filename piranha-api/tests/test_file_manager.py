@@ -59,12 +59,12 @@ async def test_save_input_raises_httpexception_on_bad_zipfile(mock_zipfile_class
     mock_minknow_upload.close.assert_called_once()
 
 
-#def test_save_output(tmp_path):
-#    sut = get_sut(tmp_path)
-#    sut.save_output(run_id)
-#
-#    expected_output_report = tmp_path / "test_output" / run_id / "report.html"
-#    assert expected_output_report.read_text().startswith("<!doctype html>")
+def test_make_output_dir(tmp_path):
+    sut = get_sut(tmp_path)
+    sut.make_output_dir(run_id)
+
+    expected_output_dir = tmp_path / "test_output" / run_id
+    assert expected_output_dir.exists()
 
 
 def test_read_output_report(tmp_path):
