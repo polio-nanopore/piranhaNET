@@ -12,4 +12,5 @@ class Settings(BaseSettings):
     output_dir: str = str(Path.cwd() / DATA_ROOT / "output")
     piranha_env_path: str = "venv/bin"
 
+
 settings = Settings()

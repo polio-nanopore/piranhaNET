@@ -1,8 +1,4 @@
-import asyncio
-import aiofiles
 import os
-import subprocess
-from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
@@ -19,6 +15,7 @@ app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
 piranha_runner = PiranhaRunner(Path(settings.piranha_env_path))
+
 
 def generate_run_id() -> str:
     now = datetime.now(UTC)
@@ -50,7 +47,9 @@ async def run(
     barcodes_file_path = os.path.join(file_manager.input_dir(run_id), barcodes_file.filename)
     output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
-        piranha_runner.run_piranha_log_generator(run_id, run_name, barcodes_file_path, minknow_dir_path, output_dir_path),
+        piranha_runner.run_piranha_log_generator(
+            run_id, run_name, barcodes_file_path, minknow_dir_path, output_dir_path
+        ),
         headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
     )

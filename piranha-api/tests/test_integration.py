@@ -1,9 +1,9 @@
 import asyncio
 import json
-import pytest
 from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
+
 import httpx
 
 BASE_URL = "http://127.0.0.1:8000"
@@ -55,10 +55,10 @@ async def test_run_streaming_response_and_get_results():
             async for line in response.aiter_text():
                 lines.append(line)
 
-            assert len(lines) > 1000 # This is going to be changeable, but it should be a lot!
+            assert len(lines) > 1000  # This is going to be changeable, but it should be a lot!
             assert lines[0] == f"Starting run test run with run id {run_id}"
-            assert "Building DAG of jobs..." in lines # This indicates snakemake was called
-            assert lines[-1] == f"Piranha run completed with exit code 0"
+            assert "Building DAG of jobs..." in lines  # This indicates snakemake was called
+            assert lines[-1] == "Piranha run completed with exit code 0"
 
     with httpx.Client(base_url=BASE_URL) as client:
         results_response = client.get(f"/results/{run_id}")
@@ -90,7 +90,6 @@ async def test_simultaneous_run_requests():
                 assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_1}/report.html" in combined
                 assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_2}/report.html" in combined
                 assert combined.count("Piranha run completed with exit code 0") == 2
-
 
 
 async def test_expected_error_when_minknow_not_valid_zip():
