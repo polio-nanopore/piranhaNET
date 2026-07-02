@@ -72,7 +72,7 @@ class PiranhaRunner:
              yield self.log_line(run_id, f"Piranha run completed with exit code {process.returncode}")
 
          except Exception as e:
-             # TODO: how should we return error status in the case of piranha run error? Request has already gone at this point...
-             # Error if don't have expected final line? Or make /status endpoint available?
+             # TODO: Provide a way for client to more clearly know about execution error (can't set response status here
+             # after start streaming). Save error to output folder, and provide /results-status response
              yield self.log_line(run_id,  f"[ERROR] Exception encountered during execution: {str(e)}")
 
