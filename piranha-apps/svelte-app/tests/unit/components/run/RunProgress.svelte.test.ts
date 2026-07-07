@@ -4,7 +4,7 @@ import {
   mockPiranhaAPI,
   renderInI18nTestContext,
 } from "../../../utils";
-import { screen } from "@testing-library/svelte";
+import { screen, within } from "@testing-library/svelte";
 import RunProgress from "../../../../src/components/run/RunProgress.svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
@@ -40,11 +40,34 @@ describe("RunProgress", () => {
     expect(screen.getByText("Test Run")).toBeVisible();
     await expectTranslations(
       (text) => {
-        expect(screen.getByText(`${text}: /test/input/barcodes.csv`)).toBeVisible()
+        const parent = screen.getByText(text);
+        expect(within(parent).getByText(/\/test\/input\/barcodes\.csv/)).toBeVisible();
       }, {
-        en: "Barcodes file",
-        fr: "Fichier de codes-barres",
-        pt: "Ficheiro de códigos de barras"
+        en: /Barcodes file/,
+        fr: /Fichier de codes-barres/,
+        pt: /Ficheiro de códigos de barras/
+      }
+    );
+
+    await expectTranslations(
+      (text) => {
+        const parent = screen.getByText(text);
+        expect(within(parent).getByText(/\/test\/input\/minknow/)).toBeVisible();
+      }, {
+        en: /MinKnow folder/,
+        fr: /Dossier MinKnow/,
+        pt: /Pasta MinKnow/
+      }
+    );
+
+    await expectTranslations(
+      (text) => {
+        const parent = screen.getByText(text);
+        expect(within(parent).getByText(/\/test\/output/)).toBeVisible();
+      }, {
+        en: /Output folder/,
+        fr: /Dossier de sortie/,
+        pt: /Pasta de saída/
       }
     );
 
@@ -56,6 +79,34 @@ describe("RunProgress", () => {
     expect(screen.queryByRole("button")).toBeNull();
 
     // Can see spinner and not complete icons before run completes
+    expect(screen.getByTestId("run-progress-spinner")).toBeVisible();
+    expect(screen.queryByTestId("run-progress-x")).toBeNull();
+    expect(screen.queryByTestId("run-progress-check")).toBeNull();
+  });
+
+  test("see check when running is complete with no error", () => {
+    mockPiranhaAPI({
+      initialized: true,
+      log: ["log entry 1 ", "log entry 2"],
+      running: false,
+    });
+    renderInI18nTestContext(RunProgress);
+    expect(screen.getByTestId("run-progress-check")).toBeVisible();
+    expect(screen.queryByTestId("run-progress-x")).toBeNull();
+    expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
+  });
+
+  test("see x when running is complete with error", () => {
+    mockPiranhaAPI({
+      initialized: true,
+      log: ["log entry 1 ", "log entry 2"],
+      running: false,
+      error: "oh no"
+    });
+    renderInI18nTestContext(RunProgress);
+    expect(screen.getByTestId("run-progress-x")).toBeVisible();
+    expect(screen.queryByTestId("run-progress-check")).toBeNull();
+    expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
   });
 
   test("new run clears log", async () => {
