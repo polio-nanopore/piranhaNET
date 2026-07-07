@@ -24,7 +24,8 @@ export class PiranhaAPI {
     });
     window.api?.onError((e, detail) => {
       this.#error = e;
-      console.error(detail); // TODO: we should make error details available to users more generically
+      this.#log.push(`An error occurred while running Piranha: ${e} ${detail}`)
+      console.error(detail);
     });
   }
 
