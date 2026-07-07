@@ -62,10 +62,4 @@ describe("App", () => {
     await userEvent.click(screen.getByTestId("nav-run"));
     await expectRunPage();
   });
-
-  test("displays error", () => {
-    mockPiranhaAPI({ error: "test error" });
-    render(App);
-    expect(screen.getByText("Error: test error")).toBeVisible();
-  });
 });

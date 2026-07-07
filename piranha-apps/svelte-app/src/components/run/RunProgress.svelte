@@ -22,7 +22,7 @@
 <div class="space-y-2">
   <div class="bg-white mt-2 p-4 border {borderColour}">
     <div class="flex">
-      <div class="font-bold">
+      <div class="font-bold pr-2">
         {runParameters.name}
       </div>
       <div>

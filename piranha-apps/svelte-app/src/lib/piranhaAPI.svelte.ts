@@ -24,8 +24,8 @@ export class PiranhaAPI {
     });
     window.api?.onError((e, detail) => {
       this.#error = e;
-      this.#log.push(`An error occurred while running Piranha: ${e} ${detail}`)
-      console.error(detail);
+      // Add error to log, including ansi sequence to show in Red
+      this.#log.push(`\x1b[1;31m${e}: ${detail}`);
     });
   }
 
@@ -56,6 +56,7 @@ export class PiranhaAPI {
 
   clearLog(): void {
     this.#log = [];
+    this.#error = "";
   }
 }
 
