@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -ex
+HERE=$(realpath "$(dirname $0)")
+$HERE/stop-docker-dev
+$HERE/build-docker-dev
+$HERE/run-docker-dev
+# Check that the container started successfully
+sleep 1
+docker ps

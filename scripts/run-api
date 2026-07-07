@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -ex
 
-uv run --directory piranha-api fastapi dev
+cd piranha-api && ./scripts/build-and-run-docker-dev
