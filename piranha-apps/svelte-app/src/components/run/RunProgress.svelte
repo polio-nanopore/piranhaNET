@@ -9,7 +9,13 @@
 
   const ansi = new ansi_up.AnsiUp();
 
-  const borderColour = $derived( piranhaAPI.running ? "border-orange-300" : piranhaAPI.error ? "border-red-600" : "border-green-600" );
+  const borderColour = $derived(
+    piranhaAPI.running
+      ? "border-orange-300"
+      : piranhaAPI.error
+        ? "border-red-600"
+        : "border-green-600",
+  );
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -21,11 +27,13 @@
       </div>
       <div>
         {#if piranhaAPI.running}
-          <Spinner class="text-orange-300" data-testid="run-progress-spinner"></Spinner>
+          <Spinner class="text-orange-300" data-testid="run-progress-spinner"
+          ></Spinner>
         {:else if piranhaAPI.error}
           <X class="text-red-600" data-testid="run-progress-x"></X>
         {:else}
-          <Check class="text-green-600" data-testid="run-progress-check"></Check>
+          <Check class="text-green-600" data-testid="run-progress-check"
+          ></Check>
         {/if}
       </div>
     </div>

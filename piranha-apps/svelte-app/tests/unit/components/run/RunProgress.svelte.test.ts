@@ -12,7 +12,7 @@ import { settings, runParameters } from "$lib/store.svelte";
 
 describe("RunProgress", () => {
   beforeEach(() => {
-    settings.outputFolderPath = "/test/output"
+    settings.outputFolderPath = "/test/output";
     runParameters.name = "Test Run";
     runParameters.barcodesFilePath = "/test/input/barcodes.csv";
     runParameters.minKnowFolderPath = "/test/input/minknow";
@@ -41,34 +41,41 @@ describe("RunProgress", () => {
     await expectTranslations(
       (text) => {
         const parent = screen.getByText(text);
-        expect(within(parent).getByText(/\/test\/input\/barcodes\.csv/)).toBeVisible();
-      }, {
+        expect(
+          within(parent).getByText(/\/test\/input\/barcodes\.csv/),
+        ).toBeVisible();
+      },
+      {
         en: /Barcodes file/,
         fr: /Fichier de codes-barres/,
-        pt: /Ficheiro de códigos de barras/
-      }
+        pt: /Ficheiro de códigos de barras/,
+      },
     );
 
     await expectTranslations(
       (text) => {
         const parent = screen.getByText(text);
-        expect(within(parent).getByText(/\/test\/input\/minknow/)).toBeVisible();
-      }, {
+        expect(
+          within(parent).getByText(/\/test\/input\/minknow/),
+        ).toBeVisible();
+      },
+      {
         en: /MinKnow folder/,
         fr: /Dossier MinKnow/,
-        pt: /Pasta MinKnow/
-      }
+        pt: /Pasta MinKnow/,
+      },
     );
 
     await expectTranslations(
       (text) => {
         const parent = screen.getByText(text);
         expect(within(parent).getByText(/\/test\/output/)).toBeVisible();
-      }, {
+      },
+      {
         en: /Output folder/,
         fr: /Dossier de sortie/,
-        pt: /Pasta de saída/
-      }
+        pt: /Pasta de saída/,
+      },
     );
 
     expect(screen.getByTestId("logs")).toHaveTextContent(
@@ -101,7 +108,7 @@ describe("RunProgress", () => {
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,
-      error: "oh no"
+      error: "oh no",
     });
     renderInI18nTestContext(RunProgress);
     expect(screen.getByTestId("run-progress-x")).toBeVisible();
