@@ -14,7 +14,7 @@ from app.settings import settings
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
-piranha_runner = PiranhaRunner(Path(settings.piranha_env_path))
+piranha_runner = PiranhaRunner(Path(settings.piranha_venv_path))
 
 
 def generate_run_id() -> str:

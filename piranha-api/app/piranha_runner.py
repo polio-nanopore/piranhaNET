@@ -8,9 +8,9 @@ POLL_WAIT = 0.2
 
 
 class PiranhaRunner:
-    def __init__(self, piranha_env_path: Path):
-        self.piranha_env_path = piranha_env_path
-        self.piranha_activate_path = Path(piranha_env_path / "activate")
+    def __init__(self, piranha_venv_path: Path):
+        self.piranha_venv_path = piranha_venv_path
+        self.piranha_activate_path = Path(piranha_venv_path / "activate")
 
     async def wait_for_log_file(self, log_path: Path):
         # Wait for the log file to be created

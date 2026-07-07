@@ -5,6 +5,6 @@ docker run -d --name piranha-api \
   -v /requests-data \
   -e INPUT_DIR=/requests-data/input \
   -e OUTPUT_DIR=/requests-data/output \
-  -e PIRANHA_ENV_PATH=/venv/bin \
+  -e PIRANHA_VENV_PATH=/venv/bin \
   -p 8000:8000  \
   piranhaNET/piranha-api-dev
