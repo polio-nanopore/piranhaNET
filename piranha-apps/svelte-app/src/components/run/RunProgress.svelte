@@ -21,11 +21,11 @@
       </div>
       <div>
         {#if piranhaAPI.running}
-          <Spinner class="text-orange-300"></Spinner>
+          <Spinner class="text-orange-300" data-testid="run-progress-spinner"></Spinner>
         {:else if piranhaAPI.error}
-          <X class="text-red-600"></X>
+          <X class="text-red-600" data-testid="run-progress-x"></X>
         {:else}
-          <Check class="text-green-600"></Check>
+          <Check class="text-green-600" data-testid="run-progress-check"></Check>
         {/if}
       </div>
     </div>
