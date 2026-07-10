@@ -20,7 +20,7 @@ describe("piranhaRunner", () => {
     return { writable, readBuffer };
   };
 
-  test("can pull and run docker image", async () => {
+  const runPiranha = async (barcodesFileName = "barcodes.csv") => {
     const runner = new PiranhaRunner();
 
     const pullOutput = getWritableWithBuffer();
@@ -34,7 +34,7 @@ describe("piranhaRunner", () => {
       {
         name: "test_name",
         notes: "test notes",
-        barcodesFilePath: join(testDataPath, "barcodes.csv"),
+        barcodesFilePath: join(testDataPath, barcodesFileName),
         minKnowFolderPath: join(testDataPath, "demultiplexed"),
         outputFolderPath: join(__dirname, "../../../../../test-results"),
         threads: 10,
@@ -58,6 +58,11 @@ describe("piranhaRunner", () => {
 
     outputText = runOutput.readBuffer();
     outputText = AnsiParser.removeAnsi(outputText);
+    return outputText;
+  };
+
+  test("can pull and run docker image", async () => {
+    const outputText = await runPiranha();
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
     expect(outputText).toContain("Setting runname: test_name");
     expect(outputText).toContain("Setting notes: test_notes");
@@ -76,4 +81,10 @@ describe("piranhaRunner", () => {
       /Generating: \/data\/run_data\/output\/piranha_output_\d{4}-\d{2}-\d{2}\/report.html/,
     ); //output report
   }, 480_000); // This will take a while!
+
+
+  test("throws error if piranha run finishes with non-zero exit code", async () => {
+    await expect(runPiranha("badBarcodes.csv")).rejects.toThrow("Piranha finished with non-zero exit code 255");
+  }, 30_000);
+
 });
