@@ -20,7 +20,9 @@ describe("piranhaRunner", () => {
     return { writable, readBuffer };
   };
 
-  const runPiranha = async (barcodesFileName = "barcodes.csv") => {
+  const runPiranha = async (
+    barcodesFileName = "barcodes.csv",
+  ): Promise<string[]> => {
     const runner = new PiranhaRunner();
 
     const pullOutput = getWritableWithBuffer();
@@ -82,9 +84,9 @@ describe("piranhaRunner", () => {
     ); //output report
   }, 480_000); // This will take a while!
 
-
   test("throws error if piranha run finishes with non-zero exit code", async () => {
-    await expect(runPiranha("badBarcodes.csv")).rejects.toThrow("Piranha finished with non-zero exit code 255");
+    await expect(runPiranha("badBarcodes.csv")).rejects.toThrow(
+      "Piranha finished with non-zero exit code 255",
+    );
   }, 30_000);
-
 });

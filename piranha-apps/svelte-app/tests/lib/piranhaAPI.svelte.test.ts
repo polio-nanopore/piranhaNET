@@ -39,7 +39,9 @@ describe("piranhaAPI", () => {
     const setError = window.api.onError.mock.calls[0][0];
     setError("New Test Error", "something went wrong");
     expect(sut.error).toBe("New Test Error");
-    expect(sut.log).toStrictEqual(["\x1b[1;31mNew Test Error: something went wrong"]);
+    expect(sut.log).toStrictEqual([
+      "\x1b[1;31mNew Test Error: something went wrong",
+    ]);
 
     expect(window.api.runPiranha).not.toHaveBeenCalled();
     expect(window.api.testMessage).not.toHaveBeenCalled();
