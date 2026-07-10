@@ -11,6 +11,8 @@ const api = {
   versions: process.versions,
   showFileDialog: (options: FileDialogOptions) =>
     ipcRenderer.invoke("show-file-dialog", options),
+  getFileUrl: (parts: string[]) =>
+    ipcRenderer.invoke("get-file-url", parts),
   onInitialized: (callback) =>
     ipcRenderer.on("initialized", (_event) => callback()),
   onChunk: (callback) =>

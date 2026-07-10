@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import { join } from "path";
+import { pathToFileURL } from "url";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
@@ -111,6 +112,15 @@ function createWindow(): void {
     }
   });
 }
+
+/**
+ * Get a file url from local path parts (depends on operating system) - used
+ * to display output report files
+ */
+ipcMain.handle("get-file-url", (_event, parts: string[]) => {
+  const localPath = join(...parts);
+  return pathToFileURL(localPath).href;
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { piranhaAPI } from "$lib//piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
+  import { appState } from "$lib/store.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
+  import RunReport from "./RunReport.svelte";
   import Welcome from "./Welcome.svelte";
   import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
@@ -16,6 +18,8 @@
     <Welcome onpersist={onFirstPersist} />
   {:else if !piranhaAPI.running && !piranhaAPI.log.length}
     <RunParameters />
+  {:else if appState.viewRunReport}
+    <RunReport/>
   {:else}
     <RunProgress />
   {/if}

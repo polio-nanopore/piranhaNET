@@ -5,7 +5,8 @@
   import { Button } from "$lib/shadcn/ui/button";
   import { Spinner } from "$lib/shadcn/ui/spinner";
   import { piranhaAPI } from "$lib/piranhaAPI.svelte";
-  import { runParameters, settings } from "$lib/store.svelte";
+  import { runParameters, settings, appState } from "$lib/store.svelte";
+  import NewRunButton from "./NewRunButton.svelte";
 
   const ansi = new ansi_up.AnsiUp();
 
@@ -48,6 +49,9 @@
     <div>
       {m.settingOutputFolder()}:
       <span class="font-bold">{settings.outputFolderPath}</span>
+      {#if piranhaAPI.reportPath}
+        <Button onclick={() => appState.viewRunReport = true}>{m.openReport()}</Button>
+      {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs">
       {#each piranhaAPI.log as logentry, index (index)}
@@ -57,8 +61,6 @@
     </code>
   </div>
   {#if !piranhaAPI.running}
-    <Button class="action float-end" onclick={() => piranhaAPI.clearLog()}
-      >{m.newRun()}</Button
-    >
+    <NewRunButton/>
   {/if}
 </div>

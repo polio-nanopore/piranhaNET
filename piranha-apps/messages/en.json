@@ -13,6 +13,7 @@
   "initializing": "Initializing",
   "newRun": "New Run",
   "newSequencingRun": "New Sequencing Run",
+  "openReport": "Open report",
   "parameterBarcodesFile": "Barcodes file",
   "parameterMinKnowFolder": "MinKnow folder",
   "parameterName": "Name",
@@ -22,6 +23,7 @@
   "provideInitialSettings": "Please enter some details before proceeding. You can always alter these later.",
   "run": "Run",
   "runPiranha": "Run Piranha",
+  "runReport": "Run Report",
   "runSettings": "Run Settings",
   "sequencingRunProgress": "Sequencing run progress",
   "settings": "Settings",
@@ -38,5 +40,6 @@
   "settingDateStamp": "Date stamp",
   "settingUserName": "User name",
   "userSettings": "User Settings",
+  "viewLogs": "View Run Logs",
   "welcome": "Welcome to PiranhaNET"
 }

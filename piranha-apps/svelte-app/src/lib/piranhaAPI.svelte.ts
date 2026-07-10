@@ -7,6 +7,8 @@ export class PiranhaAPI {
   #error = $state("");
   #log: string[] = $state([]);
   #decoder = new TextDecoder("utf-8");
+  #options: PiranhaRunOptions | null = $state(null);
+  #reportPath = $state("");
 
   constructor() {
     window.api?.onInitialized(() => {
@@ -18,8 +20,9 @@ export class PiranhaAPI {
       const lines = textChunk.split("\n");
       this.#log.push(...lines);
     });
-    window.api?.onEnd(() => {
+    window.api?.onEnd(async () => {
       this.#log.push("Piranha Run Finished");
+      await this.#findReportPathFromLog();
       this.#running = false;
     });
     window.api?.onError((e, detail) => {
@@ -45,18 +48,42 @@ export class PiranhaAPI {
     return this.#log;
   }
 
+  get reportPath(): string {
+    return this.#reportPath;
+  }
+
+  async #findReportPathFromLog() {
+    // Find local report path from docker volume path in written in log, if run was successful
+    const fullLog = this.#log.join(" ");
+    console.log("Here is the full log");
+    console.log(fullLog);
+    const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
+    if (match) {
+      console.log("found match")
+      const outputFolder = match[1];
+      this.#reportPath = await this.getFileUrl(this.#options.outputFolderPath, outputFolder, "report.html");
+    }
+  }
+
   runPiranha(options: PiranhaRunOptions): void {
     if (this.#running) {
       throw new Error(m.apiErrorAlreadyRunning());
     }
     this.#log = [];
+    this.#options = options;
     window.api.runPiranha(options);
     this.#running = true;
   }
 
-  clearLog(): void {
+  clearRun(): void {
     this.#log = [];
     this.#error = "";
+    this.#options = null;
+    this.#reportPath = "";
+  }
+
+  async getFileUrl(...parts): Promise<string> {
+    return window.api.getFileUrl(parts);
   }
 }
 
