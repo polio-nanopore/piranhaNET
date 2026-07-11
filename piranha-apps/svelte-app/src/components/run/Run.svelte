@@ -23,4 +23,5 @@
   {:else}
     <RunProgress />
   {/if}
+  <RunReport/>
 </div>

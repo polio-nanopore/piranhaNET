@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
-import { join } from "path";
-import { pathToFileURL } from "url";
+import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { pathToFileURL } from 'url';
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
@@ -11,6 +11,7 @@ import {
 } from "../../../svelte-app/src/shared/types";
 
 const runner = new PiranhaRunner();
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -20,8 +21,8 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
-      sandbox: false,
+      preload: path.join(__dirname, "../preload/index.js"),
+      sandbox: false
     },
   });
 
@@ -65,7 +66,7 @@ function createWindow(): void {
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
-    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 
   /**
@@ -113,13 +114,25 @@ function createWindow(): void {
   });
 }
 
-/**
- * Get a file url from local path parts (depends on operating system) - used
- * to display output report files
- */
-ipcMain.handle("get-file-url", (_event, parts: string[]) => {
-  const localPath = join(...parts);
-  return pathToFileURL(localPath).href;
+
+ipcMain.handle('open-run-report', async (event, outputFolderBasePath: string, runOutputFolderName: string) => {
+  try {
+    // Convert file path to file:// url
+    const fileUrl = `file://${path.join(outputFolderBasePath, runOutputFolderName, "report.html")}`;
+    await shell.openExternal(fileUrl);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('open-run-output-folder', async (event, outputFolderBasePath: string, runOutputFolderName: string) => {
+  try {
+    await shell.openPath(path.join(outputFolderBasePath, runOutputFolderName));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
 
 // This method will be called when Electron has finished
