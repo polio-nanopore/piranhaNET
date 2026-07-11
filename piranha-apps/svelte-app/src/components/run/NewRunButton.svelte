@@ -6,7 +6,6 @@
 
   const clearRun = () => {
     piranhaAPI.clearRun();
-    appState.viewRunReport = false;
   };
 </script>
 

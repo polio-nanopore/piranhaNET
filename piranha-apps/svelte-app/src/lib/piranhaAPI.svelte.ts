@@ -8,7 +8,7 @@ export class PiranhaAPI {
   #log: string[] = $state([]);
   #decoder = new TextDecoder("utf-8");
   #options: PiranhaRunOptions | null = $state(null);
-  #reportPath = $state("");
+  #runOutputFolderName = $state("");
 
   constructor() {
     window.api?.onInitialized(() => {
@@ -22,7 +22,7 @@ export class PiranhaAPI {
     });
     window.api?.onEnd(async () => {
       this.#log.push("Piranha Run Finished");
-      await this.#findReportPathFromLog();
+      await this.#findOutputFolderFromLog();
       this.#running = false;
     });
     window.api?.onError((e, detail) => {
@@ -40,6 +40,10 @@ export class PiranhaAPI {
     return this.#running;
   }
 
+  get runSucceeded(): boolean {
+    return !!this.#runOutputFolderName;
+  }
+
   get error(): string {
     return this.#error;
   }
@@ -48,20 +52,12 @@ export class PiranhaAPI {
     return this.#log;
   }
 
-  get reportPath(): string {
-    return this.#reportPath;
-  }
-
-  async #findReportPathFromLog() {
+  async #findOutputFolderFromLog() {
     // Find local report path from docker volume path in written in log, if run was successful
     const fullLog = this.#log.join(" ");
-    console.log("Here is the full log");
-    console.log(fullLog);
     const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
     if (match) {
-      console.log("found match")
-      const outputFolder = match[1];
-      this.#reportPath = await this.getFileUrl(this.#options.outputFolderPath, outputFolder, "report.html");
+      this.#runOutputFolderName = match[1];
     }
   }
 
@@ -79,11 +75,27 @@ export class PiranhaAPI {
     this.#log = [];
     this.#error = "";
     this.#options = null;
-    this.#reportPath = "";
+    this.#runOutputFolderName = "";
   }
 
   async getFileUrl(...parts): Promise<string> {
     return window.api.getFileUrl(parts);
+  }
+
+  async openRunReport() {
+    // TODO error if values not set
+    // TODO: show any open error
+    await window.api.openRunReport(this.#options.outputFolderPath, this.#runOutputFolderName);
+  }
+
+  async openRunOutputFolder() {
+    // TODO error if values not set
+    // TODO: show any open error
+    await window.api.openRunOutputFolder(this.#options.outputFolderPath, this.#runOutputFolderName);
+  }
+
+  async testOpenReport() {
+    await window.api.openRunReport("/home/emmarussell/dev/piranhaNET/test-results", "piranha_output_173");
   }
 }
 

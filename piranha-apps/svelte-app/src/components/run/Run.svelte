@@ -3,8 +3,9 @@
   import { appState } from "$lib/store.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
-  import RunReport from "./RunReport.svelte";
   import Welcome from "./Welcome.svelte";
+  import { Button } from "$lib/shadcn/ui/button";
+
   import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
   let needsFirstPersist = $state(!persistentSettingsStore.loadUserSettings());
@@ -18,10 +19,7 @@
     <Welcome onpersist={onFirstPersist} />
   {:else if !piranhaAPI.running && !piranhaAPI.log.length}
     <RunParameters />
-  {:else if appState.viewRunReport}
-    <RunReport/>
   {:else}
     <RunProgress />
   {/if}
-  <RunReport/>
 </div>

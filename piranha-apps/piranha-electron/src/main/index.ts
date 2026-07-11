@@ -1,7 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import { pathToFileURL } from 'url';
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
@@ -115,23 +114,23 @@ function createWindow(): void {
 }
 
 
-ipcMain.handle('open-run-report', async (event, outputFolderBasePath: string, runOutputFolderName: string) => {
+ipcMain.handle('open-run-report', async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
   try {
     // Convert file path to file:// url
     const fileUrl = `file://${path.join(outputFolderBasePath, runOutputFolderName, "report.html")}`;
     await shell.openExternal(fileUrl);
     return { success: true };
-  } catch (error) {
-    return { success: false, error: error.message };
+  } catch (e) {
+    return { success: false, error: (e as Error).message };
   }
 });
 
-ipcMain.handle('open-run-output-folder', async (event, outputFolderBasePath: string, runOutputFolderName: string) => {
+ipcMain.handle('open-run-output-folder', async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
   try {
     await shell.openPath(path.join(outputFolderBasePath, runOutputFolderName));
     return { success: true };
-  } catch (error) {
-    return { success: false, error: error.message };
+  } catch (e) {
+    return { success: false, error: (e as Error).message }
   }
 });
 

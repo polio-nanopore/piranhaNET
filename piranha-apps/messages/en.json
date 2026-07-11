@@ -14,6 +14,7 @@
   "newRun": "New Run",
   "newSequencingRun": "New Sequencing Run",
   "openReport": "Open report",
+  "openOutputFolder": "Open output folder",
   "parameterBarcodesFile": "Barcodes file",
   "parameterMinKnowFolder": "MinKnow folder",
   "parameterName": "Name",

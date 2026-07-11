@@ -3,7 +3,6 @@ import type { PiranhaRunOptions } from "./shared/types";
 export interface AppState {
   doneInitialSubmit: boolean;
   doneInitialValidate: boolean;
-  viewRunReport: boolean;
 }
 
 export interface PiranhaRunParameters {
