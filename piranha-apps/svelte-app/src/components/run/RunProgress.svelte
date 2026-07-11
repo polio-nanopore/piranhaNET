@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
+  import debounce from 'debounce';
   import { m } from "../../paraglide/messages";
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
@@ -8,6 +9,7 @@
   import { runParameters, settings, appState } from "$lib/store.svelte";
   import NewRunButton from "./NewRunButton.svelte";
 
+  let logEl;
   const ansi = new ansi_up.AnsiUp();
 
   const borderColour = $derived(
@@ -17,6 +19,18 @@
         ? "border-red-600"
         : "border-green-600",
   );
+
+  const scrollLogToEnd = debounce(() => {
+    if (logEl) {
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  }, 1000);
+
+  $effect(() => {
+    if (piranhaAPI.log.length) {
+      scrollLogToEnd();
+    }
+  });
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -54,7 +68,7 @@
         <Button onclick={async () => await piranhaAPI.openRunOutputFolder()}>{m.openOutputFolder()}</Button>
       {/if}
     </div>
-    <code class="piranha-logs mt-2" data-testid="logs">
+    <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
       {#each piranhaAPI.log as logentry, index (index)}
         <!-- eslint-disable  svelte/no-at-html-tags -->
         {@html ansi.ansi_to_html(logentry)}<br />

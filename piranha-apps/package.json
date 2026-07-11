@@ -33,6 +33,7 @@
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
     "ansi_up": "^6.0.6",
+    "debounce": "^3.0.0",
     "dockerode": "^4.0.9",
     "zod": "^4.3.6"
   },

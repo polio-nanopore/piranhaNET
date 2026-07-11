@@ -93,10 +93,6 @@ export class PiranhaAPI {
     // TODO: show any open error
     await window.api.openRunOutputFolder(this.#options.outputFolderPath, this.#runOutputFolderName);
   }
-
-  async testOpenReport() {
-    await window.api.openRunReport("/home/emmarussell/dev/piranhaNET/test-results", "piranha_output_173");
-  }
 }
 
 export const piranhaAPI = new PiranhaAPI();
