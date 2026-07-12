@@ -10,6 +10,7 @@
   import FileSelect from "../forms/FileSelect.svelte";
   import { runParametersSchema } from "./RunFormSchema";
   import Settings from "./Settings.svelte";
+  import {i18n} from "$lib/i18n.svelte";
 
   let errors = $state<Record<string, string[]>>({});
 
@@ -39,7 +40,7 @@
     e.preventDefault();
     const valid = validate();
     if (valid) {
-      const runOptions = createPiranhaRunOptions(runParameters, settings);
+      const runOptions = createPiranhaRunOptions(runParameters, settings, i18n.lang);
       piranhaAPI.runPiranha(runOptions);
     }
     appState.doneInitialSubmit = true;
