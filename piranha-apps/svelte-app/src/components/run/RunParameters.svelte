@@ -67,6 +67,7 @@
     </FormField>
     <FormField
       label={m.parameterBarcodesFile()}
+      help={m.helpParameterBarcodesFile()}
       error={errors.barcodesFilePath}
       labelFor="barcodes-file-field"
     >

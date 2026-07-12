@@ -10,6 +10,7 @@
   "formsErrorNumberRequired": "La valeur doit être un nombre entier",
   "formsErrorRange": "La valeur doit être comprise entre {min} et {max}",
   "formsErrorRequiredValue": "Valeur requise",
+  "helpParameterBarcodesFile": "Fichier CSV décrivant quels codes-barres ont été utilisés dans quel échantillon",
   "initializing": "Initialisation",
   "newRun": "Nouvelle course",
   "newSequencingRun": "Nouvelle séquence",

@@ -10,6 +10,7 @@
   "formsErrorRange": "O valor deve estar entre {min} e {max}",
   "formsNoFolderChosen": "Nenhuma pasta selecionada",
   "formsErrorRequiredValue": "Valor obrigatório",
+  "helpParametrBarcodesFile": "Ficheiro CSV descrevendo quais os códigos de barras que foram utilizados em que amostra",
   "initializing": "Inicializando",
   "newRun": "Nova corrida",
   "newSequencingRun": "Nova execução de sequenciação",
