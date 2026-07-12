@@ -44,6 +44,9 @@ export class PiranhaRunner {
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
+    // Piranha only supporte English and French just now - default to English for Portuguese
+    const lang = options.lang === "fr" ? "French" : "English";
+
     const envString = [
       // run parameters
       `THREADS=${options.threads || 1}`,
@@ -63,6 +66,7 @@ export class PiranhaRunner {
       // user settings
       `--username ${escapeOption(options.userName || "")}`,
       `--institute ${escapeOption(options.institute || "")}`,
+      `--language ${lang}`,
     ].join(" ");
 
     // Because we're running as non-root user we need to make sure home and cache used by snakemake don't default to
