@@ -1,10 +1,31 @@
 {
-  "name": "piranha-apps",
+  "name": "PiranhaNET",
   "version": "0.0.1",
   "description": "Applications for running Piranha, providing Electron and web interfaces",
   "main": "./out/main/index.js",
   "engines": {
     "node": ">=24.0.0 <25.0.0"
+  },
+  "build": {
+    "appId": "org.polionanopore.piranhanet",
+    "productName": "PiranhaNET",
+    "files": [
+      "out/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PiranhaNET"
+    }
   },
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
@@ -20,10 +41,10 @@
     "dev-web": "vite --config web.vite.config.ts",
     "build-electron": "paraglide-js compile --project ./project.inlang --outdir svelte-app/src/paraglide && npm run typecheck && electron-vite build",
     "postinstall-electron": "electron-builder install-app-deps",
-    "build-electron:unpack": "npm run build && electron-builder --dir",
-    "build-electron:win": "npm run build && electron-builder --win",
-    "build-electron:mac": "npm run build && electron-builder --mac",
-    "build-electon:linux": "npm run build && electron-builder --linux",
+    "build-electron:unpack": "npm run build-electron && electron-builder --dir",
+    "build-electron:win": "npm run build-electron && electron-builder --win",
+    "build-electron:mac": "npm run build-electron && electron-builder --mac",
+    "build-electon:linux": "npm run build-electron && electron-builder --linux",
     "build-web": "vite build --config web.vite.config.ts",
     "test:unit": "vitest svelte-app/tests/unit/",
     "test-electron:integration": "vitest piranha-electron/tests/integration/",
