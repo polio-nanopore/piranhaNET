@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {onMount} from "svelte";
   import { useTinyRouter } from "svelte-tiny-router";
   import piranhaLogo from "../../assets/piranha.svg";
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
@@ -8,11 +9,13 @@
 
   const router = useTinyRouter();
 
-  // We may be on first load or reloading due to language change - retain the route in latter case, otherwise navigate
-  // to default / route
-  const route = routerHelper.initialNavigationDone ? router.path : "/";
-  router.navigate(route);
-  routerHelper.initialNavigationDone = true;
+  onMount(() => {
+    // We may be on first load or reloading due to language change - retain the route in latter case, otherwise navigate
+    // to default / route
+    const route = routerHelper.initialNavigationDone ? router.path : "/";
+    router.navigate(route);
+    routerHelper.initialNavigationDone = true;
+  });
 </script>
 
 <NavigationMenu.Root
