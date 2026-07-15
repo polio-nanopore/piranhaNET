@@ -95,7 +95,6 @@ function createWindow(): void {
         callback();
       },
       final(callback) {
-        console.log("finished running piranha");
         mainWindow.webContents.send("stream-end");
         callback();
       },

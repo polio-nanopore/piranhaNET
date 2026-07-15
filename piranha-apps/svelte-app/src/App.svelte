@@ -11,9 +11,6 @@
 {#key i18n.lang}
   <Router>
     <Nav></Nav>
-    {#if piranhaAPI.error}
-      <div class="error">Error: {piranhaAPI.error}</div>
-    {/if}
     {#if piranhaAPI.initialized}
       <Route path="/" component={Run} />
       <Route path="/about" component={About} />

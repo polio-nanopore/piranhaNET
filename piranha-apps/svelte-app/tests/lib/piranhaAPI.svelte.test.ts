@@ -37,8 +37,11 @@ describe("piranhaAPI", () => {
 
     expect(sut.error).toBe("");
     const setError = window.api.onError.mock.calls[0][0];
-    setError("New Test Error");
+    setError("New Test Error", "something went wrong");
     expect(sut.error).toBe("New Test Error");
+    expect(sut.log).toStrictEqual([
+      "\x1b[1;31mNew Test Error: something went wrong",
+    ]);
 
     expect(window.api.runPiranha).not.toHaveBeenCalled();
     expect(window.api.testMessage).not.toHaveBeenCalled();
@@ -71,8 +74,10 @@ describe("piranhaAPI", () => {
     expect(window.api.testMessage).not.toHaveBeenCalled();
     sut.log.push("log msg 1");
     sut.log.push("log msg 2");
+    sut.error = "TEST ERROR";
     expect(sut.log.length).toBe(2);
     sut.clearLog();
     expect(sut.log.length).toBe(0);
+    expect(sut.error).toBe("");
   });
 });

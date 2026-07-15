@@ -182,6 +182,9 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   const runButton = await getRunButton(win);
   await runButton.click();
 
+  // See progress spinner
+  expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
+
   // See expected start run text in log
   const log = await win.getByTestId("logs");
   await expect(log).toHaveText(/Building DAG of jobs.../, { timeout: 15_000 });
@@ -204,6 +207,9 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
     },
   );
   await expect(log).toHaveText(/Piranha Run Finished/);
+
+  // See completed check
+  expect(await win.getByTestId("run-progress-check")).toBeVisible();
 });
 
 test("can see errors when submit incomplete welcome screen settings", async () => {

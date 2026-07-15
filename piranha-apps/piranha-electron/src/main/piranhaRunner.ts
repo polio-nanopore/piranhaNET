@@ -64,7 +64,7 @@ export class PiranhaRunner {
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
-    await this.docker.run(
+    const [data, _] = await this.docker.run(
       this.imageRef,
       [], // default cmd
       outputStream,
@@ -86,5 +86,11 @@ export class PiranhaRunner {
       },
     );
     outputStream.end();
+
+    if (data.StatusCode !== 0) {
+      throw new Error(
+        `Piranha finished with non-zero exit code ${data.StatusCode}`,
+      );
+    }
   }
 }
