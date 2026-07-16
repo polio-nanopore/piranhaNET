@@ -115,23 +115,13 @@ function createWindow(): void {
 
 
 ipcMain.handle('open-run-report', async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
-  try {
-    // Convert file path to file:// url
-    const fileUrl = `file://${path.join(outputFolderBasePath, runOutputFolderName, "report.html")}`;
-    await shell.openExternal(fileUrl);
-    return { success: true };
-  } catch (e) {
-    return { success: false, error: (e as Error).message };
-  }
+  // Convert file path to file:// url
+  const fileUrl = `file://${path.join(outputFolderBasePath, runOutputFolderName, "report.html")}`;
+  await shell.openExternal(fileUrl);
 });
 
 ipcMain.handle('open-run-output-folder', async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
-  try {
-    await shell.openPath(path.join(outputFolderBasePath, runOutputFolderName));
-    return { success: true };
-  } catch (e) {
-    return { success: false, error: (e as Error).message }
-  }
+  await shell.openPath(path.join(outputFolderBasePath, runOutputFolderName));
 });
 
 // This method will be called when Electron has finished
