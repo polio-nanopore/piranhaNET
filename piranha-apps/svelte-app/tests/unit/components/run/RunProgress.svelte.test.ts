@@ -94,18 +94,65 @@ describe("RunProgress", () => {
     expect(screen.getByTestId("run-progress-spinner")).toBeVisible();
     expect(screen.queryByTestId("run-progress-x")).toBeNull();
     expect(screen.queryByTestId("run-progress-check")).toBeNull();
+
+    expect(screen.queryByTestId("open-report")).toBeNull();
+    expect(screen.queryByTestId("open-output-folder")).toBeNull();
   });
 
-  test("see check when running is complete with no error", () => {
+  test("see check and open results button when running is complete with no error", async () => {
     mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,
+      runSucceeded: true
     });
     renderInI18nTestContext(RunProgress);
     expect(screen.getByTestId("run-progress-check")).toBeVisible();
     expect(screen.queryByTestId("run-progress-x")).toBeNull();
     expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByTestId("open-report")).toHaveTextContent(text);
+      },
+      {
+        en: /Open report/,
+        fr: /Ouvrir le rapport/,
+        pt: /Abra o relatório/,
+      },
+    );
+
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByTestId("open-output-folder")).toHaveTextContent(text);
+      },
+      {
+        en: /Open output folder/,
+        fr: /Ouvrir e dossier de sortie/,
+        pt: /Abra a pasta de saída/,
+      },
+    );
+  });
+
+  test("Open report button calls expected method on piranha API", async () => {
+    mockPiranhaAPI({
+      initialized: true,
+      running: false,
+      runSucceeded: true
+    });
+    await screen.getByTestId("open-report").click();
+    expect(piranhaAPI.openRunReport).toHaveBeenCalled();
+    expect(piranhaAPI.openRunOutputFolder).not.toHaveBeenCalled();
+  });
+
+  test("Open output folder calls expected method on piranhaAPI", async () => {
+    mockPiranhaAPI({
+      initialized: true,
+      running: false,
+      runSucceeded: true
+    });
+    await screen.getByTestId("open-output-folder").click();
+    expect(piranhaAPI.openRunReport).not.toHaveBeenCalled();
+    expect(piranhaAPI.openRunOutputFolder).toHaveBeenCalled();
   });
 
   test("see x when running is complete with error", () => {
@@ -119,6 +166,8 @@ describe("RunProgress", () => {
     expect(screen.getByTestId("run-progress-x")).toBeVisible();
     expect(screen.queryByTestId("run-progress-check")).toBeNull();
     expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
+    expect(screen.queryByTestId("open-report")).toBeNull();
+    expect(screen.queryByTestId("open-output-folder")).toBeNull();
   });
 
   test("new run clears log", async () => {

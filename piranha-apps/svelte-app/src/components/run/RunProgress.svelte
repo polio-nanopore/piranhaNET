@@ -67,8 +67,8 @@
       {m.settingOutputFolder()}:
       <span class="font-bold">{settings.outputFolderPath}</span>
       {#if piranhaAPI.runSucceeded}
-        <Button onclick={async () => await piranhaAPI.openRunReport()}>{m.openReport()}</Button>
-        <Button onclick={async () => await piranhaAPI.openRunOutputFolder()}>{m.openOutputFolder()}</Button>
+        <Button data-testid="open-report" onclick={async () => await piranhaAPI.openRunReport()}>{m.openReport()}</Button>
+        <Button data-testid="open-output-folder" onclick={async () => await piranhaAPI.openRunOutputFolder()}>{m.openOutputFolder()}</Button>
       {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
