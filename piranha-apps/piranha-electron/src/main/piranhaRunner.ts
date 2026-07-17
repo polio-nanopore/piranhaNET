@@ -108,7 +108,7 @@ export class PiranhaRunner {
 
     if (data.StatusCode !== 0) {
       throw new Error(
-        `Piranha finished with non-zero exit code ${data.StatusCode}`,
+        `Piranha finished with non-zero exit code ${data.StatusCode}`+ (data.Error ? `, error: ${data.Error}` : ""),
       );
     }
   }
