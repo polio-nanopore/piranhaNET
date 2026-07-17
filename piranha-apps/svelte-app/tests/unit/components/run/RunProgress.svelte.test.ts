@@ -1,14 +1,14 @@
-import { describe, expect, test, beforeEach } from "vitest";
+import { describe, expect, test, beforeEach, afterEach, vi } from "vitest";
 import {
   expectTranslations,
-  mockPiranhaAPI,
   renderInI18nTestContext,
-} from "../../../utils";
-import { screen, within } from "@testing-library/svelte";
+} from "../../utils";
+import { screen, within, render } from "@testing-library/svelte";
 import RunProgress from "../../../../src/components/run/RunProgress.svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { settings, runParameters } from "$lib/store.svelte";
+import {mockPiranhaAPI} from "../../MockPiranhaAPI.svelte";
 
 describe("RunProgress", () => {
   beforeEach(() => {
@@ -16,6 +16,11 @@ describe("RunProgress", () => {
     runParameters.name = "Test Run";
     runParameters.barcodesFilePath = "/test/input/barcodes.csv";
     runParameters.minKnowFolderPath = "/test/input/minknow";
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   test("renders as expected", async () => {
@@ -135,6 +140,27 @@ describe("RunProgress", () => {
     );
     const user = userEvent.setup();
     await user.click(screen.getByRole("button"));
-    expect(piranhaAPI.clearLog).toHaveBeenCalled();
+    expect(piranhaAPI.clearRun).toHaveBeenCalled();
+  });
+
+  test("updating log triggers scroll to end", async () => {
+    mockPiranhaAPI({
+      initialized: true,
+      log: ["log entry 1 ", "log entry 2"],
+      running: false,
+    });
+
+    const { container } = render(RunProgress);
+    const logEl = container.querySelector("code[data-testid='logs']");
+    const scrollHeightSpy = vi.spyOn(logEl, "scrollHeight", "get").mockImplementation(() => 500);
+    let scrollTopToUpdate = 0;
+    vi.spyOn(logEl, "scrollTop", "set").mockImplementation((value) => scrollTopToUpdate = value);
+
+    piranhaAPI.log.push(["more", "log", "content"]);
+
+    // Wait for debounce to trigger update
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(scrollHeightSpy).toHaveBeenCalled();
+    expect(scrollTopToUpdate).toBe(500);
   });
 });

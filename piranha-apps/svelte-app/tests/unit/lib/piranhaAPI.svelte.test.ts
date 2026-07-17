@@ -1,5 +1,5 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
-import { PiranhaAPI } from "../../src/lib/piranhaAPI.svelte.js";
+import { PiranhaAPI } from "../../../src/lib/piranhaAPI.svelte.js";
 
 describe("piranhaAPI", () => {
   let sut;
@@ -70,13 +70,13 @@ describe("piranhaAPI", () => {
     );
   });
 
-  test("clears log", () => {
+  test("clears run", () => {
     expect(window.api.testMessage).not.toHaveBeenCalled();
     sut.log.push("log msg 1");
     sut.log.push("log msg 2");
     sut.error = "TEST ERROR";
     expect(sut.log.length).toBe(2);
-    sut.clearLog();
+    sut.clearRun();
     expect(sut.log.length).toBe(0);
     expect(sut.error).toBe("");
   });

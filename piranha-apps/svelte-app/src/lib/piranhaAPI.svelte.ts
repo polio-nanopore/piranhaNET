@@ -83,14 +83,10 @@ export class PiranhaAPI {
   }
 
   async openRunReport() {
-    // TODO error if values not set
-    // TODO: show any open error
     await window.api.openRunReport(this.#options.outputFolderPath, this.#runOutputFolderName);
   }
 
   async openRunOutputFolder() {
-    // TODO error if values not set
-    // TODO: show any open error
     await window.api.openRunOutputFolder(this.#options.outputFolderPath, this.#runOutputFolderName);
   }
 }

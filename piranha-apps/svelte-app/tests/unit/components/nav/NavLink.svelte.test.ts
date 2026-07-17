@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/svelte";
 import { describe, expect, test, vi } from "vitest";
 import NavComponentInTestContext from "./NavComponentInTestContext.svelte";
-import { expectTranslations, renderInI18nTestContext } from "../../../utils";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 
 const mockRouter = {

@@ -54,6 +54,7 @@ describe("piranhaRunner", () => {
         //user settings
         institute: "Test Institute",
         userName: "Test User",
+        lang: "fr"
       },
       runOutput.writable,
     );
@@ -79,6 +80,7 @@ describe("piranhaRunner", () => {
     // user settings
     expect(outputText).toContain("Setting username: Test_User");
     expect(outputText).toContain("Setting institute: Test_Institute");
+    expect(outputText).toContain("Setting language: French");
     expect(outputText).toMatch(
       /Generating: \/data\/run_data\/output\/piranha_output_\d{4}-\d{2}-\d{2}\/report.html/,
     ); //output report

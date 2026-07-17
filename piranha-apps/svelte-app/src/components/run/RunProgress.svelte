@@ -7,7 +7,6 @@
   import { Spinner } from "$lib/shadcn/ui/spinner";
   import { piranhaAPI } from "$lib/piranhaAPI.svelte";
   import { runParameters, settings, appState } from "$lib/store.svelte";
-  import NewRunButton from "./NewRunButton.svelte";
 
   let logEl;
   const ansi = new ansi_up.AnsiUp();
@@ -31,6 +30,10 @@
       scrollLogToEnd();
     }
   });
+
+  const clearRun = () => {
+    piranhaAPI.clearRun();
+  };
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -76,6 +79,8 @@
     </code>
   </div>
   {#if !piranhaAPI.running}
-    <NewRunButton/>
+    <Button class="action float-end" onclick={clearRun}>
+      {m.newRun()}
+    </Button>
   {/if}
 </div>
