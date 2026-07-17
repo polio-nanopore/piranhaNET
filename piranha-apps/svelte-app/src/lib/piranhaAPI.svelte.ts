@@ -78,10 +78,6 @@ export class PiranhaAPI {
     this.#runOutputFolderName = "";
   }
 
-  async getFileUrl(...parts): Promise<string> {
-    return window.api.getFileUrl(parts);
-  }
-
   async openRunReport() {
     await window.api.openRunReport(this.#options.outputFolderPath, this.#runOutputFolderName);
   }

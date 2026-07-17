@@ -79,7 +79,7 @@
     </code>
   </div>
   {#if !piranhaAPI.running}
-    <Button class="action float-end" onclick={clearRun}>
+    <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
       {m.newRun()}
     </Button>
   {/if}

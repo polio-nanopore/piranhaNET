@@ -14,7 +14,7 @@ const defaultAPIMock: APIMock = {
   error: "",
   log: [],
   running: false,
-  runSucceeded: false;
+  runSucceeded: false
 };
 
 let initialized = $state(false);
@@ -42,5 +42,7 @@ export const mockPiranhaAPI = (values: Partial<APIMock>) => {
   );
   vi.spyOn(piranhaAPI, "runSucceeded", "get").mockImplementation(() => runSucceeded);
   vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "clearRun");
+  vi.spyOn(piranhaAPI, "clearRun").mockImplementation(() => {});
+  vi.spyOn(piranhaAPI, "openRunReport").mockImplementation(() => {});
+  vi.spyOn(piranhaAPI, "openRunOutputFolder").mockImplementation(() => {});
 };
