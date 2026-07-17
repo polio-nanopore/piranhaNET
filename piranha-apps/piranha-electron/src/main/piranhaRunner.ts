@@ -98,6 +98,7 @@ export class PiranhaRunner {
             `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
             `${options.minKnowFolderPath}:${containerBaseCalledPath}`,
             `${options.outputFolderPath}:${containerOutputPath}`,
+            "/tmp" // Make sure current user has perms in tmp dir
           ],
           AutoRemove: true, // rm
         },
