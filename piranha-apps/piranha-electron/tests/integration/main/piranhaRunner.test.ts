@@ -32,34 +32,41 @@ describe("piranhaRunner", () => {
 
     const runOutput = getWritableWithBuffer();
     const testDataPath = join(__dirname, "../../../../../test-data");
-    await runner.runPiranha(
-      {
-        name: "test_name",
-        notes: "test notes",
-        barcodesFilePath: join(testDataPath, barcodesFileName),
-        minKnowFolderPath: join(testDataPath, "demultiplexed"),
-        outputFolderPath: join(__dirname, "../../../../../test-results"),
-        threads: 10,
-        //run settings
-        positiveControl: "pos",
-        negativeControl: "neg",
-        protocol: "stool",
-        //piranha output settings
-        orientation: "horizontal",
-        outputPrefix: "testOut",
-        overwriteOutput: true,
-        outputIntermediateFiles: true,
-        allMetadataToHeader: true,
-        dateStamp: true,
-        //user settings
-        institute: "Test Institute",
-        userName: "Test User",
-        lang: "fr"
-      },
-      runOutput.writable,
-    );
+    try {
+      await runner.runPiranha(
+        {
+          name: "test_name",
+          notes: "test notes",
+          barcodesFilePath: join(testDataPath, barcodesFileName),
+          minKnowFolderPath: join(testDataPath, "demultiplexed"),
+          outputFolderPath: join(__dirname, "../../../../../test-results"),
+          threads: 10,
+          //run settings
+          positiveControl: "pos",
+          negativeControl: "neg",
+          protocol: "stool",
+          //piranha output settings
+          orientation: "horizontal",
+          outputPrefix: "testOut",
+          overwriteOutput: true,
+          outputIntermediateFiles: true,
+          allMetadataToHeader: true,
+          dateStamp: true,
+          //user settings
+          institute: "Test Institute",
+          userName: "Test User",
+          lang: "fr"
+        },
+        runOutput.writable,
+      );
+    } catch (e) {
+      console.log("Error during Piranha Run test, dumping log:");
+      console.log(runOutput.readBuffer());
+      throw e;
+    }
 
     outputText = runOutput.readBuffer();
+
     outputText = AnsiParser.removeAnsi(outputText);
     return outputText;
   };
