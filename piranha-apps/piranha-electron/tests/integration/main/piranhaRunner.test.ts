@@ -35,9 +35,6 @@ describe("piranhaRunner", () => {
     const testDataPath = join(__dirname, "../../../../../test-data");
     const testOutputPath = join(__dirname, "../../../../../test-results");
 
-    console.log(`testDataPath is ${testDataPath}`);
-    console.log(`testOutputPath is ${testOutputPath}`);
-
     if (!fs.existsSync(testOutputPath)) {
       fs.mkdirSync(testOutputPath)
     }
@@ -70,13 +67,13 @@ describe("piranhaRunner", () => {
         runOutput.writable,
       );
     } catch (e) {
+      // Useful for debugging
       console.log("Error during Piranha Run test, dumping log:");
       console.log(runOutput.readBuffer());
       throw e;
     }
 
     outputText = runOutput.readBuffer();
-
     outputText = AnsiParser.removeAnsi(outputText);
     return outputText;
   };

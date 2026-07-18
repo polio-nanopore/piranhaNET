@@ -91,7 +91,6 @@ export class PiranhaRunner {
           containerBarcodesFilePath: {},
           containerBaseCalledPath: {},
           containerOutputPath: {},
-          //'/tmp': {} // Make sure current user has perms in tmp dir
         },
         User: this.userMapping,
         HostConfig: {
