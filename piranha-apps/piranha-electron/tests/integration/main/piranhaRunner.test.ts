@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
+import * as fs from "fs";
 import * as AnsiParser from "ansi-parser";
 
 describe("piranhaRunner", () => {
@@ -36,6 +37,10 @@ describe("piranhaRunner", () => {
 
     console.log(`testDataPath is ${testDataPath}`);
     console.log(`testOutputPath is ${testOutputPath}`);
+
+    if (!fs.existsSync(testOutputPath)) {
+      fs.mkdirSync(testOutputPath)
+    }
 
     try {
       await runner.runPiranha(
