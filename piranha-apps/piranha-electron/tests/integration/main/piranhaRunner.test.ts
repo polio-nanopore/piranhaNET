@@ -32,6 +32,11 @@ describe("piranhaRunner", () => {
 
     const runOutput = getWritableWithBuffer();
     const testDataPath = join(__dirname, "../../../../../test-data");
+    const testOutputPath = join(__dirname, "../../../../../test-results");
+
+    console.log(`testDataPath is ${testDataPath}`);
+    console.log(`testOutputPath is ${testOutputPath}`);
+
     try {
       await runner.runPiranha(
         {
@@ -39,7 +44,7 @@ describe("piranhaRunner", () => {
           notes: "test notes",
           barcodesFilePath: join(testDataPath, barcodesFileName),
           minKnowFolderPath: join(testDataPath, "demultiplexed"),
-          outputFolderPath: join(__dirname, "../../../../../test-results"),
+          outputFolderPath: testOutputPath,
           threads: 10,
           //run settings
           positiveControl: "pos",
