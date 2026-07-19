@@ -52,7 +52,7 @@ export class PiranhaAPI {
     return this.#log;
   }
 
-  async #findOutputFolderFromLog() {
+  async #findOutputFolderFromLog(): Promise<void> {
     // Find local report path from docker volume path in written in log, if run was successful
     const fullLog = this.#log.join(" ");
     const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
@@ -78,12 +78,18 @@ export class PiranhaAPI {
     this.#runOutputFolderName = "";
   }
 
-  async openRunReport() {
-    await window.api.openRunReport(this.#options.outputFolderPath, this.#runOutputFolderName);
+  async openRunReport(): Promise<void> {
+    await window.api.openRunReport(
+      this.#options.outputFolderPath,
+      this.#runOutputFolderName,
+    );
   }
 
-  async openRunOutputFolder() {
-    await window.api.openRunOutputFolder(this.#options.outputFolderPath, this.#runOutputFolderName);
+  async openRunOutputFolder(): Promise<void> {
+    await window.api.openRunOutputFolder(
+      this.#options.outputFolderPath,
+      this.#runOutputFolderName,
+    );
   }
 }
 

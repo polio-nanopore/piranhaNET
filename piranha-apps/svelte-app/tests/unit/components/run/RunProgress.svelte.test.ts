@@ -1,14 +1,11 @@
 import { describe, expect, test, beforeEach, afterEach, vi } from "vitest";
-import {
-  expectTranslations,
-  renderInI18nTestContext,
-} from "../../utils";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { screen, within, render } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import RunProgress from "../../../../src/components/run/RunProgress.svelte";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { settings, runParameters } from "$lib/store.svelte";
-import {mockPiranhaAPI} from "../../MockPiranhaAPI.svelte";
+import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 
 describe("RunProgress", () => {
   const user = userEvent.setup();
@@ -105,7 +102,7 @@ describe("RunProgress", () => {
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,
-      runSucceeded: true
+      runSucceeded: true,
     });
     renderInI18nTestContext(RunProgress);
     expect(screen.getByTestId("run-progress-check")).toBeVisible();
@@ -124,7 +121,9 @@ describe("RunProgress", () => {
 
     await expectTranslations(
       (text) => {
-        expect(screen.getByTestId("open-output-folder")).toHaveTextContent(text);
+        expect(screen.getByTestId("open-output-folder")).toHaveTextContent(
+          text,
+        );
       },
       {
         en: /Open output folder/,
@@ -138,7 +137,7 @@ describe("RunProgress", () => {
     mockPiranhaAPI({
       initialized: true,
       running: false,
-      runSucceeded: true
+      runSucceeded: true,
     });
     render(RunProgress);
 
@@ -152,7 +151,7 @@ describe("RunProgress", () => {
     mockPiranhaAPI({
       initialized: true,
       running: false,
-      runSucceeded: true
+      runSucceeded: true,
     });
     render(RunProgress);
     const button = screen.getByTestId("open-output-folder");
@@ -210,9 +209,13 @@ describe("RunProgress", () => {
 
     const { container } = render(RunProgress);
     const logEl = container.querySelector("code[data-testid='logs']");
-    const scrollHeightSpy = vi.spyOn(logEl, "scrollHeight", "get").mockImplementation(() => 500);
+    const scrollHeightSpy = vi
+      .spyOn(logEl, "scrollHeight", "get")
+      .mockImplementation(() => 500);
     let scrollTopToUpdate = 0;
-    vi.spyOn(logEl, "scrollTop", "set").mockImplementation((value) => scrollTopToUpdate = value);
+    vi.spyOn(logEl, "scrollTop", "set").mockImplementation(
+      (value) => (scrollTopToUpdate = value),
+    );
 
     piranhaAPI.log.push(["more", "log", "content"]);
 
@@ -221,5 +224,4 @@ describe("RunProgress", () => {
     expect(scrollHeightSpy).toHaveBeenCalled();
     expect(scrollTopToUpdate).toBe(500);
   });
-
 });

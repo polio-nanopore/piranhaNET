@@ -6,7 +6,7 @@ import {
 } from "../../utils";
 import Run from "../../../../src/components/run/Run.svelte";
 import { screen, render } from "@testing-library/svelte";
-import {mockPiranhaAPI} from "../../MockPiranhaAPI.svelte";
+import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 
 describe("Run", () => {
   const mockSettings = {

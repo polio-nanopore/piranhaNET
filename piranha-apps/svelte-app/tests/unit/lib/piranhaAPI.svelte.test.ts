@@ -11,13 +11,13 @@ describe("piranhaAPI", () => {
       onError: vi.fn(),
       runPiranha: vi.fn(),
       openRunReport: vi.fn(),
-      openRunOutputFolder: vi.fn()
+      openRunOutputFolder: vi.fn(),
     };
     sut = new PiranhaAPI();
   });
 
   const testOptions = {
-    outputFolderPath: "/test/output"
+    outputFolderPath: "/test/output",
   } as any;
 
   test("constructor sets expected handlers", async () => {
@@ -34,7 +34,11 @@ describe("piranhaAPI", () => {
     const addChunk = window.api.onChunk.mock.calls[0][0];
     const encoder = new TextEncoder("utf-8");
     // Should split on newlines
-    const expectedLog = ["test log message 1", "test log message 2", "Generated: /data/run_data/output/output_1/report.html"];
+    const expectedLog = [
+      "test log message 1",
+      "test log message 2",
+      "Generated: /data/run_data/output/output_1/report.html",
+    ];
     addChunk(encoder.encode(expectedLog.join("\n")));
 
     expect(sut.log).toStrictEqual(expectedLog);
@@ -49,9 +53,15 @@ describe("piranhaAPI", () => {
 
     //.. and the output folder will be used in open output calls
     await sut.openRunReport();
-    expect(window.api.openRunReport).toHaveBeenCalledWith("/test/output", "output_1");
+    expect(window.api.openRunReport).toHaveBeenCalledWith(
+      "/test/output",
+      "output_1",
+    );
     await sut.openRunOutputFolder();
-    expect(window.api.openRunOutputFolder).toHaveBeenCalledWith("/test/output", "output_1");
+    expect(window.api.openRunOutputFolder).toHaveBeenCalledWith(
+      "/test/output",
+      "output_1",
+    );
 
     sut.clearRun();
     expect(sut.error).toBe("");

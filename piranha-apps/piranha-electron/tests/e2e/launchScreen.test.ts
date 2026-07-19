@@ -100,10 +100,10 @@ const getContinueButton = async (win: Page): Promise<Locator> =>
 const getRunButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Run Piranha/ });
 
-const getOpenReportButon = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button",  { name: /Open report/ });
+const getOpenReportButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Open report/ });
 const getOpenOutputFolderButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button",  { name: /Open output folder/ });
+  await win.getByRole("button", { name: /Open output folder/ });
 
 const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
   buttonElement.locator("..");
@@ -191,7 +191,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
 
   // Open output buttons are not visible yet
-  expect(await getOpenReportButon(win)).toHaveCount(0);
+  expect(await getOpenReportButton(win)).toHaveCount(0);
   expect(await getOpenOutputFolderButton(win)).toHaveCount(0);
 
   // See expected start run text in log
@@ -220,7 +220,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   // See completed check
   expect(await win.getByTestId("run-progress-check")).toBeVisible();
 
-  expect(await getOpenReportButon(win)).toBeEnabled();
+  expect(await getOpenReportButton(win)).toBeEnabled();
   expect(await getOpenOutputFolderButton(win)).toBeEnabled();
 });
 

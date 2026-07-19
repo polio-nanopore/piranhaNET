@@ -6,5 +6,5 @@ export default defineConfig({
   use: {
     screenshot: "only-on-failure",
   },
-  retries: 5 // can be flaky picking up API stream on CI..
+  retries: 5, // can be flaky picking up API stream on CI..
 });

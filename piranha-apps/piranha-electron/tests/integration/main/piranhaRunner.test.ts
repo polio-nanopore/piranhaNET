@@ -36,7 +36,7 @@ describe("piranhaRunner", () => {
     const testOutputPath = join(__dirname, "../../../../../test-results");
 
     if (!fs.existsSync(testOutputPath)) {
-      fs.mkdirSync(testOutputPath)
+      fs.mkdirSync(testOutputPath);
     }
 
     try {
@@ -62,7 +62,7 @@ describe("piranhaRunner", () => {
           //user settings
           institute: "Test Institute",
           userName: "Test User",
-          lang: "fr"
+          lang: "fr",
         },
         runOutput.writable,
       );

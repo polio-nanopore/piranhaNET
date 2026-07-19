@@ -1,12 +1,12 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
-  import debounce from 'debounce';
+  import debounce from "debounce";
   import { m } from "../../paraglide/messages";
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
   import { Spinner } from "$lib/shadcn/ui/spinner";
   import { piranhaAPI } from "$lib/piranhaAPI.svelte";
-  import { runParameters, settings, appState } from "$lib/store.svelte";
+  import { runParameters, settings } from "$lib/store.svelte";
 
   let logEl;
   const ansi = new ansi_up.AnsiUp();
@@ -31,7 +31,7 @@
     }
   });
 
-  const clearRun = () => {
+  const clearRun = (): void => {
     piranhaAPI.clearRun();
   };
 </script>
@@ -67,8 +67,16 @@
       {m.settingOutputFolder()}:
       <span class="font-bold">{settings.outputFolderPath}</span>
       {#if piranhaAPI.runSucceeded}
-        <Button data-testid="open-report" onclick={async () => await piranhaAPI.openRunReport()}>{m.openReport()}</Button>
-        <Button data-testid="open-output-folder" onclick={async () => await piranhaAPI.openRunOutputFolder()}>{m.openOutputFolder()}</Button>
+        <Button
+          data-testid="open-report"
+          onclick={async () => await piranhaAPI.openRunReport()}
+          >{m.openReport()}</Button
+        >
+        <Button
+          data-testid="open-output-folder"
+          onclick={async () => await piranhaAPI.openRunOutputFolder()}
+          >{m.openOutputFolder()}</Button
+        >
       {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
