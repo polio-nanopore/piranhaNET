@@ -49,8 +49,8 @@ jobs:
       - name: Build installer
         run: npm run build-electron:win
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-installer-${{ github.run_number }}
-          path: dist/*.exe
+          path: piranha-apps/dist/*.exe
           retention-days: 10
