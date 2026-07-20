@@ -21,7 +21,9 @@ describe("UserSettings", () => {
   });
 
   test("renders values as expected", async () => {
-    renderInI18nTestContext(RunComponentInTestContext, { props: { componentName: "UserSettings", errors: {} } });
+    renderInI18nTestContext(RunComponentInTestContext, {
+      props: { componentName: "UserSettings", errors: {} },
+    });
     await expectTranslations(
       (text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
       { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/ },
@@ -50,7 +52,9 @@ describe("UserSettings", () => {
       institute: ["Institute error"],
       outputFolderPath: ["Output error"],
     };
-    renderInI18nTestContext(RunComponentInTestContext, { props: { componentName: "UserSettings", errors } });
+    renderInI18nTestContext(RunComponentInTestContext, {
+      props: { componentName: "UserSettings", errors },
+    });
     expectErrorFor("user-name-field", "User name error");
     expectErrorFor("institute-field", "Institute error");
     expectErrorFor("output-folder-field", "Output error");
@@ -66,7 +70,9 @@ describe("UserSettings", () => {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(RunComponentInTestContext, { props: { componentName: "UserSettings", onchange, errors: {} } });
+    render(RunComponentInTestContext, {
+      props: { componentName: "UserSettings", onchange, errors: {} },
+    });
 
     const nameField = screen.getByLabelText("User name");
     await user.clear(nameField);

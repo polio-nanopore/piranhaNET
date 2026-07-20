@@ -160,9 +160,13 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   await notesInput.fill("some test notes");
 
   // Can see help text on hover
-  const tooltipTrigger = await win.locator("button[data-slot='tooltip-trigger']").nth(0);
+  const tooltipTrigger = await win
+    .locator("button[data-slot='tooltip-trigger']")
+    .nth(0);
   await tooltipTrigger.hover();
-  expect(await win.locator("div[data-bits-floating-content-wrapper]")).toHaveText(/Run name to appear in report/);
+  expect(
+    await win.locator("div[data-bits-floating-content-wrapper]"),
+  ).toHaveText(/Run name to appear in report/);
 
   // Also fill in run settings
   const settings = await win.getByTestId("settings");

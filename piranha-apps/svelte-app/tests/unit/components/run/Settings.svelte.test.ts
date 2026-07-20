@@ -176,7 +176,9 @@ describe("Settings", () => {
 
   test("renders as expected when run settings have been initialised and there are no errors", async () => {
     mockPersistentSettingsStore({ runSettings: defaultSettings });
-    renderInI18nTestContext(RunComponentInTestContext, { props: { componentName: "Settings", errors: {} } });
+    renderInI18nTestContext(RunComponentInTestContext, {
+      props: { componentName: "Settings", errors: {} },
+    });
     // no accordion sections open
     await expectOpenSections([]);
   });
@@ -193,7 +195,9 @@ describe("Settings", () => {
 
   test("renders expected settings values", async () => {
     mockPersistentSettingsStore({});
-    const { container } = render(RunComponentInTestContext, { props: { componentName: "Settings", errors: {} } });
+    const { container } = render(RunComponentInTestContext, {
+      props: { componentName: "Settings", errors: {} },
+    });
 
     // Open Settings accordion item
     await user.click(screen.getByTestId("settings"));
@@ -295,7 +299,9 @@ describe("Settings", () => {
       ],
     };
 
-    const { rerender, container } = render(RunComponentInTestContext, { props: { componentName: "Settings", errors } });
+    const { rerender, container } = render(RunComponentInTestContext, {
+      props: { componentName: "Settings", errors },
+    });
     expectErrorsDisplayed(expectedErrors);
 
     // should update to open new error sections when errors update with new sections -
@@ -319,7 +325,9 @@ describe("Settings", () => {
   test("handles updates to run settings by saving settings and calling onchange", async () => {
     mockPersistentSettingsStore({ runSettings: defaultSettings });
     const onchange = vi.fn();
-    const { container } = render(RunComponentInTestContext, { props: { componentName: "Settings", errors: {}, onchange } });
+    const { container } = render(RunComponentInTestContext, {
+      props: { componentName: "Settings", errors: {}, onchange },
+    });
 
     // Open Settings accordion item
     await user.click(screen.getByTestId("settings"));
@@ -378,7 +386,9 @@ describe("Settings", () => {
   test("handles updates to piranha output settings by calling onchange", async () => {
     mockPersistentSettingsStore({ runSettings: defaultSettings });
     const onchange = vi.fn();
-    const { container } = render(RunComponentInTestContext, { props: { componentName: "Settings", errors: {}, onchange } });
+    const { container } = render(RunComponentInTestContext, {
+      props: { componentName: "Settings", errors: {}, onchange },
+    });
 
     // Open Settings accordion item
     await user.click(screen.getByTestId("settings"));

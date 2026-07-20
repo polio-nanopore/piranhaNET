@@ -1,11 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { screen, render } from "@testing-library/svelte";
 import TestFormField from "./TestFormField.svelte";
-import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 
 describe("FormField", () => {
-  const user = userEvent.setup();
-
   test("renders as expected without error", () => {
     render(TestFormField);
     const input = screen.getByLabelText("Test Label");
@@ -36,8 +33,8 @@ describe("FormField", () => {
   });
 
   test("renders help", async () => {
-    const {container} = render(TestFormField, {
-      props: { help: "test help" }
+    const { container } = render(TestFormField, {
+      props: { help: "test help" },
     });
     expect(screen.queryByRole("button")).not.toBeNull();
     expect(container.querySelector("svg")).toBeVisible();

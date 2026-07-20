@@ -6,7 +6,13 @@
 </script>
 
 <Tooltip.Provider>
-  <FormField label="Test Label" labelFor="test-input" {error} {help} class={className}>
+  <FormField
+    label="Test Label"
+    labelFor="test-input"
+    {error}
+    {help}
+    class={className}
+  >
     <input id="test-input" type="text" name="test-input" />
   </FormField>
 </Tooltip.Provider>

@@ -26,8 +26,8 @@ describe("Welcome", () => {
   test("renders as expected", async () => {
     const { container } = renderInI18nTestContext(RunComponentInTestContext, {
       props: {
-        componentName: "Welcome"
-      }
+        componentName: "Welcome",
+      },
     });
     await expectTranslations(
       (text) => {
@@ -71,7 +71,9 @@ describe("Welcome", () => {
 
     const onpersist = vi.fn();
 
-    const { container } = render(RunComponentInTestContext, { props: { componentName: "Welcome", onpersist } });
+    const { container } = render(RunComponentInTestContext, {
+      props: { componentName: "Welcome", onpersist },
+    });
     await user.type(screen.getByLabelText("User name"), "New name");
     await user.type(screen.getByLabelText("Institute"), "New Inst");
     await user.click(screen.getByLabelText("Output folder"));
@@ -84,7 +86,9 @@ describe("Welcome", () => {
 
   test("submit form displays errors when invalid, and updates on every change", async () => {
     const onpersist = vi.fn();
-    const { container } = render(RunComponentInTestContext, { props: { componentName: "Welcome", onpersist } });
+    const { container } = render(RunComponentInTestContext, {
+      props: { componentName: "Welcome", onpersist },
+    });
     await user.click(screen.getByTestId("continue"));
 
     const nameField = screen.getByLabelText("User name");

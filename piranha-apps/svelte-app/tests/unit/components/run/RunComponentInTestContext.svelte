@@ -17,9 +17,7 @@
     <RunParameters></RunParameters>
   {/if}
   {#if componentName === "Settings"}
-    <Settings
-      errors={componentProps.errors}
-      onchange={componentProps.onchange}
+    <Settings errors={componentProps.errors} onchange={componentProps.onchange}
     ></Settings>
   {/if}
   {#if componentName === "UserSettings"}
@@ -29,8 +27,6 @@
     ></UserSettings>
   {/if}
   {#if componentName === "Welcome"}
-    <Welcome
-      onpersist={componentProps.onpersist}
-    ></Welcome>
+    <Welcome onpersist={componentProps.onpersist}></Welcome>
   {/if}
 </Tooltip.Provider>

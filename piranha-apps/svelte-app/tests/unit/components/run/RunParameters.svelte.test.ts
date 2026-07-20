@@ -37,7 +37,7 @@ describe("RunParameters", () => {
 
   test("renders as expected", async () => {
     renderInI18nTestContext(RunComponentInTestContext, {
-      props: { componentName: "RunParameters" }
+      props: { componentName: "RunParameters" },
     });
     await expectTranslations(
       (text) =>
@@ -117,7 +117,7 @@ describe("RunParameters", () => {
 
   test("does not validate before Run button pressed, and does not submit Run if form is not valid", async () => {
     render(RunComponentInTestContext, {
-      props: { componentName: "RunParameters" }
+      props: { componentName: "RunParameters" },
     });
     const expectNoErrors = (): void =>
       expect(screen.queryByText(/Required value/)).toBeNull();
@@ -149,7 +149,7 @@ describe("RunParameters", () => {
     };
 
     render(RunComponentInTestContext, {
-      props: { componentName: "RunParameters" }
+      props: { componentName: "RunParameters" },
     });
     await user.type(screen.getByLabelText("Name"), "test name");
     await user.click(screen.getByLabelText("Barcodes file"));
@@ -180,7 +180,7 @@ describe("RunParameters", () => {
     runParameters.minKnowFolderPath = "/store/MinKnow";
     runParameters.threads = 11;
     render(RunComponentInTestContext, {
-      props: { componentName: "RunParameters" }
+      props: { componentName: "RunParameters" },
     });
     expect(screen.getByLabelText("Name").value).toBe("store name");
     expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
@@ -195,7 +195,7 @@ describe("RunParameters", () => {
 
   test("Shows error if analysis threads value is too low, too high or not an integer", async () => {
     render(RunComponentInTestContext, {
-      props: { componentName: "RunParameters" }
+      props: { componentName: "RunParameters" },
     });
     await user.click(screen.getByTestId("run")); // Do initial run click to trigger auto validation on value change
 
@@ -223,7 +223,7 @@ describe("RunParameters", () => {
     runParameters.threads = 21;
     appState.doneInitialSubmit = true;
     render(RunComponentInTestContext, {
-      props: { componentName: "RunParameters" }
+      props: { componentName: "RunParameters" },
     });
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be between 1 and 20/,

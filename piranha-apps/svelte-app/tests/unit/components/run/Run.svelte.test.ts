@@ -22,8 +22,8 @@ describe("Run", () => {
     mockPiranhaAPI({ running: false });
     renderInI18nTestContext(RunComponentInTestContext, {
       props: {
-        componentName: "Run"
-      }
+        componentName: "Run",
+      },
     });
     await expectTranslations(
       (text) => expect(screen.getByTestId("welcome")).toHaveTextContent(text),
@@ -50,8 +50,8 @@ describe("Run", () => {
     mockPiranhaAPI({ running: false });
     renderInI18nTestContext(RunComponentInTestContext, {
       props: {
-        componentName: "Run"
-      }
+        componentName: "Run",
+      },
     });
     await expectTranslations(
       (text) => expect(screen.getByTestId("run")).toHaveTextContent(text),
@@ -69,8 +69,8 @@ describe("Run", () => {
     mockPiranhaAPI({ running: true, log: ["log entry 1", "log entry 2"] });
     render(RunComponentInTestContext, {
       props: {
-        componentName: "Run"
-      }
+        componentName: "Run",
+      },
     });
     expect(screen.getByTestId("logs")).toHaveTextContent(
       /log entry 1log entry 2/,

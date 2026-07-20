@@ -26,8 +26,7 @@
   {#if help}
     <Tooltip.Root>
       <Tooltip.Trigger class="float-right pl-2">
-        <CircleQuestionMark size="16"
-        ></CircleQuestionMark>
+        <CircleQuestionMark size="16"></CircleQuestionMark>
       </Tooltip.Trigger>
       <Tooltip.Content>
         <p>{help}</p>
