@@ -7,40 +7,9 @@ import {
   waitFor,
   type RenderResult,
 } from "@testing-library/svelte";
-import { piranhaAPI } from "$lib/piranhaAPI.svelte";
-import I18nTestContext from "./unit/components/I18nTestContext.svelte";
-import { persistentSettingsStore } from "../src/lib/persistentSettingsStore";
-import { RunSettings, UserSettings } from "../src/types";
-
-export interface APIMock {
-  initialized: boolean;
-  error: string;
-  log: string[];
-  running: boolean;
-}
-
-const defaultAPIMock: APIMock = {
-  initialized: false,
-  error: "",
-  log: [],
-  running: false,
-};
-
-export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
-  const mockedAPI = { ...defaultAPIMock, ...values };
-  vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(
-    () => mockedAPI.initialized,
-  );
-  vi.spyOn(piranhaAPI, "error", "get").mockImplementation(
-    () => mockedAPI.error,
-  );
-  vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => mockedAPI.log);
-  vi.spyOn(piranhaAPI, "running", "get").mockImplementation(
-    () => mockedAPI.running,
-  );
-  vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "clearLog");
-};
+import I18nTestContext from "./components/I18nTestContext.svelte";
+import { persistentSettingsStore } from "../../src/lib/persistentSettingsStore";
+import { RunSettings, UserSettings } from "../../src/types";
 
 export interface PersistentSettingsStoreMock {
   runSettings: RunSettings | null;

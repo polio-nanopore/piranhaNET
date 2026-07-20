@@ -12,9 +12,20 @@ const api = {
   showFileDialog: (options: FileDialogOptions) =>
     ipcRenderer.invoke("show-file-dialog", options),
   openRunReport: (outputFolderBasePath: string, runOutputFolderName: string) =>
-    ipcRenderer.invoke("open-run-report", outputFolderBasePath, runOutputFolderName),
-  openRunOutputFolder: (outputFolderBasePath: string, runOutputFolderName: string) =>
-    ipcRenderer.invoke("open-run-output-folder", outputFolderBasePath, runOutputFolderName),
+    ipcRenderer.invoke(
+      "open-run-report",
+      outputFolderBasePath,
+      runOutputFolderName,
+    ),
+  openRunOutputFolder: (
+    outputFolderBasePath: string,
+    runOutputFolderName: string,
+  ) =>
+    ipcRenderer.invoke(
+      "open-run-output-folder",
+      outputFolderBasePath,
+      runOutputFolderName,
+    ),
   onInitialized: (callback) =>
     ipcRenderer.on("initialized", (_event) => callback()),
   onChunk: (callback) =>

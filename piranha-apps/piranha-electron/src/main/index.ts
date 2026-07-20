@@ -21,7 +21,7 @@ function createWindow(): void {
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
-      sandbox: false
+      sandbox: false,
     },
   });
 
@@ -113,26 +113,21 @@ function createWindow(): void {
   });
 }
 
-
-ipcMain.handle('open-run-report', async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
-  try {
+ipcMain.handle(
+  "open-run-report",
+  async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
     // Convert file path to file:// url
     const fileUrl = `file://${path.join(outputFolderBasePath, runOutputFolderName, "report.html")}`;
     await shell.openExternal(fileUrl);
-    return { success: true };
-  } catch (e) {
-    return { success: false, error: (e as Error).message };
-  }
-});
+  },
+);
 
-ipcMain.handle('open-run-output-folder', async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
-  try {
+ipcMain.handle(
+  "open-run-output-folder",
+  async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
     await shell.openPath(path.join(outputFolderBasePath, runOutputFolderName));
-    return { success: true };
-  } catch (e) {
-    return { success: false, error: (e as Error).message }
-  }
-});
+  },
+);
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

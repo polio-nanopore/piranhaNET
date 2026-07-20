@@ -1,12 +1,9 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { render } from "@testing-library/svelte";
-import RunParameters from "../../../../src/components/run/RunParameters.svelte";
-import {
-  expectTranslations,
-  renderInI18nTestContext,
-  mockPiranhaAPI,
-} from "../../../utils";
+import RunComponentInTestContext from "./RunComponentInTestContext.svelte";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
+import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import { screen } from "@testing-library/svelte";
 import { i18n } from "$lib/i18n.svelte";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
@@ -39,7 +36,9 @@ describe("RunParameters", () => {
   });
 
   test("renders as expected", async () => {
-    renderInI18nTestContext(RunParameters);
+    renderInI18nTestContext(RunComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
     await expectTranslations(
       (text) =>
         expect(screen.getByLabelText(text)).toHaveAttribute("id", "name-field"),
@@ -117,7 +116,9 @@ describe("RunParameters", () => {
   });
 
   test("does not validate before Run button pressed, and does not submit Run if form is not valid", async () => {
-    render(RunParameters);
+    render(RunComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
     const expectNoErrors = (): void =>
       expect(screen.queryByText(/Required value/)).toBeNull();
 
@@ -147,7 +148,9 @@ describe("RunParameters", () => {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(RunParameters);
+    render(RunComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
     await user.type(screen.getByLabelText("Name"), "test name");
     await user.click(screen.getByLabelText("Barcodes file"));
     await user.click(screen.getByLabelText("MinKnow folder"));
@@ -165,6 +168,7 @@ describe("RunParameters", () => {
       userName: "Test User",
       institute: "Test Institute",
       outputFolderPath: "/test/output",
+      lang: "en",
       ...defaultPiranhaOutputSettings,
     });
   });
@@ -175,7 +179,9 @@ describe("RunParameters", () => {
     runParameters.barcodesFilePath = "/store/barcodes.csv";
     runParameters.minKnowFolderPath = "/store/MinKnow";
     runParameters.threads = 11;
-    render(RunParameters);
+    render(RunComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
     expect(screen.getByLabelText("Name").value).toBe("store name");
     expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
       "/store/barcodes.csv",
@@ -188,7 +194,9 @@ describe("RunParameters", () => {
   });
 
   test("Shows error if analysis threads value is too low, too high or not an integer", async () => {
-    render(RunParameters);
+    render(RunComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
     await user.click(screen.getByTestId("run")); // Do initial run click to trigger auto validation on value change
 
     const threadsInput = screen.getByLabelText("Analysis threads");
@@ -214,7 +222,9 @@ describe("RunParameters", () => {
   test("validates on load if initial submit has been done", async () => {
     runParameters.threads = 21;
     appState.doneInitialSubmit = true;
-    render(RunParameters);
+    render(RunComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
       /Value must be between 1 and 20/,
     );

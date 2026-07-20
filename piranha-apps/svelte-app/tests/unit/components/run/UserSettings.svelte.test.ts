@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
-import UserSettings from "../../../../src/components/run/UserSettings.svelte";
+import RunComponentInTestContext from "./RunComponentInTestContext.svelte";
 import { settings } from "../../../../src/lib/store.svelte.js";
 import { i18n } from "$lib/i18n.svelte";
 import {
@@ -7,7 +7,7 @@ import {
   mockPersistentSettingsStore,
   renderInI18nTestContext,
   expectErrorFor,
-} from "../../../utils";
+} from "../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import { render, screen } from "@testing-library/svelte";
 import { persistentSettingsStore } from "../../../../src/lib/persistentSettingsStore";
@@ -21,7 +21,9 @@ describe("UserSettings", () => {
   });
 
   test("renders values as expected", async () => {
-    renderInI18nTestContext(UserSettings, { props: { errors: {} } });
+    renderInI18nTestContext(RunComponentInTestContext, {
+      props: { componentName: "UserSettings", errors: {} },
+    });
     await expectTranslations(
       (text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
       { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/ },
@@ -50,7 +52,9 @@ describe("UserSettings", () => {
       institute: ["Institute error"],
       outputFolderPath: ["Output error"],
     };
-    renderInI18nTestContext(UserSettings, { props: { errors } });
+    renderInI18nTestContext(RunComponentInTestContext, {
+      props: { componentName: "UserSettings", errors },
+    });
     expectErrorFor("user-name-field", "User name error");
     expectErrorFor("institute-field", "Institute error");
     expectErrorFor("output-folder-field", "Output error");
@@ -66,7 +70,9 @@ describe("UserSettings", () => {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(UserSettings, { props: { onchange, errors: {} } });
+    render(RunComponentInTestContext, {
+      props: { componentName: "UserSettings", onchange, errors: {} },
+    });
 
     const nameField = screen.getByLabelText("User name");
     await user.clear(nameField);

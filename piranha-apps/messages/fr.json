@@ -41,7 +41,6 @@
   "provideInitialSettings": "Veuillez saisir quelques informations avant de continuer. Vous pourrez les modifier ultérieurement.",
   "run": "Courez",
   "runPiranha": "Courez Piranha",
-  "runReport": "Rapport de la course",
   "runSettings": "Paramètres d'exécution",
   "sequencingRunProgress": "État d'avancement du séquençage",
   "settings": "Paramètres",
@@ -58,6 +57,5 @@
   "settingDateStamp": "Horodatage",
   "settingUserName": "Nom d'utilisateur",
   "userSettings": "Options utilisateur",
-  "viewLogs": "Afficher les journaux d'exécution",
   "welcome": "Bienvenue sur PiranhaNET"
 }

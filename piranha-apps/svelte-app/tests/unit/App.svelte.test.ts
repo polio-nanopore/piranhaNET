@@ -1,8 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
-import App from "../src/App.svelte";
-import { expectTranslations, mockPiranhaAPI } from "./utils";
+import App from "../../src/App.svelte";
+import { expectTranslations } from "./utils";
+import { mockPiranhaAPI } from "./MockPiranhaAPI.svelte";
 
 // TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {

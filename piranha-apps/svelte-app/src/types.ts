@@ -52,11 +52,11 @@ export interface PiranhaSettings extends UserSettings, RunSettings {
 export const createPiranhaRunOptions = (
   params: PiranhaRunParameters,
   settings: PiranhaSettings,
-  lang: string
+  lang: string,
 ): PiranhaRunOptions => {
   return {
     ...params,
     ...settings,
-    lang
+    lang,
   };
 };
