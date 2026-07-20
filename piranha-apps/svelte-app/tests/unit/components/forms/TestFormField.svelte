@@ -1,9 +1,12 @@
 <script>
+  import * as Tooltip from "$lib/shadcn/ui/tooltip";
   import FormField from "../../../../src/components/forms/FormField.svelte";
 
-  let { error, class: className } = $props();
+  let { error, help, class: className } = $props();
 </script>
 
-<FormField label="Test Label" labelFor="test-input" {error} class={className}>
-  <input id="test-input" type="text" name="test-input" />
-</FormField>
+<Tooltip.Provider>
+  <FormField label="Test Label" labelFor="test-input" {error} {help} class={className}>
+    <input id="test-input" type="text" name="test-input" />
+  </FormField>
+</Tooltip.Provider>
