@@ -1,6 +1,6 @@
 {
-  "name": "PiranhaNET",
-  "version": "0.0.1",
+  "name": "piranhanet",
+  "version": "0.0.1-alpha",
   "description": "Applications for running Piranha, providing Electron and web interfaces",
   "main": "./out/main/index.js",
   "engines": {
