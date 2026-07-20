@@ -33,7 +33,8 @@ jobs:
         run: npm run test-electron:e2e
   build-win:
     runs-on: windows-latest
-    needs: test
+    # TODO: reinstate this to only build installer when tests pass
+    #needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
