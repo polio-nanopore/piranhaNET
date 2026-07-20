@@ -2,11 +2,11 @@ import { describe, expect, test } from "vitest";
 import {
   expectTranslations,
   mockPersistentSettingsStore,
-  mockPiranhaAPI,
   renderInI18nTestContext,
-} from "../../../utils";
+} from "../../utils";
 import Run from "../../../../src/components/run/Run.svelte";
 import { screen, render } from "@testing-library/svelte";
+import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 
 describe("Run", () => {
   const mockSettings = {

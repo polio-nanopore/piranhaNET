@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import Nav from "../../../../src/components/nav/Nav.svelte";
-import { expectTranslations, renderInI18nTestContext } from "../../../utils";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { routerHelper } from "$lib/store.svelte";
 
 const { mockRouter } = vi.hoisted(() => {

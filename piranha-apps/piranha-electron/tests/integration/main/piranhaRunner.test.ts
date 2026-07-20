@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
+import * as fs from "fs";
 import * as AnsiParser from "ansi-parser";
 
 describe("piranhaRunner", () => {
@@ -32,31 +33,45 @@ describe("piranhaRunner", () => {
 
     const runOutput = getWritableWithBuffer();
     const testDataPath = join(__dirname, "../../../../../test-data");
-    await runner.runPiranha(
-      {
-        name: "test_name",
-        notes: "test notes",
-        barcodesFilePath: join(testDataPath, barcodesFileName),
-        minKnowFolderPath: join(testDataPath, "demultiplexed"),
-        outputFolderPath: join(__dirname, "../../../../../test-results"),
-        threads: 10,
-        //run settings
-        positiveControl: "pos",
-        negativeControl: "neg",
-        protocol: "stool",
-        //piranha output settings
-        orientation: "horizontal",
-        outputPrefix: "testOut",
-        overwriteOutput: true,
-        outputIntermediateFiles: true,
-        allMetadataToHeader: true,
-        dateStamp: true,
-        //user settings
-        institute: "Test Institute",
-        userName: "Test User",
-      },
-      runOutput.writable,
-    );
+    const testOutputPath = join(__dirname, "../../../../../test-results");
+
+    if (!fs.existsSync(testOutputPath)) {
+      fs.mkdirSync(testOutputPath);
+    }
+
+    try {
+      await runner.runPiranha(
+        {
+          name: "test_name",
+          notes: "test notes",
+          barcodesFilePath: join(testDataPath, barcodesFileName),
+          minKnowFolderPath: join(testDataPath, "demultiplexed"),
+          outputFolderPath: testOutputPath,
+          threads: 10,
+          //run settings
+          positiveControl: "pos",
+          negativeControl: "neg",
+          protocol: "stool",
+          //piranha output settings
+          orientation: "horizontal",
+          outputPrefix: "testOut",
+          overwriteOutput: true,
+          outputIntermediateFiles: true,
+          allMetadataToHeader: true,
+          dateStamp: true,
+          //user settings
+          institute: "Test Institute",
+          userName: "Test User",
+          lang: "fr",
+        },
+        runOutput.writable,
+      );
+    } catch (e) {
+      // Useful for debugging
+      console.log("Error during Piranha Run test, dumping log:");
+      console.log(runOutput.readBuffer());
+      throw e;
+    }
 
     outputText = runOutput.readBuffer();
     outputText = AnsiParser.removeAnsi(outputText);
@@ -79,6 +94,7 @@ describe("piranhaRunner", () => {
     // user settings
     expect(outputText).toContain("Setting username: Test_User");
     expect(outputText).toContain("Setting institute: Test_Institute");
+    expect(outputText).toContain("Setting language: French");
     expect(outputText).toMatch(
       /Generating: \/data\/run_data\/output\/piranha_output_\d{4}-\d{2}-\d{2}\/report.html/,
     ); //output report

@@ -1,7 +1,7 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import { screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { expectTranslations, renderInI18nTestContext } from "../../../utils";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import FileSelect from "../../../../src/components/forms/FileSelect.svelte";
 
 describe("FileSelect", () => {

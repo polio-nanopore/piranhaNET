@@ -2,11 +2,8 @@ import { describe, expect, test, beforeEach, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { render } from "@testing-library/svelte";
 import RunParameters from "../../../../src/components/run/RunParameters.svelte";
-import {
-  expectTranslations,
-  renderInI18nTestContext,
-  mockPiranhaAPI,
-} from "../../../utils";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
+import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import { screen } from "@testing-library/svelte";
 import { i18n } from "$lib/i18n.svelte";
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
@@ -165,6 +162,7 @@ describe("RunParameters", () => {
       userName: "Test User",
       institute: "Test Institute",
       outputFolderPath: "/test/output",
+      lang: "en",
       ...defaultPiranhaOutputSettings,
     });
   });

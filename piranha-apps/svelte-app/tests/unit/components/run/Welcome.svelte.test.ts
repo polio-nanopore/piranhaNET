@@ -7,7 +7,7 @@ import {
   expectErrorFor,
   expectNoErrors,
   expectNoErrorFor,
-} from "../../../utils";
+} from "../../utils";
 import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import { settings } from "../../../../src/lib/store.svelte.js";

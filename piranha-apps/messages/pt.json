@@ -41,7 +41,6 @@
   "provideInitialSettings": "Por favor, introduza alguns dados antes de prosseguir. Poderá alterá-los posteriormente.",
   "run": "Corra",
   "runPiranha": "Corra Piranha",
-  "runReport": "Relatório da corrida",
   "runSettings": "Configurações de execução",
   "sequencingRunProgress": "Progresso da execução do sequenciamento",
   "settings": "Configurações",
@@ -58,6 +57,5 @@
   "settingDateStamp": "Carimbo de data",
   "settingUserName": "Nome de utilizador",
   "userSettings": "Opções do utilizador",
-  "viewLogs": "Exibir registos de execução",
   "welcome": "Bem-vindo ao PiranhaNET"
 }

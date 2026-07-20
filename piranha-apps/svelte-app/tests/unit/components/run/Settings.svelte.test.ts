@@ -14,7 +14,7 @@ import {
   renderInI18nTestContext,
   ERROR_CLASS,
   expectNoErrors,
-} from "../../../utils";
+} from "../../utils";
 import { persistentSettingsStore } from "../../../../src/lib/persistentSettingsStore";
 import { i18n } from "$lib/i18n.svelte";
 

@@ -1,5 +1,4 @@
-import asyncio
-from collections.abc import AsyncGenerator
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
@@ -9,10 +8,13 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from shortuuid import uuid
 
 from app.file_manager import FileManager
+from app.piranha_runner import PiranhaRunner
 from app.settings import settings
 
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
+
+piranha_runner = PiranhaRunner(Path(settings.piranha_venv_path))
 
 
 def generate_run_id() -> str:
@@ -29,27 +31,8 @@ def generate_run_id() -> str:
 
 
 @app.get("/")
-def read_root():
+def get_root():
     return "Welcome to PiranhaNET API"
-
-
-async def fake_log_generator(
-    run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: str
-) -> AsyncGenerator[str, None]:
-    print(f"{run_id} Starting run {run_name}")
-    yield f"{run_id} Starting fake Piranha process for {run_name}"
-    yield f"{run_id} Barcodes filename is {barcodes_file.filename}"
-    yield f"{run_id} MinKnow zipname is {minknow_zip.filename}"
-    # Fake the long-running Piranha process by doing some sleeps
-    await asyncio.sleep(2)
-    yield f"{run_id} Fake Piranha update 1"
-    await asyncio.sleep(2)
-    yield f"{run_id} Fake Piranha update 2"
-    await asyncio.sleep(2)
-    yield f"{run_id} Saving output files"
-    file_manager.save_output(run_id)
-    yield f"{run_id} Fake Piranha completed"
-    print(f"{run_id} Finished run")
 
 
 # TODO: use a pydantic model for the run parameters when we're using full Piranha parameter set
@@ -60,8 +43,13 @@ async def run(
     # Save input files before start response so we can raise any errors related to bad file input before we start
     # streaming output
     await file_manager.save_input(run_id, barcodes_file, minknow_zip)
+    minknow_dir_path = file_manager.minknow_dir(run_id)
+    barcodes_file_path = os.path.join(file_manager.input_dir(run_id), barcodes_file.filename)
+    output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
-        fake_log_generator(run_name, barcodes_file, minknow_zip, run_id),
+        piranha_runner.run_piranha_log_generator(
+            run_id, run_name, barcodes_file_path, minknow_dir_path, output_dir_path
+        ),
         headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
     )

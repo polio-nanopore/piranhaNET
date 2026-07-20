@@ -100,6 +100,11 @@ const getContinueButton = async (win: Page): Promise<Locator> =>
 const getRunButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Run Piranha/ });
 
+const getOpenReportButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Open report/ });
+const getOpenOutputFolderButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Open output folder/ });
+
 const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
   buttonElement.locator("..");
 const expectErrorMessage = async (
@@ -185,6 +190,10 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   // See progress spinner
   expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
 
+  // Open output buttons are not visible yet
+  expect(await getOpenReportButton(win)).toHaveCount(0);
+  expect(await getOpenOutputFolderButton(win)).toHaveCount(0);
+
   // See expected start run text in log
   const log = await win.getByTestId("logs");
   await expect(log).toHaveText(/Building DAG of jobs.../, { timeout: 15_000 });
@@ -201,7 +210,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   // Eventually see run finished messages
   await expect(log).toHaveText(
-    /\/data\/run_data\/output\/piranha_output\/report\.html/,
+    /Generating: \/data\/run_data\/output\/piranha_output\/report\.html/,
     {
       timeout: 300_000,
     },
@@ -210,6 +219,9 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   // See completed check
   expect(await win.getByTestId("run-progress-check")).toBeVisible();
+
+  expect(await getOpenReportButton(win)).toBeEnabled();
+  expect(await getOpenOutputFolderButton(win)).toBeEnabled();
 });
 
 test("can see errors when submit incomplete welcome screen settings", async () => {
