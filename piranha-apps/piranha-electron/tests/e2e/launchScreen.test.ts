@@ -54,7 +54,7 @@ test.beforeEach(async () => {
   // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
   // permission-related failures on CI.
   electronApp = await launchApp();
-  await app.firstWindow(); // wait for window to be available
+  await electronApp.firstWindow(); // wait for window to be available
   await initialiseFileDialogHandler();
 });
 
