@@ -36,6 +36,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ./piranha-apps
     # TODO: reinstate this to only build installer when tests pass
     #needs: test
     steps:
