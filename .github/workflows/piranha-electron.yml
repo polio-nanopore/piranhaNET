@@ -37,8 +37,7 @@ jobs:
       run:
         shell: bash
         working-directory: ./piranha-apps
-    # TODO: reinstate this to only build installer when tests pass
-    #needs: test
+    needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v7
