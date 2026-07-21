@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {onMount} from "svelte";
+  import {onMount, tick} from "svelte";
   import { useTinyRouter } from "svelte-tiny-router";
   import piranhaLogo from "../../assets/piranha.svg";
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";

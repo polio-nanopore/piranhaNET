@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Node
         uses: actions/setup-node@v5
         with:
@@ -33,11 +33,14 @@ jobs:
         run: npm run test-electron:e2e
   build-win:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     # TODO: reinstate this to only build installer when tests pass
     #needs: test
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Node
         uses: actions/setup-node@v5
         with:
@@ -51,6 +54,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: windows-installer-${{ github.run_number }}
+          name: piranhanet-windows-installer-${{ github.run_number }}
           path: piranha-apps/dist/*.exe
           retention-days: 10
