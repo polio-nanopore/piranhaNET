@@ -50,15 +50,6 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Install dependencies
         run: npm ci
-      - name: Debug - List build contents
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of current directory:"
-          ls -la
-          echo "Contents of build directory (if exists):"
-          ls -la build/ || echo "build/ directory does not exist"
-          echo "Contents of src/assets or piranha-apps/build (if exists):"
-          ls -la src/assets/ || ls -la piranha-apps/build/ || echo "Neither directory exists"
       - name: Build installer
         run: npm run build-electron:win
       - name: Upload artifact
