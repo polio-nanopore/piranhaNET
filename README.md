@@ -21,3 +21,11 @@ Run the API with: `./scripts/run-api`.
 Run the Electron app with: `./scripts/run-electron`.
 
 Run the web app with: `./scripts/run-web`.
+
+## Release process
+To make a release:
+1. Increment the version in `./piranha-apps/package.json`
+2. Create a release in the github repository. Tag the release with a version which matches the package.json version, with a "v" prefix.
+3. After the release has been created, the `PiranhaNET Installers` github action will run. Check that it completes successfully. When it has
+done so, the installers should be attached to the release. Currently, we are only building the Windows installer.
+4. If possible, download the installer to a Windows machine and check that PiranhaNET installs and runs correctly. 
