@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
-  import debounce from "debounce";
+  import throttle from "throttleit";
   import { m } from "../../paraglide/messages";
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
@@ -19,11 +19,11 @@
         : "border-green-600",
   );
 
-  const scrollLogToEnd = debounce(() => {
+  const scrollLogToEnd = throttle(() => {
     if (logEl) {
       logEl.scrollTop = logEl.scrollHeight;
     }
-  }, 1000);
+  }, 300);
 
   $effect(() => {
     if (piranhaAPI.log.length) {

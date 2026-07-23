@@ -220,7 +220,7 @@ describe("RunProgress", () => {
     piranhaAPI.log.push(["more", "log", "content"]);
 
     // Wait for debounce to trigger update
-    await vi.advanceTimersByTimeAsync(1000);
+    await vi.advanceTimersByTimeAsync(300);
     expect(scrollHeightSpy).toHaveBeenCalled();
     expect(scrollTopToUpdate).toBe(500);
   });
