@@ -197,6 +197,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   // See expected start run text in log
   const log = await win.getByTestId("logs");
   await expect(log).toHaveText(/Building DAG of jobs.../, { timeout: 15_000 });
+  console.log("Run has started");
 
   // Expect to see parameters and settings being used in log
   await expect(log).toHaveText(/Setting username: New_Test_User/);
