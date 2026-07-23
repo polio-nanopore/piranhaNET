@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
-import RunComponentInTestContext from "./RunComponentInTestContext.svelte";
+import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { screen, render, within, fireEvent } from "@testing-library/svelte";
 import {
   PiranhaOrientation,
@@ -176,7 +176,7 @@ describe("Settings", () => {
 
   test("renders as expected when run settings have been initialised and there are no errors", async () => {
     mockPersistentSettingsStore({ runSettings: defaultSettings });
-    renderInI18nTestContext(RunComponentInTestContext, {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: { componentName: "Settings", errors: {} },
     });
     // no accordion sections open
@@ -185,9 +185,12 @@ describe("Settings", () => {
 
   test("renders as expected when run settings have not been initialised and there are no errors", async () => {
     mockPersistentSettingsStore({});
-    const { container } = renderInI18nTestContext(RunComponentInTestContext, {
-      props: { componentName: "Settings", errors: {} },
-    });
+    const { container } = renderInI18nTestContext(
+      RunRelatedComponentInTestContext,
+      {
+        props: { componentName: "Settings", errors: {} },
+      },
+    );
     // runSettings section should be open, with no errors displayed
     await expectOpenSections(["runSettings"]);
     expectNoErrors(container);
@@ -195,7 +198,7 @@ describe("Settings", () => {
 
   test("renders expected settings values", async () => {
     mockPersistentSettingsStore({});
-    const { container } = render(RunComponentInTestContext, {
+    const { container } = render(RunRelatedComponentInTestContext, {
       props: { componentName: "Settings", errors: {} },
     });
 
@@ -251,9 +254,12 @@ describe("Settings", () => {
     // any sections with errors should be opened - runSettings and userSettings
     mockPersistentSettingsStore({ runSettings: defaultSettings });
     const errors = testErrors();
-    const { rerender } = renderInI18nTestContext(RunComponentInTestContext, {
-      props: { componentName: "Settings", errors },
-    });
+    const { rerender } = renderInI18nTestContext(
+      RunRelatedComponentInTestContext,
+      {
+        props: { componentName: "Settings", errors },
+      },
+    );
     await expectOpenSections(["runSettings", "userSettings"]);
 
     // should update to open new error sections when errors update with new sections -
@@ -299,7 +305,7 @@ describe("Settings", () => {
       ],
     };
 
-    const { rerender, container } = render(RunComponentInTestContext, {
+    const { rerender, container } = render(RunRelatedComponentInTestContext, {
       props: { componentName: "Settings", errors },
     });
     expectErrorsDisplayed(expectedErrors);
@@ -325,7 +331,7 @@ describe("Settings", () => {
   test("handles updates to run settings by saving settings and calling onchange", async () => {
     mockPersistentSettingsStore({ runSettings: defaultSettings });
     const onchange = vi.fn();
-    const { container } = render(RunComponentInTestContext, {
+    const { container } = render(RunRelatedComponentInTestContext, {
       props: { componentName: "Settings", errors: {}, onchange },
     });
 
@@ -386,7 +392,7 @@ describe("Settings", () => {
   test("handles updates to piranha output settings by calling onchange", async () => {
     mockPersistentSettingsStore({ runSettings: defaultSettings });
     const onchange = vi.fn();
-    const { container } = render(RunComponentInTestContext, {
+    const { container } = render(RunRelatedComponentInTestContext, {
       props: { componentName: "Settings", errors: {}, onchange },
     });
 

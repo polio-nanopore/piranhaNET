@@ -1,7 +1,7 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { render } from "@testing-library/svelte";
-import RunComponentInTestContext from "./RunComponentInTestContext.svelte";
+import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import { screen } from "@testing-library/svelte";
@@ -36,7 +36,7 @@ describe("RunParameters", () => {
   });
 
   test("renders as expected", async () => {
-    renderInI18nTestContext(RunComponentInTestContext, {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: { componentName: "RunParameters" },
     });
     await expectTranslations(
@@ -116,7 +116,7 @@ describe("RunParameters", () => {
   });
 
   test("does not validate before Run button pressed, and does not submit Run if form is not valid", async () => {
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: { componentName: "RunParameters" },
     });
     const expectNoErrors = (): void =>
@@ -148,7 +148,7 @@ describe("RunParameters", () => {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: { componentName: "RunParameters" },
     });
     await user.type(screen.getByLabelText("Name"), "test name");
@@ -179,7 +179,7 @@ describe("RunParameters", () => {
     runParameters.barcodesFilePath = "/store/barcodes.csv";
     runParameters.minKnowFolderPath = "/store/MinKnow";
     runParameters.threads = 11;
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: { componentName: "RunParameters" },
     });
     expect(screen.getByLabelText("Name").value).toBe("store name");
@@ -194,7 +194,7 @@ describe("RunParameters", () => {
   });
 
   test("Shows error if analysis threads value is too low, too high or not an integer", async () => {
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: { componentName: "RunParameters" },
     });
     await user.click(screen.getByTestId("run")); // Do initial run click to trigger auto validation on value change
@@ -222,7 +222,7 @@ describe("RunParameters", () => {
   test("validates on load if initial submit has been done", async () => {
     runParameters.threads = 21;
     appState.doneInitialSubmit = true;
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: { componentName: "RunParameters" },
     });
     expect(screen.getByTestId("threads-field-error")).toHaveTextContent(

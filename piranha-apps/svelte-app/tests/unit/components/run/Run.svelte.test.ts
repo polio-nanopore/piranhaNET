@@ -4,7 +4,7 @@ import {
   mockPersistentSettingsStore,
   renderInI18nTestContext,
 } from "../../utils";
-import RunComponentInTestContext from "./RunComponentInTestContext.svelte";
+import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { screen, render } from "@testing-library/svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 
@@ -20,7 +20,7 @@ describe("Run", () => {
   test("renders as expected when user settings have not been persisted", async () => {
     mockPersistentSettingsStore({ userSettings: null });
     mockPiranhaAPI({ running: false });
-    renderInI18nTestContext(RunComponentInTestContext, {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",
       },
@@ -48,7 +48,7 @@ describe("Run", () => {
   test("renders as expected when piranha has not started running", async () => {
     mockPersistentSettingsStore(mockSettings);
     mockPiranhaAPI({ running: false });
-    renderInI18nTestContext(RunComponentInTestContext, {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",
       },
@@ -67,7 +67,7 @@ describe("Run", () => {
 
   test("render as expected when piranha has started running", async () => {
     mockPiranhaAPI({ running: true, log: ["log entry 1", "log entry 2"] });
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",
       },
