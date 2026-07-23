@@ -65,7 +65,7 @@
         <span class="font-bold">{runParameters.minKnowFolderPath}</span>
       </div>
     </div>
-    <div class="h-[2rem] flex items-center">
+    <div class="h-[2rem] flex items-center space-x-2">
       {m.settingOutputFolder()}:
       <span class="font-bold">{settings.outputFolderPath}</span>
       {#if piranhaAPI.runSucceeded}
