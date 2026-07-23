@@ -97,7 +97,7 @@ describe("RunProgress", () => {
     expect(screen.queryByTestId("open-output-folder")).toBeNull();
   });
 
-  test("see check and open results button when running is complete with no error", async () => {
+  test("see Check and Open Results buttons when running is complete with no error", async () => {
     mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],

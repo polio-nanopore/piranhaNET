@@ -71,7 +71,7 @@ export class PiranhaRunner {
       `--username ${escapeOption(options.userName || "")}`,
       `--institute ${escapeOption(options.institute || "")}`,
       `--language ${lang}`,
-      `--medaka-model AUTO`
+      `--medaka-model AUTO`,
     ].join(" ");
 
     // Because we're running as non-root user we need to make sure home and cache used by snakemake don't default to
