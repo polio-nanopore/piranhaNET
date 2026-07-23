@@ -209,17 +209,13 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
   await expect(log).toHaveText(/Setting overwrite: True/);
   await expect(log).toHaveText(/Setting all_metadata_to_header: True/);
 
-  // Eventually see run finished messages
+  // Eventually see run completed successfully
+  await expect(win.getByTestId("run-progress-check")).toBeVisible({timeout: 300_000})
+
   await expect(log).toHaveText(
-    /Generating: \/data\/run_data\/output\/piranha_output\/report\.html/,
-    {
-      timeout: 300_000,
-    },
+    /Generating: \/data\/run_data\/output\/piranha_output\/report\.html/
   );
   await expect(log).toHaveText(/Piranha Run Finished/);
-
-  // See completed check
-  expect(await win.getByTestId("run-progress-check")).toBeVisible();
 
   expect(await getOpenReportButton(win)).toBeEnabled();
   expect(await getOpenOutputFolderButton(win)).toBeEnabled();
