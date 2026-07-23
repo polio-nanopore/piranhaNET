@@ -53,7 +53,7 @@ export class PiranhaAPI {
   }
 
   async #findOutputFolderFromLog(): Promise<void> {
-    // Find local report path from docker volume path in written in log, if run was successful
+    // Find local report path from docker volume path written in log, if run was successful
     const fullLog = this.#log.join(" ");
     const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
     if (match) {
