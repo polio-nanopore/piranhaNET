@@ -64,6 +64,7 @@
   >
     <FormField
       label={m.parameterName()}
+      help={m.helpParameterName()}
       error={errors.name}
       labelFor="name-field"
     >
@@ -72,6 +73,7 @@
     </FormField>
     <FormField
       label={m.parameterBarcodesFile()}
+      help={m.helpParameterBarcodesFile()}
       error={errors.barcodesFilePath}
       labelFor="barcodes-file-field"
     >
@@ -86,6 +88,7 @@
     </FormField>
     <FormField
       label={m.parameterMinKnowFolder()}
+      help={m.helpParameterMinKnowFolder()}
       error={errors.minKnowFolderPath}
       labelFor="minknow-folder-field"
     >
@@ -99,6 +102,7 @@
     </FormField>
     <FormField
       label={m.parameterNotes()}
+      help={m.helpParameterNotes()}
       error={errors.notes}
       labelFor="notes-field"
     >
@@ -110,6 +114,7 @@
     </FormField>
     <FormField
       label={m.parameterThreads()}
+      help={m.helpParameterThreads()}
       error={errors.threads}
       labelFor="threads-field"
     >
