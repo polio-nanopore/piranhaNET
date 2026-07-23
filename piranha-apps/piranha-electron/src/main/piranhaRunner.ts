@@ -43,7 +43,7 @@ export class PiranhaRunner {
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
-    // Piranha only supporte English and French just now - default to English for Portuguese
+    // Piranha only supports English and French just now - default to English for Portuguese
     const lang = options.lang === "fr" ? "French" : "English";
 
     const envString = [
