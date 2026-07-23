@@ -25,7 +25,7 @@
 <div class={`space-y-2 py-3 ${className ?? ""}`}>
   {#if help}
     <Tooltip.Root>
-      <Tooltip.Trigger class="float-right pl-2">
+      <Tooltip.Trigger class="float-right ml-2">
         <CircleQuestionMark size="16"></CircleQuestionMark>
       </Tooltip.Trigger>
       <Tooltip.Content>
