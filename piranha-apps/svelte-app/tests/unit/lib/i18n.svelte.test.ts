@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import * as paraglide from "../../../../svelte-app/src/paraglide/runtime";
-import { i18n } from "../../src/lib/i18n.svelte.js";
+import { i18n } from "../../../src/lib/i18n.svelte.js";
 
 const { setItemSpy } = vi.hoisted(() => {
   vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => "fr");

@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as ansi_up from "ansi_up";
+  import throttle from "throttleit";
   import { m } from "../../paraglide/messages";
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
@@ -7,6 +8,7 @@
   import { piranhaAPI } from "$lib/piranhaAPI.svelte";
   import { runParameters, settings } from "$lib/store.svelte";
 
+  let logEl;
   const ansi = new ansi_up.AnsiUp();
 
   const borderColour = $derived(
@@ -16,6 +18,22 @@
         ? "border-red-600"
         : "border-green-600",
   );
+
+  const scrollLogToEnd = throttle(() => {
+    if (logEl) {
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  }, 300);
+
+  $effect(() => {
+    if (piranhaAPI.log.length) {
+      scrollLogToEnd();
+    }
+  });
+
+  const clearRun = (): void => {
+    piranhaAPI.clearRun();
+  };
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -37,19 +55,33 @@
         {/if}
       </div>
     </div>
-    <div>
+    <div class="h-[2rem] flex items-center">
       {m.parameterBarcodesFile()}:
       <span class="font-bold">{runParameters.barcodesFilePath}</span>
     </div>
-    <div>
-      {m.parameterMinKnowFolder()}:
-      <span class="font-bold">{runParameters.minKnowFolderPath}</span>
+    <div class="h-[2rem] flex items-center">
+      <div>
+        {m.parameterMinKnowFolder()}:
+        <span class="font-bold">{runParameters.minKnowFolderPath}</span>
+      </div>
     </div>
-    <div>
+    <div class="h-[2rem] flex items-center space-x-2">
       {m.settingOutputFolder()}:
       <span class="font-bold">{settings.outputFolderPath}</span>
+      {#if piranhaAPI.runSucceeded}
+        <Button
+          data-testid="open-report"
+          onclick={async () => await piranhaAPI.openRunReport()}
+          >{m.openReport()}</Button
+        >
+        <Button
+          data-testid="open-output-folder"
+          onclick={async () => await piranhaAPI.openRunOutputFolder()}
+          >{m.openOutputFolder()}</Button
+        >
+      {/if}
     </div>
-    <code class="piranha-logs mt-2" data-testid="logs">
+    <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
       {#each piranhaAPI.log as logentry, index (index)}
         <!-- eslint-disable  svelte/no-at-html-tags -->
         {@html ansi.ansi_to_html(logentry)}<br />
@@ -57,8 +89,8 @@
     </code>
   </div>
   {#if !piranhaAPI.running}
-    <Button class="action float-end" onclick={() => piranhaAPI.clearLog()}
-      >{m.newRun()}</Button
-    >
+    <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
+      {m.newRun()}
+    </Button>
   {/if}
 </div>

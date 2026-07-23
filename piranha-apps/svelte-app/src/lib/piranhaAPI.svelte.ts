@@ -7,6 +7,8 @@ export class PiranhaAPI {
   #error = $state("");
   #log: string[] = $state([]);
   #decoder = new TextDecoder("utf-8");
+  #options: PiranhaRunOptions | null = $state(null);
+  #runOutputFolderName = $state("");
 
   constructor() {
     window.api?.onInitialized(() => {
@@ -18,8 +20,9 @@ export class PiranhaAPI {
       const lines = textChunk.split("\n");
       this.#log.push(...lines);
     });
-    window.api?.onEnd(() => {
+    window.api?.onEnd(async () => {
       this.#log.push("Piranha Run Finished");
+      await this.#findOutputFolderFromLog();
       this.#running = false;
     });
     window.api?.onError((e, detail) => {
@@ -37,6 +40,10 @@ export class PiranhaAPI {
     return this.#running;
   }
 
+  get runSucceeded(): boolean {
+    return !!this.#runOutputFolderName;
+  }
+
   get error(): string {
     return this.#error;
   }
@@ -45,18 +52,44 @@ export class PiranhaAPI {
     return this.#log;
   }
 
+  async #findOutputFolderFromLog(): Promise<void> {
+    // Find local report path from docker volume path written in log, if run was successful
+    const fullLog = this.#log.join(" ");
+    const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
+    if (match) {
+      this.#runOutputFolderName = match[1];
+    }
+  }
+
   runPiranha(options: PiranhaRunOptions): void {
     if (this.#running) {
       throw new Error(m.apiErrorAlreadyRunning());
     }
     this.#log = [];
+    this.#options = options;
     window.api.runPiranha(options);
     this.#running = true;
   }
 
-  clearLog(): void {
+  clearRun(): void {
     this.#log = [];
     this.#error = "";
+    this.#options = null;
+    this.#runOutputFolderName = "";
+  }
+
+  async openRunReport(): Promise<void> {
+    await window.api.openRunReport(
+      this.#options.outputFolderPath,
+      this.#runOutputFolderName,
+    );
+  }
+
+  async openRunOutputFolder(): Promise<void> {
+    await window.api.openRunOutputFolder(
+      this.#options.outputFolderPath,
+      this.#runOutputFolderName,
+    );
   }
 }
 

@@ -7,7 +7,7 @@ import {
   mockPersistentSettingsStore,
   renderInI18nTestContext,
   expectErrorFor,
-} from "../../../utils";
+} from "../../utils";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
 import { render, screen } from "@testing-library/svelte";
 import { persistentSettingsStore } from "../../../../src/lib/persistentSettingsStore";

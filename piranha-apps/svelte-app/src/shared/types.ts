@@ -18,6 +18,7 @@ export interface PiranhaRunOptions {
   dateStamp: boolean;
   userName: string;
   institute: string;
+  lang: string;
 }
 
 export interface FileDialogOptions {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { piranhaAPI } from "$lib//piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
   import Welcome from "./Welcome.svelte";

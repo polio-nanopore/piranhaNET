@@ -1,12 +1,23 @@
 import type { PiranhaRunOptions } from "../../../svelte-app/src/shared/types";
 import Docker from "dockerode";
+import { userInfo } from "node:os";
 
 // Class for pulling piranha docker image and using it to run piranha jobs, used by Electron main process
 export class PiranhaRunner {
   private readonly imageRef: string;
+  private readonly isWindows: boolean;
+  private readonly userName: string;
+  private readonly userMapping: string | undefined;
   private docker = new Docker();
-  constructor(imageName = "polionanopore/piranha", imageTag = "latest") {
+  constructor(imageName = "polionanopore/piranha", imageTag = "1.6.3") {
     this.imageRef = `${imageName}:${imageTag}`;
+    const { username, uid, gid } = userInfo();
+    this.userName = username;
+    // We use the current user's id (uid) and group id (gid) to run docker on non-Windows OSes as otherwise it runs as
+    // root and causes file permission problems
+    this.isWindows = process.platform === "win32";
+    this.userMapping =
+      !this.isWindows && uid !== -1 ? `${uid}:${gid}` : undefined;
   }
 
   public async pullPiranhaImage(
@@ -37,6 +48,9 @@ export class PiranhaRunner {
     // arg strings with underscores
     const escapeOption = (o: string): string => o.replaceAll(" ", "_");
 
+    // Piranha only supports English and French just now - default to English for Portuguese
+    const lang = options.lang === "fr" ? "French" : "English";
+
     const envString = [
       // run parameters
       `THREADS=${options.threads || 1}`,
@@ -56,9 +70,18 @@ export class PiranhaRunner {
       // user settings
       `--username ${escapeOption(options.userName || "")}`,
       `--institute ${escapeOption(options.institute || "")}`,
+      `--language ${lang}`,
+      `--medaka-model AUTO`,
     ].join(" ");
 
-    const env = [envString];
+    // Because we're running as non-root user we need to make sure home and cache used by snakemake don't default to
+    // /root.
+    const env = ["XDG_CACHE_HOME=/tmp/.cache", "HOME=/tmp", envString];
+    if (!this.isWindows) {
+      env.push(`USER=${this.userName}`);
+    }
+
+    // We also need to set USER (for non-Windows) as this is used by some piranha dependencies
 
     const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";
     const containerBaseCalledPath = "/data/run_data/basecalled";
@@ -75,6 +98,7 @@ export class PiranhaRunner {
           containerBaseCalledPath: {},
           containerOutputPath: {},
         },
+        User: this.userMapping,
         HostConfig: {
           Binds: [
             `${options.barcodesFilePath}:${containerBarcodesFilePath}`,

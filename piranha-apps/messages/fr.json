@@ -13,6 +13,8 @@
   "initializing": "Initialisation",
   "newRun": "Nouvelle course",
   "newSequencingRun": "Nouvelle séquence",
+  "openReport": "Ouvrir le rapport",
+  "openOutputFolder": "Ouvrir le dossier de sortie",
   "parameterBarcodesFile": "Fichier de codes-barres",
   "parameterMinKnowFolder": "Dossier MinKnow",
   "parameterName": "Nom",

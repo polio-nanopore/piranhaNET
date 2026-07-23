@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
-import { join } from "path";
+import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
@@ -10,6 +10,7 @@ import {
 } from "../../../svelte-app/src/shared/types";
 
 const runner = new PiranhaRunner();
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -19,7 +20,7 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
+      preload: path.join(__dirname, "../preload/index.js"),
       sandbox: false,
     },
   });
@@ -64,7 +65,7 @@ function createWindow(): void {
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
-    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 
   /**
@@ -111,6 +112,22 @@ function createWindow(): void {
     }
   });
 }
+
+ipcMain.handle(
+  "open-run-report",
+  async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
+    // Convert file path to file:// url
+    const fileUrl = `file://${path.join(outputFolderBasePath, runOutputFolderName, "report.html")}`;
+    await shell.openExternal(fileUrl);
+  },
+);
+
+ipcMain.handle(
+  "open-run-output-folder",
+  async (_event, outputFolderBasePath: string, runOutputFolderName: string) => {
+    await shell.openPath(path.join(outputFolderBasePath, runOutputFolderName));
+  },
+);
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
