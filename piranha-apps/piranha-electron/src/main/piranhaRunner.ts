@@ -10,7 +10,8 @@ export class PiranhaRunner {
   constructor(imageName = "polionanopore/piranha", imageTag = "latest") {
     this.imageRef = `${imageName}:${imageTag}`;
     const { uid, gid } = userInfo();
-    // We use the current user to run docker on non-Windows OSes as otherwise it runs as root and causes file permission problems
+    // We use the current user's id (uid) and group id (gid) to run docker on non-Windows OSes as otherwise it runs as
+    // root and causes file permission problems
     this.userMapping =
       process.platform !== "win32" && uid !== -1 ? `${uid}:${gid}` : undefined;
   }
