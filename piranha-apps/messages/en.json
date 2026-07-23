@@ -19,7 +19,7 @@
   "helpSettingDateStamp": "Append datestamp to output folder name, if not overwriting",
   "helpSettingInstitute": "Institute name to appear in report",
   "helpSettingNegativeControl": "Name of negative control sample. If multiple samples, supply as comma-separated string of sample names. e.g. sample01,sample02",
-  "helpSettingOrientation": "Orientation of barcodes in wells on a 96-well plate. If `well` is supplied as a column in the barcodes file, this default orientation will be overwritten.",
+  "helpSettingOrientation": "Orientation of barcodes in wells on a 96-well plate. If 'well' is supplied as a column in the barcodes file, this default orientation will be overwritten.",
   "helpSettingOutputFolder": "Base folder into which all output will be written",
   "helpSettingOutputIntermediateFiles": "Output all intermediate files, for development or debugging purposes",
   "helpSettingOutputPrefix": "Prefix of output folder and report name",

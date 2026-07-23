@@ -19,7 +19,7 @@
   "helpSettingDateStamp": "Ajouter un horodatage au nom du dossier de sortie, sauf en cas d'écrasement",
   "helpSettingInstitute": "Nom de l'intstitut à afficher dans le rapport",
   "helpSettingNegativeControl": "Nom de l'échantllon de contrôle négatif. S'il y a plusieurs échantillons, indiquez-les sous forme d'une chaîne de noms séparés par des virgules (par ex. : sample01,sample02).",
-  "helpSettingOrientation": "Orientation des codes-barres dans les puits d'une plaque de 96 puits. Si `well` est fourni en tant que colonne dans le fichier de codes-barres, cette orientation par défaut sera remplacée.",
+  "helpSettingOrientation": "Orientation des codes-barres dans les puits d'une plaque de 96 puits. Si 'well' est fourni en tant que colonne dans le fichier de codes-barres, cette orientation par défaut sera remplacée.",
   "helpSettingOutputFolder": "Dossier de base dans lequel toutes les sorties seront écrites",
   "helpSettingOutputIntermediateFiles": "Générer tous les fichiers intermédiaires, à des fins de développement ou de débogage",
   "helpSettingOutputPrefix": "Préfixe du dossier de sortie et du nom du rapport",
