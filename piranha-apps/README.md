@@ -89,6 +89,10 @@ systems without a default display driver. See [here](https://www.electronjs.org/
 
 The `test:e2e` script also pre-builds the app, as Playwright needs to use a built js application, not Typescript directly.
 
+To see additional logging during the e2e tests, you can switch on debug logging by changing the `test-electron:e2e` script to:
+`electron-vite piranha-electron/build && DEBUG=pw:api xvfb-run npx playwright test`
+
+
 ### Lint
 
 Run lint without making changes: `npm run lint`

@@ -28,7 +28,7 @@
     "test:unit": "vitest svelte-app/tests/unit/",
     "test-electron:integration": "vitest piranha-electron/tests/integration/",
     "coverage": "vitest run --coverage",
-    "test-electron:e2e": "electron-vite piranha-electron/build && DEBUG=pw:api xvfb-run npx playwright test"
+    "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
