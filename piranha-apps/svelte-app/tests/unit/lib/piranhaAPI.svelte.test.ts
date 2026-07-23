@@ -104,5 +104,7 @@ describe("piranhaAPI", () => {
     sut.clearRun();
     expect(sut.log.length).toBe(0);
     expect(sut.error).toBe("");
+    expect(sut.options).toBeNull();
+    expect(sut.runOutputFolderName).toBe("");
   });
 });
