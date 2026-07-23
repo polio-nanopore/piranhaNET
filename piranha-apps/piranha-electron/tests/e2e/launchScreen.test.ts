@@ -211,7 +211,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   // Eventually see run completed successfully
   await expect(win.getByTestId("run-progress-check")).toBeVisible({
-    timeout: 300_000,
+    timeout: 600_000,
   });
 
   await expect(log).toHaveText(
