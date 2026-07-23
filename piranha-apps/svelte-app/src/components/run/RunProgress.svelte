@@ -55,15 +55,17 @@
         {/if}
       </div>
     </div>
-    <div>
+    <div class="h-[2rem] flex items-center">
       {m.parameterBarcodesFile()}:
       <span class="font-bold">{runParameters.barcodesFilePath}</span>
     </div>
-    <div>
-      {m.parameterMinKnowFolder()}:
-      <span class="font-bold">{runParameters.minKnowFolderPath}</span>
+    <div class="h-[2rem] flex items-center">
+      <div>
+        {m.parameterMinKnowFolder()}:
+        <span class="font-bold">{runParameters.minKnowFolderPath}</span>
+      </div>
     </div>
-    <div>
+    <div class="h-[2rem] flex items-center">
       {m.settingOutputFolder()}:
       <span class="font-bold">{settings.outputFolderPath}</span>
       {#if piranhaAPI.runSucceeded}
