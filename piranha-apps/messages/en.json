@@ -28,6 +28,8 @@
   "helpSettingProtocol": "Sample type for this run, which determines which protocol will be used",
   "helpSettingUserName": "User name to appear in report",
   "initializing": "Initializing",
+  "initErrorGuidanceWindows": "Docker desktop must be installed and running",
+  "initErrorRestart": "Please close PiranhaNET and restart when ready.",
   "newRun": "New Run",
   "newSequencingRun": "New Sequencing Run",
   "openReport": "Open report",

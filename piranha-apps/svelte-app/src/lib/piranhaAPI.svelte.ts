@@ -26,9 +26,9 @@ export class PiranhaAPI {
       this.#running = false;
     });
     window.api?.onError((e, detail) => {
-      this.#error = e;
+      this.#error = `${e}: ${detail}`;
       // Add error to log, including ansi sequence to show in Red
-      this.#log.push(`\x1b[1;31m${e}: ${detail}`);
+      this.#log.push(`\x1b[1;31m${this.#error}`);
     });
   }
 

@@ -29,7 +29,13 @@ function createWindow(): void {
     mainWindow.maximize();
     mainWindow.show();
 
+    // TODO: take this out!
+    const sleep = async (ms) => {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
     try {
+      await sleep(10000);
       await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
     } catch (e) {

@@ -28,6 +28,7 @@
   "helpSettingProtocol": "Type d'échantillon pour cette analyse, qui détermine le protocole à utiliser",
   "helpSettingUserName": "Nom d'utilisateur à afficher dans le rapport",
   "initializing": "Initialisation",
+  "initErrorRestart": "Veuillez fermer PiranhaNET et le redémarrer lorsque vous êtes prêt.",
   "newRun": "Nouvelle course",
   "newSequencingRun": "Nouvelle séquence",
   "openReport": "Ouvrir le rapport",
