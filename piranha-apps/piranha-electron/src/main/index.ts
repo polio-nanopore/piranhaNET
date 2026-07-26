@@ -39,9 +39,10 @@ function createWindow(): void {
       await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
     } catch (e) {
+      const messageKey = runner.osIsWindows ? "initErrorGuidanceWindows" : "initErrorGuidanceNonWindows"
       mainWindow.webContents.send(
         "error",
-        "Initialization error",
+        messageKey,
         (e as Error).message,
       );
     }
@@ -112,7 +113,7 @@ function createWindow(): void {
     } catch (e) {
       mainWindow.webContents.send(
         "error",
-        "Piranha Run error",
+        "runError",
         (e as Error).message,
       );
     }

@@ -5,13 +5,15 @@
   const {messageKey} = $props();
 </script>
 
-<ParaglideMessage
-  message={m[messageKey]}
-  inputs={{}}
->
-  {#snippet link({ children, options })}
-    <a href={options.to} target="_blank">
-    {@render children?.()}
-    </a>
-  {/snippet}
-</ParaglideMessage>
+<div>
+  <ParaglideMessage
+    message={m[messageKey]}
+    inputs={{}}
+  >
+    {#snippet link({ children, options })}
+      <a href={options.to} target="_blank" class="text-blue-600">
+      {@render children?.()}
+      </a>
+    {/snippet}
+  </ParaglideMessage>
+</div>
