@@ -1,0 +1,40 @@
+name: PiranhaNET Installers
+on:
+  release:
+    types: [created]
+  workflow_dispatch: # can run manually for testing without a release
+jobs:
+  build-win:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./piranha-apps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Install Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.9
+          cache: npm
+          cache-dependency-path: piranha-apps/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Build installer
+        run: npm run build-electron:win
+      - name: Add to release (if there is one)
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: piranha-apps/dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact (if manual workflow run)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v7
+        with:
+          name: piranhanet-windows-installer-${{ github.run_number }}
+          path: piranha-apps/dist/*.exe
+          retention-days: 10
+  

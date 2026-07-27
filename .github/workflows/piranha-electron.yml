@@ -31,29 +31,3 @@ jobs:
         run: mkdir -p ../test-results
       - name: E2e test
         run: npm run test-electron:e2e
-  build-win:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./piranha-apps
-    needs: test
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: Install Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24.9
-          cache: npm
-          cache-dependency-path: piranha-apps/package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Build installer
-        run: npm run build-electron:win
-      - name: Upload artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: piranhanet-windows-installer-${{ github.run_number }}
-          path: piranha-apps/dist/*.exe
-          retention-days: 10
