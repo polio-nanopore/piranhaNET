@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/svelte";
+import { tick } from "svelte";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import Nav from "../../../../src/components/nav/Nav.svelte";
@@ -53,16 +54,18 @@ describe("Nav", () => {
     );
   });
 
-  test("navigates to current route on load, if initial navigation has been done", () => {
+  test("navigates to current route on load, if initial navigation has been done", async () => {
     mockRouter.path = "/test";
     routerHelper.initialNavigationDone = true;
     render(Nav);
+    await tick(); // Wait for navigation
     expect(mockRouter.navigate).toHaveBeenCalledWith("/test");
   });
 
-  test("navigates to run on load, if initial navigation has not been done", () => {
+  test("navigates to run on load, if initial navigation has not been done", async () => {
     routerHelper.initialNavigationDone = false;
     render(Nav);
+    await tick(); // Wait for navigation
     expect(mockRouter.navigate).toHaveBeenCalledWith("/");
   });
 
