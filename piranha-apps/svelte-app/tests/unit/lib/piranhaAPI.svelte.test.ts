@@ -69,7 +69,10 @@ describe("piranhaAPI", () => {
     expect(sut.error).toBe(null);
     const setError = window.api.onError.mock.calls[0][0];
     setError("runError", "something went wrong");
-    expect(sut.error).toStrictEqual({messageKey: "runError", "detail": "something went wrong"});
+    expect(sut.error).toStrictEqual({
+      messageKey: "runError",
+      detail: "something went wrong",
+    });
     expect(sut.log).toStrictEqual([
       "\x1b[1;31mPiranha Run error: something went wrong",
     ]);
@@ -101,7 +104,10 @@ describe("piranhaAPI", () => {
     sut.log.push("log msg 2");
     const setError = window.api.onError.mock.calls[0][0];
     setError("initErrorGuidanceWindows", "something went wrong");
-    expect(sut.error).toStrictEqual({messageKey: "initErrorGuidanceWindows", detail: "something went wrong"})
+    expect(sut.error).toStrictEqual({
+      messageKey: "initErrorGuidanceWindows",
+      detail: "something went wrong",
+    });
     expect(sut.log.length).toBe(3);
     sut.clearRun();
     expect(sut.log.length).toBe(0);

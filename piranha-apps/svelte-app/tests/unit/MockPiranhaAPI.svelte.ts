@@ -1,6 +1,6 @@
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { vi } from "vitest";
-import {PiranhaError} from "../../src/lib/piranhaAPI.svelte";
+import { PiranhaError } from "../../src/lib/piranhaAPI.svelte";
 
 export interface APIMock {
   initialized: boolean;

@@ -2,8 +2,8 @@ import type { PiranhaRunOptions } from "../shared/types";
 import { m } from "../paraglide/messages";
 
 export interface PiranhaError {
-  messageKey: string,
-  detail: string
+  messageKey: string;
+  detail: string;
 }
 
 export class PiranhaAPI {
@@ -31,7 +31,7 @@ export class PiranhaAPI {
       this.#running = false;
     });
     window.api?.onError((messageKey, detail) => {
-      this.#error = {messageKey, detail};
+      this.#error = { messageKey, detail };
       // Add error to log, including ansi sequence to show in Red
       this.#log.push(`\x1b[1;31m${m[messageKey]()}: ${detail}`);
     });

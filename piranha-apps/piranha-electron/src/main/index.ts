@@ -33,12 +33,10 @@ function createWindow(): void {
       await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
     } catch (e) {
-      const messageKey = runner.osIsWindows ? "initErrorGuidanceWindows" : "initErrorGuidanceNonWindows"
-      mainWindow.webContents.send(
-        "error",
-        messageKey,
-        (e as Error).message,
-      );
+      const messageKey = runner.osIsWindows
+        ? "initErrorGuidanceWindows"
+        : "initErrorGuidanceNonWindows";
+      mainWindow.webContents.send("error", messageKey, (e as Error).message);
     }
   });
 
@@ -105,11 +103,7 @@ function createWindow(): void {
     try {
       await runner.runPiranha(options, writable);
     } catch (e) {
-      mainWindow.webContents.send(
-        "error",
-        "runError",
-        (e as Error).message,
-      );
+      mainWindow.webContents.send("error", "runError", (e as Error).message);
     }
   });
 }
