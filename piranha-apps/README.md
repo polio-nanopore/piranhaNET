@@ -33,6 +33,8 @@ $ npm run dev-web
 
 #### Troubleshooting
 
+##### libEGL warning
+
 You may see errors like this when running in dev on Ubuntu:
 
 ```
@@ -46,6 +48,26 @@ sudo apt-get install libnvidia-egl-wayland1
 ```
 
 This did not appear to be an issue when running with the app built in production mode.
+
+##### SUID sandbox error
+
+Another error that may occur on set-up on Ubuntu 24.04 looks like this:
+
+```
+[<some numbers here>:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/dmears/projects/polio-nanopore/piranhaNET/piranha-apps/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.
+```
+
+This can be addressed by following [this comment](https://github.com/electron/electron/issues/42510#issuecomment-2171583086)'s advice to first lift a restriction introduced by Ubuntu 24.04, and you should probably reset that setting once you have successfully started the app:
+
+```sh
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+```
+
+Afterwards:
+
+```sh
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
+```
 
 ### Internationalisation
 
@@ -88,6 +110,9 @@ In order to run the Playwright tests on GitHub Actions, the `test:e2e` script us
 systems without a default display driver. See [here](https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci) for more details.
 
 The `test:e2e` script also pre-builds the app, as Playwright needs to use a built js application, not Typescript directly.
+
+To see additional logging during the e2e tests, you can switch on debug logging by changing the `test-electron:e2e` script to:
+`electron-vite piranha-electron/build && DEBUG=pw:api xvfb-run npx playwright test`
 
 ### Lint
 

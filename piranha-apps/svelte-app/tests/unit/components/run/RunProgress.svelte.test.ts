@@ -97,7 +97,7 @@ describe("RunProgress", () => {
     expect(screen.queryByTestId("open-output-folder")).toBeNull();
   });
 
-  test("see check and open results button when running is complete with no error", async () => {
+  test("see Check and Open Results buttons when running is complete with no error", async () => {
     mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
@@ -220,7 +220,7 @@ describe("RunProgress", () => {
     piranhaAPI.log.push(["more", "log", "content"]);
 
     // Wait for debounce to trigger update
-    await vi.advanceTimersByTimeAsync(1000);
+    await vi.advanceTimersByTimeAsync(300);
     expect(scrollHeightSpy).toHaveBeenCalled();
     expect(scrollTopToUpdate).toBe(500);
   });

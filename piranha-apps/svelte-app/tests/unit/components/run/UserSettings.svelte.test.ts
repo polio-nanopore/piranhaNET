@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
-import RunComponentInTestContext from "./RunComponentInTestContext.svelte";
+import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { settings } from "../../../../src/lib/store.svelte.js";
 import { i18n } from "$lib/i18n.svelte";
 import {
@@ -21,7 +21,7 @@ describe("UserSettings", () => {
   });
 
   test("renders values as expected", async () => {
-    renderInI18nTestContext(RunComponentInTestContext, {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: { componentName: "UserSettings", errors: {} },
     });
     await expectTranslations(
@@ -52,7 +52,7 @@ describe("UserSettings", () => {
       institute: ["Institute error"],
       outputFolderPath: ["Output error"],
     };
-    renderInI18nTestContext(RunComponentInTestContext, {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: { componentName: "UserSettings", errors },
     });
     expectErrorFor("user-name-field", "User name error");
@@ -70,7 +70,7 @@ describe("UserSettings", () => {
       showFileDialog: mockShowFileDialog,
     };
 
-    render(RunComponentInTestContext, {
+    render(RunRelatedComponentInTestContext, {
       props: { componentName: "UserSettings", onchange, errors: {} },
     });
 
