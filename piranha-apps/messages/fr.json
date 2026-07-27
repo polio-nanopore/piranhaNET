@@ -28,7 +28,7 @@
   "helpSettingPositiveControl": "Nom de l'échantillon de contrôle positif. S'il y a plusieurs échantillons, indiquez-les sous forme d'une chaîne de noms séparés par des virgules (par ex. : sample01,sample02).",
   "helpSettingProtocol": "Type d'échantillon pour cette analyse, qui détermine le protocole à utiliser",
   "helpSettingUserName": "Nom d'utilisateur à afficher dans le rapport",
-  "initializing": "Initialisation",
+  "initializing": "Initialisation: téléchargement de l'image Docker Piranha. Veuillez patienter.",
   "initErrorGuidanceWindows": "Erreur d'initialisation : {#link to=|https://docs.docker.com/desktop/setup/install/windows-install/|}Docker Desktop{/link} doit être installé et en cours d'exécution, et vous devez disposer d'une connexion Internet pour récupérer l'image Piranha lors de la première exécution de PiranhaNET.",
   "initErrorGuidanceNonWindows": "Erreur d'initialisation : {#link to=|https://docs.docker.com/engine/|}Docker{/link} doit être installé et disponible, et vous devez disposer d'une connexion Internet pour récupérer l'image Piranha lors de la première exécution de PiranhaNET.",
   "initErrorRestart": "Veuillez fermer PiranhaNET et le redémarrer lorsque vous êtes prêt.",

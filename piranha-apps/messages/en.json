@@ -28,7 +28,7 @@
   "helpSettingPositiveControl": "Name of positive control sample. If multiple samples, supply as comma-separated string of sample names. e.g. sample01,sample02",
   "helpSettingProtocol": "Sample type for this run, which determines which protocol will be used",
   "helpSettingUserName": "User name to appear in report",
-  "initializing": "Initializing",
+  "initializing": "Initializing: downloading Piranha Docker image. Please wait.",
   "initErrorGuidanceWindows": "Initialization Error: {#link to=|https://docs.docker.com/desktop/setup/install/windows-install/|}Docker Desktop{/link} must be installed and running, and you need to have an internet connection to fetch the Piranha image the first time PiranhaNET runs.",
   "initErrorGuidanceNonWindows": "Initialization Error: {#link to=|https://docs.docker.com/engine/|}Docker{/link} must be installed and available and you need to have an internet connection to fetch the Piranha image the first time PiranhaNET runs.",
   "initErrorRestart": "Please close PiranhaNET and restart when ready.",

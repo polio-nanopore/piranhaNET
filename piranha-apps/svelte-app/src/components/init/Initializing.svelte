@@ -23,7 +23,7 @@
     {:else}
       <p class="flex">
         <Spinner class="text-orange-300 size-8 mr-4"></Spinner>
-        {m.initializing()}...
+        {m.initializing()}
       </p>
     {/if}
   </div>

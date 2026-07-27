@@ -28,7 +28,7 @@
   "helpSettingPositiveControl": "Nome da amostra do controlo positivo. Se existirem várias amostras, forneça os nomes das amostras separados por vírgulas. Exemplo: amostra01,amostra02",
   "helpSettingProtocol": "Tipo de amostra para esta análise, que determina qual o protocolo que será utilizado",
   "helpSettingUserName": "Nome de utilizador a ser apresentado no relatório",
-  "initializing": "Inicializando",
+  "initializing": "Inicializando: a descarregar a imagem Docker do Piranha. Aguarde.",
   "initErrorGuidanceWindows": "Erro de arranque: {#link to=|https://docs.docker.com/desktop/setup/install/windows-install/|}O Docker Desktop{/link} deve estar instalado e em execução, e necessita de uma ligação à Internet para obter a imagem do Piranha na primeira vez que o PiranhaNET é executado.",
   "initErrorGuidanceNonWindows": "Erro de arranque: {#link to=|https://docs.docker.com/engine/|}Docker{/link} deve estar instalado e disponível e é necessário ter uma ligação à internet para obter a imagem do Piranha na primeira vez que o PiranhaNET é executado.",
   "initErrorRestart": "Por favor, feche o PiranhaNET e reinicie quando estiver pronto.",
