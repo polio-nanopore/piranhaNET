@@ -1,9 +1,10 @@
 import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { vi } from "vitest";
+import {PiranhaError} from "../../src/lib/piranhaAPI.svelte";
 
 export interface APIMock {
   initialized: boolean;
-  error: string;
+  error: PiranhaError | null;
   log: string[];
   running: boolean;
   runSucceeded: boolean;
@@ -11,7 +12,7 @@ export interface APIMock {
 
 const defaultAPIMock: APIMock = {
   initialized: false,
-  error: "",
+  error: null,
   log: [],
   running: false,
   runSucceeded: false,
@@ -19,7 +20,7 @@ const defaultAPIMock: APIMock = {
 
 let initialized = $state(false);
 let running = $state(false);
-let error = $state("");
+let error = $state(null);
 let log = $state([]);
 let runSucceeded = $state(false);
 

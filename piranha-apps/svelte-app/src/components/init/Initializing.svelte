@@ -9,7 +9,7 @@
   <div class="justify-center text-xl mt-6">
     {#if piranhaAPI.error}
       <p class="flex">
-        <X class="text-red-600 mr-4"></X>
+        <X class="text-red-600 mr-4" data-testid="initializing-x"></X>
         <I18nMessageWithLinks messageKey={piranhaAPI.error.messageKey}></I18nMessageWithLinks>
       </p>
       {#if piranhaAPI.error.detail}
@@ -22,7 +22,7 @@
       </p>
     {:else}
       <p class="flex">
-        <Spinner class="text-orange-300 size-8 mr-4"></Spinner>
+        <Spinner class="text-orange-300 size-8 mr-4" data-testid="initializing-spinner"></Spinner>
         {m.initializing()}
       </p>
     {/if}
