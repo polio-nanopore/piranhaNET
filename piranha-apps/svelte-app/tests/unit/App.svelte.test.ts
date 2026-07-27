@@ -8,9 +8,9 @@ import { mockPiranhaAPI } from "./MockPiranhaAPI.svelte";
 // TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {
   const expectedInitTranslations = {
-    en: "Initializing...",
-    fr: "Initialisation...",
-    pt: "Inicializando...",
+    en: "Initializing: downloading Piranha Docker image. Please wait.",
+    fr: "Initialisation: téléchargement de l'image Docker Piranha. Veuillez patienter.",
+    pt: "Inicializando: a descarregar a imagem Docker do Piranha. Aguarde.",
   };
 
   const expectRunPage = async (): Promise<void> => {

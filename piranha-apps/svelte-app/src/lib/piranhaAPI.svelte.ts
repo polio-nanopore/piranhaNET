@@ -33,7 +33,7 @@ export class PiranhaAPI {
     window.api?.onError((messageKey, detail) => {
       this.#error = {messageKey, detail};
       // Add error to log, including ansi sequence to show in Red
-      this.#log.push(`\x1b[1;31m${m[messageKey]()}:${detail}`);
+      this.#log.push(`\x1b[1;31m${m[messageKey]()}: ${detail}`);
     });
   }
 
