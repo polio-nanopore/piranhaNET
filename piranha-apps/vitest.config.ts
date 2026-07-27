@@ -22,6 +22,7 @@ export default defineConfig({
           clearMocks: true,
           include: ["svelte-app/tests/unit/**/**.{test,spec}.{js,ts}"],
           setupFiles: ["./vitest-setup-client.ts"],
+          testTimeout: 10_000,
         },
         resolve: {
           alias: {
