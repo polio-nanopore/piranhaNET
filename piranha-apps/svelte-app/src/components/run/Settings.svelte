@@ -81,6 +81,7 @@
           >
             <FormField
               label={m.settingProtocol()}
+              help={m.helpSettingProtocol()}
               error={errors.protocol}
               labelFor="protocol-field"
             >
@@ -103,6 +104,7 @@
             </FormField>
             <FormField
               label={m.settingPositiveControl()}
+              help={m.helpSettingPositiveControl()}
               error={errors.positiveControl}
               labelFor="positive-control-field"
             >
@@ -114,6 +116,7 @@
             </FormField>
             <FormField
               label={m.settingNegativeControl()}
+              help={m.helpSettingNegativeControl()}
               error={errors.negativeControl}
               labelFor="negative-control-field"
             >
@@ -139,6 +142,7 @@
           >
             <FormField
               label={m.settingOrientation()}
+              help={m.helpSettingOrientation()}
               error={errors.orientation}
               labelFor="orientation-field"
             >
@@ -161,6 +165,7 @@
             </FormField>
             <FormField
               label={m.settingOutputPrefix()}
+              help={m.helpSettingOutputPrefix()}
               error={errors.outputPrefix}
               labelFor="output-prefix-field"
             >
@@ -173,6 +178,7 @@
             <div class="flex space-x-10">
               <FormField
                 label={m.settingOverwriteOutput()}
+                help={m.helpSettingOverwriteOutput()}
                 error={errors.overwriteOutput}
                 labelFor="overwrite-output-field"
               >
@@ -184,6 +190,7 @@
               </FormField>
               <FormField
                 label={m.settingOutputIntermediateFiles()}
+                help={m.settingOutputIntermediateFiles()}
                 error={errors.outputIntermediateFiles}
                 labelFor="output-intermediate-files-field"
               >
@@ -195,6 +202,7 @@
               </FormField>
               <FormField
                 label={m.settingAllMetadataToHeader()}
+                help={m.helpSettingAllMetadataToHeader()}
                 error={errors.allMetadataToHeader}
                 labelFor="all-metadata-to-header-field"
               >
@@ -206,6 +214,7 @@
               </FormField>
               <FormField
                 label={m.settingDateStamp()}
+                help={m.helpSettingDateStamp()}
                 error={errors.dateStamp}
                 labelFor="date-stamp-field"
               >

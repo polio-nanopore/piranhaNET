@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import { i18n } from "$lib/i18n.svelte";
-import Welcome from "../../../../src/components/run/Welcome.svelte";
+import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import {
   expectTranslations,
   renderInI18nTestContext,
@@ -24,7 +24,14 @@ describe("Welcome", () => {
   });
 
   test("renders as expected", async () => {
-    const { container } = renderInI18nTestContext(Welcome);
+    const { container } = renderInI18nTestContext(
+      RunRelatedComponentInTestContext,
+      {
+        props: {
+          componentName: "Welcome",
+        },
+      },
+    );
     await expectTranslations(
       (text) => {
         expect(screen.getByTestId("welcome")).toHaveTextContent(text);
@@ -67,7 +74,9 @@ describe("Welcome", () => {
 
     const onpersist = vi.fn();
 
-    const { container } = render(Welcome, { props: { onpersist } });
+    const { container } = render(RunRelatedComponentInTestContext, {
+      props: { componentName: "Welcome", onpersist },
+    });
     await user.type(screen.getByLabelText("User name"), "New name");
     await user.type(screen.getByLabelText("Institute"), "New Inst");
     await user.click(screen.getByLabelText("Output folder"));
@@ -80,7 +89,9 @@ describe("Welcome", () => {
 
   test("submit form displays errors when invalid, and updates on every change", async () => {
     const onpersist = vi.fn();
-    const { container } = render(Welcome, { props: { onpersist } });
+    const { container } = render(RunRelatedComponentInTestContext, {
+      props: { componentName: "Welcome", onpersist },
+    });
     await user.click(screen.getByTestId("continue"));
 
     const nameField = screen.getByLabelText("User name");

@@ -16,6 +16,7 @@
 
 <FormField
   label={m.settingUserName()}
+  help={m.helpSettingUserName()}
   error={errors.userName}
   labelFor="user-name-field"
 >
@@ -27,6 +28,7 @@
 </FormField>
 <FormField
   label={m.settingInstitute()}
+  help={m.helpSettingInstitute()}
   error={errors.institute}
   labelFor="institute-field"
 >
@@ -39,6 +41,7 @@
 
 <FormField
   label={m.settingOutputFolder()}
+  help={m.helpSettingOutputFolder()}
   error={errors.outputFolderPath}
   labelFor="output-folder-field"
 >
