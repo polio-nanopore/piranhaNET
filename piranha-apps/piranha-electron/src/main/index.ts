@@ -1,13 +1,14 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import pkg from '../../../package.json' with { type: 'json' };
+import pkg from "../../../package.json" with { type: "json" };
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
 import {
   FileDialogOptions,
-  PiranhaRunOptions, PiranhaVersions,
+  PiranhaRunOptions,
+  PiranhaVersions,
 } from "../../../svelte-app/src/shared/types";
 
 const PIRANHA_IMAGE_NAME = "polionanopore/piranha";
@@ -78,7 +79,7 @@ function createWindow(): void {
   ipcMain.handle("piranha-versions", (_event): PiranhaVersions => {
     return {
       piranha: PIRANHA_VERSION,
-      piranhaNET: piranhaNETVersion
+      piranhaNET: piranhaNETVersion,
     };
   });
 

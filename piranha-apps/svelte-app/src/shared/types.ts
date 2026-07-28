@@ -32,6 +32,6 @@ export interface FileDialogOptions {
 }
 
 export interface PiranhaVersions {
-  piranha: string,
-  piranhaNET: string
+  piranha: string;
+  piranhaNET: string;
 }
