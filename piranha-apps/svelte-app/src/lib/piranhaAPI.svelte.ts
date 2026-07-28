@@ -1,4 +1,4 @@
-import type { PiranhaRunOptions } from "../shared/types";
+import type { PiranhaRunOptions, PiranhaVersions} from "../shared/types";
 import { m } from "../paraglide/messages";
 
 export interface PiranhaError {
@@ -95,6 +95,10 @@ export class PiranhaAPI {
       this.#options.outputFolderPath,
       this.#runOutputFolderName,
     );
+  }
+
+  async piranhaVersions(): Promise<PiranhaVersions> {
+    return await window.api.piranhaVersions();
   }
 }
 

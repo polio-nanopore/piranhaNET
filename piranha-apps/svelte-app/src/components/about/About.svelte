@@ -1,7 +1,10 @@
-<script>
+<script lang="ts">
+  import {onMount} from "svelte";
   import pscLogo from "../../assets/psc-logo.svg";
   import articLogo from "../../assets/artic-logo.svg";
   import githubLogo from "../../assets/github-logo.svg";
+  import {piranhaAPI} from "$lib/piranhaAPI.svelte";
+  import type { PiranhaVersions } from "../../shared/types";
 
   const grants = [
     {img: pscLogo, name: "Poliovirus Sequencing Consortium", details: "Bill & Melinda Gates Foundation OPP1171890 and OPP1207299"},
@@ -31,6 +34,12 @@
       "Ananda Bandyopadhyay", "Andrew Rambaut", "Javier Martin", "Nicholas Grassly"]
     }
   ];
+
+  let versions: PiranhaVersions | null = $state(null);
+
+  onMount(async () => {
+    versions = await piranhaAPI.piranhaVersions();
+  });
 </script>
 
 <div class="container mx-auto">
@@ -40,8 +49,8 @@
   >
   <h1 class="mb-4" data-testid="about">About PiranhaNET</h1>
   <div data-testid="versions" class="text-xl">
-    <p>Piranha v</p>
-    <p>PiranhaNET v</p>
+    <p>Piranha v{versions?.piranha}</p>
+    <p>PiranhaNET v{versions?.piranhaNET}</p>
   </div>
   <p>
     PiranhaNET is the graphical user interface for Piranha, the Polio Direct Detection by Nanopore Sequencing (DDNS) analysis pipeline and reporting tool.
