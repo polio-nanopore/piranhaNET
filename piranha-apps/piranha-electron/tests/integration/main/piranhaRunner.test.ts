@@ -24,7 +24,7 @@ describe("piranhaRunner", () => {
   const runPiranha = async (
     barcodesFileName = "barcodes.csv",
   ): Promise<string[]> => {
-    const runner = new PiranhaRunner();
+    const runner = new PiranhaRunner("polionanopore/piranha", "1.6.3");
 
     const pullOutput = getWritableWithBuffer();
     await runner.pullPiranhaImage(pullOutput.writable);
