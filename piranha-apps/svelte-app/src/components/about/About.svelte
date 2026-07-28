@@ -4,7 +4,9 @@
   import articLogo from "../../assets/artic-logo.svg";
   import githubLogo from "../../assets/github-logo.svg";
   import {piranhaAPI} from "$lib/piranhaAPI.svelte";
+  import { m } from "../../paraglide/messages";
   import type { PiranhaVersions } from "../../shared/types";
+  import I18nMessageWithLinks from "../I18nMessageWithLinks.svelte";
 
   const grants = [
     {img: pscLogo, name: "Poliovirus Sequencing Consortium", details: "Bill & Melinda Gates Foundation OPP1171890 and OPP1207299"},
@@ -47,27 +49,21 @@
     id="scrolling-container"
     class="max-h-[calc(100vh-10rem)] overflow-y-auto p-4 space-y-4"
   >
-  <h1 class="mb-4" data-testid="about">About PiranhaNET</h1>
+  <h1 class="mb-4" data-testid="about">{m.aboutHeader()}</h1>
   <div data-testid="versions" class="text-xl">
     <p>Piranha v{versions?.piranha}</p>
     <p>PiranhaNET v{versions?.piranhaNET}</p>
   </div>
-  <p>
-    PiranhaNET is the graphical user interface for Piranha, the Polio Direct Detection by Nanopore Sequencing (DDNS) analysis pipeline and reporting tool.
-  </p>
-  <p>
-    Piranha and PiranhaNET have been developed by the <a target="_blank" class="text-blue-600" href="https://polionanopore.org/">Poliovirus Sequencing Consortium</a>, supported by the Bill and Melinda Gates Foundation, and by the <a target="_blank" class="text-blue-600" href="https://artic.network">ARTIC network</a>, supported by the Wellcome Trust.
-  </p>
-  <p>
-    PiranhaNET is based on, and replaces, PiranhaGUI.
-  </p>
+  <p>{m.aboutDescription()}</p>
+  <I18nMessageWithLinks messageKey="aboutDevelopment"></I18nMessageWithLinks>
+  <p>{m.aboutHistory()}</p>
   <div class="flex flex-wrap space-x-6">
     {#each grants as grant}
       <div class="w-[500px] bg-white flex mt-3">
         <img class="w-[200px]" src={grant.img}/>
         <div class="pt-6 space-y-3">
           <div class="text-xl">{grant.name}</div>
-          <div>Supported by {grant.details}</div>
+          <div>{m.aboutSupportedBy()} {grant.details}</div>
         </div>
       </div>
     {/each}
@@ -77,11 +73,11 @@
     {#each githubRepos as repo}
       <div class="flex space-x-2 mt-1">
         <img class="w-[24px]" src={githubLogo} alt="GitHub logo">
-        <a target="_blank" class="text-blue-600" href={repo.url}>GitHub repository for {repo.name}</a>
+        <a target="_blank" class="text-blue-600" href={repo.url}>{m.aboutGithubRepoFor()} {repo.name}</a>
       </div>
     {/each}
   </div>
-  <h2>Credits</h2>
+  <h2>{m.aboutCredits()}</h2>
   {#each credits as credit}
     <h3>{credit.product}</h3>
     <p>

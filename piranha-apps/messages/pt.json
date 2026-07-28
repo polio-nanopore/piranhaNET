@@ -1,6 +1,13 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "about": "Sobre",
+  "aboutHeader": "Sobre a PiranhaNET",
+  "aboutDescription": "O PiranhaNET é a interface gráfica do utilizador para o Piranha, o pipeline de análise e ferramenta de reporting para a deteção direta de poliomielite por sequenciação de nanoporos (DDNS).",
+  "aboutDevelopment": "O Piranha e o PiranhaNET foram desenvolvidos pelo Consórcio de Sequenciação do Poliovírus ({#link to=|https://polionanopore.org/|}Poliovirus Sequencing Consortium{/link}), com o apoio da Fundação Bill e Melinda Gates, e pela rede ARTIC ({#link to=|https://artic.network|}ARTIC network{/link}), com o apoio do Wellcome Trust.",
+  "aboutHistory": "O PiranhaNET é baseado no PiranhaGUI e substitui-o.",
+  "aboutSupportedBy": "Apoiado por",
+  "aboutGithubRepoFor": "Repositório GitHub para",
+  "aboutCredits": "Créditos",
   "apiErrorAlreadyRunning": "Piranha já está em execução",
   "continue": "Continue",
   "errorDetail": "Detalhes do erro",
