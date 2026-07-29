@@ -9,7 +9,7 @@ export class PiranhaRunner {
   private readonly userName: string;
   private readonly userMapping: string | undefined;
   private docker = new Docker();
-  constructor(imageName = "polionanopore/piranha", imageTag = "1.6.3") {
+  constructor(imageName, imageTag) {
     this.imageRef = `${imageName}:${imageTag}`;
     const { username, uid, gid } = userInfo();
     this.userName = username;

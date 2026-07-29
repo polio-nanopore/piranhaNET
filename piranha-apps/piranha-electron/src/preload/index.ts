@@ -6,6 +6,9 @@ import {
 
 // Custom APIs for renderer
 const api = {
+  piranhaVersions: () => {
+    return ipcRenderer.invoke("piranha-versions");
+  },
   runPiranha: (options: PiranhaRunOptions) =>
     ipcRenderer.send("run-piranha", options),
   versions: process.versions,
