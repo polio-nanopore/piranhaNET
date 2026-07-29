@@ -15,7 +15,7 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
 
       const sourceDir = join(...currentDir.split("/").slice(0, -3));
 
-      const testDataDir = join(sourceDir, "test-data");
+      const testDataDir = join(sourceDir, "test-data", "multiple_samples");
       if (options.title === "Barcodes file") {
         return join(testDataDir, "barcodes.csv");
       }
