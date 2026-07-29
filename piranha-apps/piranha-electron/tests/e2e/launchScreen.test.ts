@@ -123,7 +123,11 @@ const expectErrorMessage = async (
 };
 
 const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
-  await expect(await win.getByText(/Initializing.../)).toBeVisible();
+  await expect(
+    await win.getByText(
+      /Initializing: downloading Piranha Docker image. Please wait./,
+    ),
+  ).toBeVisible();
   await expect(
     await win.getByText("PiranhaNET", { exact: true }),
   ).toBeVisible();

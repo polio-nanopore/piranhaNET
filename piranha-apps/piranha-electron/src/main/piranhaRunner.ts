@@ -20,6 +20,10 @@ export class PiranhaRunner {
       !this.isWindows && uid !== -1 ? `${uid}:${gid}` : undefined;
   }
 
+  get osIsWindows(): boolean {
+    return this.isWindows;
+  }
+
   public async pullPiranhaImage(
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
