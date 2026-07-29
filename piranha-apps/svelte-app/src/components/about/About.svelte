@@ -41,9 +41,10 @@
       product: "PiranhaNET",
       names: [
         "Emma Russell",
+        "Anmol Thapar",
         "David Mears",
         "Wes Hinsley",
-        "RESIDE Team at Imperial College School of Public Health",
+        "Mantra Kusumgar",
       ],
     },
     {
