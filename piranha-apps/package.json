@@ -1,6 +1,7 @@
 {
   "name": "piranhanet",
   "version": "0.1.0-alpha",
+  "piranhaVersion": "1.6.3",
   "description": "Applications for running Piranha, providing Electron and web interfaces",
   "main": "./out/main/index.js",
   "engines": {
@@ -53,6 +54,7 @@
   },
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
+    "@inlang/paraglide-js-svelte": "^1.0.3",
     "ansi_up": "^6.0.6",
     "throttleit": "^3.0.0",
     "dockerode": "^4.0.9",

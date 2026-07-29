@@ -4,6 +4,9 @@ import { PiranhaRunner } from "../../../src/main/piranhaRunner";
 import { Writable } from "node:stream";
 import * as fs from "fs";
 import * as AnsiParser from "ansi-parser";
+import pkg from "../../../../package.json" with { type: "json" };
+
+const { piranhaVersion } = pkg;
 
 describe("piranhaRunner", () => {
   const getWritableWithBuffer = (): {
@@ -24,7 +27,7 @@ describe("piranhaRunner", () => {
   const runPiranha = async (
     barcodesFileName = "barcodes.csv",
   ): Promise<string[]> => {
-    const runner = new PiranhaRunner();
+    const runner = new PiranhaRunner("polionanopore/piranha", piranhaVersion);
 
     const pullOutput = getWritableWithBuffer();
     await runner.pullPiranhaImage(pullOutput.writable);

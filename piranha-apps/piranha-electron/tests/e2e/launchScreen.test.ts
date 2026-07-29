@@ -1,16 +1,7 @@
-import {
-  test,
-  expect,
-  _electron as electron,
-  Locator,
-  Page,
-  ElectronApplication,
-} from "@playwright/test";
+import { test, expect, Locator, Page } from "@playwright/test";
+import { initialiseTest, launchApp, getWindow } from "./utils";
 
 let electronApp;
-
-const launchApp = async (): Promise<ElectronApplication> =>
-  await electron.launch({ args: ["out/main/index.js", "--no-sandbox"] });
 
 const initialiseFileDialogHandler = async (): Promise<void> => {
   await electronApp.evaluate(({ app, ipcMain }) => {
@@ -41,20 +32,7 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
 };
 
 test.beforeEach(async () => {
-  // Initialise to default language (English) for all tests, and remove any saved settings
-  const app = await launchApp();
-  const win = await app.firstWindow();
-  await win.evaluate(() => {
-    localStorage.removeItem("lang");
-    localStorage.removeItem("userSettings");
-    localStorage.removeItem("runSettings");
-  });
-  await app.close(); // We'll need to re-open to get back to Welcome screen
-
-  // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
-  // permission-related failures on CI.
-  electronApp = await launchApp();
-  await electronApp.firstWindow(); // wait for window to be available
+  electronApp = await initialiseTest();
   await initialiseFileDialogHandler();
 });
 
@@ -63,10 +41,6 @@ test.afterEach(async () => {
     await electronApp.close();
   }
 });
-
-const getWindow = async (app = electronApp): Promise<Page> => {
-  return await app.firstWindow();
-};
 
 // Run Parameters
 const getNameInput = async (win: Page): Promise<Locator> =>
@@ -123,7 +97,11 @@ const expectErrorMessage = async (
 };
 
 const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
-  await expect(await win.getByText(/Initializing.../)).toBeVisible();
+  await expect(
+    await win.getByText(
+      /Initializing: downloading Piranha Docker image. Please wait./,
+    ),
+  ).toBeVisible();
   await expect(
     await win.getByText("PiranhaNET", { exact: true }),
   ).toBeVisible();
@@ -144,7 +122,7 @@ const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
 };
 
 test("can see welcome screen and run form, fill in parameters form and run Piranha", async () => {
-  const win = await getWindow();
+  const win = await getWindow(electronApp);
   await completeWelcomeScreenForm(win);
 
   // Fill in Run parameters
@@ -234,7 +212,7 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 });
 
 test("can see errors when submit incomplete welcome screen settings", async () => {
-  const win = await getWindow();
+  const win = await getWindow(electronApp);
   await expect(await getContinueButton(win)).toBeVisible({
     timeout: 300_000,
   });
@@ -253,7 +231,7 @@ test("can see errors when submit incomplete welcome screen settings", async () =
 });
 
 test("can see errors when submit incomplete run parameters", async () => {
-  const win = await getWindow();
+  const win = await getWindow(electronApp);
   await completeWelcomeScreenForm(win);
 
   // click run on next screen - should get errors on all parameters except threads, and also on run settings
@@ -317,7 +295,7 @@ test("can see errors when submit incomplete run parameters", async () => {
 });
 
 test("can see errors when submit incomplete settings", async () => {
-  const win = await getWindow();
+  const win = await getWindow(electronApp);
   await completeWelcomeScreenForm(win);
   const userSettings = await getUserSettings(win);
   await userSettings.click();
@@ -342,7 +320,7 @@ test("can see errors when submit incomplete settings", async () => {
 });
 
 test("can change language", async () => {
-  let win = await getWindow();
+  let win = await getWindow(electronApp);
   let title = await win.getByTestId("welcome");
   await expect(title).toHaveText(/Welcome to PiranhaNET/);
 
@@ -366,7 +344,7 @@ test("can change language", async () => {
   // Test language is retained on restart
   await electronApp.close();
   electronApp = await launchApp();
-  win = await getWindow();
+  win = await getWindow(electronApp);
   langLink = await win.getByRole("button", { name: "pt" });
   expect(langLink).toBeEnabled();
   title = await win.getByTestId("welcome");
@@ -383,7 +361,7 @@ test("can change language", async () => {
 });
 
 test("user and run settings are persisted", async () => {
-  let win = await getWindow();
+  let win = await getWindow(electronApp);
   await completeWelcomeScreenForm(win);
   let protocol = await getProtocol(win);
   await protocol.click();
@@ -403,7 +381,7 @@ test("user and run settings are persisted", async () => {
 
   // should be taken to run screen immediately
   const run = await getRunButton(win);
-  expect(run).toBeVisible();
+  await expect(run).toBeVisible();
 
   const settings = await win.getByTestId("settings");
   await settings.click();
@@ -411,7 +389,7 @@ test("user and run settings are persisted", async () => {
   // check user settings
   const userSettings = await getUserSettings(win);
   await userSettings.scrollIntoViewIfNeeded();
-  expect(userSettings).toBeVisible();
+  await expect(userSettings).toBeVisible();
   await userSettings.click();
   const userNameInput = await getUserNameInput(win);
   await expect(userNameInput).toHaveValue("Test User");

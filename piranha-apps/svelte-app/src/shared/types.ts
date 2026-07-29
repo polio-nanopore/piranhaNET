@@ -30,3 +30,8 @@ export interface FileDialogOptions {
     extensions: string[];
   }[];
 }
+
+export interface PiranhaVersions {
+  piranha: string;
+  piranhaNET: string;
+}

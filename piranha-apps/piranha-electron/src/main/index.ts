@@ -1,15 +1,21 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import pkg from "../../../package.json" with { type: "json" };
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
 import {
   FileDialogOptions,
   PiranhaRunOptions,
+  PiranhaVersions,
 } from "../../../svelte-app/src/shared/types";
 
-const runner = new PiranhaRunner();
+const PIRANHA_IMAGE_NAME = "polionanopore/piranha";
+const piranhaNETVersion = pkg.version;
+const piranhaVersion = pkg.piranhaVersion;
+
+const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, piranhaVersion);
 
 function createWindow(): void {
   // Create the browser window.
@@ -33,11 +39,10 @@ function createWindow(): void {
       await runner.pullPiranhaImage();
       mainWindow.webContents.send("initialized");
     } catch (e) {
-      mainWindow.webContents.send(
-        "error",
-        "Initialization error",
-        (e as Error).message,
-      );
+      const messageKey = runner.osIsWindows
+        ? "initErrorGuidanceWindows"
+        : "initErrorGuidanceNonWindows";
+      mainWindow.webContents.send("error", messageKey, (e as Error).message);
     }
   });
 
@@ -67,6 +72,16 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
+
+  /**
+   * Get the supported version of Piranha and the package version of PiranhaNET
+   */
+  ipcMain.handle("piranha-versions", (_event): PiranhaVersions => {
+    return {
+      piranha: piranhaVersion,
+      piranhaNET: piranhaNETVersion,
+    };
+  });
 
   /**
    * Display a native file dialog and return selection to renderer
@@ -104,11 +119,7 @@ function createWindow(): void {
     try {
       await runner.runPiranha(options, writable);
     } catch (e) {
-      mainWindow.webContents.send(
-        "error",
-        "Piranha Run error",
-        (e as Error).message,
-      );
+      mainWindow.webContents.send("error", "runError", (e as Error).message);
     }
   });
 }

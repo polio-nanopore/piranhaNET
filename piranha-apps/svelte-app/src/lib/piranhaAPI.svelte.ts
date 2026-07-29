@@ -1,10 +1,15 @@
-import type { PiranhaRunOptions } from "../shared/types";
+import type { PiranhaRunOptions, PiranhaVersions } from "../shared/types";
 import { m } from "../paraglide/messages";
+
+export interface PiranhaError {
+  messageKey: string;
+  detail: string;
+}
 
 export class PiranhaAPI {
   #initialized = $state(false);
   #running = $state(false);
-  #error = $state("");
+  #error: PiranhaError | null = $state(null);
   #log: string[] = $state([]);
   #decoder = new TextDecoder("utf-8");
   #options: PiranhaRunOptions | null = $state(null);
@@ -25,10 +30,10 @@ export class PiranhaAPI {
       await this.#findOutputFolderFromLog();
       this.#running = false;
     });
-    window.api?.onError((e, detail) => {
-      this.#error = e;
+    window.api?.onError((messageKey, detail) => {
+      this.#error = { messageKey, detail };
       // Add error to log, including ansi sequence to show in Red
-      this.#log.push(`\x1b[1;31m${e}: ${detail}`);
+      this.#log.push(`\x1b[1;31m${m[messageKey]()}: ${detail}`);
     });
   }
 
@@ -44,7 +49,7 @@ export class PiranhaAPI {
     return !!this.#runOutputFolderName;
   }
 
-  get error(): string {
+  get error(): PiranhaError {
     return this.#error;
   }
 
@@ -73,7 +78,7 @@ export class PiranhaAPI {
 
   clearRun(): void {
     this.#log = [];
-    this.#error = "";
+    this.#error = null;
     this.#options = null;
     this.#runOutputFolderName = "";
   }
@@ -90,6 +95,10 @@ export class PiranhaAPI {
       this.#options.outputFolderPath,
       this.#runOutputFolderName,
     );
+  }
+
+  async piranhaVersions(): Promise<PiranhaVersions> {
+    return await window.api.piranhaVersions();
   }
 }
 

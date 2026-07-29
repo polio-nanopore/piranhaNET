@@ -1,9 +1,11 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
+import { i18n } from "../../../src/lib/i18n.svelte";
 import { PiranhaAPI } from "../../../src/lib/piranhaAPI.svelte.js";
 
 describe("piranhaAPI", () => {
   let sut;
   beforeEach(() => {
+    i18n.lang = "en";
     window.api = {
       onInitialized: vi.fn(),
       onChunk: vi.fn(),
@@ -64,12 +66,15 @@ describe("piranhaAPI", () => {
     );
 
     sut.clearRun();
-    expect(sut.error).toBe("");
+    expect(sut.error).toBe(null);
     const setError = window.api.onError.mock.calls[0][0];
-    setError("New Test Error", "something went wrong");
-    expect(sut.error).toBe("New Test Error");
+    setError("runError", "something went wrong");
+    expect(sut.error).toStrictEqual({
+      messageKey: "runError",
+      detail: "something went wrong",
+    });
     expect(sut.log).toStrictEqual([
-      "\x1b[1;31mNew Test Error: something went wrong",
+      "\x1b[1;31mPiranha Run Error: something went wrong",
     ]);
   });
 
@@ -98,11 +103,14 @@ describe("piranhaAPI", () => {
     sut.log.push("log msg 1");
     sut.log.push("log msg 2");
     const setError = window.api.onError.mock.calls[0][0];
-    setError("New Test Error", "something went wrong");
-    expect(sut.error).toBe("New Test Error");
+    setError("initErrorGuidanceWindows", "something went wrong");
+    expect(sut.error).toStrictEqual({
+      messageKey: "initErrorGuidanceWindows",
+      detail: "something went wrong",
+    });
     expect(sut.log.length).toBe(3);
     sut.clearRun();
     expect(sut.log.length).toBe(0);
-    expect(sut.error).toBe("");
+    expect(sut.error).toBe(null);
   });
 });

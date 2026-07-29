@@ -9,7 +9,7 @@ export class PiranhaRunner {
   private readonly userName: string;
   private readonly userMapping: string | undefined;
   private docker = new Docker();
-  constructor(imageName = "polionanopore/piranha", imageTag = "1.6.3") {
+  constructor(imageName, imageTag) {
     this.imageRef = `${imageName}:${imageTag}`;
     const { username, uid, gid } = userInfo();
     this.userName = username;
@@ -18,6 +18,10 @@ export class PiranhaRunner {
     this.isWindows = process.platform === "win32";
     this.userMapping =
       !this.isWindows && uid !== -1 ? `${uid}:${gid}` : undefined;
+  }
+
+  get osIsWindows(): boolean {
+    return this.isWindows;
   }
 
   public async pullPiranhaImage(

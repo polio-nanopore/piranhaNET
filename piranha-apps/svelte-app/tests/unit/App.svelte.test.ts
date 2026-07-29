@@ -1,16 +1,17 @@
 import { render, screen, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, beforeEach } from "vitest";
 import App from "../../src/App.svelte";
 import { expectTranslations } from "./utils";
 import { mockPiranhaAPI } from "./MockPiranhaAPI.svelte";
+import { i18n } from "$lib/i18n.svelte";
 
 // TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {
   const expectedInitTranslations = {
-    en: "Initializing...",
-    fr: "Initialisation...",
-    pt: "Inicializando...",
+    en: "Initializing: downloading Piranha Docker image. Please wait.",
+    fr: "Initialisation: téléchargement de l'image Docker Piranha. Veuillez patienter.",
+    pt: "Inicializando: a descarregar a imagem Docker do Piranha. Aguarde.",
   };
 
   const expectRunPage = async (): Promise<void> => {
@@ -23,6 +24,10 @@ describe("App", () => {
       },
     );
   };
+
+  beforeEach(() => {
+    i18n.lang = "en";
+  });
 
   test("renders as expected before initialized", async () => {
     mockPiranhaAPI({});
@@ -55,9 +60,7 @@ describe("App", () => {
     // Navigate to About using the Nav menu
     await userEvent.click(screen.getByTestId("nav-about"));
     await waitFor(() => {
-      expect(
-        screen.getByText("Placeholder for About page text."),
-      ).toBeVisible();
+      expect(screen.getByText("About PiranhaNET")).toBeVisible();
     });
 
     await userEvent.click(screen.getByTestId("nav-run"));
