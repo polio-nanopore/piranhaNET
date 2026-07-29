@@ -6,6 +6,7 @@
   "aboutDevelopment": "O Piranha e o PiranhaNET foram desenvolvidos pelo Consórcio de Sequenciação do Poliovírus ({#link to=|https://polionanopore.org/|}Poliovirus Sequencing Consortium{/link}), com o apoio da Fundação Bill e Melinda Gates, e pela rede ARTIC ({#link to=|https://artic.network|}ARTIC network{/link}), com o apoio do Wellcome Trust.",
   "aboutHistory": "O PiranhaNET é baseado no PiranhaGUI e substitui-o.",
   "aboutSupportedBy": "Apoiado por",
+  "aboutOpenSource": "Este é um software de código aberto.",
   "aboutGithubRepoFor": "Repositório GitHub para",
   "aboutCredits": "Créditos",
   "apiErrorAlreadyRunning": "Piranha já está em execução",

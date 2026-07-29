@@ -12,10 +12,10 @@ import {
 } from "../../../svelte-app/src/shared/types";
 
 const PIRANHA_IMAGE_NAME = "polionanopore/piranha";
-const PIRANHA_VERSION = "1.6.3";
 const piranhaNETVersion = pkg.version;
+const piranhaVersion = pkg.piranhaVersion;
 
-const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, PIRANHA_VERSION);
+const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, piranhaVersion);
 
 function createWindow(): void {
   // Create the browser window.
@@ -78,7 +78,7 @@ function createWindow(): void {
    */
   ipcMain.handle("piranha-versions", (_event): PiranhaVersions => {
     return {
-      piranha: PIRANHA_VERSION,
+      piranha: piranhaVersion,
       piranhaNET: piranhaNETVersion,
     };
   });

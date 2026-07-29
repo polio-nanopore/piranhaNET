@@ -112,7 +112,7 @@
       {/each}
     </div>
     <div data-testid="about-github">
-      This is open-source software.
+      {m.aboutOpenSource()}
       {#each githubRepos as repo (repo.name)}
         <div class="flex space-x-2 mt-1">
           <img class="w-[24px]" src={githubLogo} alt="GitHub logo" />

@@ -34,6 +34,14 @@ describe("About", () => {
       "ARTIC network",
     );
 
+    await expectTranslations(
+      (text) => expect(screen.getByText(text)).toBeVisible(),
+      {
+        en: /This is open-source software./,
+        fr: /Il s'agit de code open source./,
+        pt: /Este é um software de código aberto./,
+      },
+    );
     const githubDiv = screen.getByTestId("about-github");
     const githubLinks = within(githubDiv).queryAllByRole("link");
     expect(githubLinks.length).toBe(2);

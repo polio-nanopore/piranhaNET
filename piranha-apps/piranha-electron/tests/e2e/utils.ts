@@ -5,6 +5,8 @@ import {
 } from "@playwright/test";
 import pkg from "../../../package.json" with { type: "json" };
 
+// Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
+// permission-related failures on CI.
 export const launchApp = async (): Promise<ElectronApplication> =>
   await electron.launch({ args: ["out/main/index.js", "--no-sandbox"] });
 
@@ -19,8 +21,6 @@ export const initialiseTest = async (): Promise<ElectronApplication> => {
   });
   await app.close(); // We'll need to re-open to get back to Welcome screen
 
-  // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
-  // permission-related failures on CI.
   const electronApp = await launchApp();
   await electronApp.firstWindow(); // wait for window to be available
   return electronApp;

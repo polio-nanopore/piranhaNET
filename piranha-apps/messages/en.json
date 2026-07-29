@@ -6,6 +6,7 @@
   "aboutDevelopment": "Piranha and PiranhaNET have been developed by the {#link to=|https://polionanopore.org/|}Poliovirus Sequencing Consortium{/link}, supported by the Bill and Melinda Gates Foundation, and by the {#link to=|https://artic.network|}ARTIC network{/link}, supported by the Wellcome Trust.",
   "aboutHistory": "PiranhaNET is based on, and replaces, PiranhaGUI.",
   "aboutSupportedBy": "Supported by",
+  "aboutOpenSource": "This is open-source software.",
   "aboutGithubRepoFor": "GitHub repository for",
   "aboutCredits": "Credits",
   "apiErrorAlreadyRunning": "Piranha is already running",
