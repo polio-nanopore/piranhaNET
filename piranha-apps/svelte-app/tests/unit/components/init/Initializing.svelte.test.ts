@@ -57,6 +57,7 @@ describe("Initializing", () => {
     });
     const { container } = renderInI18nTestContext(Initialzing);
     expect(screen.getByTestId("initializing-x")).toBeVisible();
+    expect(screen.queryByTestId("initializing-spinner")).toBeNull();
     await expectTranslations(
       (text) => {
         expect(container).not.toHaveTextContent(text);

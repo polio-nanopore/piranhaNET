@@ -74,7 +74,7 @@ describe("piranhaAPI", () => {
       detail: "something went wrong",
     });
     expect(sut.log).toStrictEqual([
-      "\x1b[1;31mPiranha Run error: something went wrong",
+      "\x1b[1;31mPiranha Run Error: something went wrong",
     ]);
   });
 
