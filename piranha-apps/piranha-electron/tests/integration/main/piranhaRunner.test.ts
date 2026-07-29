@@ -6,7 +6,7 @@ import * as fs from "fs";
 import * as AnsiParser from "ansi-parser";
 import pkg from "../../../../package.json" with { type: "json" };
 
-const {piranhaVersion} = pkg;
+const { piranhaVersion } = pkg;
 
 describe("piranhaRunner", () => {
   const getWritableWithBuffer = (): {
