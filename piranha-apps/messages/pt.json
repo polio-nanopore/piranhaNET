@@ -44,7 +44,7 @@
   "piranhaOutputSettings": "Configurações de Saída do Piranha",
   "provideInitialSettings": "Por favor, introduza alguns dados antes de prosseguir. Poderá alterá-los posteriormente.",
   "run": "Corra",
-  "runError": "Erro ao executar o Piranha",
+  "runError": "Erro ao Executar o Piranha",
   "runPiranha": "Corra Piranha",
   "runSettings": "Configurações de execução",
   "sequencingRunProgress": "Progresso da execução do sequenciamento",
