@@ -20,8 +20,8 @@ export const userSettingsFormSchema = (): ZodRawShape => ({
 
 export const runSettingsFormSchema = (): ZodRawShape => ({
   protocol: requiredString(),
-  positiveControl: z.string(),
-  negativeControl: z.string(),
+  positiveControl: requiredString(),
+  negativeControl: requiredString(),
 });
 
 export const piranhaOutputSettingsFormSchema = (): ZodRawShape => ({
