@@ -35,7 +35,10 @@ describe("piranhaRunner", () => {
     expect(outputText).toContain("Pulling from polionanopore/piranha");
 
     const runOutput = getWritableWithBuffer();
-    const testDataPath = join(__dirname, "../../../../../test-data");
+    const testDataPath = join(
+      __dirname,
+      "../../../../../test-data/multiple_samples",
+    );
     const testOutputPath = join(__dirname, "../../../../../test-results");
 
     if (!fs.existsSync(testOutputPath)) {

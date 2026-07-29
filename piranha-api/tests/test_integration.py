@@ -9,7 +9,7 @@ import httpx
 BASE_URL = "http://127.0.0.1:8000"
 RUN_ID_HEADER = "piranhanet-run-id"
 
-test_data_dir = Path.cwd().parent / "test-data"
+test_data_dir = Path.cwd().parent / "test-data" / "multiple_samples"
 
 
 def create_minknow_zip():
