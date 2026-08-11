@@ -76,7 +76,7 @@ describe("RunProgress", () => {
       },
       {
         en: /Output folder/,
-        fr: /Dossier de sortie/,
+        fr: /Dossier de résultats/,
         pt: /Pasta de saída/,
       },
     );
@@ -127,7 +127,7 @@ describe("RunProgress", () => {
       },
       {
         en: /Open output folder/,
-        fr: /Ouvrir le dossier de sortie/,
+        fr: /Ouvrir le dossier de résultats/,
         pt: /Abra a pasta de saída/,
       },
     );
@@ -188,7 +188,7 @@ describe("RunProgress", () => {
       },
       {
         en: "New Run",
-        fr: "Nouvelle course",
+        fr: "Nouvelle analyse",
         pt: "Nova corrida",
       },
     );

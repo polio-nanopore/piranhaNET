@@ -90,7 +90,7 @@ describe("Settings", () => {
         (text) => expect(piranhaOutputSettings()).toHaveTextContent(text),
         {
           en: /Piranha Output Settings/,
-          fr: /Options de Sortie Piranha/,
+          fr: /Options de Résultats Piranha/,
           pt: /Configurações de Saída do Piranha/,
         },
       );
@@ -124,7 +124,7 @@ describe("Settings", () => {
         piranhaOutputSettings,
         {
           en: "Overwrite output",
-          fr: "Écraser la sortie",
+          fr: "Sur-écrire les résultats",
           pt: "Esmague a saída",
         },
       );

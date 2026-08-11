@@ -3,7 +3,7 @@
   "about": "About",
   "aboutHeader": "About PiranhaNET",
   "aboutDescription": "PiranhaNET is the graphical user interface for Piranha, the Polio Direct Detection by Nanopore Sequencing (DDNS) analysis pipeline and reporting tool.",
-  "aboutDevelopment": "Piranha and PiranhaNET have been developed by the {#link to=|https://polionanopore.org/|}Poliovirus Sequencing Consortium{/link}, supported by the Bill and Melinda Gates Foundation, and by the {#link to=|https://artic.network|}ARTIC network{/link}, supported by the Wellcome Trust.",
+  "aboutDevelopment": "Piranha and PiranhaNET have been developed by the {#link to=|https://polionanopore.org/|}Poliovirus Sequencing Consortium{/link}, supported by the Gates Foundation, and by the {#link to=|https://artic.network|}ARTIC network{/link}, supported by the Wellcome Trust.",
   "aboutHistory": "PiranhaNET is based on, and replaces, PiranhaGUI.",
   "aboutSupportedBy": "Supported by",
   "aboutOpenSource": "This is open-source software.",
