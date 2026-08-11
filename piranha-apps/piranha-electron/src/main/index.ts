@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
+import * as fs from "fs";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import pkg from "../../../package.json" with { type: "json" };
 import icon from "../../resources/icon.png?asset";
@@ -13,7 +14,16 @@ import {
 
 const PIRANHA_IMAGE_NAME = "polionanopore/piranha";
 const piranhaNETVersion = pkg.version;
-const piranhaVersion = pkg.piranhaVersion;
+
+const resourcesPath = app.isPackaged ? process.resourcesPath :
+                      path.join(__dirname, "../../piranha-electron/resources");
+const piranhaVersion = fs.readFileSync(
+  path.join(resourcesPath, "piranha-version.txt"),
+  "utf8"
+).trim();
+
+// TODO: remove
+console.log(`PIRANHA VERSION: ${piranhaVersion}`);
 
 const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, piranhaVersion);
 

@@ -1,7 +1,6 @@
 {
   "name": "piranhanet",
   "version": "0.2.0-alpha",
-  "piranhaVersion": "1.6.3",
   "description": "Applications for running Piranha, providing Electron and web interfaces",
   "main": "./out/main/index.js",
   "engines": {
@@ -13,7 +12,8 @@
     "files": [
       "out/**/*",
       "node_modules/**/*",
-      "package.json"
+      "package.json",
+      "piranha-electron/resources/**/*"
     ],
     "win": {
       "target": [
