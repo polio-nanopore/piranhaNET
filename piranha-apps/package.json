@@ -7,33 +7,13 @@
   "engines": {
     "node": ">=24.0.0 <25.0.0"
   },
-  "build": {
-    "appId": "org.polionanopore.piranhanet",
-    "productName": "PiranhaNET",
-    "files": [
-      "out/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "PiranhaNET"
-    }
-  },
+  "build": "./electron-builder.js",
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
     "format:check": "prettier --plugin prettier-plugin-svelte --check .",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --fix .",
-    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite faBlse",
     "svelte-check": "svelte-check --tsconfig ./tsconfig.json",
     "typecheck": "npm run typecheck:node && npm run svelte-check",
     "start-electron": "electron-vite preview",
@@ -43,14 +23,16 @@
     "build-electron": "paraglide-js compile --project ./project.inlang --outdir svelte-app/src/paraglide && npm run typecheck && electron-vite build",
     "postinstall-electron": "electron-builder install-app-deps",
     "build-electron:unpack": "npm run build-electron && electron-builder --dir",
-    "build-electron:win": "npm run build-electron && electron-builder --win",
+    "build-electron:win-full": "npm run build-electron && cross-env BUNDLE_PIRANHA_IMAGE=true electron-builder --win",
+    "build-electron:win-light": "npm run build-electron && cross-env BUNDLE_PIRANHA_IMAGE=false electron-builder --win",
     "build-electron:mac": "npm run build-electron && electron-builder --mac",
     "build-electon:linux": "npm run build-electron && electron-builder --linux",
     "build-web": "vite build --config web.vite.config.ts",
     "test:unit": "vitest svelte-app/tests/unit/",
     "test-electron:integration": "vitest piranha-electron/tests/integration/",
     "coverage": "vitest run --coverage",
-    "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test"
+    "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test",
+    "docker:pull-and-tar-piranha": "node scripts/pull-and-tar-piranha-docker.js"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
