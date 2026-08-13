@@ -1,13 +1,10 @@
-import * as fs from "fs";
-import * as path from "path";
+// NB In order to bundle the Piranha image, you must already have pulled and tarred the 
+// correct version of the piranha image locally with ./scripts/pull-and-tar-piranha-docker.js
 
 const bundlePiranhaImage = process.env.BUNDLE_PIRANHA_IMAGE === "true";
+const suffix = bundlePiranhaImage ? "full" : "light";
 
 const wd = process.cwd();
-const pkg = JSON.parse(
-  fs.readFileSync(path.join(wd, "package.json"), "utf8")
-);
-const piranhaVersion = pkg.piranhaVersion;
 
 export default {
   appId: "org.polionanopore.piranhanet",
@@ -29,6 +26,6 @@ export default {
     createStartMenuShortcut: true,
     shortcutName: "PiranhaNET",
     include: "electron-installer-win.nsh",
-    artifactName: "${productName} Setup ${version}-${bundlePiranhaImage ? 'full' : 'light'}.${ext}",
+    artifactName: "${productName} Setup ${version}-${arch}-" + suffix + ".${ext}",
   }
 };

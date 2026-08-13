@@ -1,18 +1,19 @@
+!include "LogicLib.nsh"
+
 ; Only bundle the docker image if we're building the full installer
-StrCpy $BUNDLE_PIRANHA_IMAGE "$%BUNDLE_PIRANHA_IMAGE%"
-!if "${BUNDLE_PIRANHA_IMAGE}" == "true"
+!if "$%BUNDLE_PIRANHA_IMAGE%" == "true"
   Section "Piranha Image"
     SetOutPath "$INSTDIR\resources"
-    File "${project_root}\installer-resources\piranha-docker-image.tar"
+    File "${PROJECT_DIR}\installer-resources\piranha-docker-image.tar"
 
-    ; Check if Docker is installed
-    ExecWait 'docker --version' 0
+    ; Check if Docker is installed - TODO check for more appropriate message box. Check if error if DD not running.
+    ExecWait 'docker --version' $0
     ${If} $0 != 0
       MessageBox MB_OK "Docker is not installed. Please install Docker Desktop for Windows first."
       Abort
     ${EndIf}
 
-    ExecWait 'docker load -i "$INSTDIR\resources\piranha-docker-image.tar"'
+    ExecWait 'docker load -i "$INSTDIR\resources\piranha-docker-image.tar"' $0
     ${If} $0 != 0
       MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image."
     ${EndIf}
