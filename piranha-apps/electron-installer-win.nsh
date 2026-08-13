@@ -1,4 +1,5 @@
 ; Only bundle the docker image if we're building the full installer
+StrCpy $BUNDLE_PIRANHA_IMAGE "$%BUNDLE_PIRANHA_IMAGE%"
 !if "${BUNDLE_PIRANHA_IMAGE}" == "true"
   Section "Piranha Image"
     SetOutPath "$INSTDIR\resources"
