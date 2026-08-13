@@ -8,7 +8,7 @@ const pkg = JSON.parse(
 );
 const piranhaVersion = pkg.piranhaVersion;
 
-module.exports = {
+export default {
   appId: "org.polionanopore.piranhanet",
   productName: "PiranhaNET",
   files: [
