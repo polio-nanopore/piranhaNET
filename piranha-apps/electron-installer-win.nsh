@@ -6,16 +6,18 @@
     SetOutPath "$INSTDIR\resources"
     File "${PROJECT_DIR}\installer-resources\piranha-docker-image.tar"
 
-    ; Check if Docker is installed - TODO check for more appropriate message box. Check if error if DD not running.
-    ExecWait 'docker --version' $0
+    ; Check if Docker Desktop is installed and running by checking if docker info can run
+    ExecWait 'cmd.exe /c docker info' $0
     ${If} $0 != 0
-      MessageBox MB_OK "Docker is not installed. Please install Docker Desktop for Windows first."
+      MessageBox MB_OK "Docker is not installed or running. Please install and run Docker Desktop for Windows."
       Abort
     ${EndIf}
 
-    ExecWait 'docker load -i "$INSTDIR\resources\piranha-docker-image.tar"' $0
+    ; Load image - save log which may be useful for debug if any issues
+    DetailPrint "Loading Docker image. This may take several minutes..."
+    ExecWait 'cmd.exe /c docker load -i "$INSTDIR\resources\piranha-docker-image.tar" > "$INSTDIR\docker-load.log" 2>&1' $0
     ${If} $0 != 0
-      MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image."
+      MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image. PiranhaNET will attempt to pull image on first run."
     ${EndIf}
   SectionEnd
 !endif
