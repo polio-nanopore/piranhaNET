@@ -36,7 +36,10 @@ function createWindow(): void {
     mainWindow.show();
 
     try {
-      await runner.pullPiranhaImage();
+      const pullRequired = !await runner.piranhaImageIsLoaded();
+      if (pullRequired) {
+        await runner.pullPiranhaImage();
+      }
       mainWindow.webContents.send("initialized");
     } catch (e) {
       const messageKey = runner.osIsWindows
