@@ -26,6 +26,6 @@ export default {
     createStartMenuShortcut: true,
     shortcutName: "PiranhaNET",
     include: "electron-installer-win.nsh",
-    artifactName: "${productName} Setup ${version}-${arch}-" + suffix + ".${ext}",
+    artifactName: "${productName} Setup ${version}-${os}-" + suffix + ".${ext}",
   }
 };
