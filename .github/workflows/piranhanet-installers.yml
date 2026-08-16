@@ -22,8 +22,6 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
         run: npm run docker:pull-and-tar-piranha
-      - name: Verify image file exists
-        run: ls -la ./installer-resources/
       - name: Upload piranha docker image artifact
         uses: actions/upload-artifact@v7
         with:
@@ -52,7 +50,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: piranha-docker-image
-          path: ./installer-resources
+          path: ./piranha-apps/installer-resources
       - name: Build full installer
         run: npm run build-electron:win-full
       - name: Build light installer
