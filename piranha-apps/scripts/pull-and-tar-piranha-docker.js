@@ -22,7 +22,6 @@ if (fs.existsSync(imageDir)) {
   fs.mkdirSync(imageDir);
 }
 
-
 const tarPath = path.join(imageDir, "piranha-docker-image.tar");
 
 console.log(`Pulling ${dockerImage}...`);

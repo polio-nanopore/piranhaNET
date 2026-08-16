@@ -6,8 +6,22 @@ on:
     types: [created]
   workflow_dispatch: # can run manually for testing without a release
 jobs:
+  pull-and-tar-piranha-image:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./piranha-apps
+    steps:
+      - name: Pull and tar piranha docker image
+        run: npm run docker:pull-and-tar-piranha
+      - name: Upload piranha docker image artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: piranha-docker-image
+          path: installer-resources/piranha-docker-image.tar
   build-win:
     runs-on: windows-latest
+    needs: pull-and-tar-piranha-image
     defaults:
       run:
         shell: bash
@@ -23,8 +37,11 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Install dependencies
         run: npm ci
-      - name: Pull and tar piranha docker image
-        run: npm run docker:pull-and-tar-piranha
+      - name: Download piranha docker image artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: piranha-docker-image
+          path: ./installer-resources
       - name: Build full installer
         run: npm run build-electron:win-full
       - name: Build light installer
