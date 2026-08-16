@@ -46,15 +46,17 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: Build electron app
+        uses: npm run build-electron
       - name: Download piranha docker image artifact
         uses: actions/download-artifact@v8
         with:
           name: piranha-docker-image
           path: ./piranha-apps/installer-resources
       - name: Build full installer
-        run: npm run build-electron:win-full
+        run: npm run build-installer:win-full
       - name: Build light installer
-        run: npm run build-electron:win-light
+        run: npm run build-installer:win-light
       - name: Add installers to release (if there is one)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
