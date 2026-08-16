@@ -12,6 +12,14 @@ jobs:
       run:
         working-directory: ./piranha-apps
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Install Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.9
+          cache: npm
+          cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
         run: npm run docker:pull-and-tar-piranha
       - name: Upload piranha docker image artifact
