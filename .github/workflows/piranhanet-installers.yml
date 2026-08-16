@@ -23,7 +23,7 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Install dependencies
         run: npm ci
-      - Pull and tar piranha docker image
+      - name: Pull and tar piranha docker image
         run: npm run docker:pull-and-tar-piranha
       - name: Build full installer
         run: npm run build-electron:win-full
