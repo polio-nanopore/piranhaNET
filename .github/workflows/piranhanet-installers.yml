@@ -21,16 +21,20 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Install dependencies
         run: npm ci
-      - name: Build installer
-        run: npm run build-electron:win
-      - name: Add to release (if there is one)
+      - Pull and tar piranha docker image
+        run: npm run docker:pull-and-tar-piranha
+      - name: Build full installer
+        run: npm run build-electron:win-full
+      - name: Build light installer
+        run: npm run build-electron:win-light
+      - name: Add installers to release (if there is one)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
           files: piranha-apps/dist/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifact (if manual workflow run)
+      - name: Upload artifacts (if manual workflow run)
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v7
         with:
