@@ -28,7 +28,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: piranha-docker-image
-          path: ./installer-resources/piranha-docker-image.tar
+          path: piranha-apps/installer-resources/piranha-docker-image.tar
+          if-no-files-found: error
   build-win:
     runs-on: windows-latest
     needs: pull-and-tar-piranha-image
