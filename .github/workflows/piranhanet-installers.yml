@@ -47,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build electron app
-        uses: npm run build-electron
+        run: npm run build-electron
       - name: Download piranha docker image artifact
         uses: actions/download-artifact@v8
         with:
