@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: piranha-docker-image
-          path: installer-resources/piranha-docker-image.tar
+          path: ./installer-resources/piranha-docker-image.tar
   build-win:
     runs-on: windows-latest
     needs: pull-and-tar-piranha-image
