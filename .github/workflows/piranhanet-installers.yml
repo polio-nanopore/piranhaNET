@@ -48,11 +48,15 @@ jobs:
         run: npm ci
       - name: Build electron app
         run: npm run build-electron
+      - name: Make installer-resources dir
+        run: mkdir installer-resources
       - name: Download piranha docker image artifact
         uses: actions/download-artifact@v8
         with:
           name: piranha-docker-image
           path: ./piranha-apps/installer-resources
+      - name: Verify tar
+        run: ls -la installer-resources
       - name: Build full installer
         run: npm run build-installer:win-full
       - name: Build light installer
