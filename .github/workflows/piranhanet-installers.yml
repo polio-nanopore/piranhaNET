@@ -1,5 +1,7 @@
 name: PiranhaNET Installers
 on:
+  push:
+    branches: [ mrc-6956-piranha-image-installer ]
   release:
     types: [created]
   workflow_dispatch: # can run manually for testing without a release
