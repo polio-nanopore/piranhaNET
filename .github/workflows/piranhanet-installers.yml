@@ -6,36 +6,8 @@ on:
     types: [created]
   workflow_dispatch: # can run manually for testing without a release
 jobs:
-  pull-and-tar-piranha-image:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./piranha-apps
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: Install Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24.9
-          cache: npm
-          cache-dependency-path: piranha-apps/package-lock.json
-      - name: Pull and tar piranha docker image
-        run: npm run docker:pull-and-tar-piranha
-      - name: Verify new tar file
-        run: |
-          echo "File size check for new tar file:"
-          wc -c installer-resources/piranha-docker-image.tar
-          # Compare against the artifact size from the pull job
-      - name: Upload piranha docker image artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: piranha-docker-image
-          path: piranha-apps/installer-resources/piranha-docker-image.tar
-          if-no-files-found: error
   build-win:
     runs-on: windows-latest
-    needs: pull-and-tar-piranha-image
     defaults:
       run:
         shell: bash
@@ -51,22 +23,11 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: Pull and tar piranha docker image
+        shell: wsl-bash {0} # Do this in wsl so docker allows pull of piranha's Linux-built image
+        run: npm run docker:pull-and-tar-piranha
       - name: Build electron app
         run: npm run build-electron
-      - name: Make installer-resources dir
-        run: mkdir installer-resources
-      - name: Download piranha docker image artifact
-        uses: actions/download-artifact@v8
-        with:
-          name: piranha-docker-image
-          path: ./piranha-apps
-      - name: Grant perm on tar
-        run: chmod 777 -v piranha-docker-image.tar
-      - name: Verify tar file
-        run: |
-          echo "File size check:"
-          wc -c piranha-docker-image.tar
-          # Compare against the artifact size from the pull job
       - name: Build light installer
         run: npm run build-installer:win-light
       - name: Build full installer

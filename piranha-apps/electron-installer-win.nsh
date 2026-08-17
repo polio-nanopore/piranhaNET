@@ -8,7 +8,7 @@
 !if "$%BUNDLE_PIRANHA_IMAGE%" == "true"
   Section "Piranha Image"
     SetOutPath "$INSTDIR\resources"
-    File "${PROJECT_DIR}\piranha-docker-image.tar"
+    File "${PROJECT_DIR}\installer-resources\piranha-docker-image.tar"
 
     ; Check if Docker Desktop is installed and running by checking if docker info can run
     DetailPrint "Checking that Docker is available."
