@@ -57,6 +57,11 @@ jobs:
           path: ./piranha-apps
       - name: Grant perm on tar
         run: chmod 777 -v piranha-docker-image.tar
+      - name: Verify tar file
+        run: |
+          echo "File size check:"
+          wc -c piranha-docker-image.tar
+          # Compare against the artifact size from the pull job
       - name: Build light installer
         run: npm run build-installer:win-light
       - name: Build full installer

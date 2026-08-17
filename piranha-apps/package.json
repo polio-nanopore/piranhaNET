@@ -21,7 +21,7 @@
     "dev-web": "vite --config web.vite.config.ts",
     "build-electron": "paraglide-js compile --project ./project.inlang --outdir svelte-app/src/paraglide && npm run typecheck && electron-vite build",
     "postinstall-electron": "electron-builder install-app-deps",
-    "build-installer": "electron-builder --config electron-builder.config.js",
+    "build-installer": "cross-env DEBUG=electron-builder electron-builder --config electron-builder.config.js",
     "build-installer:unpack": "npm run build-installer -- --dir",
     "build-installer:win-full": "cross-env BUNDLE_PIRANHA_IMAGE=true npm run build-installer -- --win",
     "build-installer:win-light": "cross-env BUNDLE_PIRANHA_IMAGE=false npm run build-installer -- --win",
