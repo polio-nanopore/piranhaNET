@@ -22,6 +22,11 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
         run: npm run docker:pull-and-tar-piranha
+      - name: Verify new tar file
+        run: |
+          echo "File size check for new tar file:"
+          wc -c installer-resources/piranha-docker-image.tar
+          # Compare against the artifact size from the pull job
       - name: Upload piranha docker image artifact
         uses: actions/upload-artifact@v7
         with:
