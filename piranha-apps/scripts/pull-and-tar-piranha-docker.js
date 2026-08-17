@@ -24,10 +24,11 @@ if (fs.existsSync(imageDir)) {
 
 const tarPath = path.join(imageDir, "piranha-docker-image.tar");
 
+// TODO: DRY on exec options
 console.log(`Pulling ${dockerImage}...`);
-execSync(`docker pull ${dockerImage}`, { stdio: 'inherit' });
+execSync(`docker pull ${dockerImage}`, { stdio: 'inherit', shell: "/bin/bash" });
 
 console.log(`Saving to ${tarPath}...`);
-execSync(`docker save ${dockerImage} -o "${tarPath}"`, { stdio: 'inherit' });
+execSync(`docker save ${dockerImage} -o "${tarPath}"`, { stdio: 'inherit', shell: "/bin/bash" });
 
 console.log("Finished successfully.");
