@@ -57,10 +57,10 @@ jobs:
           path: ./piranha-apps/installer-resources
       - name: Verify tar
         run: ls -la installer-resources
-      - name: Build full installer
-        run: npm run build-installer:win-full
       - name: Build light installer
         run: npm run build-installer:win-light
+      - name: Build full installer
+        run: npm run build-installer:win-full
       - name: Add installers to release (if there is one)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
