@@ -54,11 +54,9 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: piranha-docker-image
-          path: ./piranha-apps/installer-resources
+          path: ./piranha-apps
       - name: Grant perm on tar
-        run: chmod 777 -v installer-resources/piranha-docker-image.tar
-      - name: Verify tar
-        run: ls -la installer-resources
+        run: chmod 777 -v piranha-docker-image.tar
       - name: Build light installer
         run: npm run build-installer:win-light
       - name: Build full installer

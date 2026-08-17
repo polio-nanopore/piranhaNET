@@ -8,14 +8,14 @@
 !if "$%BUNDLE_PIRANHA_IMAGE%" == "true"
   Section "Piranha Image"
     SetOutPath "$INSTDIR\resources"
-    File "${PROJECT_DIR}\installer-resources\piranha-docker-image.tar"
+    File "${PROJECT_DIR}\piranha-docker-image.tar"
 
     ; Check if Docker Desktop is installed and running by checking if docker info can run
     DetailPrint "Checking that Docker is available."
     ExecWait 'cmd.exe /c docker info' $0
     ${If} $0 != 0
       MessageBox MB_ICONSTOP "Docker is not installed or not running. Please install and run Docker Desktop for Windows before installing PiranhaNET."
-      Abort 
+      Abort
     ${EndIf}
 
     ; Check if we already have the required Piranha image version loaded in docker
@@ -31,7 +31,7 @@
       ${If} $0 != 0
         MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image. PiranhaNET will attempt to pull image on first run."
       ${EndIf}
-    ${EndIf}  
+    ${EndIf}
     DetailPrint "Installing PiranhaNET..."
   SectionEnd
 !endif
