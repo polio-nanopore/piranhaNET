@@ -55,6 +55,8 @@ jobs:
         with:
           name: piranha-docker-image
           path: ./piranha-apps/installer-resources
+      - name: Grant perm on tar
+        run: chmod 777 -v installer-resources/piranha-docker-image.tar
       - name: Verify tar
         run: ls -la installer-resources
       - name: Build light installer
