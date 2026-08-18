@@ -42,7 +42,7 @@ describe("UserSettings", () => {
           "output-folder-field",
         );
       },
-      { en: /Output folder/, fr: /Dossier de sortie/, pt: /Pasta de saída/ },
+      { en: /Output folder/, fr: /Dossier de résultats/, pt: /Pasta de saída/ },
     );
   });
 
