@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v7
       - name: Install jq
         shell: wsl-bash {0}
-        run: apt-get update && apt-get install -y jq
+        run: apt-get update && apt-get install -y jq docker.io
       - name: Install Node
         uses: actions/setup-node@v5
         with:
@@ -27,6 +27,7 @@ jobs:
           cache: npm
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
+        shell: wsl-bash {0}
         run: |
           ls -la ./scripts/pull-and-tar-piranha-docker.sh
           bash -x ./scripts/pull-and-tar-piranha-docker.sh
