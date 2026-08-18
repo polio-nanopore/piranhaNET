@@ -29,6 +29,7 @@ jobs:
       - name: Pull and tar piranha docker image
         shell: wsl-bash {0}
         run: |
+          docker version
           docker info
           ls -la ./scripts/pull-and-tar-piranha-docker.sh
           bash -x ./scripts/pull-and-tar-piranha-docker.sh

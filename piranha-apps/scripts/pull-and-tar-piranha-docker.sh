@@ -18,4 +18,7 @@ docker image inspect $PIRANHA_TAG
 echo "Saving image"
 docker save $PIRANHA_TAG -o $TARGET_FILE
 
-echo "Successfully saved image to $TARGET_FILE"
+echo "Zipping image"
+gzip $TARGET_FILE
+
+echo "Successfully saved image to $TARGET_FILE.gz"
