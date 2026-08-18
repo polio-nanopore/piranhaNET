@@ -1,7 +1,7 @@
 !include "LogicLib.nsh"
 
 !define PIRANHA_DOCKER_IMAGE "polionanopore/piranha"
-!defing DOCKER_UNZIPPING_MSG "Unzipping Piranha Docker image. This may take several minutes"
+!define DOCKER_UNZIPPING_MSG "Unzipping Piranha Docker image. This may take several minutes"
 !define DOCKER_LOADING_MSG "Loading Piranha Docker image. This may take several minutes..."
 !define DOCKER_FALLBACK_MSG "PiranhaNET will attempt to pull image on first run."
 !define PIRANHA_VERSION "$%PIRANHA_VERSION%"
