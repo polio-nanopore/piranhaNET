@@ -1,7 +1,9 @@
 !include "LogicLib.nsh"
 
 !define PIRANHA_DOCKER_IMAGE "polionanopore/piranha"
+!defing DOCKER_UNZIPPING_MSG "Unzipping Piranha Docker image. This may take several minutes"
 !define DOCKER_LOADING_MSG "Loading Piranha Docker image. This may take several minutes..."
+!define DOCKER_FALLBACK_MSG "PiranhaNET will attempt to pull image on first run."
 !define PIRANHA_VERSION "$%PIRANHA_VERSION%"
 
 ; Only bundle the docker image if we're building the full installer
@@ -23,8 +25,14 @@
 
     ${If} $0 != 0
       ; Ungzip image
-      ; TODO Prettier message as below
-      ExecWait 'cmd.exe /c tar xzf "$INSTDIR\resources\piranha-docker-image.tar.gz" -C "$INSTDIR\resources"'
+      DetailPrint "${DOCKER_UNZIPPING_MSG}"
+      ; Retain the message during load
+      SetDetailsPrint none
+      ExecWait 'cmd.exe /c echo ${DOCKER_UNZIPPING_MSG} && tar xzf "$INSTDIR\resources\piranha-docker-image.tar.gz" -C "$INSTDIR\resources"' $0
+      SetDetailsPrint both
+      ${If} $0 != 0
+        MessageBox MB_ICONEXCLAMATION "Failed to unzip Piranha image. $DOCKER_FALLBACK_MSG"
+      ${EndIf}
 
       ; Load image
       DetailPrint "${DOCKER_LOADING_MSG}"
@@ -33,7 +41,7 @@
       ExecWait 'cmd.exe /c echo ${DOCKER_LOADING_MSG} && docker load -i "$INSTDIR\resources\piranha-docker-image.tar"' $0
       SetDetailsPrint both
       ${If} $0 != 0
-        MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image. PiranhaNET will attempt to pull image on first run."
+        MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image. $DOCKER_FALLBACK_MSG"
       ${EndIf}
     ${EndIf}
     DetailPrint "Installing PiranhaNET..."
