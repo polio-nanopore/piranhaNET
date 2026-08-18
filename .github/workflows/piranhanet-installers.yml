@@ -23,11 +23,14 @@ jobs:
           node-version: 24.9
           cache: npm
           cache-dependency-path: piranha-apps/package-lock.json
-      - name: Install dependencies
-        run: npm ci
       - name: Pull and tar piranha docker image
         shell: wsl-bash {0} # Do this in wsl so docker allows pull of piranha's Linux-built image
-        run: ./scripts/pull-and-tar-piranha-docker.sh
+        run: |
+          ls -la ./scripts/pull-and-tar-piranha-docker.sh
+          file ./scripts/pull-and-tar-piranha-docker.sh
+          ./scripts/pull-and-tar-piranha-docker.sh
+      - name: Install dependencies
+        run: npm ci
       - name: Build electron app
         run: npm run build-electron
       - name: Build light installer
