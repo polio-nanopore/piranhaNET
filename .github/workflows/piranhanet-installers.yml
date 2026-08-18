@@ -55,6 +55,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: piranhanet-windows-installer-${{ github.run_number }}
-          path: piranha-apps/dist/*.exe
+          path: | # useful for local testing
+            piranha-apps/dist/*.exe
+            piranha-apps/installer-resources/*
           retention-days: 10
   
