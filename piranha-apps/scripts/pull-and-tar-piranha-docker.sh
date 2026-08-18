@@ -11,6 +11,10 @@ echo "Making target dir if required"
 mkdir -p "$TARGET_DIR"
 echo "Pulling image"
 docker pull --platform linux/amd64 $PIRANHA_TAG
+
+echo "TESTING docker info
+docker image inspect $PIRANHA_TAG
+
 echo "Saving image"
 docker save $PIRANHA_TAG -o $TARGET_FILE
 
