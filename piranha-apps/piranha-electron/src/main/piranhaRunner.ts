@@ -47,6 +47,7 @@ export class PiranhaRunner {
   public async runPiranha(
     options: PiranhaRunOptions,
     outputStream: NodeJS.WritableStream = process.stdout,
+    abortSignal: AbortSignal
   ): Promise<void> {
     // TODO: use yaml file to pass parameters in API Docker image - for now use same approach as PiranhaGUI of "escaping"
     // arg strings with underscores
@@ -91,7 +92,9 @@ export class PiranhaRunner {
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
-    const [data, _] = await this.docker.run(
+    //const [data, _] = await this.docker.run(
+    // Do not await as we need to be able to configure abort signal
+    const runPromise = this.docker.run(
       this.imageRef,
       [], // default cmd
       outputStream,
@@ -113,6 +116,25 @@ export class PiranhaRunner {
         },
       },
     );
+
+    // Handle the container event from the runPromise so we can use it on abort
+    let runContainer = null;
+    runPromise.on("container", (container) => {
+      runContainer = container;
+    });
+
+    // TODO: only do this when actually required by the abort signal
+    console.log('Aborting run by stopping and removing container...');
+    try {
+      await runContainer.stop();
+      await runContainer.remove();
+      console.log('Abort run complete.');
+    } catch (err) {
+      console.error('Abort run failed:', err.message);
+    }
+
+    // Wait for the run to complete
+    const [data, _] = await runPromise;
     outputStream.end();
 
     if (data.StatusCode !== 0) {
