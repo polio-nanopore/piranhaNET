@@ -27,7 +27,7 @@ jobs:
         run: npm ci
       - name: Pull and tar piranha docker image
         shell: wsl-bash {0} # Do this in wsl so docker allows pull of piranha's Linux-built image
-        run: ./scripts/pull-and-tar-piranha.sh
+        run: ./scripts/pull-and-tar-piranha-docker.sh
       - name: Build electron app
         run: npm run build-electron
       - name: Build light installer
