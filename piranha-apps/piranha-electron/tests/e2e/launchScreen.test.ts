@@ -311,6 +311,12 @@ test("can see errors when submit incomplete settings", async () => {
   await expectErrorMessage(userNameInput);
   await expectErrorMessage(instituteInput);
 
+  // We haven't provided control values, so should also see error for those
+  const posInput = await getPositiveControl(win);
+  await expectErrorMessage(posInput);
+  const negInput = await getNegativeControl(win);
+  await expectErrorMessage(negInput);
+
   await userNameInput.fill("Test User");
   await userNameInput.blur();
   await expectErrorMessage(userNameInput, false);
