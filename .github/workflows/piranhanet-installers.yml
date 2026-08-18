@@ -43,8 +43,8 @@ jobs:
           files: piranha-apps/dist/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifacts (if manual workflow run)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Upload artifacts (if not a release)
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
           name: piranhanet-windows-installer-${{ github.run_number }}

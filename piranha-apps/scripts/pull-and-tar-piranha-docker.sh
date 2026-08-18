@@ -2,7 +2,7 @@
 set -ex
 
 PIRANHA_IMAGE="polionanopore/piranha"
-PIRANHA_VERSION=$(jq -r '.piranhaVersion' ../package.json)
+PIRANHA_VERSION=$(jq -r '.piranhaVersion' package.json)
 PIRANHA_TAG="$PIRANHA_IMAGE:$PIRANHA_VERSION"
 TARGET_DIR="./installer-resources"
 TARGET_FILE="$TARGET_DIR/piranha-docker-image.tar"
