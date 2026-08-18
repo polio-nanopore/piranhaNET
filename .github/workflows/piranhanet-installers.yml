@@ -17,7 +17,7 @@ jobs:
         uses: Vampire/setup-wsl@v7
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Install jq
+      - name: Install jq and docker.io
         shell: wsl-bash {0}
         run: apt-get update && apt-get install -y jq docker.io
       - name: Install Node
@@ -31,6 +31,8 @@ jobs:
         run: |
           ls -la ./scripts/pull-and-tar-piranha-docker.sh
           bash -x ./scripts/pull-and-tar-piranha-docker.sh
+      - name: File size check
+        run: wc -c installer-resources/piranha-docker-image.tar
       - name: Install dependencies
         run: npm ci
       - name: Build electron app
