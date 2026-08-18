@@ -27,7 +27,6 @@ jobs:
           cache: npm
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
-        shell: wsl-bash {0} # Do this in wsl so docker allows pull of piranha's Linux-built image
         run: |
           ls -la ./scripts/pull-and-tar-piranha-docker.sh
           bash -x ./scripts/pull-and-tar-piranha-docker.sh
