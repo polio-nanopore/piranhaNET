@@ -31,7 +31,7 @@
       ExecWait 'cmd.exe /c echo ${DOCKER_UNZIPPING_MSG} && tar xzf "$INSTDIR\resources\piranha-docker-image.tar.gz" -C "$INSTDIR\resources"' $0
       SetDetailsPrint both
       ${If} $0 != 0
-        MessageBox MB_ICONEXCLAMATION "Failed to unzip Piranha image. $DOCKER_FALLBACK_MSG"
+        MessageBox MB_ICONEXCLAMATION "Failed to unzip Piranha image. ${DOCKER_FALLBACK_MSG}"
       ${EndIf}
 
       ; Load image
@@ -41,7 +41,7 @@
       ExecWait 'cmd.exe /c echo ${DOCKER_LOADING_MSG} && docker load -i "$INSTDIR\resources\piranha-docker-image.tar"' $0
       SetDetailsPrint both
       ${If} $0 != 0
-        MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image. $DOCKER_FALLBACK_MSG"
+        MessageBox MB_ICONEXCLAMATION "Failed to load Piranha image. ${DOCKER_FALLBACK_MSG}"
       ${EndIf}
     ${EndIf}
     DetailPrint "Installing PiranhaNET..."
