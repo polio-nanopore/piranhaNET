@@ -12,7 +12,7 @@ mkdir -p "$TARGET_DIR"
 echo "Pulling image"
 docker pull --platform linux/amd64 $PIRANHA_TAG
 
-echo "TESTING docker info
+echo "TESTING docker inspect"
 docker image inspect $PIRANHA_TAG
 
 echo "Saving image"
