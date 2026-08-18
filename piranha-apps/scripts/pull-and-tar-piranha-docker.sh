@@ -10,8 +10,15 @@ TARGET_FILE="$TARGET_DIR/piranha-docker-image.tar"
 echo "Making target dir if required"
 mkdir -p "$TARGET_DIR"
 echo "Pulling image"
-docker pull $PIRANHA_TAG
+docker pull --platform linux/amd64 $PIRANHA_TAG
+
+echo "TESTING docker inspect"
+docker image inspect $PIRANHA_TAG
+
 echo "Saving image"
 docker save $PIRANHA_TAG -o $TARGET_FILE
 
-echo "Successfully saved image to $TARGET_FILE"
+echo "Zipping image"
+gzip $TARGET_FILE
+
+echo "Successfully saved image to $TARGET_FILE.gz"
