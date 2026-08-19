@@ -57,7 +57,7 @@ describe("Run", () => {
       (text) => expect(screen.getByTestId("run")).toHaveTextContent(text),
       {
         en: /Run Piranha/,
-        fr: /Courez Piranha/,
+        fr: /Lancer Piranha/,
         pt: /Corra Piranha/,
       },
     );

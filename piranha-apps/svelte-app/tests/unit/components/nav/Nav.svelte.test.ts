@@ -40,7 +40,7 @@ describe("Nav", () => {
       (text) => expect(screen.getByTestId("nav-run")).toHaveTextContent(text),
       {
         en: /Run/,
-        fr: /Courez/,
+        fr: /Lancer/,
         pt: /Corra/,
       },
     );

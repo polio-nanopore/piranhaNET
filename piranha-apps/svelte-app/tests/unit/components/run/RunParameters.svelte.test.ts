@@ -100,7 +100,7 @@ describe("RunParameters", () => {
       (text) => expect(screen.getByTestId("run")).toHaveTextContent(text),
       {
         en: /Run/,
-        fr: /Courez/,
+        fr: /Lancer/,
         pt: /Corra/,
       },
     );
