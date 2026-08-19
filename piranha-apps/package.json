@@ -62,7 +62,7 @@
     "ansi-parser": "^3.2.11",
     "bits-ui": "^2.16.3",
     "clsx": "^2.1.1",
-    "cross-env":"^10.1.0",
+    "cross-env": "^10.1.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",

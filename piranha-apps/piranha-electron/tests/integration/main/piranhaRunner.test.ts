@@ -108,7 +108,6 @@ describe("piranhaRunner", () => {
     // In all cases, piranhaImageIsLoaded should now return true
     const imageIsLoaded = await runner.piranhaImageIsLoaded();
     expect(imageIsLoaded).toBe(true);
-
   }, 480_000); // This will take a while!
 
   test("throws error if piranha run finishes with non-zero exit code", async () => {

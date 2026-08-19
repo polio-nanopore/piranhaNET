@@ -36,7 +36,7 @@ function createWindow(): void {
     mainWindow.show();
 
     try {
-      const pullRequired = !await runner.piranhaImageIsLoaded();
+      const pullRequired = !(await runner.piranhaImageIsLoaded());
       if (pullRequired) {
         await runner.pullPiranhaImage();
       }
