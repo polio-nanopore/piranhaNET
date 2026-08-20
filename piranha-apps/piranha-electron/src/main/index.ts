@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import "uuid";
+import * as uuid from "uuid";
 import pkg from "../../../package.json" with { type: "json" };
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";

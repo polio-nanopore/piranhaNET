@@ -1,5 +1,5 @@
 import type { PiranhaRunOptions } from "../../../svelte-app/src/shared/types";
-import Docker from "dockerode";
+import Docker, {Container} from "dockerode";
 import { userInfo } from "node:os";
 
 // Class for pulling piranha docker image and using it to run piranha jobs, used by Electron main process
@@ -118,19 +118,20 @@ export class PiranhaRunner {
     );
 
     // Handle the container event from the runPromise so we can use it on abort
-    let runContainer = null;
+    let runContainer: null | Container = null;
     runPromise.on("container", (container) => {
+      console.log("Got container")
       runContainer = container;
     });
 
     abortSignal.addEventListener("abort", async () => {
       console.log("Piranha run cancel request.");
       try {
-        await runContainer.stop();
-        await runContainer.remove();
+        await runContainer!.stop();
+        await runContainer!.remove();
         console.log("Piranha run cancelled.");
       } catch (err) {
-        console.error("Failed to cancel Piranha run:", err.message);
+        console.error("Failed to cancel Piranha run:", (err as Error).message);
       }
     })
 
