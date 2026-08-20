@@ -135,20 +135,13 @@ export class PiranhaRunner {
     })
 
     // Wait for the run to complete
-    try {
-      const [data, _] = await runPromise;
-      outputStream.end();
+    const [data, _] = await runPromise;
+    outputStream.end();
 
-      if (data.StatusCode !== 0) {
-        throw new Error(
-          `Piranha finished with non-zero exit code ${data.StatusCode}`,
-        );
-      }
-    } catch (err) {
-      // Don't throw if just  processing cancellation
-      if (err.name != "AbortError") {
-        throw err;
-      }
+    if (data.StatusCode !== 0) {
+      throw new Error(
+        `Piranha finished with non-zero exit code ${data.StatusCode}`,
+      );
     }
   }
 }

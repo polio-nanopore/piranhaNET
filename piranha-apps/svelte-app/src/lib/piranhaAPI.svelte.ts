@@ -14,6 +14,7 @@ export class PiranhaAPI {
   #decoder = new TextDecoder("utf-8");
   #options: PiranhaRunOptions | null = $state(null);
   #runOutputFolderName = $state("");
+  #abortId = "";
 
   constructor() {
     window.api?.onInitialized(() => {
@@ -33,7 +34,12 @@ export class PiranhaAPI {
     window.api?.onError((messageKey, detail) => {
       this.#error = { messageKey, detail };
       // Add error to log, including ansi sequence to show in Red
-      this.#log.push(`\x1b[1;31m${m[messageKey]()}: ${detail}`);
+      this.#addErrorToLog(`${m[messageKey]()}: ${detail}`);
+    });
+    window.api?.onRunCancelled(() => {
+      this.#running = false;
+      this.#error = {messageKey: "runCancelled", detail: ""};
+      this.#addErrorToLog(m.runCancelled());
     });
   }
 
@@ -57,6 +63,10 @@ export class PiranhaAPI {
     return this.#log;
   }
 
+  #addErrorToLog(error: string): void {
+    this.#log.push(`\x1b[1;31m${error}`);
+  }
+
   async #findOutputFolderFromLog(): Promise<void> {
     // Find local report path from docker volume path written in log, if run was successful
     const fullLog = this.#log.join(" ");
@@ -72,7 +82,7 @@ export class PiranhaAPI {
     }
     this.#log = [];
     this.#options = options;
-    window.api.runPiranha(options);
+    this.#abortId = window.api.runPiranha(options);
     this.#running = true;
   }
 
@@ -81,6 +91,11 @@ export class PiranhaAPI {
     this.#error = null;
     this.#options = null;
     this.#runOutputFolderName = "";
+    this.#abortId = "";
+  }
+
+  cancelRun(): void {
+    window.api.cancelRun(this.#abortId);
   }
 
   async openRunReport(): Promise<void> {

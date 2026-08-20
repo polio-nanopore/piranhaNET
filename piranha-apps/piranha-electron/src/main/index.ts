@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import "uuid";
 import pkg from "../../../package.json" with { type: "json" };
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
@@ -16,6 +17,7 @@ const piranhaNETVersion = pkg.version;
 const piranhaVersion = pkg.piranhaVersion;
 
 const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, piranhaVersion);
+const abortControllers: Record<string, AbortController> = {};
 
 function createWindow(): void {
   // Create the browser window.
@@ -116,13 +118,30 @@ function createWindow(): void {
       },
     });
 
-    try {
-      await runner.runPiranha(options, writable);
-    } catch (e) {
-      mainWindow.webContents.send("error", "runError", (e as Error).message);
-    }
+    const abortControllerId = uuid.v4();
+    const abortController = new AbortController();
+    abortControllers[abortControllerId] = abortController;
+
+    runner.runPiranha(options, writable, abortController.signal).catch((e) => {
+      if (e.name == "AbortError") {
+        mainWindow.webContents.send("run-cancelled");
+      } else {
+        mainWindow.webContents.send("error", "runError", (e as Error).message);
+      }
+    }).finally(() => {
+      delete abortControllers[abortControllerId];
+    });
+
+    // Immediately return the abort id so it is available to front end dirgun run
+    return abortControllerId;
   });
 }
+
+ipcMain.on("cancel-run", (_event, abortControllerId: string) => {
+  if (abortControllerId in abortControllers) {
+    abortControllers[abortControllerId].abort();
+  }
+});
 
 ipcMain.handle(
   "open-run-report",

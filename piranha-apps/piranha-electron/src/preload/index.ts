@@ -11,6 +11,8 @@ const api = {
   },
   runPiranha: (options: PiranhaRunOptions) =>
     ipcRenderer.send("run-piranha", options),
+  cancelRun: (abortId: string) =>
+    ipcRenderer.send("cancel-run", abortId),
   versions: process.versions,
   showFileDialog: (options: FileDialogOptions) =>
     ipcRenderer.invoke("show-file-dialog", options),
@@ -36,6 +38,8 @@ const api = {
   onEnd: (callback) => ipcRenderer.on("stream-end", (_event) => callback()),
   onError: (callback) =>
     ipcRenderer.on("error", (_event, error, detail) => callback(error, detail)),
+  onRunCancelled: (callback) =>
+    ipcRenderer.on("run-cancelled", (_event) => callback())
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
