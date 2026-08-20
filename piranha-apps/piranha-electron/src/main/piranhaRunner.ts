@@ -123,24 +123,32 @@ export class PiranhaRunner {
       runContainer = container;
     });
 
-    // TODO: only do this when actually required by the abort signal
-    console.log('Aborting run by stopping and removing container...');
-    try {
-      await runContainer.stop();
-      await runContainer.remove();
-      console.log('Abort run complete.');
-    } catch (err) {
-      console.error('Abort run failed:', err.message);
-    }
+    abortSignal.addEventListener("abort", async () => {
+      console.log("Piranha run cancel request.");
+      try {
+        await runContainer.stop();
+        await runContainer.remove();
+        console.log("Piranha run cancelled.");
+      } catch (err) {
+        console.error("Failed to cancel Piranha run:", err.message);
+      }
+    })
 
     // Wait for the run to complete
-    const [data, _] = await runPromise;
-    outputStream.end();
+    try {
+      const [data, _] = await runPromise;
+      outputStream.end();
 
-    if (data.StatusCode !== 0) {
-      throw new Error(
-        `Piranha finished with non-zero exit code ${data.StatusCode}`,
-      );
+      if (data.StatusCode !== 0) {
+        throw new Error(
+          `Piranha finished with non-zero exit code ${data.StatusCode}`,
+        );
+      }
+    } catch (err) {
+      // Don't throw if just  processing cancellation
+      if (err.name != "AbortError") {
+        throw err;
+      }
     }
   }
 }
