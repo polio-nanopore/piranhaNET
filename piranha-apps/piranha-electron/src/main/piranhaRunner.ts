@@ -92,9 +92,85 @@ export class PiranhaRunner {
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
+    let containerStream: any;
+    let container: undefined | Container;
+    try {
+      container = await this.docker.createContainer({
+          Image: this.imageRef,
+          Cmd: [], // default cmd
+          Env: env,
+          Volumes: {
+            containerBarcodesFilePath: {},
+            containerBaseCalledPath: {},
+            containerOutputPath: {},
+          },
+          User: this.userMapping,
+          HostConfig: {
+            Binds: [
+              `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
+              `${options.minKnowFolderPath}:${containerBaseCalledPath}`,
+              `${options.outputFolderPath}:${containerOutputPath}`,
+            ],
+            AutoRemove: true, // rm
+          },
+        },
+      );
+      containerStream = await container.attach({
+        stream: true,
+        stdout: true,
+        stderr: true
+      });
+      containerStream.pipe(outputStream);
+
+      const waitForAbort = (abortSignal: AbortSignal) => {
+        return new Promise((_, reject) => {
+          abortSignal.addEventListener('abort', () => {
+            const e = new Error("Piranha run aborted");
+            e.name = "AbortError";
+            reject(e);
+          });
+        });
+      };
+
+      const doPiranhaRun = async () => {
+        const result = await container.wait();
+        outputStream.end();
+        if (result.StatusCode !== 0) {
+          throw new Error(
+            `Piranha finished with non-zero exit code ${result.StatusCode}`,
+          );
+        }
+      }
+
+      await container.start();
+
+      // Wait for container to finish running, or for abort to signal, whichever comes first
+      await Promise.race([
+        doPiranhaRun(),
+        waitForAbort(abortSignal)
+      ]);
+
+    } finally {
+      if (containerStream) {
+        containerStream.destroy();
+      }
+      if (container && container.inspect().State.Running()) {
+        try {
+          await container.stop({ t: 5 });
+        } catch (err) {
+          // Already stopped
+        }
+
+      }
+    }
+  }
+
+
+
+
     //const [data, _] = await this.docker.run(
     // Do not await as we need to be able to configure abort signal
-    const runPromise = this.docker.run(
+   /* const runPromise = this.docker.run(
       this.imageRef,
       [], // default cmd
       outputStream,
@@ -144,5 +220,5 @@ export class PiranhaRunner {
         `Piranha finished with non-zero exit code ${data.StatusCode}`,
       );
     }
-  }
+  }*/
 }
