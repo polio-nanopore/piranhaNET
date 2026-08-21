@@ -120,7 +120,8 @@ export class PiranhaRunner {
         stdout: true,
         stderr: true
       });
-      containerStream.pipe(outputStream);
+      // Remove stream binary headers when switch between stdout and stderr
+      container.modem.demuxStream(containerStream, outputStream, outputStream);
 
       const waitForAbort = (abortSignal: AbortSignal) => {
         return new Promise((_, reject) => {
