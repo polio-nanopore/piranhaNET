@@ -105,7 +105,7 @@ function createWindow(): void {
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.on("run-piranha", async (_event, options: PiranhaRunOptions) => {
+  ipcMain.handle("run-piranha", async (_event, options: PiranhaRunOptions) => {
     const writable = new Writable({
       write(chunk, _, callback) {
         // Send each chunk to the renderer
@@ -132,13 +132,16 @@ function createWindow(): void {
       delete abortControllers[abortControllerId];
     });
 
-    // Immediately return the abort id so it is available to front end dirgun run
+    // Immediately return the abort id so it is available to front end during run
     return abortControllerId;
   });
 }
 
 ipcMain.on("cancel-run", (_event, abortControllerId: string) => {
+  console.log("received cancel run with " + abortControllerId)
+  console.log("keys is " + JSON.stringify(Object.keys(abortControllers)))
   if (abortControllerId in abortControllers) {
+    console.log("aborting controller")
     abortControllers[abortControllerId].abort();
   }
 });

@@ -9,8 +9,9 @@ const api = {
   piranhaVersions: () => {
     return ipcRenderer.invoke("piranha-versions");
   },
-  runPiranha: (options: PiranhaRunOptions) =>
-    ipcRenderer.send("run-piranha", options),
+  runPiranha: (options: PiranhaRunOptions) => {
+    return ipcRenderer.invoke("run-piranha", options);
+  },
   cancelRun: (abortId: string) =>
     ipcRenderer.send("cancel-run", abortId),
   versions: process.versions,

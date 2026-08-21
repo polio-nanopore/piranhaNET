@@ -154,13 +154,15 @@ export class PiranhaRunner {
       if (containerStream) {
         containerStream.destroy();
       }
-      if (container && container.inspect().State.Running()) {
-        try {
-          await container.stop({ t: 5 });
-        } catch (err) {
-          // Already stopped
+      if (container) {
+        const insp = await container.inspect();
+        if (insp.State.Running) {
+          try {
+            await container.stop({ t: 5 });
+          } catch (err) {
+            // Already stopped
+          }
         }
-
       }
     }
   }

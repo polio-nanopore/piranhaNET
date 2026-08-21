@@ -76,13 +76,14 @@ export class PiranhaAPI {
     }
   }
 
-  runPiranha(options: PiranhaRunOptions): void {
+  async runPiranha(options: PiranhaRunOptions): void {
     if (this.#running) {
       throw new Error(m.apiErrorAlreadyRunning());
     }
     this.#log = [];
     this.#options = options;
-    this.#abortId = window.api.runPiranha(options);
+    this.#abortId = await window.api.runPiranha(options);
+    console.log(`abort is is ${this.#abortId}`)
     this.#running = true;
   }
 

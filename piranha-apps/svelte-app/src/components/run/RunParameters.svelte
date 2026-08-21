@@ -36,7 +36,7 @@
     }
   }
 
-  function onSubmit(e: SubmitEvent): void {
+  async function onSubmit(e: SubmitEvent): Promise<void> {
     e.preventDefault();
     const valid = validate();
     if (valid) {
@@ -45,7 +45,7 @@
         settings,
         i18n.lang,
       );
-      piranhaAPI.runPiranha(runOptions);
+      await piranhaAPI.runPiranha(runOptions);
     }
     appState.doneInitialSubmit = true;
   }
