@@ -92,7 +92,15 @@
       {/each}
     </code>
   </div>
-  {#if !piranhaAPI.running}
+  {#if piranhaAPI.cancelling}
+    <div class="float-end flex" data-testid="cancelling">
+      <Spinner
+        class="text-orange-300 size-6 mr-2"
+        data-testid="cancelliing-spinner"
+      ></Spinner>
+      {m.cancelling()}
+    </div>
+  {:else if !piranhaAPI.running}
     <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
       {m.newRun()}
     </Button>

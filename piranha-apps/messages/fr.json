@@ -10,6 +10,7 @@
   "aboutGithubRepoFor": "Dépôt GitHub pour",
   "aboutCredits": "Crédits",
   "apiErrorAlreadyRunning": "Piranha est déjà en cours d'execution.",
+  "cancelling": "Annulation en cours",
   "cancelRun":"Annuler l'exécution",
   "continue": "Continuez",
   "errorDetail": "Détails de l'erreur",

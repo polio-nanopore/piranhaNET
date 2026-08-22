@@ -14,6 +14,7 @@ export class PiranhaAPI {
   #decoder = new TextDecoder("utf-8");
   #options: PiranhaRunOptions | null = $state(null);
   #runOutputFolderName = $state("");
+  #cancelling = $state(false);
   #abortId = "";
 
   constructor() {
@@ -37,6 +38,7 @@ export class PiranhaAPI {
       this.#addErrorToLog(`${m[messageKey]()}: ${detail}`);
     });
     window.api?.onRunCancelled(() => {
+      this.#cancelling = false;
       this.#running = false;
       this.#error = {messageKey: "runCancelled", detail: ""};
       this.#addErrorToLog(m.runCancelled());
@@ -61,6 +63,10 @@ export class PiranhaAPI {
 
   get log(): string[] {
     return this.#log;
+  }
+
+  get cancelling(): boolean {
+    return this.#cancelling;
   }
 
   #addErrorToLog(error: string): void {
@@ -92,10 +98,12 @@ export class PiranhaAPI {
     this.#error = null;
     this.#options = null;
     this.#runOutputFolderName = "";
+    this.#cancelling = false;
     this.#abortId = "";
   }
 
   cancelRun(): void {
+    this.#cancelling = true;
     window.api.cancelRun(this.#abortId);
   }
 
