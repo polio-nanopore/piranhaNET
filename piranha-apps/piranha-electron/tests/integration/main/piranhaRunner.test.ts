@@ -26,6 +26,7 @@ describe("piranhaRunner", () => {
 
   const runPiranha = async (
     barcodesFileName = "barcodes.csv",
+    abortController = new AbortController()
   ): Promise<string[]> => {
     const runner = new PiranhaRunner("polionanopore/piranha", piranhaVersion);
 
@@ -71,6 +72,7 @@ describe("piranhaRunner", () => {
           lang: "fr",
         },
         runOutput.writable,
+        abortController.signal
       );
     } catch (e) {
       // Useful for debugging
@@ -110,5 +112,12 @@ describe("piranhaRunner", () => {
     await expect(runPiranha("badBarcodes.csv")).rejects.toThrow(
       "Piranha finished with non-zero exit code 255",
     );
+  }, 30_000);
+
+  test("throws expected error when piranha run is cancelled", async () => {
+    const abortController = new AbortController();
+    const runPromise = runPiranha("barcodes.csv", abortController);
+    abortController.abort();
+    await expect(runPromise).rejects.toThrow("Piranha run aborted");
   }, 30_000);
 });
