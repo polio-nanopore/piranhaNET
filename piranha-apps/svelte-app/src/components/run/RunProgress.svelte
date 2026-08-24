@@ -96,7 +96,7 @@
     <div class="float-end flex" data-testid="cancelling">
       <Spinner
         class="text-orange-300 size-6 mr-2"
-        data-testid="cancelliing-spinner"
+        data-testid="cancelling-spinner"
       ></Spinner>
       {m.cancelling()}
     </div>

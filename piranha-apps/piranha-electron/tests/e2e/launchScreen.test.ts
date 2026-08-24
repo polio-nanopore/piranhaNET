@@ -1,7 +1,9 @@
 import { test, expect, Locator, Page } from "@playwright/test";
 import { initialiseTest, launchApp, getWindow } from "./utils";
+import Docker from "dockerode";
 
 let electronApp;
+const docker = new Docker();
 
 const initialiseFileDialogHandler = async (): Promise<void> => {
   await electronApp.evaluate(({ app, ipcMain }) => {
@@ -74,6 +76,10 @@ const getContinueButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Continue/ });
 const getRunButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Run Piranha/ });
+const getCancelButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", { name: /Cancel Run/ });
+const getNewRunButton = async (win: Page): Promise<Locator> =>
+  await win.getByRole("button", {name: "New Run"});
 
 const getOpenReportButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Open report/ });
@@ -121,11 +127,7 @@ const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
   await continueButton.click();
 };
 
-test("can see welcome screen and run form, fill in parameters form and run Piranha", async () => {
-  const win = await getWindow(electronApp);
-  await completeWelcomeScreenForm(win);
-
-  // Fill in Run parameters
+const fillRunParameters = async (win: Page) => {
   const nameInput = await getNameInput(win);
   await nameInput.fill("Test Name");
 
@@ -137,6 +139,26 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   const notesInput = await getNotesInput(win);
   await notesInput.fill("some test notes");
+};
+
+const fillRunSettings = async (win: Page) => {
+  const settings = await win.getByTestId("settings");
+  const posControl = await getPositiveControl(win);
+  await posControl.fill("pos");
+  const negControl = await getNegativeControl(win);
+  await negControl.fill("neg");
+};
+
+const piranhaIsRunning = async () => {
+  const containers = await docker.listContainers();
+  return containers.some((c) => c.Image.startsWith("polionanopore/piranha:"));
+};
+
+test("can see welcome screen and run form, fill in parameters form and run Piranha", async () => {
+  const win = await getWindow(electronApp);
+  await completeWelcomeScreenForm(win);
+
+  await fillRunParameters(win);
 
   // Can see help text on hover
   const tooltipTrigger = await win
@@ -147,14 +169,10 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
     await win.locator("div[data-bits-floating-content-wrapper]"),
   ).toHaveText(/Run name to appear in report/);
 
-  // Also fill in run settings
-  const settings = await win.getByTestId("settings");
-  const posControl = await getPositiveControl(win);
-  await posControl.fill("pos");
-  const negControl = await getNegativeControl(win);
-  await negControl.fill("neg");
+  await fillRunSettings(win);
 
   // Open and edit Piranha Output settings
+  const settings = await win.getByTestId("settings");
   const piranhaOutput = await settings.getByTestId("piranhaOutputSettings");
   await piranhaOutput.click();
   const overwriteOutput = await piranhaOutput.getByLabel("Overwrite output");
@@ -413,4 +431,32 @@ test("user and run settings are persisted", async () => {
   await expect(posControl).toHaveValue("test pos");
   negControl = await getNegativeControl(win);
   await expect(negControl).toHaveValue("test neg");
+});
+
+test("cancel button ends run and kills docker container", async () => {
+  // Run job
+  const win = await getWindow(electronApp);
+  await completeWelcomeScreenForm(win);
+  await fillRunParameters(win);
+  await fillRunSettings(win);
+  const runButton = await getRunButton(win);
+  await runButton.click();
+  await expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
+
+  // Test docker container is running
+  await win.waitForTimeout(2000);
+  expect(await piranhaIsRunning()).toBe(true);
+
+  const cancelButton = await getCancelButton(win);
+  await cancelButton.click();
+  const cancelling = await win.getByTestId("cancelling");
+  await expect(cancelling).toBeVisible();
+  const log = await win.getByTestId("logs");
+  await expect(log).toHaveText(/Run cancelled by user/, { timeout: 30_000 });
+  await expect(await getNewRunButton(win)).toBeEnabled();
+  await expect(await win.getByTestId("run-progress-x")).toBeVisible
+
+
+  // Confirm docker no longer running
+  expect(await piranhaIsRunning()).toBe(false);
 });
