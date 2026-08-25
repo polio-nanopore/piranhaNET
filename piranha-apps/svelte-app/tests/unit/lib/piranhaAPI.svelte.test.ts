@@ -11,7 +11,9 @@ describe("piranhaAPI", () => {
       onChunk: vi.fn(),
       onEnd: vi.fn(),
       onError: vi.fn(),
-      runPiranha: vi.fn(),
+      onRunCancelled: vi.fn(),
+      runPiranha: vi.fn().mockImplementation(async () => "123"),
+      cancelRun: vi.fn(),
       openRunReport: vi.fn(),
       openRunOutputFolder: vi.fn(),
     };
@@ -29,7 +31,7 @@ describe("piranhaAPI", () => {
     initialize();
     expect(sut.initialized).toBe(true);
 
-    sut.runPiranha(testOptions);
+    await sut.runPiranha(testOptions);
 
     // Stream chunk and end messages are added to log
     expect(sut.log).toStrictEqual([]);
@@ -76,12 +78,12 @@ describe("piranhaAPI", () => {
     expect(sut.log).toStrictEqual([
       "\x1b[1;31mPiranha Run Error: something went wrong",
     ]);
-  });
+  })
 
   test("runPiranha calls api", async () => {
     expect(sut.running).toBe(false);
     sut.log.push("Earlier run message");
-    sut.runPiranha(testOptions);
+    await sut.runPiranha(testOptions);
     expect(window.api.runPiranha).toHaveBeenCalledWith(testOptions);
     expect(sut.log).toStrictEqual([]);
     expect(sut.running).toBe(true);
@@ -92,9 +94,22 @@ describe("piranhaAPI", () => {
     expect(sut.running).toBe(false);
   });
 
-  test("runPiranha throws error if already running", () => {
-    sut.runPiranha(testOptions);
-    expect(() => sut.runPiranha(testOptions)).toThrow(
+  test("cancelRun and onRunCancelled set expected values", async () => {
+    await sut.runPiranha(testOptions);
+    sut.cancelRun();
+    expect(sut.cancelling).toBe(true);
+    expect(window.api.cancelRun).toHaveBeenCalledWith("123");
+    const cancelled = window.api.onRunCancelled.mock.calls[0][0];
+    await cancelled();
+    expect(sut.cancelling).toBe(false);
+    expect(sut.running).toBe(false);
+    expect(sut.error).toStrictEqual({messageKey: "runCancelled", detail: ""});
+    expect(sut.log).toContain("\x1b[1;31mRun cancelled by user");
+  });
+
+  test("runPiranha throws error if already running", async () => {
+    await sut.runPiranha(testOptions);
+    await expect(sut.runPiranha(testOptions)).rejects.toThrow(
       "Piranha is already running",
     );
   });
