@@ -86,7 +86,7 @@ describe("piranhaRunner", () => {
     return outputText;
   };
 
- test("can pull and run docker image", async () => {
+  test("can pull and run docker image", async () => {
     const outputText = await runPiranha();
     expect(outputText).toContain("Poliovirus Investigation Resource"); //starts run
     expect(outputText).toContain("Setting runname: test_name");
