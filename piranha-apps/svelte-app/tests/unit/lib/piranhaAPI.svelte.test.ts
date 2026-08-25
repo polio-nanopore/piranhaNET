@@ -78,7 +78,7 @@ describe("piranhaAPI", () => {
     expect(sut.log).toStrictEqual([
       "\x1b[1;31mPiranha Run Error: something went wrong",
     ]);
-  })
+  });
 
   test("runPiranha calls api", async () => {
     expect(sut.running).toBe(false);
@@ -103,7 +103,7 @@ describe("piranhaAPI", () => {
     await cancelled();
     expect(sut.cancelling).toBe(false);
     expect(sut.running).toBe(false);
-    expect(sut.error).toStrictEqual({messageKey: "runCancelled", detail: ""});
+    expect(sut.error).toStrictEqual({ messageKey: "runCancelled", detail: "" });
     expect(sut.log).toContain("\x1b[1;31mRun cancelled by user");
   });
 

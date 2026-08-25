@@ -40,7 +40,7 @@ export class PiranhaAPI {
     window.api?.onRunCancelled(() => {
       this.#cancelling = false;
       this.#running = false;
-      this.#error = {messageKey: "runCancelled", detail: ""};
+      this.#error = { messageKey: "runCancelled", detail: "" };
       this.#addErrorToLog(m.runCancelled());
     });
   }
@@ -89,7 +89,7 @@ export class PiranhaAPI {
     this.#log = [];
     this.#options = options;
     this.#abortId = await window.api.runPiranha(options);
-    console.log(`abort is is ${this.#abortId}`)
+    console.log(`abort is is ${this.#abortId}`);
     this.#running = true;
   }
 

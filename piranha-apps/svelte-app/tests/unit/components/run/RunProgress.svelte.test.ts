@@ -89,12 +89,13 @@ describe("RunProgress", () => {
     await expectTranslations(
       (text) => {
         expect(screen.getByRole("button")).toHaveTextContent(text);
-      }, {
+      },
+      {
         en: "Cancel Run",
         fr: "Annuler l'exécution",
-        pt: "Cancelar execução"
-      }
-    )
+        pt: "Cancelar execução",
+      },
+    );
     expect(screen.queryByTestId("cancelling")).toBeNull();
 
     // Can see spinner and not complete icons before run completes
@@ -147,7 +148,7 @@ describe("RunProgress", () => {
     mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
-      running: true
+      running: true,
     });
     render(RunProgress);
 
@@ -202,16 +203,14 @@ describe("RunProgress", () => {
     mockPiranhaAPI({
       initialized: true,
       running: true,
-      cancelling: true
+      cancelling: true,
     });
     renderInI18nTestContext(RunProgress);
     expect(screen.getByTestId("cancelling-spinner")).toBeVisible();
     expect(screen.queryByRole("button")).toBeNull();
     await expectTranslations(
       (text) => {
-        expect(screen.getByTestId("cancelling")).toHaveTextContent(
-          text,
-        );
+        expect(screen.getByTestId("cancelling")).toHaveTextContent(text);
       },
       {
         en: /Cancelling/,

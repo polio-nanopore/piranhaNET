@@ -105,7 +105,11 @@
       {m.newRun()}
     </Button>
   {:else}
-    <Button class="action float-end bg-red-600" data-testid="cancel-run" onclick={cancelRun}>
+    <Button
+      class="action float-end bg-red-600"
+      data-testid="cancel-run"
+      onclick={cancelRun}
+    >
       {m.cancelRun()}
     </Button>
   {/if}

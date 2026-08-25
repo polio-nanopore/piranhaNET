@@ -26,7 +26,7 @@ describe("piranhaRunner", () => {
 
   const runPiranha = async (
     barcodesFileName = "barcodes.csv",
-    abortController = new AbortController()
+    abortController = new AbortController(),
   ): Promise<string[]> => {
     const runner = new PiranhaRunner("polionanopore/piranha", piranhaVersion);
 
@@ -72,7 +72,7 @@ describe("piranhaRunner", () => {
           lang: "fr",
         },
         runOutput.writable,
-        abortController.signal
+        abortController.signal,
       );
     } catch (e) {
       // Useful for debugging

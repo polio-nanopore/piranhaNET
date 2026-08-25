@@ -1,5 +1,6 @@
+import * as stream from "stream";
 import type { PiranhaRunOptions } from "../../../svelte-app/src/shared/types";
-import Docker, {Container} from "dockerode";
+import Docker, { Container } from "dockerode";
 import { userInfo } from "node:os";
 
 // Class for pulling piranha docker image and using it to run piranha jobs, used by Electron main process
@@ -47,7 +48,7 @@ export class PiranhaRunner {
   public async runPiranha(
     options: PiranhaRunOptions,
     outputStream: NodeJS.WritableStream = process.stdout,
-    abortSignal: AbortSignal
+    abortSignal: AbortSignal,
   ): Promise<void> {
     // TODO: use yaml file to pass parameters in API Docker image - for now use same approach as PiranhaGUI of "escaping"
     // arg strings with underscores
@@ -92,92 +93,12 @@ export class PiranhaRunner {
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
-    let containerStream: any;
+    let containerStream: undefined | stream.Duplex;
     let container: undefined | Container;
     try {
       container = await this.docker.createContainer({
-          Image: this.imageRef,
-          Cmd: [], // default cmd
-          Env: env,
-          Volumes: {
-            containerBarcodesFilePath: {},
-            containerBaseCalledPath: {},
-            containerOutputPath: {},
-          },
-          User: this.userMapping,
-          HostConfig: {
-            Binds: [
-              `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
-              `${options.minKnowFolderPath}:${containerBaseCalledPath}`,
-              `${options.outputFolderPath}:${containerOutputPath}`,
-            ],
-            AutoRemove: true, // rm
-          },
-        },
-      );
-      containerStream = await container.attach({
-        stream: true,
-        stdout: true,
-        stderr: true
-      });
-      // Remove stream binary headers when switch between stdout and stderr
-      container.modem.demuxStream(containerStream, outputStream, outputStream);
-
-      const waitForAbort = (abortSignal: AbortSignal) => {
-        return new Promise((_, reject) => {
-          abortSignal.addEventListener('abort', () => {
-            const e = new Error("Piranha run aborted");
-            e.name = "AbortError";
-            reject(e);
-          });
-        });
-      };
-
-      const doPiranhaRun = async () => {
-        const result = await container.wait();
-        outputStream.end();
-        if (result.StatusCode !== 0) {
-          throw new Error(
-            `Piranha finished with non-zero exit code ${result.StatusCode}`,
-          );
-        }
-      }
-
-      await container.start();
-
-      // Wait for container to finish running, or for abort to signal, whichever comes first
-      await Promise.race([
-        doPiranhaRun(),
-        waitForAbort(abortSignal)
-      ]);
-
-    } finally {
-      if (containerStream) {
-        containerStream.destroy();
-      }
-      if (container) {
-        const insp = await container.inspect();
-        if (insp.State.Running) {
-          try {
-            await container.stop({ t: 5 });
-          } catch (err) {
-            // Already stopped
-          }
-        }
-      }
-    }
-  }
-
-
-
-
-    //const [data, _] = await this.docker.run(
-    // Do not await as we need to be able to configure abort signal
-   /* const runPromise = this.docker.run(
-      this.imageRef,
-      [], // default cmd
-      outputStream,
-      {
+        Image: this.imageRef,
+        Cmd: [], // default cmd
         Env: env,
         Volumes: {
           containerBarcodesFilePath: {},
@@ -193,35 +114,55 @@ export class PiranhaRunner {
           ],
           AutoRemove: true, // rm
         },
-      },
-    );
+      });
+      containerStream = await container.attach({
+        stream: true,
+        stdout: true,
+        stderr: true,
+      });
+      // Remove stream binary headers when switch between stdout and stderr
+      container.modem.demuxStream(containerStream, outputStream, outputStream);
 
-    // Handle the container event from the runPromise so we can use it on abort
-    let runContainer: null | Container = null;
-    runPromise.on("container", (container) => {
-      console.log("Got container")
-      runContainer = container;
-    });
+      const waitForAbort = (abortSignal: AbortSignal): Promise<void> => {
+        return new Promise((_, reject) => {
+          abortSignal.addEventListener("abort", () => {
+            const e = new Error("Piranha run aborted");
+            e.name = "AbortError";
+            reject(e);
+          });
+        });
+      };
 
-    abortSignal.addEventListener("abort", async () => {
-      console.log("Piranha run cancel request.");
-      try {
-        await runContainer!.stop();
-        await runContainer!.remove();
-        console.log("Piranha run cancelled.");
-      } catch (err) {
-        console.error("Failed to cancel Piranha run:", (err as Error).message);
+      const doPiranhaRun = async (): Promise<void> => {
+        const result = await container.wait();
+        outputStream.end();
+        if (result.StatusCode !== 0) {
+          throw new Error(
+            `Piranha finished with non-zero exit code ${result.StatusCode}`,
+          );
+        }
+      };
+
+      await container.start();
+
+      // Wait for container to finish running, or for abort to signal, whichever comes first
+      await Promise.race([doPiranhaRun(), waitForAbort(abortSignal)]);
+    } finally {
+      if (containerStream) {
+        containerStream.destroy();
       }
-    })
-
-    // Wait for the run to complete
-    const [data, _] = await runPromise;
-    outputStream.end();
-
-    if (data.StatusCode !== 0) {
-      throw new Error(
-        `Piranha finished with non-zero exit code ${data.StatusCode}`,
-      );
+      if (container) {
+        const insp = await container.inspect();
+        if (insp.State.Running) {
+          try {
+            await container.stop();
+          } catch (err) {
+            console.log(
+              `Error while attempting to stop container: ${(err as Error).message}`,
+            );
+          }
+        }
+      }
     }
-  }*/
+  }
 }

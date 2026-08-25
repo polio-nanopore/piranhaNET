@@ -79,7 +79,7 @@ const getRunButton = async (win: Page): Promise<Locator> =>
 const getCancelButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Cancel Run/ });
 const getNewRunButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", {name: "New Run"});
+  await win.getByRole("button", { name: "New Run" });
 
 const getOpenReportButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Open report/ });
@@ -127,7 +127,7 @@ const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
   await continueButton.click();
 };
 
-const fillRunParameters = async (win: Page) => {
+const fillRunParameters = async (win: Page): Promise<void> => {
   const nameInput = await getNameInput(win);
   await nameInput.fill("Test Name");
 
@@ -141,15 +141,14 @@ const fillRunParameters = async (win: Page) => {
   await notesInput.fill("some test notes");
 };
 
-const fillRunSettings = async (win: Page) => {
-  const settings = await win.getByTestId("settings");
+const fillRunSettings = async (win: Page): Promise<void> => {
   const posControl = await getPositiveControl(win);
   await posControl.fill("pos");
   const negControl = await getNegativeControl(win);
   await negControl.fill("neg");
 };
 
-const piranhaIsRunning = async () => {
+const piranhaIsRunning = async (): Promise<boolean> => {
   const containers = await docker.listContainers();
   return containers.some((c) => c.Image.startsWith("polionanopore/piranha:"));
 };
@@ -454,8 +453,7 @@ test("cancel button ends run and kills docker container", async () => {
   const log = await win.getByTestId("logs");
   await expect(log).toHaveText(/Run cancelled by user/, { timeout: 30_000 });
   await expect(await getNewRunButton(win)).toBeEnabled();
-  await expect(await win.getByTestId("run-progress-x")).toBeVisible
-
+  await expect(await win.getByTestId("run-progress-x")).toBeVisible;
 
   // Confirm docker no longer running
   expect(await piranhaIsRunning()).toBe(false);

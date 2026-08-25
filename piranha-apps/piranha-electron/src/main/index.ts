@@ -122,15 +122,22 @@ function createWindow(): void {
     const abortController = new AbortController();
     abortControllers[abortControllerId] = abortController;
 
-    runner.runPiranha(options, writable, abortController.signal).catch((e) => {
-      if (e.name == "AbortError") {
-        mainWindow.webContents.send("run-cancelled");
-      } else {
-        mainWindow.webContents.send("error", "runError", (e as Error).message);
-      }
-    }).finally(() => {
-      delete abortControllers[abortControllerId];
-    });
+    runner
+      .runPiranha(options, writable, abortController.signal)
+      .catch((e) => {
+        if (e.name == "AbortError") {
+          mainWindow.webContents.send("run-cancelled");
+        } else {
+          mainWindow.webContents.send(
+            "error",
+            "runError",
+            (e as Error).message,
+          );
+        }
+      })
+      .finally(() => {
+        delete abortControllers[abortControllerId];
+      });
 
     // Immediately return the abort id so it is available to front end during run
     return abortControllerId;
@@ -138,10 +145,10 @@ function createWindow(): void {
 }
 
 ipcMain.on("cancel-run", (_event, abortControllerId: string) => {
-  console.log("received cancel run with " + abortControllerId)
-  console.log("keys is " + JSON.stringify(Object.keys(abortControllers)))
+  console.log("received cancel run with " + abortControllerId);
+  console.log("keys is " + JSON.stringify(Object.keys(abortControllers)));
   if (abortControllerId in abortControllers) {
-    console.log("aborting controller")
+    console.log("aborting controller");
     abortControllers[abortControllerId].abort();
   }
 });

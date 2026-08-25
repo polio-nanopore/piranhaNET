@@ -49,7 +49,9 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   vi.spyOn(piranhaAPI, "error", "get").mockImplementation(() => error);
   vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => log);
   vi.spyOn(piranhaAPI, "running", "get").mockImplementation(() => running);
-  vi.spyOn(piranhaAPI, "cancelling", "get").mockImplementation(() => cancelling);
+  vi.spyOn(piranhaAPI, "cancelling", "get").mockImplementation(
+    () => cancelling,
+  );
   vi.spyOn(piranhaAPI, "runSucceeded", "get").mockImplementation(
     () => runSucceeded,
   );
