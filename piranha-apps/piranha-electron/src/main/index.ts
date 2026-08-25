@@ -145,10 +145,8 @@ function createWindow(): void {
 }
 
 ipcMain.on("cancel-run", (_event, abortControllerId: string) => {
-  console.log("received cancel run with " + abortControllerId);
-  console.log("keys is " + JSON.stringify(Object.keys(abortControllers)));
   if (abortControllerId in abortControllers) {
-    console.log("aborting controller");
+    console.log("Cancelling Piranha run");
     abortControllers[abortControllerId].abort();
   }
 });

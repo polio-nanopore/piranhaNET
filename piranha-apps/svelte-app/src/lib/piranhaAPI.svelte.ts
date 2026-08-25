@@ -89,7 +89,6 @@ export class PiranhaAPI {
     this.#log = [];
     this.#options = options;
     this.#abortId = await window.api.runPiranha(options);
-    console.log(`abort is is ${this.#abortId}`);
     this.#running = true;
   }
 
