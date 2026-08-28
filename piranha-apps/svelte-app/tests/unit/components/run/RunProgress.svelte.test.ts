@@ -85,8 +85,18 @@ describe("RunProgress", () => {
       /log entry 1 log entry 2/,
     );
 
-    //No New Run button before run completes
-    expect(screen.queryByRole("button")).toBeNull();
+    //The only button before completion should be Cancel Run
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByRole("button")).toHaveTextContent(text);
+      },
+      {
+        en: "Cancel Run",
+        fr: "Annuler l'exécution",
+        pt: "Cancelar execução",
+      },
+    );
+    expect(screen.queryByTestId("cancelling")).toBeNull();
 
     // Can see spinner and not complete icons before run completes
     expect(screen.getByTestId("run-progress-spinner")).toBeVisible();
@@ -131,6 +141,20 @@ describe("RunProgress", () => {
         pt: /Abra a pasta de saída/,
       },
     );
+    expect(screen.queryByTestId("cancelling")).toBeNull();
+  });
+
+  test("Cancel Run button calls expected method on piranha API", async () => {
+    mockPiranhaAPI({
+      initialized: true,
+      log: ["log entry 1 ", "log entry 2"],
+      running: true,
+    });
+    render(RunProgress);
+
+    const cancelButton = screen.getByRole("button");
+    await user.click(cancelButton);
+    expect(piranhaAPI.cancelRun).toHaveBeenCalled();
   });
 
   test("Open report button calls expected method on piranha API", async () => {
@@ -173,6 +197,27 @@ describe("RunProgress", () => {
     expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
     expect(screen.queryByTestId("open-report")).toBeNull();
     expect(screen.queryByTestId("open-output-folder")).toBeNull();
+  });
+
+  test("see cancelling text and spinner while piranha is being cancelled", async () => {
+    mockPiranhaAPI({
+      initialized: true,
+      running: true,
+      cancelling: true,
+    });
+    renderInI18nTestContext(RunProgress);
+    expect(screen.getByTestId("cancelling-spinner")).toBeVisible();
+    expect(screen.queryByRole("button")).toBeNull();
+    await expectTranslations(
+      (text) => {
+        expect(screen.getByTestId("cancelling")).toHaveTextContent(text);
+      },
+      {
+        en: /Cancelling/,
+        fr: /Annulation en cours/,
+        pt: /Cancelando/,
+      },
+    );
   });
 
   test("new run clears log", async () => {

@@ -14,6 +14,8 @@ export class PiranhaAPI {
   #decoder = new TextDecoder("utf-8");
   #options: PiranhaRunOptions | null = $state(null);
   #runOutputFolderName = $state("");
+  #cancelling = $state(false);
+  #abortId = "";
 
   constructor() {
     window.api?.onInitialized(() => {
@@ -33,7 +35,13 @@ export class PiranhaAPI {
     window.api?.onError((messageKey, detail) => {
       this.#error = { messageKey, detail };
       // Add error to log, including ansi sequence to show in Red
-      this.#log.push(`\x1b[1;31m${m[messageKey]()}: ${detail}`);
+      this.#addErrorToLog(`${m[messageKey]()}: ${detail}`);
+    });
+    window.api?.onRunCancelled(() => {
+      this.#cancelling = false;
+      this.#running = false;
+      this.#error = { messageKey: "runCancelled", detail: "" };
+      this.#addErrorToLog(m.runCancelled());
     });
   }
 
@@ -57,6 +65,14 @@ export class PiranhaAPI {
     return this.#log;
   }
 
+  get cancelling(): boolean {
+    return this.#cancelling;
+  }
+
+  #addErrorToLog(error: string): void {
+    this.#log.push(`\x1b[1;31m${error}`);
+  }
+
   async #findOutputFolderFromLog(): Promise<void> {
     // Find local report path from docker volume path written in log, if run was successful
     const fullLog = this.#log.join(" ");
@@ -66,13 +82,13 @@ export class PiranhaAPI {
     }
   }
 
-  runPiranha(options: PiranhaRunOptions): void {
+  async runPiranha(options: PiranhaRunOptions): void {
     if (this.#running) {
       throw new Error(m.apiErrorAlreadyRunning());
     }
     this.#log = [];
     this.#options = options;
-    window.api.runPiranha(options);
+    this.#abortId = await window.api.runPiranha(options);
     this.#running = true;
   }
 
@@ -81,6 +97,13 @@ export class PiranhaAPI {
     this.#error = null;
     this.#options = null;
     this.#runOutputFolderName = "";
+    this.#cancelling = false;
+    this.#abortId = "";
+  }
+
+  cancelRun(): void {
+    this.#cancelling = true;
+    window.api.cancelRun(this.#abortId);
   }
 
   async openRunReport(): Promise<void> {

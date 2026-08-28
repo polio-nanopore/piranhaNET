@@ -34,6 +34,10 @@
   const clearRun = (): void => {
     piranhaAPI.clearRun();
   };
+
+  const cancelRun = (): void => {
+    piranhaAPI.cancelRun();
+  };
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -88,9 +92,25 @@
       {/each}
     </code>
   </div>
-  {#if !piranhaAPI.running}
+  {#if piranhaAPI.cancelling}
+    <div class="float-end flex" data-testid="cancelling">
+      <Spinner
+        class="text-orange-300 size-6 mr-2"
+        data-testid="cancelling-spinner"
+      ></Spinner>
+      {m.cancelling()}
+    </div>
+  {:else if !piranhaAPI.running}
     <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
       {m.newRun()}
+    </Button>
+  {:else}
+    <Button
+      class="action float-end bg-red-600"
+      data-testid="cancel-run"
+      onclick={cancelRun}
+    >
+      {m.cancelRun()}
     </Button>
   {/if}
 </div>
