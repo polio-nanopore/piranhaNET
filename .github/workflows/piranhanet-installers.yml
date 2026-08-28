@@ -11,30 +11,44 @@ jobs:
         shell: bash
         working-directory: ./piranha-apps
     steps:
+      - name: Enable WSL
+        uses: Vampire/setup-wsl@v7
       - name: Checkout
         uses: actions/checkout@v7
+      - name: Install jq and docker.io
+        shell: wsl-bash {0}
+        run: apt-get update && apt-get install -y jq docker.io
       - name: Install Node
         uses: actions/setup-node@v5
         with:
           node-version: 24.9
           cache: npm
           cache-dependency-path: piranha-apps/package-lock.json
+      - name: Pull and tar piranha docker image
+        shell: wsl-bash {0}
+        run: bash -x ./scripts/pull-and-tar-piranha-docker.sh
       - name: Install dependencies
         run: npm ci
-      - name: Build installer
-        run: npm run build-electron:win
-      - name: Add to release (if there is one)
+      - name: Build electron app
+        run: npm run build-electron
+      - name: Build light installer
+        run: npm run build-installer:win-light
+      - name: Build full installer
+        run: npm run build-installer:win-full
+      - name: Add installers to release (if there is one)
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
           files: piranha-apps/dist/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifact (if manual workflow run)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Upload artifacts (if not a release)
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
           name: piranhanet-windows-installer-${{ github.run_number }}
-          path: piranha-apps/dist/*.exe
+          path: | # useful for local testing
+            piranha-apps/dist/*.exe
+            piranha-apps/installer-resources/*
           retention-days: 10
   

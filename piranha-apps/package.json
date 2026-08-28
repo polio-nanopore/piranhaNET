@@ -1,32 +1,11 @@
 {
   "name": "piranhanet",
-  "version": "0.3.0-alpha",
+  "version": "0.4.0-alpha",
   "piranhaVersion": "1.6.3",
   "description": "Applications for running Piranha, providing Electron and web interfaces",
   "main": "./out/main/index.js",
   "engines": {
     "node": ">=24.0.0 <25.0.0"
-  },
-  "build": {
-    "appId": "org.polionanopore.piranhanet",
-    "productName": "PiranhaNET",
-    "files": [
-      "out/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "PiranhaNET"
-    }
   },
   "scripts": {
     "format:write": "prettier --plugin prettier-plugin-svelte --write .",
@@ -42,15 +21,18 @@
     "dev-web": "vite --config web.vite.config.ts",
     "build-electron": "paraglide-js compile --project ./project.inlang --outdir svelte-app/src/paraglide && npm run typecheck && electron-vite build",
     "postinstall-electron": "electron-builder install-app-deps",
-    "build-electron:unpack": "npm run build-electron && electron-builder --dir",
-    "build-electron:win": "npm run build-electron && electron-builder --win",
-    "build-electron:mac": "npm run build-electron && electron-builder --mac",
-    "build-electon:linux": "npm run build-electron && electron-builder --linux",
+    "build-installer": "cross-env DEBUG=electron-builder electron-builder --config electron-builder.config.js",
+    "build-installer:unpack": "npm run build-installer -- --dir",
+    "build-installer:win-full": "cross-env BUNDLE_PIRANHA_IMAGE=true npm run build-installer -- --win",
+    "build-installer:win-light": "cross-env BUNDLE_PIRANHA_IMAGE=false npm run build-installer -- --win",
+    "build-installer:mac": "npm run build-installer -- --mac",
+    "build-installer:linux": "npm run build-installer -- --linux",
     "build-web": "vite build --config web.vite.config.ts",
     "test:unit": "vitest svelte-app/tests/unit/",
     "test-electron:integration": "vitest piranha-electron/tests/integration/",
     "coverage": "vitest run --coverage",
-    "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test"
+    "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test",
+    "docker:pull-and-tar-piranha": "node scripts/pull-and-tar-piranha-docker.js"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
@@ -80,6 +62,7 @@
     "ansi-parser": "^3.2.11",
     "bits-ui": "^2.16.3",
     "clsx": "^2.1.1",
+    "cross-env": "^10.1.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",

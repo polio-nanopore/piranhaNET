@@ -9,6 +9,8 @@ import pkg from "../../../../package.json" with { type: "json" };
 const { piranhaVersion } = pkg;
 
 describe("piranhaRunner", () => {
+  const runner = new PiranhaRunner("polionanopore/piranha", piranhaVersion);
+
   const getWritableWithBuffer = (): {
     writable: Writable;
     readBuffer: () => string;
@@ -27,8 +29,6 @@ describe("piranhaRunner", () => {
   const runPiranha = async (
     barcodesFileName = "barcodes.csv",
   ): Promise<string[]> => {
-    const runner = new PiranhaRunner("polionanopore/piranha", piranhaVersion);
-
     const pullOutput = getWritableWithBuffer();
     await runner.pullPiranhaImage(pullOutput.writable);
     let outputText = pullOutput.readBuffer();
@@ -104,6 +104,10 @@ describe("piranhaRunner", () => {
     expect(outputText).toMatch(
       /Generating: \/data\/run_data\/output\/piranha_output_\d{4}-\d{2}-\d{2}\/report.html/,
     ); //output report
+
+    // In all cases, piranhaImageIsLoaded should now return true
+    const imageIsLoaded = await runner.piranhaImageIsLoaded();
+    expect(imageIsLoaded).toBe(true);
   }, 480_000); // This will take a while!
 
   test("throws error if piranha run finishes with non-zero exit code", async () => {
