@@ -3,6 +3,7 @@ coverage
 dist
 out
 test-results
+installer-resources
 .DS_Store
 .eslintcache
 *.log*

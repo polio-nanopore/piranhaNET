@@ -25,6 +25,19 @@ export class PiranhaRunner {
     return this.isWindows;
   }
 
+  async piranhaImageIsLoaded(): Promise<boolean> {
+    let result = false;
+    try {
+      const image = this.docker.getImage(this.imageRef);
+      // This throws an error if image is not available locally
+      await image.inspect();
+      result = true;
+    } catch (_) {
+      console.log(`Piranha docker image not found locally.`);
+    }
+    return result;
+  }
+
   public async pullPiranhaImage(
     outputStream: NodeJS.WritableStream = process.stdout,
   ): Promise<void> {
