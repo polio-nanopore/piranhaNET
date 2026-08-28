@@ -26,13 +26,7 @@ jobs:
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
         shell: wsl-bash {0}
-        run: |
-          docker version
-          docker info
-          ls -la ./scripts/pull-and-tar-piranha-docker.sh
-          bash -x ./scripts/pull-and-tar-piranha-docker.sh
-      - name: File size check
-        run: wc -c installer-resources/piranha-docker-image.tar.gz
+        run: bash -x ./scripts/pull-and-tar-piranha-docker.sh
       - name: Install dependencies
         run: npm ci
       - name: Build electron app
