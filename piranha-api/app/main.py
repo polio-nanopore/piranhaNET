@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, UploadFile
+from fastapi import Depends, FastAPI, UploadFile, File
 from fastapi.responses import HTMLResponse, StreamingResponse
 from shortuuid import uuid
 
@@ -39,8 +39,8 @@ def get_root():
 @app.post("/run")
 async def run(
     run_options: Annotated[PiranhaRunOptions, Depends()],
-    barcodes_file: UploadFile,
-    minknow_zip: UploadFile,
+    barcodes_file: Annotated[UploadFile, File(alias="barcodesFile")],
+    minknow_zip: Annotated[UploadFile, File(alias="minknowZip")],
     run_id: Annotated[str, Depends(generate_run_id)]
 ):
     # Save input files before start response so we can raise any errors related to bad file input before we start

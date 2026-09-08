@@ -31,10 +31,25 @@ def create_files():
     minknow_zip = create_minknow_zip()
     barcodes_path = test_data_dir / "barcodes.csv"  # read test_data barcodes file
     return {
-        "barcodes_file": ("barcodes.csv", barcodes_path.read_text(), "text/csv"),
-        "minknow_zip": ("minknow.zip", minknow_zip, "application/zip"),
+        "barcodesFile": ("barcodes.csv", barcodes_path.read_text(), "text/csv"),
+        "minknowZip": ("minknow.zip", minknow_zip, "application/zip"),
     }
 
+def  create_params(run_name: str):
+   return {
+       "runName": run_name,
+       "notes": "Test notes",
+       "threads": 10,
+       "protocol": "stool",
+       "positiveControl": "pos",
+       "negativeControl": "neg",
+       "orientation": "vertical",
+       "outputPrefix": "",
+       "allMetadataToHeader": True,
+       "userName": "Test User",
+       "institute": "Test Institute",
+       "lang": "English"
+   }
 
 async def stream_to_list(response, output_list):
     async for line in response.aiter_text():
@@ -42,7 +57,7 @@ async def stream_to_list(response, output_list):
 
 
 async def test_run_streaming_response_and_get_results():
-    params = {"run_name": "test run"}
+    params = create_params("test run")
     files = create_files()
 
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
@@ -67,9 +82,9 @@ async def test_run_streaming_response_and_get_results():
 
 
 async def test_simultaneous_run_requests():
-    params_1 = {"run_name": "test run 1"}
+    params_1 = create_params("test run 1")
     files_1 = create_files()
-    params_2 = {"run_name": "test run 2"}
+    params_2 = create_params("test run 2")
     files_2 = create_files()
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
         async with client.stream("POST", "/run", params=params_1, files=files_1, timeout=None) as response_1:
@@ -93,10 +108,10 @@ async def test_simultaneous_run_requests():
 
 
 async def test_expected_error_when_minknow_not_valid_zip():
-    params = {"run_name": "test run"}
+    params = create_params("test run")
     files = {
-        "barcodes_file": ("barcodes.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
-        "minknow_zip": ("minknow.zip", "not a zip", "application/zip"),
+        "barcodesFile": ("barcodes.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
+        "minknowZip": ("minknow.zip", "not a zip", "application/zip"),
     }
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
         async with client.stream("POST", "/run", params=params, files=files) as response:
@@ -120,7 +135,7 @@ async def test_expected_error_when_run_does_not_exist():
 
 async def test_expected_error_when_run_has_not_completed():
     # Start run and request its results before it has time to complete
-    params = {"run_name": "test run"}
+    params = create_params("test run")
     files = create_files()
 
     async with httpx.AsyncClient(base_url=BASE_URL) as client:

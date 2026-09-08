@@ -28,6 +28,9 @@ class PiranhaRunner:
         for line in lines.split("\n"):
             yield self.log_line(run_id, line)
 
+    def write_options_to_yml(self, run_id: string, run_options: PiranhaRunOptions):
+        # TODO: return file abs path - OR take tempfile as a param (where clean up the temp file?)
+
     async def run_piranha_log_generator(
         self,
         run_id: str,
@@ -83,3 +86,6 @@ class PiranhaRunner:
             # TODO: Provide a way for client to more clearly know about execution error (can't set response status here
             # after start streaming). Save error to output folder, and provide /results-status response
             yield self.log_line(run_id, f"[ERROR] Exception encountered during execution: {e!s}")
+
+
+
