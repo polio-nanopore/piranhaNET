@@ -1,7 +1,7 @@
 FROM polionanopore/piranha:latest
 
 # Add our dependencies to the existing conda venv from the base image
-RUN /venv/bin/pip install fastapi[standard] uvicorn shortuuid aiofiles
+RUN /venv/bin/pip install fastapi[standard] uvicorn shortuuid aiofiles pydantic
 
 # Copy the FastAPI app
 COPY app/ /app/app/

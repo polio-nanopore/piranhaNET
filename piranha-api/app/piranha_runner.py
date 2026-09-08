@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import AsyncGenerator
 from pathlib import Path
+from app.models import PiranhaRunOptions
 
 import aiofiles
 
@@ -28,9 +29,16 @@ class PiranhaRunner:
             yield self.log_line(run_id, line)
 
     async def run_piranha_log_generator(
-        self, run_id: str, run_name: str, barcodes_file_path: str, minknow_dir_path: str, output_dir_path: str
+        self,
+        run_id: str,
+        run_options: PiranhaRunOptions,
+        barcodes_file_path: str,
+        minknow_dir_path: str,
+        output_dir_path: str
     ) -> AsyncGenerator[str, None]:
-        yield self.log_line(run_id, f"Starting run {run_name} with run id {run_id}")
+        yield self.log_line(run_id, f"Starting run {run_options.run_name} with run id {run_id}")
+
+        # TODO: use all run options, via yml file
 
         # We need to write to a log file because mafft (called fron piranha) assumes that the default stdout is
         # available, and errors if it's being piped through the subprocess. So we do not set stdout or stderr on the

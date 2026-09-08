@@ -10,6 +10,7 @@ from shortuuid import uuid
 from app.file_manager import FileManager
 from app.piranha_runner import PiranhaRunner
 from app.settings import settings
+from app.models import PiranhaRunOptions
 
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
@@ -35,10 +36,12 @@ def get_root():
     return "Welcome to PiranhaNET API"
 
 
-# TODO: use a pydantic model for the run parameters when we're using full Piranha parameter set
 @app.post("/run")
 async def run(
-    run_name: str, barcodes_file: UploadFile, minknow_zip: UploadFile, run_id: Annotated[str, Depends(generate_run_id)]
+    run_options: Annotated[PiranhaRunOptions, Depends()],
+    barcodes_file: UploadFile,
+    minknow_zip: UploadFile,
+    run_id: Annotated[str, Depends(generate_run_id)]
 ):
     # Save input files before start response so we can raise any errors related to bad file input before we start
     # streaming output
@@ -48,7 +51,7 @@ async def run(
     output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
         piranha_runner.run_piranha_log_generator(
-            run_id, run_name, barcodes_file_path, minknow_dir_path, output_dir_path
+            run_id, run_options, barcodes_file_path, minknow_dir_path, output_dir_path
         ),
         headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
