@@ -1,4 +1,5 @@
 import asyncio
+import tempfile
 from collections.abc import AsyncGenerator
 from pathlib import Path
 from app.models import PiranhaRunOptions
@@ -28,8 +29,42 @@ class PiranhaRunner:
         for line in lines.split("\n"):
             yield self.log_line(run_id, line)
 
-    def write_options_to_yml(self, run_id: string, run_options: PiranhaRunOptions):
-        # TODO: return file abs path - OR take tempfile as a param (where clean up the temp file?)
+    def get_config_line(name, value):
+        return f'{name}: "{value}"'
+
+    def write_options_to_config_file(
+        self,
+        run_options: PiranhaRunOptions,
+        barcodes_file_path: str,
+        minknow_dir_path: str,
+        output_dir_path: str
+    ):
+        with tempfile.NamedTemporaryFile(
+                mode="w+t",
+                suffix=".yaml",
+                delete=False
+            ) as config_file:
+                lines = [
+                    get_config_line("barcodes_csv", barcodes_file_path),
+                    get_config_line("readdir", minknow_dir_path),
+                    get_config_line("outdir", output_dir_path),
+                    get_config_line("runname", run_options.run_name),
+                    get_config_line("notes", run_options.notes),
+                    get_config_line("threads", str(run_options.threads)),
+                    get_config_line("sample_type", run_options.protocol),
+                    get_config_line("positive_control", run_options.positive_control),
+                    get_config_line("negative_control", run_options.negative_control),
+                    get_config_line("orientation", run_options.orientation),
+                    get_config_line("output_prefix", run_options.output_prefix),
+                    get_config_line("all_metadata_to_header", str(run_options.all_metadata_to_header)),
+                    get_config_line("username", run_options.user_name),
+                    get_config_line("institute", run_options.institute),
+                    get_config_line("language", run_options.lang),
+                    #  this option ensures piranha write to our run_id output dir, not a new dir with _1 appended
+                    get_config_line("overwrite", "True")
+                ]
+                config_file.writelines(lines)
+                return config_file.name
 
     async def run_piranha_log_generator(
         self,
@@ -41,7 +76,6 @@ class PiranhaRunner:
     ) -> AsyncGenerator[str, None]:
         yield self.log_line(run_id, f"Starting run {run_options.run_name} with run id {run_id}")
 
-        # TODO: use all run options, via yml file
 
         # We need to write to a log file because mafft (called fron piranha) assumes that the default stdout is
         # available, and errors if it's being piped through the subprocess. So we do not set stdout or stderr on the
@@ -49,11 +83,11 @@ class PiranhaRunner:
         # consequence that we're naturally saving the logs to file, which we can include in the download
         # zip of the run as it may be of use.
         log_path = Path(output_dir_path) / "piranha.log"
+
+        config_file_path = self.write_options_to_config_file(run_options, barcodes_file_path, minknow_dir_path, output_dir_path)
         piranha_cmd = (
             f"source {self.piranha_activate_path} && "
-            f"piranha -b {barcodes_file_path} -i {minknow_dir_path} -o {output_dir_path} -t 10 "
-            # this option ensures piranha write to our run_id output dir, not a new dir with _1 appended
-            "--overwrite "
+            f"piranha -c {config_file_path} "
             f"> {log_path} 2>&1"
         )
 
@@ -86,6 +120,9 @@ class PiranhaRunner:
             # TODO: Provide a way for client to more clearly know about execution error (can't set response status here
             # after start streaming). Save error to output folder, and provide /results-status response
             yield self.log_line(run_id, f"[ERROR] Exception encountered during execution: {e!s}")
+        finally:
+            if os.path.exists(config_file_path):
+                os.remove(config_file_path)
 
 
 
