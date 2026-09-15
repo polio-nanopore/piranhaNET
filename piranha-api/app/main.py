@@ -51,7 +51,7 @@ async def run(
     output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
         piranha_runner.run_piranha_log_generator(
-            run_id, run_options, barcodes_file_path, minknow_dir_path, output_dir_path
+            run_id, run_options, str(barcodes_file_path), str(minknow_dir_path), str(output_dir_path)
         ),
         headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",

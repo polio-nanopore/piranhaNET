@@ -1,4 +1,5 @@
 import asyncio
+import os
 import tempfile
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -8,6 +9,11 @@ import aiofiles
 
 POLL_WAIT = 0.2
 
+def get_config_line(name, value):
+        if isinstance(value, str):
+            return f'{name}: "{value}"\n'
+        else:
+            return f'{name}: {value}\n'
 
 class PiranhaRunner:
     def __init__(self, piranha_venv_path: Path):
@@ -29,9 +35,8 @@ class PiranhaRunner:
         for line in lines.split("\n"):
             yield self.log_line(run_id, line)
 
-    def get_config_line(name, value):
-        return f'{name}: "{value}"'
 
+    # TODO: check piranha code and check with aine why the population
     def write_options_to_config_file(
         self,
         run_options: PiranhaRunOptions,
@@ -39,6 +44,7 @@ class PiranhaRunner:
         minknow_dir_path: str,
         output_dir_path: str
     ):
+        # TODO: check if there are other hardcoded values that went into piraha on cmd line!
         with tempfile.NamedTemporaryFile(
                 mode="w+t",
                 suffix=".yaml",
@@ -50,20 +56,23 @@ class PiranhaRunner:
                     get_config_line("outdir", output_dir_path),
                     get_config_line("runname", run_options.run_name),
                     get_config_line("notes", run_options.notes),
-                    get_config_line("threads", str(run_options.threads)),
-                    get_config_line("sample_type", run_options.protocol),
+                    get_config_line("threads", run_options.threads),
+                    get_config_line("sample_type", run_options.protocol.value),
                     get_config_line("positive_control", run_options.positive_control),
                     get_config_line("negative_control", run_options.negative_control),
-                    get_config_line("orientation", run_options.orientation),
+                    get_config_line("orientation", run_options.orientation.value),
                     get_config_line("output_prefix", run_options.output_prefix),
-                    get_config_line("all_metadata_to_header", str(run_options.all_metadata_to_header)),
+                    get_config_line("all_metadata_to_header", run_options.all_metadata_to_header),
                     get_config_line("username", run_options.user_name),
                     get_config_line("institute", run_options.institute),
-                    get_config_line("language", run_options.lang),
+                    get_config_line("language", run_options.lang.value),
                     #  this option ensures piranha write to our run_id output dir, not a new dir with _1 appended
-                    get_config_line("overwrite", "True")
+                    get_config_line("overwrite", True),
+                    get_config_line("medaka_model", "AUTO")
                 ]
                 config_file.writelines(lines)
+                print("WROTE LINES:")
+                print("\n".join(lines))
                 return config_file.name
 
     async def run_piranha_log_generator(
