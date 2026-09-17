@@ -29,6 +29,7 @@ class PiranhaRunOptions(BaseModel):
     orientation: Orientation
     output_prefix: str
     all_metadata_to_header: bool
+    output_intermediate_files: bool
     user_name: str
     institute: str
     lang: Language

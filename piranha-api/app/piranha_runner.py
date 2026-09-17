@@ -9,13 +9,10 @@ import aiofiles
 
 POLL_WAIT = 0.2
 
-def get_config_line(name, value):
-        if isinstance(value, str):
-            return f'{name}: "{value}"\n'
-        else:
-            return f'{name}: {value}\n'
+def escape_option(option: str):
+    return option.replace(" ", "_");
 
-class PiranhaRunner:
+clas:s PiranhaRunner:
     def __init__(self, piranha_venv_path: Path):
         self.piranha_venv_path = piranha_venv_path
         self.piranha_activate_path = Path(piranha_venv_path / "activate")
@@ -36,45 +33,6 @@ class PiranhaRunner:
             yield self.log_line(run_id, line)
 
 
-    # TODO: check piranha code and check with aine why the population
-    def write_options_to_config_file(
-        self,
-        run_options: PiranhaRunOptions,
-        barcodes_file_path: str,
-        minknow_dir_path: str,
-        output_dir_path: str
-    ):
-        # TODO: check if there are other hardcoded values that went into piraha on cmd line!
-        with tempfile.NamedTemporaryFile(
-                mode="w+t",
-                suffix=".yaml",
-                delete=False
-            ) as config_file:
-                lines = [
-                    get_config_line("barcodes_csv", barcodes_file_path),
-                    get_config_line("readdir", minknow_dir_path),
-                    get_config_line("outdir", output_dir_path),
-                    get_config_line("runname", run_options.run_name),
-                    get_config_line("notes", run_options.notes),
-                    get_config_line("threads", run_options.threads),
-                    get_config_line("sample_type", run_options.protocol.value),
-                    get_config_line("positive_control", run_options.positive_control),
-                    get_config_line("negative_control", run_options.negative_control),
-                    get_config_line("orientation", run_options.orientation.value),
-                    get_config_line("output_prefix", run_options.output_prefix),
-                    get_config_line("all_metadata_to_header", run_options.all_metadata_to_header),
-                    get_config_line("username", run_options.user_name),
-                    get_config_line("institute", run_options.institute),
-                    get_config_line("language", run_options.lang.value),
-                    #  this option ensures piranha write to our run_id output dir, not a new dir with _1 appended
-                    get_config_line("overwrite", True),
-                    get_config_line("medaka_model", "AUTO")
-                ]
-                config_file.writelines(lines)
-                print("WROTE LINES:")
-                print("\n".join(lines))
-                return config_file.name
-
     async def run_piranha_log_generator(
         self,
         run_id: str,
@@ -93,10 +51,31 @@ class PiranhaRunner:
         # zip of the run as it may be of use.
         log_path = Path(output_dir_path) / "piranha.log"
 
-        config_file_path = self.write_options_to_config_file(run_options, barcodes_file_path, minknow_dir_path, output_dir_path)
+        env_vals = [
+              # run parameters
+              f"--threads {run_options.threads}",
+              f"--runname {escape_option(run_options.run_name)}",
+              f"--notes {escape_option(run_options.notes)}",
+              # run settings
+              f"--sample-type {run_options.protocol}",
+              f"--positive-control {escape_option(run_options.positive_control)}",
+              f"--negative-control {escape_option(run_options.negative_control)}",
+              # piranha output settings
+              f"--orientation {options.orientation}",
+              f"--output-prefix {escape_option(run_options.output_prefix)}",
+              f"{"--all-metadata-to-header" if run_options.all_metadata_to_header else ""}",
+              f"{"--no-temp" if run_options.output_intermediate_files else ""}",
+              # user settings
+              f"--username {escape_option(run_options.user_name)}",
+              f"--institute {escape_otion(run_options.institute)}",
+              f"--language {run_options.lang}",
+              f"--medaka-model AUTO"
+        ]
+
+        env_string = " ".join(env_vals)
         piranha_cmd = (
             f"source {self.piranha_activate_path} && "
-            f"piranha -c {config_file_path} "
+            f"piranha {env_string} "
             f"> {log_path} 2>&1"
         )
 
@@ -129,9 +108,5 @@ class PiranhaRunner:
             # TODO: Provide a way for client to more clearly know about execution error (can't set response status here
             # after start streaming). Save error to output folder, and provide /results-status response
             yield self.log_line(run_id, f"[ERROR] Exception encountered during execution: {e!s}")
-        finally:
-            if os.path.exists(config_file_path):
-                os.remove(config_file_path)
-
 
 

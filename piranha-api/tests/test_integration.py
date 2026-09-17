@@ -46,6 +46,7 @@ def  create_params(run_name: str):
        "orientation": "vertical",
        "outputPrefix": "",
        "allMetadataToHeader": True,
+       "outputIntermediateFiles": True,
        "userName": "Test User",
        "institute": "Test Institute",
        "lang": "English"
