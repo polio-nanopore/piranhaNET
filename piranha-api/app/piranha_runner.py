@@ -1,18 +1,21 @@
 import asyncio
-import os
-import tempfile
 from collections.abc import AsyncGenerator
 from pathlib import Path
-from app.models import PiranhaRunOptions
 
 import aiofiles
 
+from app.models import PiranhaRunOptions
+
 POLL_WAIT = 0.2
 
-def escape_option(option: str):
-    return option.replace(" ", "_");
+def safe_option(name: str, value: str):
+    if len(value.strip()) == 0:
+        return ""
+    else:
+        value = value.replace(" ", "_")
+    return f"{name} {value}"
 
-clas:s PiranhaRunner:
+class PiranhaRunner:
     def __init__(self, piranha_venv_path: Path):
         self.piranha_venv_path = piranha_venv_path
         self.piranha_activate_path = Path(piranha_venv_path / "activate")
@@ -51,31 +54,36 @@ clas:s PiranhaRunner:
         # zip of the run as it may be of use.
         log_path = Path(output_dir_path) / "piranha.log"
 
-        env_vals = [
+        option_vals = [
+              f"-b {barcodes_file_path}",
+              f"-i {minknow_dir_path}",
+              f"-o {output_dir_path}",
               # run parameters
               f"--threads {run_options.threads}",
-              f"--runname {escape_option(run_options.run_name)}",
-              f"--notes {escape_option(run_options.notes)}",
+              safe_option("--runname", run_options.run_name),
+              safe_option("--notes", run_options.notes),
               # run settings
-              f"--sample-type {run_options.protocol}",
-              f"--positive-control {escape_option(run_options.positive_control)}",
-              f"--negative-control {escape_option(run_options.negative_control)}",
+              f"--sample-type {run_options.protocol.value}",
+              safe_option("--positive-control", run_options.positive_control),
+              safe_option("--negative-control", run_options.negative_control),
               # piranha output settings
-              f"--orientation {options.orientation}",
-              f"--output-prefix {escape_option(run_options.output_prefix)}",
+              f"--orientation {run_options.orientation.value}",
+              safe_option("--output-prefix", run_options.output_prefix),
               f"{"--all-metadata-to-header" if run_options.all_metadata_to_header else ""}",
               f"{"--no-temp" if run_options.output_intermediate_files else ""}",
               # user settings
-              f"--username {escape_option(run_options.user_name)}",
-              f"--institute {escape_otion(run_options.institute)}",
-              f"--language {run_options.lang}",
-              f"--medaka-model AUTO"
+              safe_option("--username", run_options.user_name),
+              safe_option("--institute", run_options.institute),
+              f"--language {run_options.lang.value}",
+              "--medaka-model AUTO",
+              # this option ensures piranha writes to our run_id output dir, not a new dir with _1 appended
+              "--overwrite "
         ]
 
-        env_string = " ".join(env_vals)
+        options_string = " ".join(option_vals)
         piranha_cmd = (
             f"source {self.piranha_activate_path} && "
-            f"piranha {env_string} "
+            f"piranha {options_string} "
             f"> {log_path} 2>&1"
         )
 

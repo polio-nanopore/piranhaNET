@@ -1,17 +1,19 @@
-from enum import Enum
+import enum
+
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
-class Protocol(str, Enum):
+
+class Protocol(enum.StrEnum):
     STOOL="stool"
     ENVIRONMENTAL="environmental"
     ISOLATE="isolate"
 
-class Orientation(str, Enum):
+class Orientation(enum.StrEnum):
     VERTICAL="vertical"
     HORIZONTAL="horizontal"
 
-class Language(str, Enum):
+class Language(enum.StrEnum):
     ENGLISH="English"
     FRENCH="French"
 

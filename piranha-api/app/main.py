@@ -3,14 +3,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, UploadFile, File
+from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from shortuuid import uuid
 
 from app.file_manager import FileManager
+from app.models import PiranhaRunOptions
 from app.piranha_runner import PiranhaRunner
 from app.settings import settings
-from app.models import PiranhaRunOptions
 
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))

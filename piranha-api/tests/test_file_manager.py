@@ -86,7 +86,7 @@ def test_read_output_report_raises_httpexception_on_unknown_run_id(tmp_path):
     with pytest.raises(fastapi.HTTPException) as exc_info:
         sut.read_output_report(run_id)
     assert exc_info.value.status_code == 400
-    assert exc_info.value.detail == "Run ID 1234 not found."
+    assert exc_info.value.detail == "Bad request for run 1234: Run ID not found."
 
 
 def test_read_output_report_raises_httpexception_when_run_incomplete(tmp_path):
@@ -96,4 +96,5 @@ def test_read_output_report_raises_httpexception_when_run_incomplete(tmp_path):
     with pytest.raises(fastapi.HTTPException) as exc_info:
         sut.read_output_report(run_id)
     assert exc_info.value.status_code == 400
-    assert exc_info.value.detail == "Run 1234 has not completed."
+    assert exc_info.value.detail == f"Bad request for run {run_id}: \
+        Run has not completed, or report file was not generated."
