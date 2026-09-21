@@ -41,7 +41,7 @@ async def run(
     run_options: Annotated[PiranhaRunOptions, Depends()],
     barcodes_file: Annotated[UploadFile, File(alias="barcodesFile")],
     minknow_zip: Annotated[UploadFile, File(alias="minknowZip")],
-    run_id: Annotated[str, Depends(generate_run_id)]
+    run_id: Annotated[str, Depends(generate_run_id)],
 ):
     # Save input files before start response so we can raise any errors related to bad file input before we start
     # streaming output

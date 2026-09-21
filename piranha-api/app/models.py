@@ -5,22 +5,25 @@ from pydantic.alias_generators import to_camel
 
 
 class Protocol(enum.StrEnum):
-    STOOL="stool"
-    ENVIRONMENTAL="environmental"
-    ISOLATE="isolate"
+    STOOL = "stool"
+    ENVIRONMENTAL = "environmental"
+    ISOLATE = "isolate"
+
 
 class Orientation(enum.StrEnum):
-    VERTICAL="vertical"
-    HORIZONTAL="horizontal"
+    VERTICAL = "vertical"
+    HORIZONTAL = "horizontal"
+
 
 class Language(enum.StrEnum):
-    ENGLISH="English"
-    FRENCH="French"
+    ENGLISH = "English"
+    FRENCH = "French"
+
 
 class PiranhaRunOptions(BaseModel):
     model_config = ConfigDict(
-        alias_generator=to_camel, # Accept camel case in incoming payloads
-        populate_by_name=True  # Accept population by Python names too, for testing
+        alias_generator=to_camel,  # Accept camel case in incoming payloads
+        populate_by_name=True,  # Accept population by Python names too, for testing
     )
     run_name: str
     notes: str
@@ -35,6 +38,3 @@ class PiranhaRunOptions(BaseModel):
     user_name: str
     institute: str
     lang: Language
-
-
-

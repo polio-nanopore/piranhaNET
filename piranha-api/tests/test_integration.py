@@ -35,22 +35,24 @@ def create_files():
         "minknowZip": ("minknow.zip", minknow_zip, "application/zip"),
     }
 
-def  create_params(run_name: str):
-   return {
-       "runName": run_name,
-       "notes": "Test notes",
-       "threads": 10,
-       "protocol": "stool",
-       "positiveControl": "pos",
-       "negativeControl": "neg",
-       "orientation": "vertical",
-       "outputPrefix": "",
-       "allMetadataToHeader": True,
-       "outputIntermediateFiles": True,
-       "userName": "Test User",
-       "institute": "Test Institute",
-       "lang": "English"
-   }
+
+def create_params(run_name: str):
+    return {
+        "runName": run_name,
+        "notes": "Test notes",
+        "threads": 10,
+        "protocol": "stool",
+        "positiveControl": "pos",
+        "negativeControl": "neg",
+        "orientation": "vertical",
+        "outputPrefix": "",
+        "allMetadataToHeader": True,
+        "outputIntermediateFiles": True,
+        "userName": "Test User",
+        "institute": "Test Institute",
+        "lang": "English",
+    }
+
 
 async def stream_to_list(response, output_list):
     async for line in response.aiter_text():
@@ -158,7 +160,10 @@ async def test_expected_error_when_run_has_not_completed():
                 results_response = results_client.get(f"/results/{run_id}")
                 assert results_response.status_code == 400
                 json_error = results_response.json()
-                assert json_error["detail"] == f"Bad request for run {run_id}: \
+                assert (
+                    json_error["detail"]
+                    == f"Bad request for run {run_id}: \
                     Run has not completed, or report file was not generated."
+                )
             # wait for the task to finish
             await asyncio.gather(stream_to_list(response, []))
