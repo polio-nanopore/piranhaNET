@@ -161,9 +161,8 @@ async def test_expected_error_when_run_has_not_completed():
                 assert results_response.status_code == 400
                 json_error = results_response.json()
                 assert (
-                    json_error["detail"]
-                    == f"Bad request for run {run_id}: \
-                    Run has not completed, or report file was not generated."
+                    json_error["detail"] == f"Bad request for run {run_id}: "
+                    "Run has not completed, or report file was not generated."
                 )
             # wait for the task to finish
             await asyncio.gather(stream_to_list(response, []))
