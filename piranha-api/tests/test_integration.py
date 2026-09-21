@@ -31,8 +31,26 @@ def create_files():
     minknow_zip = create_minknow_zip()
     barcodes_path = test_data_dir / "barcodes.csv"  # read test_data barcodes file
     return {
-        "barcodes_file": ("barcodes.csv", barcodes_path.read_text(), "text/csv"),
-        "minknow_zip": ("minknow.zip", minknow_zip, "application/zip"),
+        "barcodesFile": ("barcodes.csv", barcodes_path.read_text(), "text/csv"),
+        "minknowZip": ("minknow.zip", minknow_zip, "application/zip"),
+    }
+
+
+def create_params(run_name: str):
+    return {
+        "runName": run_name,
+        "notes": "Test notes",
+        "threads": 10,
+        "protocol": "stool",
+        "positiveControl": "pos",
+        "negativeControl": "neg",
+        "orientation": "vertical",
+        "outputPrefix": "",
+        "allMetadataToHeader": True,
+        "outputIntermediateFiles": True,
+        "userName": "Test User",
+        "institute": "Test Institute",
+        "lang": "English",
     }
 
 
@@ -42,7 +60,7 @@ async def stream_to_list(response, output_list):
 
 
 async def test_run_streaming_response_and_get_results():
-    params = {"run_name": "test run"}
+    params = create_params("test run")
     files = create_files()
 
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
@@ -58,18 +76,30 @@ async def test_run_streaming_response_and_get_results():
             assert len(lines) > 1000  # This is going to be changeable, but it should be a lot!
             assert lines[0] == f"Starting run test run with run id {run_id}"
             assert "Building DAG of jobs..." in lines  # This indicates snakemake was called
+
+            # Test for all expected settings
+            assert "\x1b[32mSetting runname:\x1b[0m test_run" in lines
+            assert "\x1b[32mSetting notes:\x1b[0m Test_notes" in lines
+            assert "\x1b[32mSetting threads:\x1b[0m 10" in lines
+            assert "\x1b[32mSetting positive_control:\x1b[0m pos" in lines
+            assert "\x1b[32mSetting negative_control:\x1b[0m neg" in lines
+            assert "\x1b[32mSetting all_metadata_to_header:\x1b[0m True" in lines
+            assert "\x1b[32mSetting no_temp:\x1b[0m True" in lines
+            assert "\x1b[32mSetting username:\x1b[0m Test_User" in lines
+            assert "\x1b[32mSetting institute:\x1b[0m Test_Institute" in lines
+
             assert lines[-1] == "Piranha run completed with exit code 0"
 
     with httpx.Client(base_url=BASE_URL) as client:
         results_response = client.get(f"/results/{run_id}")
         assert results_response.status_code == 200
-        assert "Sequencing report: polioDDNS" in results_response.text
+        assert "Sequencing report: test_run" in results_response.text
 
 
 async def test_simultaneous_run_requests():
-    params_1 = {"run_name": "test run 1"}
+    params_1 = create_params("test run 1")
     files_1 = create_files()
-    params_2 = {"run_name": "test run 2"}
+    params_2 = create_params("test run 2")
     files_2 = create_files()
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
         async with client.stream("POST", "/run", params=params_1, files=files_1, timeout=None) as response_1:
@@ -82,7 +112,6 @@ async def test_simultaneous_run_requests():
                 combined = []
                 await asyncio.gather(stream_to_list(response_1, combined), stream_to_list(response_2, combined))
                 # Expect interleaved streamed response list to show that responses were collecting concurrently
-                print(combined)
                 assert len(combined) > 2000
                 assert combined[0] == f"Starting run test run 1 with run id {run_id_1}"
                 assert combined[1] == f"Starting run test run 2 with run id {run_id_2}"
@@ -93,10 +122,10 @@ async def test_simultaneous_run_requests():
 
 
 async def test_expected_error_when_minknow_not_valid_zip():
-    params = {"run_name": "test run"}
+    params = create_params("test run")
     files = {
-        "barcodes_file": ("barcodes.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
-        "minknow_zip": ("minknow.zip", "not a zip", "application/zip"),
+        "barcodesFile": ("barcodes.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
+        "minknowZip": ("minknow.zip", "not a zip", "application/zip"),
     }
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
         async with client.stream("POST", "/run", params=params, files=files) as response:
@@ -115,12 +144,12 @@ async def test_expected_error_when_run_does_not_exist():
         response = client.get(f"/results/{run_id}")
         assert response.status_code == 400
         json_error = response.json()
-        assert json_error["detail"] == f"Run ID {run_id} not found."
+        assert json_error["detail"] == f"Bad request for run {run_id}: Run ID not found."
 
 
 async def test_expected_error_when_run_has_not_completed():
     # Start run and request its results before it has time to complete
-    params = {"run_name": "test run"}
+    params = create_params("test run")
     files = create_files()
 
     async with httpx.AsyncClient(base_url=BASE_URL) as client:
@@ -131,6 +160,10 @@ async def test_expected_error_when_run_has_not_completed():
                 results_response = results_client.get(f"/results/{run_id}")
                 assert results_response.status_code == 400
                 json_error = results_response.json()
-                assert json_error["detail"] == f"Run {run_id} has not completed."
+                assert (
+                    json_error["detail"]
+                    == f"Bad request for run {run_id}: \
+                    Run has not completed, or report file was not generated."
+                )
             # wait for the task to finish
             await asyncio.gather(stream_to_list(response, []))

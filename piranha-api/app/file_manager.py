@@ -20,6 +20,11 @@ class FileManager:
     def output_dir(self, run_id: str):
         return self.output_root / run_id
 
+    def bad_request(self, run_id: str, msg: str):
+        detail = f"Bad request for run {run_id}: {msg}"
+        print(detail)
+        raise HTTPException(status_code=400, detail=detail) from None
+
     async def save_input(self, run_id: str, barcodes_file: UploadFile, minknow_zip: UploadFile):
         # Create minknow folder
         minknow_dir = self.minknow_dir(run_id)
@@ -48,10 +53,10 @@ class FileManager:
     def read_output_report(self, run_id: str):
         input_dir = self.input_dir(run_id)
         if not input_dir.exists():
-            raise HTTPException(status_code=400, detail=f"Run ID {run_id} not found.") from None
+            self.bad_request(run_id, "Run ID not found.")
         output_dir = self.output_dir(run_id)
         report_file_path = output_dir / REPORT_FILENAME
         if not report_file_path.exists():
-            raise HTTPException(status_code=400, detail=f"Run {run_id} has not completed.") from None
+            self.bad_request(run_id, "Run has not completed, or report file was not generated.")
         with report_file_path.open() as report_file:
             return report_file.read()
