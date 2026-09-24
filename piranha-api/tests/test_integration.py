@@ -170,7 +170,7 @@ async def test_expected_error_when_options_payload_not_valid():
             assert missing_error["type"] == "missing"
             assert missing_error["loc"] == ["query", "positiveControl"]
             assert missing_error["msg"] == "Field required"
-            assert missing_error["input"] == None
+            assert missing_error["input"] is None
 
 
 async def test_expected_error_when_run_has_not_completed():
