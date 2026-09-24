@@ -1,9 +1,9 @@
 from pathlib import Path
+from shutil import make_archive
 from zipfile import BadZipFile, ZipFile
+from tempfile import mkdtemp
 
 from fastapi import HTTPException, UploadFile
-
-REPORT_FILENAME = "report.html"
 
 
 class FileManager:
@@ -50,13 +50,18 @@ class FileManager:
         output_dir.mkdir(parents=True)
         return output_dir
 
-    def read_output_report(self, run_id: str):
+    def read_output_zip(self, run_id: str, background_tasks: BackgroundTasks):
         input_dir = self.input_dir(run_id)
         if not input_dir.exists():
             self.bad_request(run_id, "Run ID not found.")
         output_dir = self.output_dir(run_id)
-        report_file_path = output_dir / REPORT_FILENAME
-        if not report_file_path.exists():
-            self.bad_request(run_id, "Run has not completed, or report file was not generated.")
-        with report_file_path.open() as report_file:
-            return report_file.read()
+
+       # Make a temp dir for the zip
+       tmp_dir = mkdtemp()
+       zip_path = make_archive(
+           base_name=f"{tmp_dir}/{run_id}",
+           format="zip",
+           root_dir=output_dir.parent,
+           base_dir=output_dir.name
+       )
+       return (zip_path, tmp_dir)

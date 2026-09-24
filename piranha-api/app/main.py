@@ -4,8 +4,10 @@ from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, File, UploadFile
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.background import BackgroundTasks
 from shortuuid import uuid
+from shutil import rmtree
 
 from app.file_manager import FileManager
 from app.models import PiranhaRunOptions
@@ -59,5 +61,14 @@ async def run(
 
 
 @app.get("/results/{run_id}")
-def results(run_id: str, response_class=HTMLResponse):  # noqa: ARG001  Allow apparently unused response_class param
-    return file_manager.read_output_report(run_id)
+def results(run_id: str, response_class=FileResponse, background_tasks: BackgroundTasks):  # noqa: ARG001  Allow apparently unused response_class param
+    (zip_path, tmp_dir) = file_manager.read_output_report(run_id)
+
+    # Schedule cleanup of local archive for after response completes
+    background_tasks.add_task(rmtree, tmp_dir)
+
+    return FileResponse(
+        path=zip_path,
+        filename=f"{run_id}.zip",
+        media_type="application/zip"
+    )
