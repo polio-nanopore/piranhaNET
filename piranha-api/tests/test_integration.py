@@ -147,6 +147,32 @@ async def test_expected_error_when_run_does_not_exist():
         assert json_error["detail"] == f"Bad request for run {run_id}: Run ID not found."
 
 
+async def test_expected_error_when_options_payload_not_valid():
+    params = create_params("test run")
+    # make one param missing, and one the wrong data type
+    params.pop("positiveControl")
+    params["threads"] = "ten"
+    files = create_files()
+    async with httpx.AsyncClient(base_url=BASE_URL) as client:
+        async with client.stream("POST", "/run", params=params, files=files) as response:
+            assert response.status_code == 422
+            lines = []
+            async for line in response.aiter_text():
+                lines.append(line)
+            assert len(lines) == 1
+            json_error = json.loads(lines[0])
+            int_error = json_error["detail"][0]
+            assert int_error["type"] == "int_parsing"
+            assert int_error["loc"] == ["query", "threads"]
+            assert int_error["msg"] == "Input should be a valid integer, unable to parse string as an integer"
+            assert int_error["input"] == "ten"
+            missing_error = json_error["detail"][1]
+            assert missing_error["type"] == "missing"
+            assert missing_error["loc"] == ["query", "positiveControl"]
+            assert missing_error["msg"] == "Field required"
+            assert missing_error["input"] == None
+
+
 async def test_expected_error_when_run_has_not_completed():
     # Start run and request its results before it has time to complete
     params = create_params("test run")
