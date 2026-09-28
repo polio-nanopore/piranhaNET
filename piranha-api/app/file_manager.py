@@ -5,6 +5,8 @@ from zipfile import BadZipFile, ZipFile
 
 from fastapi import HTTPException, UploadFile
 
+REPORT_FILENAME = "report.html"
+
 
 class FileManager:
     def __init__(self, input_root: Path, output_root: Path):
@@ -54,9 +56,12 @@ class FileManager:
         input_dir = self.input_dir(run_id)
         if not input_dir.exists():
             self.bad_request(run_id, "Run ID not found.")
+        # The output dir is written as  the run progresses, but the main report.html is not created until completion, so
+        # check for that
         output_dir = self.output_dir(run_id)
-        if not output_dir.exists():
-            self.bad_request(run_id, "Run has not completed, or output was not generated.")
+        report_file_path = output_dir / REPORT_FILENAME
+        if not report_file_path.exists():
+            self.bad_request(run_id, "Run has not completed, or report file was not generated.")
 
         # Make a temp dir for the zip
         tmp_dir = mkdtemp()
