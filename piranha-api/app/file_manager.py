@@ -1,7 +1,7 @@
 from pathlib import Path
 from shutil import make_archive
-from zipfile import BadZipFile, ZipFile
 from tempfile import mkdtemp
+from zipfile import BadZipFile, ZipFile
 
 from fastapi import HTTPException, UploadFile
 
@@ -50,18 +50,19 @@ class FileManager:
         output_dir.mkdir(parents=True)
         return output_dir
 
-    def read_output_zip(self, run_id: str, background_tasks: BackgroundTasks):
+    def read_output_zip(self, run_id: str):
         input_dir = self.input_dir(run_id)
         if not input_dir.exists():
             self.bad_request(run_id, "Run ID not found.")
         output_dir = self.output_dir(run_id)
+        if not output_dir.exists():
+            self.bad_request(run_id, "Run has not completed, or output was not generated.")
 
-       # Make a temp dir for the zip
-       tmp_dir = mkdtemp()
-       zip_path = make_archive(
-           base_name=f"{tmp_dir}/{run_id}",
-           format="zip",
-           root_dir=output_dir.parent,
-           base_dir=output_dir.name
-       )
-       return (zip_path, tmp_dir)
+        # Make a temp dir for the zip
+        tmp_dir = mkdtemp()
+        zip_path = make_archive(
+            base_name=f"{tmp_dir}/{run_id}",
+            format="zip",
+            root_dir=output_dir,
+        )
+        return (zip_path, tmp_dir)

@@ -93,7 +93,14 @@ async def test_run_streaming_response_and_get_results():
     with httpx.Client(base_url=BASE_URL) as client:
         results_response = client.get(f"/results/{run_id}")
         assert results_response.status_code == 200
-        assert "Sequencing report: test_run" in results_response.text
+
+        # Open the zip response in memory
+        with ZipFile(BytesIO(results_response.content)) as zip_file:
+            report_html = zip_file.read("report.html").decode("utf-8")
+            assert "Sequencing report: test_run" in report_html
+            # also test for expected barcodes file
+            barcode_html = zip_file.read("barcode_reports/barcode01_report.html").decode("utf-8")
+            assert "Detailed information on MixedTest" in barcode_html
 
 
 async def test_simultaneous_run_requests():
