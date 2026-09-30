@@ -1,5 +1,7 @@
+import shutil
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
-from zipfile import BadZipFile
+from zipfile import BadZipFile, ZipFile
 
 import fastapi
 import pytest
@@ -7,10 +9,23 @@ import pytest
 from app.file_manager import FileManager
 
 run_id = "1234"
+test_report_content = "<not an html report>"
 
 
 def get_sut(tmp_path):
     return FileManager(tmp_path / "test_input", tmp_path / "test_output")
+
+
+@pytest.fixture
+def cleanup_output_temp_dirs():
+    # We're not mocking the saving of the output zip file to a temp dir
+    # so we do need to explicitly clean up those dirs
+    output_temp_dirs = []
+    yield output_temp_dirs
+
+    # Cleanup after test
+    for temp_dir in output_temp_dirs:
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 @patch("app.file_manager.ZipFile")
@@ -67,36 +82,67 @@ def test_make_output_dir(tmp_path):
     assert expected_output_dir.exists()
 
 
-def test_read_output_report(tmp_path):
+def test_read_output_zip(tmp_path, cleanup_output_temp_dirs):
     test_input_dir = tmp_path / "test_input" / run_id
     test_input_dir.mkdir(parents=True)
-    test_report_content = "<not an html report>"
+    test_report_dir = tmp_path / "test_output" / run_id
+    test_report_dir.mkdir(parents=True)
+    test_report = test_report_dir / "report.html"
+    test_report.write_text(test_report_content)
+    test_barcode_report_content = "<not a barcode report>"
+    test_barcode_dir = test_report_dir / "barcode01"
+    test_barcode_dir.mkdir()
+    test_barcode_report = test_barcode_dir / "barcode.html"
+    test_barcode_report.write_text(test_barcode_report_content)
+
+    sut = get_sut(tmp_path)
+    (zip_path, tmp_dir) = sut.read_output_zip(run_id)
+    cleanup_output_temp_dirs.append(tmp_dir)  # Register for cleanup
+    with ZipFile(zip_path) as zip_file:
+        with zip_file.open("report.html") as unzipped_report:
+            unzipped_report_text = unzipped_report.read().decode("utf-8")
+            assert unzipped_report_text == test_report_content
+        with zip_file.open("barcode01/barcode.html") as unzipped_barcode_report:
+            unzipped_barcode_report_text = unzipped_barcode_report.read().decode("utf-8")
+            assert unzipped_barcode_report_text == test_barcode_report_content
+
+
+def test_read_output_zip_raises_httpexception_on_unknown_run_id(tmp_path):
+    sut = get_sut(tmp_path)
+    with pytest.raises(fastapi.HTTPException) as exc_info:
+        sut.read_output_zip(run_id)
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.detail == "Bad request for run 1234: Run ID not found."
+
+
+def test_read_output_zip_raises_httpexception_when_run_incomplete(tmp_path):
+    test_input_dir = tmp_path / "test_input" / run_id
+    test_input_dir.mkdir(parents=True)
+    sut = get_sut(tmp_path)
+    with pytest.raises(fastapi.HTTPException) as exc_info:
+        sut.read_output_zip(run_id)
+    assert exc_info.value.status_code == 400
+    assert (
+        exc_info.value.detail
+        == f"Bad request for run {run_id}: Run has not completed, or report file was not generated."
+    )
+
+
+@patch("app.file_manager.rmtree", wraps=shutil.rmtree)
+@patch("app.file_manager.make_archive")
+def test_read_output_zip_cleans_temp_on_make_archive_error(mock_make_archive, mock_rmtree, tmp_path):
+    mock_make_archive.side_effect = Exception("test error")
+
+    test_input_dir = tmp_path / "test_input" / run_id
+    test_input_dir.mkdir(parents=True)
     test_report_dir = tmp_path / "test_output" / run_id
     test_report_dir.mkdir(parents=True)
     test_report = test_report_dir / "report.html"
     test_report.write_text(test_report_content)
 
     sut = get_sut(tmp_path)
-    result = sut.read_output_report(run_id)
-    assert result == test_report_content
-
-
-def test_read_output_report_raises_httpexception_on_unknown_run_id(tmp_path):
-    sut = get_sut(tmp_path)
-    with pytest.raises(fastapi.HTTPException) as exc_info:
-        sut.read_output_report(run_id)
-    assert exc_info.value.status_code == 400
-    assert exc_info.value.detail == "Bad request for run 1234: Run ID not found."
-
-
-def test_read_output_report_raises_httpexception_when_run_incomplete(tmp_path):
-    test_input_dir = tmp_path / "test_input" / run_id
-    test_input_dir.mkdir(parents=True)
-    sut = get_sut(tmp_path)
-    with pytest.raises(fastapi.HTTPException) as exc_info:
-        sut.read_output_report(run_id)
-    assert exc_info.value.status_code == 400
-    assert (
-        exc_info.value.detail == f"Bad request for run {run_id}: "
-        "Run has not completed, or report file was not generated."
-    )
+    with pytest.raises(Exception):  # noqa: B017
+        sut.read_output_zip(run_id)
+    mock_rmtree.assert_called_once()
+    path = mock_rmtree.call_args.args[0]
+    assert Path(path).is_relative_to("/tmp")
