@@ -60,7 +60,7 @@ async def run(
 
 
 @app.get("/results/{run_id}")
-def results(run_id: str, background_tasks: BackgroundTasks, response_class=FileResponse):  # noqa: ARG001  Allow apparently unused response_class param
+def results(run_id: str, background_tasks: BackgroundTasks) -> FileResponse:
     (zip_path, tmp_dir) = file_manager.read_output_zip(run_id)
 
     # Schedule cleanup of local archive for after response completes

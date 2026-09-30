@@ -1,5 +1,5 @@
 from pathlib import Path
-from shutil import make_archive
+from shutil import make_archive, rmtree
 from tempfile import mkdtemp
 from zipfile import BadZipFile, ZipFile
 
@@ -65,9 +65,14 @@ class FileManager:
 
         # Make a temp dir for the zip
         tmp_dir = mkdtemp()
-        zip_path = make_archive(
-            base_name=f"{tmp_dir}/{run_id}",
-            format="zip",
-            root_dir=output_dir,
-        )
+        try:
+            zip_path = make_archive(
+                base_name=f"{tmp_dir}/{run_id}",
+                format="zip",
+                root_dir=output_dir,
+            )
+        except:
+            # Clean up if error on make_archive. Otherwise, the main thread will clean up as background task
+            rmtree(tmp_dir)
+            raise
         return (zip_path, tmp_dir)

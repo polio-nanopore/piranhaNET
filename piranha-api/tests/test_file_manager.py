@@ -1,4 +1,5 @@
 import shutil
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from zipfile import BadZipFile, ZipFile
 
@@ -8,6 +9,7 @@ import pytest
 from app.file_manager import FileManager
 
 run_id = "1234"
+test_report_content = "<not an html report>"
 
 
 def get_sut(tmp_path):
@@ -83,7 +85,6 @@ def test_make_output_dir(tmp_path):
 def test_read_output_zip(tmp_path, cleanup_output_temp_dirs):
     test_input_dir = tmp_path / "test_input" / run_id
     test_input_dir.mkdir(parents=True)
-    test_report_content = "<not an html report>"
     test_report_dir = tmp_path / "test_output" / run_id
     test_report_dir.mkdir(parents=True)
     test_report = test_report_dir / "report.html"
@@ -125,3 +126,23 @@ def test_read_output_zip_raises_httpexception_when_run_incomplete(tmp_path):
         exc_info.value.detail
         == f"Bad request for run {run_id}: Run has not completed, or report file was not generated."
     )
+
+
+@patch("app.file_manager.rmtree", wraps=shutil.rmtree)
+@patch("app.file_manager.make_archive")
+def test_read_output_zip_cleans_temp_on_make_archive_error(mock_make_archive, mock_rmtree, tmp_path):
+    mock_make_archive.side_effect = Exception("test error")
+
+    test_input_dir = tmp_path / "test_input" / run_id
+    test_input_dir.mkdir(parents=True)
+    test_report_dir = tmp_path / "test_output" / run_id
+    test_report_dir.mkdir(parents=True)
+    test_report = test_report_dir / "report.html"
+    test_report.write_text(test_report_content)
+
+    sut = get_sut(tmp_path)
+    with pytest.raises(Exception):  # noqa: B017
+        sut.read_output_zip(run_id)
+    mock_rmtree.assert_called_once()
+    path = mock_rmtree.call_args.args[0]
+    assert Path(path).is_relative_to("/tmp")
