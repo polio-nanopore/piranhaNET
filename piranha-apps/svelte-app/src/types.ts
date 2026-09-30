@@ -1,6 +1,8 @@
 import type { PiranhaRunOptions } from "./shared/types";
 
 export interface AppState {
+  mode: "web" | "electron";
+  apiUrl: string | null;
   doneInitialSubmit: boolean;
   doneInitialValidate: boolean;
 }

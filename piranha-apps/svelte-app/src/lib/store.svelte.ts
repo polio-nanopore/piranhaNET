@@ -42,8 +42,10 @@ export const settings: PiranhaSettings = $state({
 });
 
 export const appState: AppState = $state({
+  mode: null,
+  apiUrl: null,
   doneInitialValidate: false,
-  doneInitialSubmit: false,
+  doneInitialSubmit: false
 });
 
 export const defaultRunParameters = (): PiranhaRunParameters => ({
@@ -57,3 +59,4 @@ export const defaultRunParameters = (): PiranhaRunParameters => ({
 export const runParameters: PiranhaRunParameters = $state(
   defaultRunParameters(),
 );
+
