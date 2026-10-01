@@ -6,7 +6,7 @@ interface RuntimeConfig {
 }
 
 const response = await fetch(
-  `${import.meta.env.BASE_URL}config.json`,
+  `${import.meta.env.BASE_URL}web.config.json`,
   { cache: 'no-store' }
 );
 

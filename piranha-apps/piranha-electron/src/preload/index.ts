@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import {
   FileDialogOptions,
-  PiranhaRunOptions,
+  PiranhaElectronRunOptions,
 } from "../../../svelte-app/src/shared/types";
 
 // Custom APIs for renderer
@@ -9,7 +9,7 @@ const api = {
   piranhaVersions: () => {
     return ipcRenderer.invoke("piranha-versions");
   },
-  runPiranha: (options: PiranhaRunOptions) => {
+  runPiranha: (options: PiranhaElectronRunOptions) => {
     return ipcRenderer.invoke("run-piranha", options);
   },
   cancelRun: (abortId: string) => ipcRenderer.send("cancel-run", abortId),

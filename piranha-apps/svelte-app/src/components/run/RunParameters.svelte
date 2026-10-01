@@ -6,7 +6,7 @@
   import FormField from "../forms/FormField.svelte";
   import { runParameters, settings, appState } from "$lib/store.svelte";
   import { createPiranhaRunOptions } from "../../types";
-  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
   import { runParametersSchema } from "./RunFormSchema";
   import Settings from "./Settings.svelte";

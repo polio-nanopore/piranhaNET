@@ -3,7 +3,7 @@
   import pscLogo from "../../assets/psc-logo.svg";
   import articLogo from "../../assets/artic-logo.svg";
   import githubLogo from "../../assets/github-logo.svg";
-  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import { m } from "../../paraglide/messages";
   import type { PiranhaVersions } from "../../shared/types";
   import I18nMessageWithLinks from "../I18nMessageWithLinks.svelte";

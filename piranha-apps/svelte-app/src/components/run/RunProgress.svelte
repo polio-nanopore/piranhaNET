@@ -5,7 +5,7 @@
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
   import { Spinner } from "$lib/shadcn/ui/spinner";
-  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import { runParameters, settings } from "$lib/store.svelte";
 
   let logEl;

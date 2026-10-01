@@ -1,4 +1,4 @@
-import type { PiranhaRunOptions } from "./shared/types";
+import type { PiranhaElectronRunOptions } from "./shared/types";
 
 export interface AppState {
   mode: "web" | "electron";
@@ -55,7 +55,7 @@ export const createPiranhaRunOptions = (
   params: PiranhaRunParameters,
   settings: PiranhaSettings,
   lang: string,
-): PiranhaRunOptions => {
+): PiranhaElectronRunOptions => {
   return {
     ...params,
     ...settings,

@@ -8,7 +8,7 @@ import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
 import {
   FileDialogOptions,
-  PiranhaRunOptions,
+  PiranhaElectronRunOptions,
   PiranhaVersions,
 } from "../../../svelte-app/src/shared/types";
 
@@ -108,7 +108,7 @@ function createWindow(): void {
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.handle("run-piranha", async (_event, options: PiranhaRunOptions) => {
+  ipcMain.handle("run-piranha", async (_event, options: PiranhaElectronRunOptions) => {
     const writable = new Writable({
       write(chunk, _, callback) {
         // Send each chunk to the renderer

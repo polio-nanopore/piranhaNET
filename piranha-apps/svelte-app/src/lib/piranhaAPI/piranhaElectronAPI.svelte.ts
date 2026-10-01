@@ -1,74 +1,104 @@
-import {PiranhaAPI, PiranhaError} from "./piranhaAPI.svelte";
-import { PiranhaRunOptions } from "../../shared/types";
+import {BasePiranhaAPI} from "./basePiranhaAPI.svelte";
+import type { PiranhaElectronRunOptions, PiranhaVersions} from "../../shared/types";
 import { m } from "../../paraglide/messages";
 
-export class PiranhaElectronAPI extends PiranhaAPI {
-  private initialized = $state(false);
+export class PiranhaElectronAPI extends BasePiranhaAPI {
+  private _initialized = $state(false);
   // TODO: distinguish electron from web options
-  private optionps: PiranhaRunOptions | null = $state(null);
-  private runOutputFolderName = $state("");
-  private cancelling = $state(false);
-  private abortId = "";
+  private _options: PiranhaElectronRunOptions | null = $state(null);
+  private _runOutputFolderName = $state("");
+  private _cancelling = $state(false);
+  private _abortId = "";
 
   constructor() {
     window.api?.onInitialized(() => {
-      this.initialized = true;
+      this._initialized = true;
     });
 
     window.api?.onChunk((chunk) => {
-      const textChunk = this.decoder.decode(chunk, { stream: true });
+      const textChunk = this._decoder.decode(chunk, { stream: true });
       const lines = textChunk.split("\n");
-      this.log.push(...lines);
+      this._log.push(...lines);
     });
     window.api?.onEnd(async () => {
-      this.log.push("Piranha Run Finished");
+      this._log.push("Piranha Run Finished");
       await this.findOutputFolderFromLog();
-      this.running = false;
+      this._running = false;
     });
     window.api?.onError((messageKey, detail) => {
-      this.error = { messageKey, detail };
-      // Add error to log, including ansi sequence to show in Red
-      this.addErrorToLog(`${m[messageKey]()}: ${detail}`);
+      this._error = { messageKey, detail };
+      this.addToLog(`${m[messageKey]()}: ${detail}`, true);
     });
     window.api?.onRunCancelled(() => {
-      this.cancelling = false;
-      this.running = false;
-      this.error = { messageKey: "runCancelled", detail: "" };
-      this.addErrorToLog(m.runCancelled());
+      this._cancelling = false;
+      this._running = false;
+      this._error = { messageKey: "runCancelled", detail: "" };
+      this.addToLog(m.runCancelled(), true);
     });
 
     super();
   }
 
   get initialized(): boolean {
-    return this.initialized;
+    return this._initialized;
   }
 
-  // TODO: will need to find a way to do the equivalent for web mode
+  // TODO: will need to find a way to do the equivalent for web mode, and then maybe update here too
   get runSucceeded(): boolean {
-    return !!this.runOutputFolderName;
+    return !!this._runOutputFolderName;
   }
 
   get cancelling(): boolean {
-    return this.cancelling;
+    return this._cancelling;
   }
 
   private async findOutputFolderFromLog(): Promise<void> {
     // Find local report path from docker volume path written in log, if run was successful
-    const fullLog = this.log.join(" ");
+    const fullLog = this._log.join(" ");
     const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
     if (match) {
-      this.runOutputFolderName = match[1];
+      this._runOutputFolderName = match[1];
     }
   }
 
-  async runPiranha(options: PiranhaRunOptions): void {
-    if (this.running) {
+  async runPiranha(options: PiranhaElectronRunOptions): Promise<void> {
+    if (this._running) {
       throw new Error(m.apiErrorAlreadyRunning());
     }
-    this.#log = [];
-    this.#options = options;
-    this.#abortId = await window.api.runPiranha(options);
-    this.#running = true;
+    this._log = [];
+    this._options = options;
+    this._abortId = await window.api.runPiranha(options);
+    this._running = true;
+  }
+
+  clearRun(): void {
+    super.clearRun();
+    this._options = null;
+    this._runOutputFolderName = "";
+    this._cancelling = false;
+    this._abortId = "";
+  }
+
+  cancelRun(): void {
+    this._cancelling = true;
+    window.api.cancelRun(this._abortId);
+  }
+
+  async openRunReport(): Promise<void> {
+    await window.api.openRunReport(
+      this._options.outputFolderPath,
+      this._runOutputFolderName,
+    );
+  }
+
+  async openRunOutputFolder(): Promise<void> {
+    await window.api.openRunOutputFolder(
+      this._options.outputFolderPath,
+      this._runOutputFolderName,
+    );
+  }
+
+  async piranhaVersions(): Promise<PiranhaVersions> {
+    return await window.api.piranhaVersions();
   }
 }

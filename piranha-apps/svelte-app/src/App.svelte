@@ -9,10 +9,10 @@
   import { i18n } from "./lib/i18n.svelte.js";
   import { appState } from "./lib/store.svelte";
 
-  const { mode, apiUrl } = $props();
-  appState.mode = mode;
-  if (mode == "web") {
-    appState.apiUrl = apiUrl;
+  const { mode: initialMode, apiUrl: intialApiUrl } = $props();
+  appState.mode = initialMode;
+  if (initialMode == "web") {
+    appState.apiUrl = intialApiUrl;
   }
 </script>
 
