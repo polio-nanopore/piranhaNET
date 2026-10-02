@@ -1,7 +1,7 @@
 // TODO: These "shared" types are used by both the electron main process and the front end. Put in svelte-app for now,
 // consider if rename tweak or similar would make this clearer
 
-export interface PiranhaWebRunOptions {
+export interface PiranhaRunOptionsWeb {
   runName: string;
   notes: string;
   threads?: number;
@@ -17,7 +17,7 @@ export interface PiranhaWebRunOptions {
   lang: string;
 }
 
-export interface PiranhaElectronRunOptions extends PiranhaWebRunOptions {
+export interface PiranhaRunOptionsElectron extends PiranhaRunOptionsWeb {
   barcodesFilePath: string;
   minKnowFolderPath: string;
   outputFolderPath: string;

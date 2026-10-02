@@ -1,11 +1,11 @@
 import {BasePiranhaAPI} from "./basePiranhaAPI.svelte";
-import type { PiranhaElectronRunOptions, PiranhaVersions} from "../../shared/types";
+import type { PiranhaRunOptionsElectron, PiranhaVersions} from "../../shared/types";
 import { m } from "../../paraglide/messages";
 
 export class PiranhaElectronAPI extends BasePiranhaAPI {
   private _initialized = $state(false);
   // TODO: distinguish electron from web options
-  private _options: PiranhaElectronRunOptions | null = $state(null);
+  private _options: PiranhaRunOptionsElectron | null = $state(null);
   private _runOutputFolderName = $state("");
   private _cancelling = $state(false);
   private _abortId = "";
@@ -61,7 +61,7 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
     }
   }
 
-  async runPiranha(options: PiranhaElectronRunOptions): Promise<void> {
+  async runPiranha(options: PiranhaRunOptionsElectron): Promise<void> {
     if (this._running) {
       throw new Error(m.apiErrorAlreadyRunning());
     }

@@ -1,5 +1,5 @@
 import {BasePiranhaAPI} from "./basePiranhaAPI.svelte";
-import type {PiranhaWebRunOptions} from "../../shared/types";
+import type {PiranhaRunOptionsWeb} from "../../shared/types";
 import zipFiles from "../zipFiles";
 
 export class PiranhaWebAPI extends BasePiranhaAPI {
@@ -13,7 +13,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       return `${this._apiUrl}${relativeUrl}`
     }
 
-    async runPiranha(options: PiranhaWebRunOptions, barcodesFile: File, minknowFiles: FileList): Promise<void> {
+    async runPiranha(options: PiranhaRunOptionsWeb, barcodesFile: File, minknowFiles: FileList): Promise<void> {
       // Zip minknow file
       this.addToLog("Zipping MinKnow folder"); // Piranha logs are always in English, so be consistent with that
       const minknowZipBlob = zipFiles(minknowFiles);

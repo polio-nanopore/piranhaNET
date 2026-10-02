@@ -1,5 +1,5 @@
 import * as stream from "stream";
-import type { PiranhaElectronRunOptions } from "../../../svelte-app/src/shared/types";
+import type { PiranhaRunOptionsElectron } from "../../../svelte-app/src/shared/types";
 import Docker, { Container } from "dockerode";
 import { userInfo } from "node:os";
 
@@ -59,7 +59,7 @@ export class PiranhaRunner {
   }
 
   public async runPiranha(
-    options: PiranhaElectronRunOptions,
+    options: PiranhaRunOptionsElectron,
     outputStream: NodeJS.WritableStream = process.stdout,
     abortSignal: AbortSignal,
   ): Promise<void> {

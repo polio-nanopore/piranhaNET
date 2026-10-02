@@ -1,9 +1,9 @@
 import JSZip from "jszip";
 
 // Helper method to zip file list returned from a webkitdirectory dialog into a zip blob to send to Piranha web API
-export default async (files: FileList) => {
+export default async (fileList: FileList) => {
     const zip = new JSZip();
-
+    const files = Array.from(fileList);
     files.forEach(file => {
       // Preserve folder structure using file.webkitRelativePath
       const filePath = file.webkitRelativePath || file.name;
