@@ -4,18 +4,24 @@
   import { Input } from "$lib/shadcn/ui/input";
   import { Textarea } from "$lib/shadcn/ui/textarea";
   import FormField from "../forms/FormField.svelte";
-  import { runParameters, settings, appState } from "$lib/store.svelte";
-  import { createPiranhaRunOptions } from "../../types";
+  import { runParameters, settings, appState, isWeb } from "$lib/store.svelte";
+  import { createPiranhaRunOptionsWeb, createPiranhaRunOptionsElectron } from "../../types";
   import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
-  import { runParametersSchema } from "./RunFormSchema";
+  import { runParametersSchemaElectron, runParametersSchemaWeb } from "./RunFormSchema";
   import Settings from "./Settings.svelte";
   import { i18n } from "$lib/i18n.svelte";
+  import {PiranhaWebAPI} from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
 
   let errors = $state<Record<string, string[]>>({});
 
+  let barcodesFileValue: FileList | null = $state(null);
+  let minknowFolderValue: FileList | null = $state(null);
+
+  const schema = isWeb() ? runParametersSchemaWeb() : runParametersSchemaElectron();
+
   function validate(): boolean {
-    const result = runParametersSchema().safeParse({
+    const result = schema().safeParse({
       ...runParameters,
       ...settings,
     });
@@ -40,12 +46,13 @@
     e.preventDefault();
     const valid = validate();
     if (valid) {
-      const runOptions = createPiranhaRunOptions(
-        runParameters,
-        settings,
-        i18n.lang,
-      );
-      await piranhaAPI.runPiranha(runOptions);
+      if (isWeb()) {
+        const runOptions = createPiranhaRunOptionsWeb(runParameters, settings, i18n.lang);
+        await (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, barcodesFileValue[0], minknowFolderValue);
+      } else {
+        const runOptions = createPiranhaRunOptionsElectron(runParameters, settings, i18n.lang);
+        await (piranhaAPI as PiranhaElectronAPI).runPiranha(runOptions);
+      }
     }
     appState.doneInitialSubmit = true;
   }
@@ -79,11 +86,13 @@
     >
       <FileSelect
         id="barcodes-file-field"
+        mode={appState.mode}
         title={m.parameterBarcodesFile()}
         selectFolder={false}
         filters={[{ name: "csv", extensions: ["csv"] }]}
         onchange={onChange}
         bind:value={runParameters.barcodesFilePath}
+        bind:fileListValue={barcodesFileValue}
       ></FileSelect>
     </FormField>
     <FormField
@@ -94,10 +103,12 @@
     >
       <FileSelect
         id="minknow-folder-field"
+        mode={appState.mode}
         title={m.parameterMinKnowFolder()}
         selectFolder={true}
         onchange={onChange}
         bind:value={runParameters.minKnowFolderPath}
+        bind:fileListValue={minknowFolderValue}
       ></FileSelect>
     </FormField>
     <FormField

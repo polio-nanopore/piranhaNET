@@ -1,4 +1,4 @@
-import type { AppState, PiranhaRunParameters, PiranhaSettings } from "../types";
+import type {AppMode, AppState, PiranhaRunParameters, PiranhaSettings } from "../types";
 import { PiranhaOrientation, PiranhaProtocol } from "../types";
 import { persistentSettingsStore } from "./persistentSettingsStore";
 
@@ -8,9 +8,13 @@ export const routerHelper = $state({
   initialNavigationDone: false,
 });
 
-const defaultUserSettings = {
+const defaultUserSettingsWeb = {
   userName: "",
-  institute: "",
+  institute: ""
+};
+
+const defaultUserSettingsElectron = {
+  ...defaultUserSettingsWeb,
   outputFolderPath: "",
 };
 
@@ -20,26 +24,20 @@ const defaultRunSettings = {
   negativeControl: "",
 };
 
-export const defaultPiranhaOutputSettings = {
+export const defaultPiranhaOutputSettingsWeb = {
   orientation: PiranhaOrientation.Vertical,
   outputPrefix: "analysis",
-  overwriteOutput: false,
   outputIntermediateFiles: false,
   allMetadataToHeader: false,
+};
+
+export const defaultPiranhaOutputSettingsElectron = {
+  ...defaultPiranhaOutputSettingsWeb,
+  overwriteOutput: false,
   dateStamp: false,
 };
 
-const userSettings =
-  persistentSettingsStore.loadUserSettings() ?? defaultUserSettings;
-
-const runSettings =
-  persistentSettingsStore.loadRunSettings() ?? defaultRunSettings;
-
-export const settings: PiranhaSettings = $state({
-  ...userSettings,
-  ...runSettings,
-  ...defaultPiranhaOutputSettings,
-});
+export let settings = $state({});
 
 export const appState: AppState = $state({
   mode: null,
@@ -48,6 +46,8 @@ export const appState: AppState = $state({
   doneInitialSubmit: false
 });
 
+// We retain the path parameters in web mode in the paraeters objects for display and validation, but we also use
+// FileList value to pass to the API - this is handled in the component
 export const defaultRunParameters = (): PiranhaRunParameters => ({
   name: "",
   notes: "",
@@ -59,4 +59,28 @@ export const defaultRunParameters = (): PiranhaRunParameters => ({
 export const runParameters: PiranhaRunParameters = $state(
   defaultRunParameters(),
 );
+
+export const isWeb = () => appState.mode === "web";
+
+export const initialiseStore = (mode: AppMode, apiUrl?: string) => {
+  appState.mode = mode;
+
+  const userSettings =
+    persistentSettingsStore.loadUserSettings() ?? (isWeb() ? defaultUserSettingsWeb : defaultUserSettingsElectron);
+
+  const runSettings =
+    persistentSettingsStore.loadRunSettings() ?? defaultRunSettings;
+
+  const defaultPiranhaOutputSettings = isWeb() ? defaultPiranhaOutputSettingsWeb : defaultPiranhaOutputSettingsElectron;
+
+  const modeSettings = {
+    ...userSettings,
+    ...runSettings,
+    ...defaultPiranhaOutputSettings,
+  };
+  Object.entries(modeSettings).forEach(([key, value]) => {
+    settings[key] = value;
+  });
+
+}
 

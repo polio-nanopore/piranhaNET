@@ -1,5 +1,7 @@
 import {PiranhaElectronAPI} from "./piranhaElectronAPI.svelte";
-import type {PiranhaAPI} from "./basePiranhaAPI.svelte";
+import type {BasePiranhaAPI} from "./basePiranhaAPI.svelte";
+import {appState, isWeb} from "../store.svelte";
+import {PiranhaWebAPI} from "./piranhaWebAPI.svelte";
 
-// TODO: select class to create based on appState mode
-export const piranhaAPI: PiranhaAPI = new PiranhaElectronAPI();
+
+export const piranhaAPI: BasePiranhaAPI = isWeb() ?  new PiranhaWebAPI(appState.apiUrl) : new PiranhaElectronAPI();

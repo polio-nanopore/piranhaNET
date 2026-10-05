@@ -3,10 +3,11 @@
   import FormField from "../forms/FormField.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
   import { Input } from "$lib/shadcn/ui/input";
-  import { settings } from "$lib/store.svelte";
+  import { appState, settings, isWeb } from "$lib/store.svelte";
   import { persistentSettingsStore } from "$lib/persistentSettingsStore";
 
   const { errors, onchange } = $props();
+
 
   const handleChange = (): void => {
     persistentSettingsStore.saveUserSettings(settings);
@@ -38,18 +39,20 @@
     oninput={handleChange}
   ></Input>
 </FormField>
-
-<FormField
-  label={m.settingOutputFolder()}
-  help={m.helpSettingOutputFolder()}
-  error={errors.outputFolderPath}
-  labelFor="output-folder-field"
->
-  <FileSelect
-    id="output-folder-field"
-    title={m.settingOutputFolder()}
-    selectFolder={true}
-    onchange={handleChange}
-    bind:value={settings.outputFolderPath}
-  ></FileSelect>
-</FormField>
+{#if !isWeb()}
+  <FormField
+    label={m.settingOutputFolder()}
+    help={m.helpSettingOutputFolder()}
+    error={errors.outputFolderPath}
+    labelFor="output-folder-field"
+  >
+    <FileSelect
+      id="output-folder-field"
+      mode={appState.mode}
+      title={m.settingOutputFolder()}
+      selectFolder={true}
+      onchange={handleChange}
+      bind:value={settings.outputFolderPath}
+    ></FileSelect>
+  </FormField>
+{/if}

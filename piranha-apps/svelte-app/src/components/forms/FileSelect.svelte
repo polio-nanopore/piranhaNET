@@ -11,7 +11,10 @@
     filters,
     onchange,
     value = $bindable(),
+    fileListValue = $bindable()
   } = $props();
+
+  let fileInput;
 
   const showElectronDialog = async (): Promise<void> => {
     const selected = await window.api.showFileDialog({
@@ -28,40 +31,37 @@
     }
   };
 
-  const onWebDialogChange = (e) => {
-    if (selectFolder) {
-      value = e.target.files;
-    } else {
-      value = e.target.files.length ? e.target.files[0] : null;
+  const showWebDialog = () => {
+    if (fileInput) {
+      fileInput.click();
     }
+  }
+
+  const onWebDialogChange = (e) => {
+    fileListValue = e.target.files;
+    // string value for form validation and user feedback. We're using webkitdirectory so we don't get the folder name,
+    // just the individual file entries. We can get the folder name from any entry's webkitRelativePath
+    value = fileListValue.length ? fileListValue[0].webkitRelativePath.split("/")[0] : null;
     if (onchange) {
       onchange();
     }
   }
 
+  const acceptExtensions = $derived(filters.flatMap((f) => f.extensions.map((e) => `.${e}`)));
+
   let placeholder = $derived(
     selectFolder ? m.formsNoFolderChosen() : m.formsNoFileChosen(),
-  );
-
-  let displayValue = $derived(
-    mode == "electron" ?  value : (selectFolder ? value[0].name :  value.name)
   );
 </script>
 
 <div id={`${id}-container`} class="flex">
-  <label>
-    <Button {id} class="rounded-r-none border-0" onclick={mode == "electron" ? showElectronDialog : null}
+    <Button {id} class="rounded-r-none border-0"} onclick={mode == "electron" ? showElectronDialog : showWebDialog}
       >{selectFolder ? m.formsChooseFolder() : m.formsChooseFile()}</Button
     >
-    <div
-      data-testid={`${id}-value`}
-      class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light"
-    >
-      {value ? displayValue : placeholder}
-    </div>
     {#if mode == "web"}
       {#if selectFolder}
         <input
+          bind:this={fileInput}
           type="file"
           webkitdirectory
           directory
@@ -70,13 +70,18 @@
         />
       {:else}
         <input
+          bind:this={fileInput}
           type="file"
-          on:change={}
-          accept="filters"
+          accept={acceptExtensions.join(",")}
           on:change={onWebDialogChange}
           style="display: none"
         >
       {/if}
     {/if}
-  </label>
+    <div
+      data-testid={`${id}-value`}
+      class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light"
+    >
+      {value || placeholder}
+    </div>
 </div>

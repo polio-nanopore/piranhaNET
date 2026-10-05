@@ -4,14 +4,16 @@
   import { Input } from "$lib/shadcn/ui/input";
   import { Switch } from "$lib/shadcn/ui/switch";
   import { m } from "../../paraglide/messages";
-  import { settings } from "$lib/store.svelte";
+  import { settings, isWeb } from "$lib/store.svelte";
   import FormField from "../forms/FormField.svelte";
   import { PiranhaProtocol, PiranhaOrientation } from "../../types";
   import { persistentSettingsStore } from "../../lib/persistentSettingsStore";
   import {
     runSettingsFormSchema,
-    piranhaOutputSettingsFormSchema,
-    userSettingsFormSchema,
+    piranhaOutputSettingsFormSchemaWeb,
+    piranhaOutputSettingsFormSchemaElectron,
+    userSettingsFormSchemaWeb,
+    userSettingsFormSchemaElectron
   } from "./RunFormSchema";
   import UserSettings from "./UserSettings.svelte";
 
@@ -32,14 +34,17 @@
       ? sectionName
       : null;
 
+  const piranhaOutputSettingsFormSchema = isWeb() ? piranhaOutputSettingsFormSchemaWeb() : piranhaOutputSettingsFormSchemaElectron();
+  const userSettingsFormSchema = isWeb() ? userSettingsFormSchemaWeb() : userSettingsFormSchemaElectron();
+
   const sectionsWithError: string[] = $derived(
     [
       sectionNameIfErrors(runSettingsFormSchema(), RUN_SETTINGS_SECTION),
       sectionNameIfErrors(
-        piranhaOutputSettingsFormSchema(),
+        piranhaOutputSettingsFormSchema,
         PIRANHA_OUTPUT_SETTINGS_SECTION,
       ),
-      sectionNameIfErrors(userSettingsFormSchema(), USER_SETTINGS_SECTION),
+      sectionNameIfErrors(userSettingsFormSchema, USER_SETTINGS_SECTION),
     ].filter((s) => !!s),
   );
 
@@ -176,18 +181,20 @@
               ></Input>
             </FormField>
             <div class="flex space-x-10">
-              <FormField
-                label={m.settingOverwriteOutput()}
-                help={m.helpSettingOverwriteOutput()}
-                error={errors.overwriteOutput}
-                labelFor="overwrite-output-field"
-              >
-                <Switch
-                  id="overwrite-output-field"
-                  bind:checked={settings.overwriteOutput}
-                  onCheckedChange={onchange}
-                ></Switch>
-              </FormField>
+              {#if !isWeb()}
+                <FormField
+                  label={m.settingOverwriteOutput()}
+                  help={m.helpSettingOverwriteOutput()}
+                  error={errors.overwriteOutput}
+                  labelFor="overwrite-output-field"
+                >
+                  <Switch
+                    id="overwrite-output-field"
+                    bind:checked={settings.overwriteOutput}
+                    onCheckedChange={onchange}
+                  ></Switch>
+                </FormField>
+              {/if}
               <FormField
                 label={m.settingOutputIntermediateFiles()}
                 help={m.settingOutputIntermediateFiles()}
@@ -212,18 +219,20 @@
                   onCheckedChange={onchange}
                 ></Switch>
               </FormField>
-              <FormField
-                label={m.settingDateStamp()}
-                help={m.helpSettingDateStamp()}
-                error={errors.dateStamp}
-                labelFor="date-stamp-field"
-              >
-                <Switch
-                  id="date-stamp-field"
-                  bind:checked={settings.dateStamp}
-                  onCheckedChange={onchange}
-                ></Switch>
-              </FormField>
+              {#if !isWeb()}
+                <FormField
+                  label={m.settingDateStamp()}
+                  help={m.helpSettingDateStamp()}
+                  error={errors.dateStamp}
+                  labelFor="date-stamp-field"
+                >
+                  <Switch
+                    id="date-stamp-field"
+                    bind:checked={settings.dateStamp}
+                    onCheckedChange={onchange}
+                  ></Switch>
+                </FormField>
+              {/if}
             </div>
           </Accordion.Content>
         </Accordion.Item>

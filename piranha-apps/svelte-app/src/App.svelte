@@ -7,20 +7,17 @@
   import Initializing from "./components/init/Initializing.svelte";
   import { piranhaAPI } from "./lib/piranhaAPI/piranhaAPI.svelte.js";
   import { i18n } from "./lib/i18n.svelte.js";
-  import { appState } from "./lib/store.svelte";
+  import { initialiseStore, isWeb } from "./lib/store.svelte";
 
-  const { mode: initialMode, apiUrl: intialApiUrl } = $props();
-  appState.mode = initialMode;
-  if (initialMode == "web") {
-    appState.apiUrl = intialApiUrl;
-  }
+  const { mode, apiUrl } = $props();
+  initialiseStore(mode, apiUrl);
 </script>
 
 {#key i18n.lang}
   <Router>
     <Tooltip.Provider>
       <Nav></Nav>
-      {#if piranhaAPI.initialized}
+      {#if isWeb() || piranhaAPI.initialized}
         <Route path="/" component={Run} />
         <Route path="/about" component={About} />
       {:else}
