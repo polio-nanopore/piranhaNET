@@ -39,9 +39,18 @@
 
   const onWebDialogChange = (e) => {
     fileListValue = e.target.files;
-    // string value for form validation and user feedback. We're using webkitdirectory so we don't get the folder name,
-    // just the individual file entries. We can get the folder name from any entry's webkitRelativePath
-    value = fileListValue.length ? fileListValue[0].webkitRelativePath.split("/")[0] : null;
+    // string value for form validation and user feedback.
+    if (fileListValue.length) {
+      if (selectFolder) {
+        // We're using webkitdirectory so we don't get the folder name,
+        // just the individual file entries. We can get the folder name from any entry's webkitRelativePath
+        value = fileListValue[0].webkitRelativePath.split("/")[0];
+      } else {
+        value = fileListValue[0].name;
+      }
+    } else {
+      value = null;
+    }
     if (onchange) {
       onchange();
     }
@@ -55,7 +64,7 @@
 </script>
 
 <div id={`${id}-container`} class="flex">
-    <Button {id} class="rounded-r-none border-0"} onclick={mode == "electron" ? showElectronDialog : showWebDialog}
+    <Button {id} class="rounded-r-none border-0" onclick={mode == "electron" ? showElectronDialog : showWebDialog}
       >{selectFolder ? m.formsChooseFolder() : m.formsChooseFile()}</Button
     >
     {#if mode == "web"}

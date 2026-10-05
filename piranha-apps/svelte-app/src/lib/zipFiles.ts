@@ -6,9 +6,11 @@ export default async (fileList: FileList) => {
     const files = Array.from(fileList);
     files.forEach(file => {
       // Preserve folder structure using file.webkitRelativePath
+      console.log(`zipping ${file.name}`)
       const filePath = file.webkitRelativePath || file.name;
       zip.file(filePath, file);
     });
 
-    return await zip.generateAsync({ type: "blob" });
+    const result = await zip.generateAsync({ type: "blob" });
+    return result;
 }

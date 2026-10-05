@@ -15,13 +15,13 @@
 
   let errors = $state<Record<string, string[]>>({});
 
-  let barcodesFileValue: FileList | null = $state(null);
-  let minknowFolderValue: FileList | null = $state(null);
+  let barcodesFileValue = $state();
+  let minknowFolderValue = $state();
 
   const schema = isWeb() ? runParametersSchemaWeb() : runParametersSchemaElectron();
 
   function validate(): boolean {
-    const result = schema().safeParse({
+    const result = schema.safeParse({
       ...runParameters,
       ...settings,
     });
@@ -31,6 +31,8 @@
       errors = {};
     }
     appState.doneInitialValidate = true;
+    console.log("errors")
+    console.log(JSON.stringify(errors))
     return result.success;
   }
 
@@ -43,12 +45,15 @@
   }
 
   async function onSubmit(e: SubmitEvent): Promise<void> {
+    console.log("validating")
     e.preventDefault();
     const valid = validate();
     if (valid) {
+      console.log("valid")
       if (isWeb()) {
+        console.log("running")
         const runOptions = createPiranhaRunOptionsWeb(runParameters, settings, i18n.lang);
-        await (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, barcodesFileValue[0], minknowFolderValue);
+        await (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, barcodesFileValue.item(0), minknowFolderValue);
       } else {
         const runOptions = createPiranhaRunOptionsElectron(runParameters, settings, i18n.lang);
         await (piranhaAPI as PiranhaElectronAPI).runPiranha(runOptions);
@@ -72,10 +77,10 @@
     <FormField
       label={m.parameterName()}
       help={m.helpParameterName()}
-      error={errors.name}
+      error={errors.runName}
       labelFor="name-field"
     >
-      <Input id="name-field" bind:value={runParameters.name} oninput={onChange}
+      <Input id="name-field" bind:value={runParameters.runName} oninput={onChange}
       ></Input>
     </FormField>
     <FormField

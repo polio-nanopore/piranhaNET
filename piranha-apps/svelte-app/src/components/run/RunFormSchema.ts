@@ -18,7 +18,7 @@ export const userSettingsFormSchemaWeb = (): ZodRawShape => ({
 });
 
 export const userSettingsFormSchemaElectron = (): ZodRawShape => ({
-  ...userSettingsFormSchemaWeb,
+  ...userSettingsFormSchemaWeb(),
   outputFolderPath: requiredString(),
 });
 
@@ -36,7 +36,7 @@ export const piranhaOutputSettingsFormSchemaWeb = (): ZodRawShape => ({
 });
 
 export const piranhaOutputSettingsFormSchemaElectron = (): ZodRawShape => ({
-  ...piranhaOutputSettingsFormSchemaWeb,
+  ...piranhaOutputSettingsFormSchemaWeb(),
   overwriteOutput: z.boolean(),
   dateStamp: z.boolean(),
 });
@@ -53,11 +53,10 @@ const settingsFormSchemaWeb = (): ZodRawShape => ({
   ...userSettingsFormSchemaWeb(),
 });
 
-const perRunParanetersSchema = (): ZodRawShape => ({
-  name: requiredString(),
+const perRunParametersSchema = (): ZodRawShape => ({
+  runName: requiredString(),
   barcodesFilePath: requiredString(),
   minKnowFolderPath: requiredString(),
-  outputFolderPath: requiredString(),
   notes: requiredString(),
   threads: z
     .int(m.formsErrorNumberRequired())
@@ -65,14 +64,18 @@ const perRunParanetersSchema = (): ZodRawShape => ({
     .max(THREADS_MAX, { error: threadsRangeError }),
 });
 
-export const runParametersSchemaElectron = (): ZodObject =>
-  z.object({
-    ...perRunParanetersSchema(),
-    ...settingsFormSchemaElectron(),
-});
+export const runParametersSchemaElectron = (): ZodObject => {
+    console.log("constructing electron schema")
+    return z.object({
+      ...perRunParametersSchema(),
+      ...settingsFormSchemaElectron(),
+  });
+}
 
-export const runParametersSchemaWeb = (): ZodObject =>
-  z.object({
-    ...perRunParanetersSchema(),
+export const runParametersSchemaWeb = (): ZodObject => {
+  console.log("constructing web schema")
+  return z.object({
+    ...perRunParametersSchema(),
     ...settingsFormSchemaWeb(),
   });
+}
