@@ -53,7 +53,8 @@
       if (isWeb()) {
         console.log("running")
         const runOptions = createPiranhaRunOptionsWeb(runParameters, settings, i18n.lang);
-        await (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, barcodesFileValue.item(0), minknowFolderValue);
+        // Do not await, so we get updates as they happen
+        (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, barcodesFileValue.item(0), minknowFolderValue);
       } else {
         const runOptions = createPiranhaRunOptionsElectron(runParameters, settings, i18n.lang);
         await (piranhaAPI as PiranhaElectronAPI).runPiranha(runOptions);

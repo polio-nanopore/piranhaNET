@@ -11,7 +11,6 @@ export abstract class BasePiranhaAPI {
   protected _log: string[] = $state([]);
   protected _decoder = new TextDecoder("utf-8");
 
-
   get running(): boolean {
     return this._running;
   }
@@ -38,4 +37,5 @@ export abstract class BasePiranhaAPI {
   }
 
   abstract async piranhaVersions(): Promise<PiranhaVersions>;
+  abstract get runSucceeded(): boolean
 }

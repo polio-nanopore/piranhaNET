@@ -6,7 +6,8 @@
   import { Button } from "$lib/shadcn/ui/button";
   import { Spinner } from "$lib/shadcn/ui/spinner";
   import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
-  import { runParameters, settings } from "$lib/store.svelte";
+  import { runParameters, settings, isWeb } from "$lib/store.svelte";
+  import {PiranhaWebAPI} from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
 
   let logEl;
   const ansi = new ansi_up.AnsiUp();
@@ -45,7 +46,7 @@
   <div class="bg-white mt-2 p-4 border {borderColour}">
     <div class="flex">
       <div class="font-bold pr-2">
-        {runParameters.name}
+        {runParameters.runName}
       </div>
       <div>
         {#if piranhaAPI.running}
@@ -60,8 +61,10 @@
       </div>
     </div>
     <div class="h-[2rem] flex items-center">
-      {m.parameterBarcodesFile()}:
-      <span class="font-bold">{runParameters.barcodesFilePath}</span>
+      <div>
+        {m.parameterBarcodesFile()}:
+        <span class="font-bold">{runParameters.barcodesFilePath}</span>
+      </div>
     </div>
     <div class="h-[2rem] flex items-center">
       <div>
@@ -70,19 +73,29 @@
       </div>
     </div>
     <div class="h-[2rem] flex items-center space-x-2">
-      {m.settingOutputFolder()}:
-      <span class="font-bold">{settings.outputFolderPath}</span>
+      {#if !isWeb()}
+        {m.settingOutputFolder()}:
+        <span class="font-bold">{settings.outputFolderPath}</span>
+      {/if}
       {#if piranhaAPI.runSucceeded}
-        <Button
-          data-testid="open-report"
-          onclick={async () => await piranhaAPI.openRunReport()}
-          >{m.openReport()}</Button
-        >
-        <Button
-          data-testid="open-output-folder"
-          onclick={async () => await piranhaAPI.openRunOutputFolder()}
-          >{m.openOutputFolder()}</Button
-        >
+          {#if isWeb()}
+            <Button
+              data-testid="download-output-zip"
+              onclick={async () => await (piranhaAPI as PiranhaWebAPI).downloadOutputZip()}
+            >{m.downloadOutputZip()}</Button
+            >
+          {:else}
+            <Button
+              data-testid="open-report"
+              onclick={async () => await piranhaAPI.openRunReport()}
+            >{m.openReport()}</Button
+            >
+            <Button
+              data-testid="open-output-folder"
+              onclick={async () => await piranhaAPI.openRunOutputFolder()}
+            >{m.openOutputFolder()}</Button
+            >
+          {/if}
       {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
@@ -105,12 +118,14 @@
       {m.newRun()}
     </Button>
   {:else}
-    <Button
-      class="action float-end bg-red-600"
-      data-testid="cancel-run"
-      onclick={cancelRun}
-    >
-      {m.cancelRun()}
-    </Button>
+    {#if !isWeb()}
+      <Button
+        class="action float-end bg-red-600"
+        data-testid="cancel-run"
+        onclick={cancelRun}
+      >
+        {m.cancelRun()}
+      </Button>
+    {/if}
   {/if}
 </div>

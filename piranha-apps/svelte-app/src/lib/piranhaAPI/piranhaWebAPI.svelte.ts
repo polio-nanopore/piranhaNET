@@ -5,14 +5,14 @@ import { m } from "../../paraglide/messages";
 
 export class PiranhaWebAPI extends BasePiranhaAPI {
     private readonly _apiUrl;
+    private _runId: string | null;
     constructor(apiUrl: string) {
       super()
       this._apiUrl = apiUrl;
+      this._runId = null;
     }
 
     _buildUrl(relativeUrl: string) {
-      console.log(`API URL IS ${this._apiUrl}`)
-      console.log(`RELATIVE URL IS ${relativeUrl}`)
       return `${this._apiUrl}${relativeUrl}`
     }
 
@@ -48,6 +48,8 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
         if (!response.ok) {
           throw new Error(`Failed to run Piranha with status ${response.status}: ${response.statusText}.`);
         }
+
+        this._runId = response.headers.get("piranhanet-run-id");
 
         const reader = response.body?.getReader();
         if (!reader) throw new Error("Response body is not readable");
@@ -87,6 +89,42 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
         this._running = false;
         this.addToLog("Piranha run finished");
       }
-
     }
+
+  get runSucceeded(): boolean {
+    // TODO: make this more efficient, it should be the last line in the log
+    return this._log.join("").includes("Piranha run completed with exit code 0");
+  }
+
+    async downloadOutputZip() {
+      // TODO: error if ! runSucceeded
+
+      // TODO: deal with errors
+      // TODO: deeal with !response.ok
+      const response =  await fetch(this._buildUrl(`/results/${this._runId}`));
+
+      const cdHeader = response.headers.get("Content-Disposition");
+      /*console.log("CONTENT DISP")
+      console.log(cdHeader)
+      const parts = cdHeader!.split(";");
+      const filename = parts[1].split("=")[1];*/
+      const filename = cdHeader.match(/filename="([^"]+)"/)[1];
+      console.log("filename")
+      console.log(filename)
+
+      const zipBlob = await response.blob();
+      const blobUrl = URL.createObjectURL(zipBlob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    }
+
+   clearRun(): void {
+     super.clearRun();
+     this._runId = null;
+   }
 }

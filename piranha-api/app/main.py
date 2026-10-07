@@ -26,6 +26,7 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["piranhanet-run-id", "Content-Disposition"] # TODO: make this a const
 )
 
 def generate_run_id() -> str:
