@@ -25,14 +25,16 @@ export interface PiranhaRunOptionsElectron extends PiranhaRunOptionsWeb {
   dateStamp: boolean;
 }
 
+export type FileDialogFilters = {
+  name: string;
+  extensions: string[];
+}[];
+
 export interface FileDialogOptions {
   title: string;
   defaultPath: string;
   selectFolder: boolean;
-  filters?: {
-    name: string;
-    extensions: string[];
-  }[];
+  filters?: FileDialogFilters
 }
 
 export interface PiranhaVersions {

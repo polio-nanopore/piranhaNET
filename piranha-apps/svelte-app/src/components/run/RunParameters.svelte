@@ -28,8 +28,6 @@
       errors = {};
     }
     appState.doneInitialValidate = true;
-    console.log("errors")
-    console.log(JSON.stringify(errors))
     return result.success;
   }
 
@@ -42,13 +40,10 @@
   }
 
   async function onSubmit(e: SubmitEvent): Promise<void> {
-    console.log("validating")
     e.preventDefault();
     const valid = validate();
     if (valid) {
-      console.log("valid")
       if (isWeb()) {
-        console.log("running")
         const runOptions = createPiranhaRunOptionsWeb(runParameters, settings, i18n.lang);
         // Do not await, so we get updates as they happen
         (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, webFiles.barcodesFileList.item(0), webFiles.minknowFileList);

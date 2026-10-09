@@ -13,6 +13,7 @@
   "cancelling": "Annulation en cours",
   "cancelRun": "Annuler l'exécution",
   "continue": "Continuez",
+  "downloadError": "Erreur de téléchargement",
   "downloadOutputZip": "Télécharger le fichier ZIP de sortie",
   "errorDetail": "Détails de l'erreur",
   "formsChooseFile": "Choisir un fichier",

@@ -18,7 +18,6 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
     async runPiranha(options: PiranhaRunOptionsWeb, barcodesFile: File, minknowFiles: FileList): Promise<void>
     {
-      console.log("starting run")
       if (this._running) {
         throw new Error(m.apiErrorAlreadyRunning());
       }
@@ -47,7 +46,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to run Piranha with status ${response.status}: ${response.statusText}.`);
+          throw new Error(`${response.status}: ${response.statusText}.`);
         }
 
         this._runId = response.headers.get("piranhanet-run-id");
@@ -93,31 +92,34 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     }
 
   get runSucceeded(): boolean {
-    // TODO: make this more efficient, it should be the last line in the log
-    return this._log.join("").includes("Piranha run completed with exit code 0");
+    const length = this._log.length;
+    return length && (this._log[length-1] === "Piranha run completed with exit code 0");
   }
 
-    async downloadOutputZip() {
-      // TODO: error if ! runSucceeded
+  async downloadOutputZip() {
+      try {
+        const response =  await fetch(this._buildUrl(`/results/${this._runId}`));
+        if (!response.ok) {
+          throw new Error(`${response.status}: ${response.statusText}.`);
+        }
 
-      // TODO: deal with errors
-      // TODO: deeal with !response.ok
-      const response =  await fetch(this._buildUrl(`/results/${this._runId}`));
+        const cdHeader = response.headers.get("Content-Disposition");
+        const filename = cdHeader.match(/filename="([^"]+)"/)[1];
 
-      const cdHeader = response.headers.get("Content-Disposition");
-      const filename = cdHeader.match(/filename="([^"]+)"/)[1];
-      console.log("filename")
-      console.log(filename)
-
-      const zipBlob = await response.blob();
-      const blobUrl = URL.createObjectURL(zipBlob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
+        const zipBlob = await response.blob();
+        const blobUrl = URL.createObjectURL(zipBlob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      } catch (e) {
+        const messageKey = "downloadError";
+        const detail = e.message;
+        this._error = { messageKey, detail };
+      }
     }
 
    clearRun(): void {

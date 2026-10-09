@@ -65,7 +65,6 @@ const perRunParametersSchema = (): ZodRawShape => ({
 });
 
 export const runParametersSchemaElectron = (): ZodObject => {
-    console.log("constructing electron schema")
     return z.object({
       ...perRunParametersSchema(),
       ...settingsFormSchemaElectron(),
@@ -73,7 +72,6 @@ export const runParametersSchemaElectron = (): ZodObject => {
 }
 
 export const runParametersSchemaWeb = (): ZodObject => {
-  console.log("constructing web schema")
   return z.object({
     ...perRunParametersSchema(),
     ...settingsFormSchemaWeb(),

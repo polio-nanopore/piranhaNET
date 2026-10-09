@@ -1,8 +1,10 @@
 <script lang="ts">
   import { Button } from "$lib/shadcn/ui/button";
   import { m } from "../../paraglide/messages";
+  import type {AppMode} from "../../types";
+  import type {FileDialogFilters} from "../../shared/types";
 
-  // TODO: add types for these
+
   let {
     mode,
     title,
@@ -12,6 +14,15 @@
     onchange,
     value = $bindable(),
     fileListValue = $bindable()
+  }: {
+    mode: AppMode,
+    title: string,
+    selectFolder: boolean,
+    filters?: FileDialogFilters,
+    onchange: () => void,
+    value: string,
+    fileListValue: FileList
+
   } = $props();
 
   let fileInput;

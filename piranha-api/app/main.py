@@ -14,6 +14,8 @@ from app.models import PiranhaRunOptions
 from app.piranha_runner import PiranhaRunner
 from app.settings import settings
 
+RUN_ID_HEADER = "piranhanet-run-id"
+
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
@@ -26,7 +28,7 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["piranhanet-run-id", "Content-Disposition"] # TODO: make this a const
+    expose_headers=[RUN_ID_HEADER, "Content-Disposition"] # TODO: make this a const
 )
 
 def generate_run_id() -> str:
@@ -64,7 +66,7 @@ async def run(
         piranha_runner.run_piranha_log_generator(
             run_id, run_options, str(barcodes_file_path), str(minknow_dir_path), str(output_dir_path)
         ),
-        headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
+        headers={RUN_ID_HEADER: run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
     )
 

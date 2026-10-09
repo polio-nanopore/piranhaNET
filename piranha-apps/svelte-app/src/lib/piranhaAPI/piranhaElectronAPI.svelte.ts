@@ -4,7 +4,6 @@ import { m } from "../../paraglide/messages";
 
 export class PiranhaElectronAPI extends BasePiranhaAPI {
   private _initialized = $state(false);
-  // TODO: distinguish electron from web options
   private _options: PiranhaRunOptionsElectron | null = $state(null);
   private _runOutputFolderName = $state("");
   private _cancelling = $state(false);
@@ -43,7 +42,6 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
     return this._initialized;
   }
 
-  // TODO: will need to find a way to do the equivalent for web mode, and then maybe update here too
   get runSucceeded(): boolean {
     return !!this._runOutputFolderName;
   }
