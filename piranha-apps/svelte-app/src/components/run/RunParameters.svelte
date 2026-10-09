@@ -4,7 +4,7 @@
   import { Input } from "$lib/shadcn/ui/input";
   import { Textarea } from "$lib/shadcn/ui/textarea";
   import FormField from "../forms/FormField.svelte";
-  import { runParameters, settings, appState, isWeb } from "$lib/store.svelte";
+  import { runParameters, settings, appState, webFiles, isWeb } from "$lib/store.svelte";
   import { createPiranhaRunOptionsWeb, createPiranhaRunOptionsElectron } from "../../types";
   import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
@@ -14,9 +14,6 @@
   import {PiranhaWebAPI} from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
 
   let errors = $state<Record<string, string[]>>({});
-
-  let barcodesFileValue = $state();
-  let minknowFolderValue = $state();
 
   const schema = isWeb() ? runParametersSchemaWeb() : runParametersSchemaElectron();
 
@@ -54,7 +51,7 @@
         console.log("running")
         const runOptions = createPiranhaRunOptionsWeb(runParameters, settings, i18n.lang);
         // Do not await, so we get updates as they happen
-        (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, barcodesFileValue.item(0), minknowFolderValue);
+        (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, webFiles.barcodesFileList.item(0), webFiles.minknowFileList);
       } else {
         const runOptions = createPiranhaRunOptionsElectron(runParameters, settings, i18n.lang);
         await (piranhaAPI as PiranhaElectronAPI).runPiranha(runOptions);
@@ -98,7 +95,7 @@
         filters={[{ name: "csv", extensions: ["csv"] }]}
         onchange={onChange}
         bind:value={runParameters.barcodesFilePath}
-        bind:fileListValue={barcodesFileValue}
+        bind:fileListValue={webFiles.barcodesFileList}
       ></FileSelect>
     </FormField>
     <FormField
@@ -114,7 +111,7 @@
         selectFolder={true}
         onchange={onChange}
         bind:value={runParameters.minKnowFolderPath}
-        bind:fileListValue={minknowFolderValue}
+        bind:fileListValue={webFiles.minknowFileList}
       ></FileSelect>
     </FormField>
     <FormField

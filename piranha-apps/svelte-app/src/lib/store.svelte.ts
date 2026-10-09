@@ -46,6 +46,13 @@ export const appState: AppState = $state({
   doneInitialSubmit: false
 });
 
+// When in webmode, we keep references to the uploaded files themselves separately from the name strings displayed
+// and used for validation. These are bound to the file selects.
+export const webFiles = $state({
+  barcodesFileList: null,
+  minknowFileList: null
+});
+
 // We retain the path parameters in web mode in the paraeters objects for display and validation, but we also use
 // FileList value to pass to the API - this is handled in the component
 export const defaultRunParameters = (): PiranhaRunParameters => ({

@@ -18,6 +18,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
     async runPiranha(options: PiranhaRunOptionsWeb, barcodesFile: File, minknowFiles: FileList): Promise<void>
     {
+      console.log("starting run")
       if (this._running) {
         throw new Error(m.apiErrorAlreadyRunning());
       }
@@ -104,10 +105,6 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       const response =  await fetch(this._buildUrl(`/results/${this._runId}`));
 
       const cdHeader = response.headers.get("Content-Disposition");
-      /*console.log("CONTENT DISP")
-      console.log(cdHeader)
-      const parts = cdHeader!.split(";");
-      const filename = parts[1].split("=")[1];*/
       const filename = cdHeader.match(/filename="([^"]+)"/)[1];
       console.log("filename")
       console.log(filename)
