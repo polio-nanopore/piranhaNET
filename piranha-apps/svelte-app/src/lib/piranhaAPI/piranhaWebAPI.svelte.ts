@@ -94,7 +94,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
   get runSucceeded(): boolean {
     const length = this._log.length;
-    return length && (this._log[length-1] === "Piranha run completed with exit code 0");
+    return (length > 1) && (this._log[length-2] === "Piranha run completed with exit code 0");
   }
 
   async downloadOutputZip(): Promise<void> {
