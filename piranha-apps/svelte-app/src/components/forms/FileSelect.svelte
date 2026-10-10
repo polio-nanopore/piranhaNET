@@ -42,13 +42,13 @@
     }
   };
 
-  const showWebDialog = () => {
+  const showWebDialog = (): void => {
     if (fileInput) {
       fileInput.click();
     }
   }
 
-  const onWebDialogChange = (e) => {
+  const onWebDialogChange = (e): void => {
     fileListValue = e.target.files;
     // string value for form validation and user feedback.
     if (fileListValue.length) {

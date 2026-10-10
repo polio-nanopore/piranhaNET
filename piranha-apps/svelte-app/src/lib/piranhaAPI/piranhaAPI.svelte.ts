@@ -4,6 +4,6 @@ import {PiranhaWebAPI} from "./piranhaWebAPI.svelte";
 
 export let piranhaAPI;
 
-export const initialisePIranhaAPI = () => {
+export const initialisePiranhaAPI = (): void => {
   piranhaAPI = isWeb() ? new PiranhaWebAPI(appState.apiUrl) : new PiranhaElectronAPI();
 }

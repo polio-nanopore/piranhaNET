@@ -11,7 +11,8 @@
   import { runParametersSchemaElectron, runParametersSchemaWeb } from "./RunFormSchema";
   import Settings from "./Settings.svelte";
   import { i18n } from "$lib/i18n.svelte";
-  import {PiranhaWebAPI} from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
+  import {PiranhaWebAPI} from "$lib/piranhaAPI/piranhaWebAPI.svelte";
+  import {PiranhaElectronAPI} from "$lib/piranhaAPI/piranhaElectronAPI.svelte";
 
   let errors = $state<Record<string, string[]>>({});
 

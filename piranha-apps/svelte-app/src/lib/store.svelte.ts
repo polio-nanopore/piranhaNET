@@ -1,4 +1,4 @@
-import type {AppMode, AppState, PiranhaRunParameters, PiranhaSettings } from "../types";
+import type {AppMode, AppState, PiranhaRunParameters } from "../types";
 import { PiranhaOrientation, PiranhaProtocol } from "../types";
 import { persistentSettingsStore } from "./persistentSettingsStore";
 
@@ -37,7 +37,7 @@ export const defaultPiranhaOutputSettingsElectron = {
   dateStamp: false,
 };
 
-export let settings = $state({});
+export const settings = $state({});
 
 export const appState: AppState = $state({
   mode: null,
@@ -67,9 +67,9 @@ export const runParameters: PiranhaRunParameters = $state(
   defaultRunParameters(),
 );
 
-export const isWeb = () => appState.mode === "web";
+export const isWeb = (): boolean => appState.mode === "web";
 
-export const initialiseStore = (mode: AppMode, apiUrl?: string) => {
+export const initialiseStore = (mode: AppMode, apiUrl?: string) :void => {
   appState.mode = mode;
   appState.apiUrl = apiUrl;
 

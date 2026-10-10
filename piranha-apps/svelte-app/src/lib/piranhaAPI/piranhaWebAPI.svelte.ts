@@ -1,4 +1,5 @@
 import {BasePiranhaAPI} from "./basePiranhaAPI.svelte";
+import {SvelteURLSearchParams} from "svelte/reactivity";
 import type {PiranhaRunOptionsWeb} from "../../shared/types";
 import zipFiles from "../zipFiles";
 import { m } from "../../paraglide/messages";
@@ -12,7 +13,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       this._runId = null;
     }
 
-    _buildUrl(relativeUrl: string) {
+    _buildUrl(relativeUrl: string): string {
       return `${this._apiUrl}${relativeUrl}`
     }
 
@@ -37,7 +38,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
           ...options,
           lang: options.lang === "fr" ? "French" : "English"
         };
-        const queryParams = new URLSearchParams(params).toString();
+        const queryParams = new SvelteURLSearchParams(params).toString();
 
         this.addToLog("Running Piranha...");
         const response = await fetch(this._buildUrl(`/run?${queryParams}`), {
@@ -96,7 +97,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     return length && (this._log[length-1] === "Piranha run completed with exit code 0");
   }
 
-  async downloadOutputZip() {
+  async downloadOutputZip(): Promise<void> {
       try {
         const response =  await fetch(this._buildUrl(`/results/${this._runId}`));
         if (!response.ok) {
