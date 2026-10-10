@@ -1,6 +1,6 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { i18n } from "../../../src/lib/i18n.svelte";
-import { PiranhaAPI } from "../../../src/lib/piranhaAPI.svelte.js";
+import { PiranhaAPI } from "../../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
 
 describe("piranhaAPI", () => {
   let sut;

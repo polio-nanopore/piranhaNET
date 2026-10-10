@@ -1,4 +1,4 @@
-import type { AppState, PiranhaRunParameters, PiranhaSettings } from "../types";
+import type {AppMode, AppState, PiranhaRunParameters } from "../types";
 import { PiranhaOrientation, PiranhaProtocol } from "../types";
 import { persistentSettingsStore } from "./persistentSettingsStore";
 
@@ -8,9 +8,13 @@ export const routerHelper = $state({
   initialNavigationDone: false,
 });
 
-const defaultUserSettings = {
+const defaultUserSettingsWeb = {
   userName: "",
-  institute: "",
+  institute: ""
+};
+
+const defaultUserSettingsElectron = {
+  ...defaultUserSettingsWeb,
   outputFolderPath: "",
 };
 
@@ -20,34 +24,39 @@ const defaultRunSettings = {
   negativeControl: "",
 };
 
-export const defaultPiranhaOutputSettings = {
+export const defaultPiranhaOutputSettingsWeb = {
   orientation: PiranhaOrientation.Vertical,
   outputPrefix: "analysis",
-  overwriteOutput: false,
   outputIntermediateFiles: false,
   allMetadataToHeader: false,
+};
+
+export const defaultPiranhaOutputSettingsElectron = {
+  ...defaultPiranhaOutputSettingsWeb,
+  overwriteOutput: false,
   dateStamp: false,
 };
 
-const userSettings =
-  persistentSettingsStore.loadUserSettings() ?? defaultUserSettings;
-
-const runSettings =
-  persistentSettingsStore.loadRunSettings() ?? defaultRunSettings;
-
-export const settings: PiranhaSettings = $state({
-  ...userSettings,
-  ...runSettings,
-  ...defaultPiranhaOutputSettings,
-});
+export const settings = $state({});
 
 export const appState: AppState = $state({
+  mode: null,
+  apiUrl: null,
   doneInitialValidate: false,
-  doneInitialSubmit: false,
+  doneInitialSubmit: false
 });
 
+// When in webmode, we keep references to the uploaded files themselves separately from the name strings displayed
+// and used for validation. These are bound to the file selects.
+export const webFiles = $state({
+  barcodesFileList: null,
+  minknowFileList: null
+});
+
+// We retain the path parameters in web mode in the paraeters objects for display and validation, but we also use
+// FileList value to pass to the API - this is handled in the component
 export const defaultRunParameters = (): PiranhaRunParameters => ({
-  name: "",
+  runName: "",
   notes: "",
   barcodesFilePath: "",
   minKnowFolderPath: "",
@@ -57,3 +66,29 @@ export const defaultRunParameters = (): PiranhaRunParameters => ({
 export const runParameters: PiranhaRunParameters = $state(
   defaultRunParameters(),
 );
+
+export const isWeb = (): boolean => appState.mode === "web";
+
+export const initialiseStore = (mode: AppMode, apiUrl?: string) :void => {
+  appState.mode = mode;
+  appState.apiUrl = apiUrl;
+
+  const userSettings =
+    persistentSettingsStore.loadUserSettings() ?? (isWeb() ? defaultUserSettingsWeb : defaultUserSettingsElectron);
+
+  const runSettings =
+    persistentSettingsStore.loadRunSettings() ?? defaultRunSettings;
+
+  const defaultPiranhaOutputSettings = isWeb() ? defaultPiranhaOutputSettingsWeb : defaultPiranhaOutputSettingsElectron;
+
+  const modeSettings = {
+    ...userSettings,
+    ...runSettings,
+    ...defaultPiranhaOutputSettings,
+  };
+  Object.entries(modeSettings).forEach(([key, value]) => {
+    settings[key] = value;
+  });
+
+}
+

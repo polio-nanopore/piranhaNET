@@ -1,14 +1,14 @@
-import type { UserSettings, RunSettings } from "../types";
+import type { UserSettingsCommon, RunSettings } from "../types";
 
 const USER_SETTINGS_KEY = "userSettings";
 const RUN_SETTINGS_KEY = "runSettings";
 export class PersistentSettingsStore {
-  loadUserSettings(): UserSettings | null {
+  loadUserSettings(): UserSettingsCommon | null {
     const stored = localStorage.getItem(USER_SETTINGS_KEY);
     return stored ? JSON.parse(stored) : null;
   }
 
-  saveUserSettings(settings: UserSettings): void {
+  saveUserSettings(settings: UserSettingsCommon): void {
     // Don't save any extraneous values
     const { userName, institute, outputFolderPath } = settings;
     localStorage.setItem(

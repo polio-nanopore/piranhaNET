@@ -13,6 +13,8 @@
   "cancelling": "Cancelando",
   "cancelRun": "Cancelar execução",
   "continue": "Continue",
+  "downloadError": "Erro ao descarregar",
+  "downloadOutputZip": "Baixar arquivo ZIP de saída",
   "errorDetail": "Detalhes do erro",
   "formsChooseFile": "Selecione o ficheiro",
   "formsChooseFolder": "Selecione a pasta",

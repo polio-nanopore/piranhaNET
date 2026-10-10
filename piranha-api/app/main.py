@@ -1,10 +1,12 @@
 import os
 from datetime import UTC, datetime
 from pathlib import Path
+from shutil import rmtree
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, File, UploadFile
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile
+from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from shortuuid import uuid
 
 from app.file_manager import FileManager
@@ -12,11 +14,22 @@ from app.models import PiranhaRunOptions
 from app.piranha_runner import PiranhaRunner
 from app.settings import settings
 
+RUN_ID_HEADER = "piranhanet-run-id"
+
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
 piranha_runner = PiranhaRunner(Path(settings.piranha_venv_path))
 
+# TODO: make allowed origins configurable to only allow PiranhaNET front end
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=[RUN_ID_HEADER, "Content-Disposition"] # TODO: make this a const
+)
 
 def generate_run_id() -> str:
     now = datetime.now(UTC)
@@ -53,11 +66,16 @@ async def run(
         piranha_runner.run_piranha_log_generator(
             run_id, run_options, str(barcodes_file_path), str(minknow_dir_path), str(output_dir_path)
         ),
-        headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
+        headers={RUN_ID_HEADER: run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
     )
 
 
 @app.get("/results/{run_id}")
-def results(run_id: str, response_class=HTMLResponse):  # noqa: ARG001  Allow apparently unused response_class param
-    return file_manager.read_output_report(run_id)
+def results(run_id: str, background_tasks: BackgroundTasks, response_class=FileResponse):  # noqa: ARG001  Allow apparently unused response_class param
+    (zip_path, tmp_dir) = file_manager.read_output_zip(run_id)
+
+    # Schedule cleanup of local archive for after response completes
+    background_tasks.add_task(rmtree, tmp_dir)
+
+    return FileResponse(path=zip_path, filename=f"{run_id}.zip", media_type="application/zip")

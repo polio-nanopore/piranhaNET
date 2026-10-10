@@ -12,9 +12,13 @@ const threadsRangeError = m.formsErrorRange({
   max: THREADS_MAX,
 });
 
-export const userSettingsFormSchema = (): ZodRawShape => ({
+export const userSettingsFormSchemaWeb = (): ZodRawShape => ({
   userName: requiredString(),
-  institute: requiredString(),
+  institute: requiredString()
+});
+
+export const userSettingsFormSchemaElectron = (): ZodRawShape => ({
+  ...userSettingsFormSchemaWeb(),
   outputFolderPath: requiredString(),
 });
 
@@ -24,31 +28,52 @@ export const runSettingsFormSchema = (): ZodRawShape => ({
   negativeControl: requiredString(),
 });
 
-export const piranhaOutputSettingsFormSchema = (): ZodRawShape => ({
+export const piranhaOutputSettingsFormSchemaWeb = (): ZodRawShape => ({
   orientation: requiredString(),
   outputPrefix: z.string(),
-  overwriteOutput: z.boolean(),
   outputIntermediateFiles: z.boolean(),
-  allMetadataToHeader: z.boolean(),
+  allMetadataToHeader: z.boolean()
+});
+
+export const piranhaOutputSettingsFormSchemaElectron = (): ZodRawShape => ({
+  ...piranhaOutputSettingsFormSchemaWeb(),
+  overwriteOutput: z.boolean(),
   dateStamp: z.boolean(),
 });
 
-const settingsFormSchema = (): ZodRawShape => ({
+const settingsFormSchemaElectron = (): ZodRawShape => ({
   ...runSettingsFormSchema(),
-  ...piranhaOutputSettingsFormSchema(),
-  ...userSettingsFormSchema(),
+  ...piranhaOutputSettingsFormSchemaElectron(),
+  ...userSettingsFormSchemaElectron(),
 });
 
-export const runParametersSchema = (): ZodObject =>
-  z.object({
-    name: requiredString(),
-    barcodesFilePath: requiredString(),
-    minKnowFolderPath: requiredString(),
-    outputFolderPath: requiredString(),
-    notes: requiredString(),
-    threads: z
-      .int(m.formsErrorNumberRequired())
-      .min(THREADS_MIN, { error: threadsRangeError })
-      .max(THREADS_MAX, { error: threadsRangeError }),
-    ...settingsFormSchema(),
+const settingsFormSchemaWeb = (): ZodRawShape => ({
+  ...runSettingsFormSchema(),
+  ...piranhaOutputSettingsFormSchemaWeb(),
+  ...userSettingsFormSchemaWeb(),
+});
+
+const perRunParametersSchema = (): ZodRawShape => ({
+  runName: requiredString(),
+  barcodesFilePath: requiredString(),
+  minKnowFolderPath: requiredString(),
+  notes: requiredString(),
+  threads: z
+    .int(m.formsErrorNumberRequired())
+    .min(THREADS_MIN, { error: threadsRangeError })
+    .max(THREADS_MAX, { error: threadsRangeError }),
+});
+
+export const runParametersSchemaElectron = (): ZodObject => {
+    return z.object({
+      ...perRunParametersSchema(),
+      ...settingsFormSchemaElectron(),
   });
+}
+
+export const runParametersSchemaWeb = (): ZodObject => {
+  return z.object({
+    ...perRunParametersSchema(),
+    ...settingsFormSchemaWeb(),
+  });
+}
