@@ -12,6 +12,7 @@ describe("FileSelect", () => {
   test("renders as expected for folder select", async () => {
     renderInI18nTestContext(FileSelect, {
       props: {
+        mode: "electron",
         selectFolder: true,
         filters: [],
         value: "/default",
@@ -31,6 +32,7 @@ describe("FileSelect", () => {
   test("renders as expected for file select", async () => {
     renderInI18nTestContext(FileSelect, {
       props: {
+        mode: "electron",
         selectFolder: false,
         filters: [],
         value: "/default/barcodes.csv",
@@ -57,6 +59,7 @@ describe("FileSelect", () => {
     };
     renderInI18nTestContext(FileSelect, {
       props: {
+        mode: "electron",
         title: "Test Title",
         selectFolder: false,
         filters: [{ name: "csv", extensions: ["csv"] }],
@@ -86,6 +89,7 @@ describe("FileSelect", () => {
     };
     renderInI18nTestContext(FileSelect, {
       props: {
+        mode: "electron",
         title: "Test Title",
         selectFolder: false,
         filters: [{ name: "csv", extensions: ["csv"] }],

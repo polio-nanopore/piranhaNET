@@ -9,6 +9,7 @@ import {
 } from "@testing-library/svelte";
 import I18nTestContext from "./components/I18nTestContext.svelte";
 import { persistentSettingsStore } from "../../src/lib/persistentSettingsStore";
+import { isWeb } from "../../src/lib/store.svelte";
 import { RunSettings, UserSettings } from "../../src/types";
 
 export interface PersistentSettingsStoreMock {

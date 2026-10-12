@@ -1,6 +1,5 @@
-import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { vi } from "vitest";
-import { PiranhaError } from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
+import {initialisePiranhaAPI, PiranhaError } from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
 import { PiranhaVersions } from "../../src/shared/types";
 
 export interface APIMock {
@@ -33,7 +32,8 @@ let log = $state([]);
 let runSucceeded = $state(false);
 let cancelling = $state(false);
 
-export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
+export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
+  initialisePiranhaAPI();
   initialized = values.initialized || defaultAPIMock.initialized;
   error = values.error || defaultAPIMock.error;
   log = values.log || defaultAPIMock.log;
@@ -42,6 +42,8 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   runSucceeded = values.runSucceeded || defaultAPIMock.runSucceeded;
   const piranhaVersions =
     values.piranhaVersions || defaultAPIMock.piranhaVersions;
+
+  const {piranhaAPI} = await import("$lib/piranhaAPI/piranhaAPI.svelte");
 
   vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(
     () => initialized,
@@ -63,4 +65,5 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   vi.spyOn(piranhaAPI, "piranhaVersions").mockImplementation(
     () => piranhaVersions,
   );
+  return piranhaAPI;
 };

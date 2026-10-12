@@ -28,7 +28,7 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=[RUN_ID_HEADER, "Content-Disposition"] # TODO: make this a const
+    expose_headers=[RUN_ID_HEADER, "Content-Disposition"]
 )
 
 def generate_run_id() -> str:

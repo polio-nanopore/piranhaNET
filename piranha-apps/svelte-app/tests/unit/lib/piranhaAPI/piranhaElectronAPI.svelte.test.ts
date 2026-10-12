@@ -1,6 +1,6 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
-import { i18n } from "../../../src/lib/i18n.svelte";
-import { PiranhaAPI } from "../../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
+import { i18n } from "../../../../src/lib/i18n.svelte.js";
+import { PiranhaElectronAPI } from "../../../../src/lib/piranhaAPI/piranhaElectronAPI.svelte.js";
 
 describe("piranhaAPI", () => {
   let sut;
@@ -17,7 +17,7 @@ describe("piranhaAPI", () => {
       openRunReport: vi.fn(),
       openRunOutputFolder: vi.fn(),
     };
-    sut = new PiranhaAPI();
+    sut = new PiranhaElectronAPI();
   });
 
   const testOptions = {

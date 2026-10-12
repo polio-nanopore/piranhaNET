@@ -1,14 +1,18 @@
-import { describe, expect, test, beforeEach, afterEach, vi } from "vitest";
+import { describe, expect, test, beforeEach, afterEach, beforeAll, vi } from "vitest";
 import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { screen, within, render } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import RunProgress from "../../../../src/components/run/RunProgress.svelte";
-import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { settings, runParameters } from "$lib/store.svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
+import {initialiseStore} from "../../../../src/lib/store.svelte";
 
 describe("RunProgress", () => {
   const user = userEvent.setup();
+
+  beforeAll(async () => {
+    initialiseStore("electron");
+  });
 
   beforeEach(() => {
     settings.outputFolderPath = "/test/output";
@@ -22,7 +26,7 @@ describe("RunProgress", () => {
   });
 
   test("renders as expected", async () => {
-    mockPiranhaAPI({
+    await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: true,
@@ -108,7 +112,7 @@ describe("RunProgress", () => {
   });
 
   test("see Check and Open Results buttons when running is complete with no error", async () => {
-    mockPiranhaAPI({
+    await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,
@@ -145,7 +149,7 @@ describe("RunProgress", () => {
   });
 
   test("Cancel Run button calls expected method on piranha API", async () => {
-    mockPiranhaAPI({
+    await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: true,
@@ -158,7 +162,7 @@ describe("RunProgress", () => {
   });
 
   test("Open report button calls expected method on piranha API", async () => {
-    mockPiranhaAPI({
+    const piranhaAPI = await mockPiranhaAPI({
       initialized: true,
       running: false,
       runSucceeded: true,
@@ -172,7 +176,7 @@ describe("RunProgress", () => {
   });
 
   test("Open output folder calls expected method on piranhaAPI", async () => {
-    mockPiranhaAPI({
+    const piranhaAPI = mockPiranhaAPI({
       initialized: true,
       running: false,
       runSucceeded: true,
@@ -184,8 +188,8 @@ describe("RunProgress", () => {
     expect(piranhaAPI.openRunOutputFolder).toHaveBeenCalled();
   });
 
-  test("see x when running is complete with error", () => {
-    mockPiranhaAPI({
+  test("see x when running is complete with error", async () => {
+    await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,
@@ -200,7 +204,7 @@ describe("RunProgress", () => {
   });
 
   test("see cancelling text and spinner while piranha is being cancelled", async () => {
-    mockPiranhaAPI({
+    await mockPiranhaAPI({
       initialized: true,
       running: true,
       cancelling: true,
@@ -221,7 +225,7 @@ describe("RunProgress", () => {
   });
 
   test("new run clears log", async () => {
-    mockPiranhaAPI({
+    const piranhaAPI = await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,
@@ -246,7 +250,7 @@ describe("RunProgress", () => {
     // Use fake timers only in this test where we need them, as otherwise they cause userEvent to hang
     vi.useFakeTimers();
 
-    mockPiranhaAPI({
+   const piranhaAPI = await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: false,

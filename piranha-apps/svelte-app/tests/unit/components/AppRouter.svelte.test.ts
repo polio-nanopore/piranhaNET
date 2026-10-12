@@ -1,12 +1,13 @@
 import { render, screen, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, test, beforeEach } from "vitest";
-import App from "../../src/App.svelte";
-import { expectTranslations } from "./utils";
-import { mockPiranhaAPI } from "./MockPiranhaAPI.svelte";
+import { beforeEach, describe, expect, test, beforeAll } from "vitest";
+import AppRouter from "../../../src/components/AppRouter.svelte";
+import { expectTranslations } from "../utils";
+import { mockPiranhaAPI } from "../MockPiranhaAPI.svelte.js";
 import { i18n } from "$lib/i18n.svelte";
+import {tick} from "svelte";
+import {initialiseStore} from "../../../src/lib/store.svelte";
 
-// TODO use vitest-browser-svelte (mrc-6911)
 describe("App", () => {
   const expectedInitTranslations = {
     en: "Initializing: downloading Piranha Docker image. Please wait.",
@@ -25,13 +26,22 @@ describe("App", () => {
     );
   };
 
+  beforeAll(() => {
+    initialiseStore("electron");
+  });
+
   beforeEach(() => {
     i18n.lang = "en";
   });
 
+  const renderSut = (isWeb = false): void => {
+    const props = isWeb ? { mode: "web", apiUrl: "http://testAPI" } : { mode: "electron" };
+    render(AppRouter, { props })
+  }
+
   test("renders as expected before initialized", async () => {
-    mockPiranhaAPI({});
-    render(App);
+    await mockPiranhaAPI({});
+    renderSut();
     expect(screen.getByRole("img")).toHaveClass("logo");
     expect(screen.getByText("PiranhaNET")).toBeVisible();
     await expectTranslations(
@@ -41,8 +51,9 @@ describe("App", () => {
   });
 
   test("renders as expected after initialized", async () => {
-    mockPiranhaAPI({ initialized: true });
-    render(App);
+    await mockPiranhaAPI({ initialized: true });
+    renderSut();
+    await tick();
 
     // Expect to see default page (Run) after initialization
     await expectRunPage();
@@ -54,8 +65,8 @@ describe("App", () => {
   });
 
   test("routes to About and Run pages", async () => {
-    mockPiranhaAPI({ initialized: true });
-    render(App);
+    await mockPiranhaAPI({ initialized: true });
+    renderSut();
 
     // Navigate to About using the Nav menu
     await userEvent.click(screen.getByTestId("nav-about"));

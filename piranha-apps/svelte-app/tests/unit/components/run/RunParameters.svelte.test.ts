@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, vi } from "vitest";
+import { describe, expect, test, beforeEach, beforeAll, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { render } from "@testing-library/svelte";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
@@ -6,21 +6,27 @@ import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import { screen } from "@testing-library/svelte";
 import { i18n } from "$lib/i18n.svelte";
-import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import {
   defaultRunParameters,
   runParameters,
   settings,
   appState,
-  defaultPiranhaOutputSettings,
+  defaultPiranhaOutputSettingsElectron, initialiseStore,
 } from "../../../../src/lib/store.svelte.js";
 import { PiranhaProtocol } from "../../../../src/types";
 
 describe("RunParameters", () => {
   const user = userEvent.setup();
-  beforeEach(() => {
+
+  let piranhaAPI;
+
+  beforeAll(async () => {
+    initialiseStore("electron");
+    piranhaAPI =  await mockPiranhaAPI({});
+  });
+
+  beforeEach(async () => {
     i18n.lang = "en";
-    mockPiranhaAPI({});
     // reset runParameters in store
     const defaultValues = defaultRunParameters();
     // set user and run settings - they are tested elsewhere
@@ -156,8 +162,9 @@ describe("RunParameters", () => {
     await user.click(screen.getByLabelText("MinKnow folder"));
     await user.type(screen.getByLabelText("Notes"), "test notes");
     await user.click(screen.getByTestId("run"));
+    expect(piranhaAPI.runPiranha).toHaveBeenCalledOnce();
     expect(piranhaAPI.runPiranha).toHaveBeenCalledWith({
-      name: "test name",
+      runName: "test name",
       notes: "test notes",
       barcodesFilePath: "/test/barcodes.csv",
       minKnowFolderPath: "/test/MinKnow",
@@ -169,12 +176,12 @@ describe("RunParameters", () => {
       institute: "Test Institute",
       outputFolderPath: "/test/output",
       lang: "en",
-      ...defaultPiranhaOutputSettings,
+      ...defaultPiranhaOutputSettingsElectron,
     });
   });
 
   test("gets run parameters from store", () => {
-    runParameters.name = "store name";
+    runParameters.runName = "store name";
     runParameters.notes = "store notes";
     runParameters.barcodesFilePath = "/store/barcodes.csv";
     runParameters.minKnowFolderPath = "/store/MinKnow";

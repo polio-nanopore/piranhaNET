@@ -48,7 +48,4 @@
       >{m.continue()}</Button
     >
   </form>
-  <div>
-    {JSON.stringify(settings)}
-  </div>
 </div>
