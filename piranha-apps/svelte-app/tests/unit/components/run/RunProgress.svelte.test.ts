@@ -16,7 +16,7 @@ describe("RunProgress", () => {
 
   beforeEach(() => {
     settings.outputFolderPath = "/test/output";
-    runParameters.name = "Test Run";
+    runParameters.runName = "Test Run";
     runParameters.barcodesFilePath = "/test/input/barcodes.csv";
     runParameters.minKnowFolderPath = "/test/input/minknow";
   });
@@ -149,7 +149,7 @@ describe("RunProgress", () => {
   });
 
   test("Cancel Run button calls expected method on piranha API", async () => {
-    await mockPiranhaAPI({
+    const piranhaAPI = await mockPiranhaAPI({
       initialized: true,
       log: ["log entry 1 ", "log entry 2"],
       running: true,
@@ -176,7 +176,7 @@ describe("RunProgress", () => {
   });
 
   test("Open output folder calls expected method on piranhaAPI", async () => {
-    const piranhaAPI = mockPiranhaAPI({
+    const piranhaAPI = await mockPiranhaAPI({
       initialized: true,
       running: false,
       runSucceeded: true,
