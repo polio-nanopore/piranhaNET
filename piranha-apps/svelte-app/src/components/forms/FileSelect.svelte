@@ -82,18 +82,20 @@
       {#if selectFolder}
         <input
           bind:this={fileInput}
+          data-testid={`folder-input-${title}`}
           type="file"
           webkitdirectory
           directory
-          on:change={onWebDialogChange}
+          onchange={onWebDialogChange}
           style="display: none"
         />
       {:else}
         <input
           bind:this={fileInput}
+          data-testid={`file-input-${title}`}
           type="file"
           accept={acceptExtensions.join(",")}
-          on:change={onWebDialogChange}
+          onchange={onWebDialogChange}
           style="display: none"
         >
       {/if}
