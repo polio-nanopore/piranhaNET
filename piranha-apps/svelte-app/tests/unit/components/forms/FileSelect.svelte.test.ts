@@ -144,6 +144,18 @@ describe("FileSelect", () => {
         },
       });
     };
+    const mockChangeEventOnInputClick = (input: HTMLInputElement, files: FileList) => {
+      // handle click event on input to mock user selecting the given file list, and raising the associated change event
+      input.addEventListener("click", () => {
+        // Update the files value on the input on click, and trigger the change event
+        Object.defineProperty(input,"files", {
+          value: files,
+          writable: true
+        });
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    };
+
 
     test("renders as expected for folder select", async () => {
       renderFolderSelect();
@@ -159,28 +171,55 @@ describe("FileSelect", () => {
       expect(screen.getByTestId("file-input-test")).not.toBeVisible();
     });
 
-    test("shows dialog, updates value and calls onchange for folder select", async () => {
+    test("updates value and calls onchange for file select", async () => {
+      const mockOnChange = vi.fn();
+      renderFileSelect(mockOnChange);
+      const input = screen.getByTestId("file-input-test");
+      const fakeFileList = [
+        new File(["test content"], "file1.txt", { type: "text/plain" })
+      ];
+      mockChangeEventOnInputClick(input, fakeFileList);
+      const button = screen.getByRole("button");
+      await user.click(button);
+      expect(input.files).toBe(fakeFileList);
+      expect(mockOnChange).toHaveBeenCalledWith("file1.txt", fakeFileList);
+    });
+
+    test("updates value and calls onchange for folder select", async () => {
       const mockOnChange = vi.fn();
       renderFolderSelect(mockOnChange);
-      const hiddenInput = screen.getByTestId("folder-input-test");
+      const input = screen.getByTestId("folder-input-test");
       const fakeFileList = [
-        new File(["test content"], "folder1/file1.txt", { type: "text/plain" }),
-        new File(["more test content"], "folder1/file2.txt", { type: "text/plain" })
+        new File(["test content"], "file1.txt", { type: "text/plain" }),
+        new File(["more test content"], "file2.txt", { type: "text/plain" })
       ];
 
-      hiddenInput.addEventListener("click", () => {
-        // Update the files value on the input on click, and trigger the change event
-        Object.defineProperty(hiddenInput,"files", {
-          value: fakeFileList,
-          writable: true
+      fakeFileList.forEach((f) => {
+        Object.defineProperty(f, "webkitRelativePath", {
+          writable: false,
+          value: `testFolder/subFolder/${f.name}`
         });
-        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
       });
+
+      mockChangeEventOnInputClick(input, fakeFileList);
       const button = screen.getByRole("button");
       await user.click(button);
 
-      expect(hiddenInput.files[0]).toBe(fakeFileList[0]);
-      expect(mockOnChange).toHaveBeenCalled();
+      expect(input.files).toBe(fakeFileList);
+      expect(mockOnChange).toHaveBeenCalledWith("testFolder", fakeFileList);
+    });
+
+    test("updates value and calls on change when no files selected", async () => {
+      const mockOnChange = vi.fn();
+      renderFolderSelect(mockOnChange);
+      const input = screen.getByTestId("folder-input-test");
+      const fakeFileList = [];
+      mockChangeEventOnInputClick(input, fakeFileList);
+      const button = screen.getByRole("button");
+      await user.click(button);
+
+      expect(input.files).toBe(fakeFileList);
+      expect(mockOnChange).toHaveBeenCalledWith(null, []);
     });
   });
 });

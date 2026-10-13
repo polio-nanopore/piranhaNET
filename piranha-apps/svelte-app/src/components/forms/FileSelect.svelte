@@ -19,7 +19,7 @@
     title: string,
     selectFolder: boolean,
     filters?: FileDialogFilters,
-    onchange: () => void,
+    onchange: (value?: string, fileListValue?: FileList) => void,
     value: string,
     fileListValue: FileList
 
@@ -37,7 +37,7 @@
     if (selected !== null) {
       value = selected;
       if (onchange) {
-        onchange();
+        onchange(value);
       }
     }
   };
@@ -63,7 +63,7 @@
       value = null;
     }
     if (onchange) {
-      onchange();
+      onchange(value, fileListValue);
     }
   }
 
