@@ -53,7 +53,7 @@ export const webFiles = $state({
   minknowFileList: null
 });
 
-// We retain the path parameters in web mode in the paraeters objects for display and validation, but we also use
+// We retain the path parameters in web mode in the parameters objects for display and validation, but we also use
 // FileList value to pass to the API - this is handled in the component
 export const defaultRunParameters = (): PiranhaRunParameters => ({
   runName: "",

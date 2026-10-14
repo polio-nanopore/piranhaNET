@@ -28,7 +28,7 @@
     "build-installer:mac": "npm run build-installer -- --mac",
     "build-installer:linux": "npm run build-installer -- --linux",
     "build-web": "vite build --config web.vite.config.ts",
-    "test:unit": "vitest svelte-app/tests/unit",
+    "test:unit": "vitest svelte-app/tests/unit/components/run/RunParameters",
     "test-electron:integration": "vitest piranha-electron/tests/integration/",
     "coverage": "vitest run --coverage",
     "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test",

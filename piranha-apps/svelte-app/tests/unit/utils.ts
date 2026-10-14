@@ -9,7 +9,7 @@ import {
 } from "@testing-library/svelte";
 import I18nTestContext from "./components/I18nTestContext.svelte";
 import { persistentSettingsStore } from "../../src/lib/persistentSettingsStore";
-import { isWeb } from "../../src/lib/store.svelte";
+import { settings } from "../../src/lib/store.svelte";
 import { RunSettings, UserSettings } from "../../src/types";
 
 export interface PersistentSettingsStoreMock {
@@ -105,3 +105,27 @@ export const expectNoErrorFor = (fieldName: string): void => {
     ERROR_CLASS,
   );
 };
+
+/*
+ * Utility to mock file selection from HTML input (in web mode). When using this in a test, you still need to trigger
+ * the click event on the input to in turn trigger the change event.
+ */
+export const mockChangeEventOnHTMLInputClick = (input: HTMLInputElement, files: FileList) => {
+  // handle click event on input to mock user selecting the given file list, and raising the associated change event
+  input.addEventListener("click", () => {
+    // Update the files value on the input on click, and trigger the change event
+    Object.defineProperty(input,"files", {
+      value: files,
+      writable: true
+    });
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+};
+
+/*
+/* We may need to bootstrap the settings multiple times to test both web and electron mode, in which
+/* case we'll get unexpected settings if we don't clear down the old values first
+*/
+export const clearSettings = () => {
+  Object.keys(settings).forEach((k) => delete settings[k]);
+}

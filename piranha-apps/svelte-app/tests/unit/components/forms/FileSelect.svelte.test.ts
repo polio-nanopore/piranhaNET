@@ -1,8 +1,7 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
-import { tick } from "svelte";
 import { screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { expectTranslations, renderInI18nTestContext } from "../../utils";
+import { expectTranslations, renderInI18nTestContext, mockChangeEventOnHTMLInputClick } from "../../utils";
 import FileSelect from "../../../../src/components/forms/FileSelect.svelte";
 
 
@@ -144,18 +143,6 @@ describe("FileSelect", () => {
         },
       });
     };
-    const mockChangeEventOnInputClick = (input: HTMLInputElement, files: FileList) => {
-      // handle click event on input to mock user selecting the given file list, and raising the associated change event
-      input.addEventListener("click", () => {
-        // Update the files value on the input on click, and trigger the change event
-        Object.defineProperty(input,"files", {
-          value: files,
-          writable: true
-        });
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-      });
-    };
-
 
     test("renders as expected for folder select", async () => {
       renderFolderSelect();
@@ -178,7 +165,7 @@ describe("FileSelect", () => {
       const fakeFileList = [
         new File(["test content"], "file1.txt", { type: "text/plain" })
       ];
-      mockChangeEventOnInputClick(input, fakeFileList);
+      mockChangeEventOnHTMLInputClick(input, fakeFileList);
       const button = screen.getByRole("button");
       await user.click(button);
       expect(input.files).toBe(fakeFileList);
@@ -201,7 +188,7 @@ describe("FileSelect", () => {
         });
       });
 
-      mockChangeEventOnInputClick(input, fakeFileList);
+      mockChangeEventOnHTMLInputClick(input, fakeFileList);
       const button = screen.getByRole("button");
       await user.click(button);
 
@@ -214,7 +201,7 @@ describe("FileSelect", () => {
       renderFolderSelect(mockOnChange);
       const input = screen.getByTestId("folder-input-test");
       const fakeFileList = [];
-      mockChangeEventOnInputClick(input, fakeFileList);
+      mockChangeEventOnHTMLInputClick(input, fakeFileList);
       const button = screen.getByRole("button");
       await user.click(button);
 

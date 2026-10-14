@@ -46,8 +46,9 @@
     if (valid) {
       if (isWeb()) {
         const runOptions = createPiranhaRunOptionsWeb(runParameters, settings, i18n.lang);
+        // TOOO: check
         // Do not await, so we get updates as they happen
-        (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, webFiles.barcodesFileList.item(0), webFiles.minknowFileList);
+        (piranhaAPI as PiranhaWebAPI).runPiranha(runOptions, webFiles.barcodesFileList[0], webFiles.minknowFileList);
       } else {
         const runOptions = createPiranhaRunOptionsElectron(runParameters, settings, i18n.lang);
         await (piranhaAPI as PiranhaElectronAPI).runPiranha(runOptions);
