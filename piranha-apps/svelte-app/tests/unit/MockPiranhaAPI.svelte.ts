@@ -72,6 +72,7 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   spyOnAPIMethod("cancelRun");
   spyOnAPIMethod("openRunReport");
   spyOnAPIMethod("openRunOutputFolder");
+  spyOnAPIMethod("downloadOutputZip");
   spyOnAPIMethod("piranhaVersions", () => piranhaVersions);
 
   return piranhaAPI;

@@ -75,7 +75,7 @@
     <div class="h-[2rem] flex items-center space-x-2">
       {#if !isWeb()}
         {m.settingOutputFolder()}:
-        <span class="font-bold">{settings.outputFolderPath}</span>
+        <span class="font-bold" data-testid="run-progress-output-folder">{settings.outputFolderPath}</span>
       {/if}
       {#if piranhaAPI.runSucceeded}
           {#if isWeb()}
