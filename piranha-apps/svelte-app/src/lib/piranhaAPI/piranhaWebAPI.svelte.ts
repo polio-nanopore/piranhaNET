@@ -94,11 +94,16 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
   get runSucceeded(): boolean {
     const length = this._log.length;
+    // This is always the final log line from a successful run, appended by backend after piranha finishes
     return (length > 1) && (this._log[length-2] === "Piranha run completed with exit code 0");
   }
 
   async downloadOutputZip(): Promise<void> {
       try {
+        if (!this._runId || !this.runSucceeded) {
+          throw new Error(m.apiErrorNoRunOnDownload());
+        }
+
         const response =  await fetch(this._buildUrl(`/results/${this._runId}`));
         if (!response.ok) {
           throw new Error(`${response.status}: ${response.statusText}.`);
@@ -117,6 +122,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
         document.body.removeChild(link);
         URL.revokeObjectURL(blobUrl);
       } catch (e) {
+        console.log("ERROR: " + e.message)
         const messageKey = "downloadError";
         const detail = e.message;
         this._error = { messageKey, detail };

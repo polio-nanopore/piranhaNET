@@ -345,7 +345,7 @@ describe("RunProgress", () => {
       await testNewRunClearsLog(piranhaAPI);
     });
 
-    test("Downloas ouput zip button calls expected method on piranha API", async () => {
+    test("downloas output zip button calls expected method on piranha API", async () => {
       const piranhaAPI = await mockPiranhaAPI({
         running: false,
         runSucceeded: true,

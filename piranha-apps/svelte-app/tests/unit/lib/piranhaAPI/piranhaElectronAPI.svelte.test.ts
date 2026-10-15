@@ -2,7 +2,7 @@ import { describe, expect, test, vi, beforeEach } from "vitest";
 import { i18n } from "../../../../src/lib/i18n.svelte.js";
 import { PiranhaElectronAPI } from "../../../../src/lib/piranhaAPI/piranhaElectronAPI.svelte.js";
 
-describe("piranhaAPI", () => {
+describe("piranhaElectronAPI", () => {
   let sut;
   beforeEach(() => {
     i18n.lang = "en";
