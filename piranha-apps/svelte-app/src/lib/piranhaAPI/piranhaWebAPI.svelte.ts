@@ -53,7 +53,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
         this._runId = response.headers.get("piranhanet-run-id");
 
         const reader = response.body?.getReader();
-        if (!reader) throw new Error("Response body is not readable");
+        if (!reader) throw new Error(m.apiErrorResponseNotReadable());
 
         try {
           let buffer = "";
@@ -122,7 +122,6 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
         document.body.removeChild(link);
         URL.revokeObjectURL(blobUrl);
       } catch (e) {
-        console.log("ERROR: " + e.message)
         const messageKey = "downloadError";
         const detail = e.message;
         this._error = { messageKey, detail };

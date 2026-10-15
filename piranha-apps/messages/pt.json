@@ -11,6 +11,7 @@
   "aboutCredits": "Créditos",
   "apiErrorAlreadyRunning": "Piranha já está em execução",
   "apiErrorNoRunOnDownload": "Não foi possível descarregar os resultados - o Piranha não foi executado.",
+  "apiErrorResponseNotReadable":"O corpo da resposta não é legível.",
   "cancelling": "Cancelando",
   "cancelRun": "Cancelar execução",
   "continue": "Continue",
