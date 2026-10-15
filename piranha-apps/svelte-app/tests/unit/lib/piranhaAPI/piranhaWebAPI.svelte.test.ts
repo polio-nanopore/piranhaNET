@@ -1,4 +1,4 @@
-import { describe, expect, test, vi, beforeEach } from "vitest";
+import { describe, expect, test, vi} from "vitest";
 import { PiranhaWebAPI } from "../../../../src/lib/piranhaAPI/piranhaWebAPI.svelte.js";
 import zipFiles from "../../../../src/lib/zipFiles";
 
