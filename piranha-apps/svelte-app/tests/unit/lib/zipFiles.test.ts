@@ -26,8 +26,12 @@ describe("zipFiles", () => {
     // use JSZip loadAsync to examine content of returned zip
     const unzip = new JSZip();
     const loaded = await unzip.loadAsync(result);
-    console.log("FILES")
-    console.log(loaded.files)
-    // TODO: test expected file paths and content - use above log for this
+
+    const loadedFile1 = loaded.folder("testFolder/").file("file1.txt");
+    expect(await loadedFile1.async("string")).toBe("test content");
+    const loadedFile2 = loaded.folder("testFolder/").file("file2.txt");
+    expect(await loadedFile2.async("string")).toBe("more test content")
+    const loadedFile3 = loaded.folder("testFolder/subFolder/").file("file3.txt");
+    expect(await loadedFile3.async("string")).toBe("nested test content");
   });
 });
