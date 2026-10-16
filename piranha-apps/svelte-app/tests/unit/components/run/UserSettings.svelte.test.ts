@@ -13,9 +13,23 @@ import { render, screen } from "@testing-library/svelte";
 import { persistentSettingsStore } from "../../../../src/lib/persistentSettingsStore";
 
 describe("UserSettings", () => {
-  describe("Electron mode", () => {
+  beforeEach(() => {
+    i18n.lang = "en";
+  });
+
+  const testRendersCommonFieldsAsExpected = async () => {
+    await expectTranslations(
+      (text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
+      { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/ },
+    );
+    await expectTranslations(
+      (text) => expect(screen.getByLabelText(text).value).toBe("Test Inst"),
+      { en: /Institute/, fr: /Institut/, pt: /Instituto/ },
+    );
+  };
+
+  describe("electron mode", () => {
     beforeEach(() => {
-      i18n.lang = "en";
       initialiseStore("electron");
       settings.userName = "Test User";
       settings.institute = "Test Inst";
@@ -26,14 +40,9 @@ describe("UserSettings", () => {
       renderInI18nTestContext(RunRelatedComponentInTestContext, {
         props: { componentName: "UserSettings", errors: {} },
       });
-      await expectTranslations(
-        (text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
-        { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/ },
-      );
-      await expectTranslations(
-        (text) => expect(screen.getByLabelText(text).value).toBe("Test Inst"),
-        { en: /Institute/, fr: /Institut/, pt: /Instituto/ },
-      );
+
+      await testRendersCommonFieldsAsExpected();
+
       expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent(
         "/testOut",
       );
@@ -109,6 +118,23 @@ describe("UserSettings", () => {
         institute: "New Inst",
         outputFolderPath: "/newOut",
       });
+    });
+  });
+
+  describe("web mode", () => {
+    beforeEach(() => {
+      initialiseStore("web");
+      settings.userName = "Test User";
+      settings.institute = "Test Inst";
+    });
+
+    test("renders values as expected", async () => {
+      renderInI18nTestContext(RunRelatedComponentInTestContext, {
+        props: { componentName: "UserSettings", errors: {} },
+      });
+      await testRendersCommonFieldsAsExpected();
+      expect(screen.queryByTestId("output-folder-field")).toBeNull();
+      expect(screen.queryByTestId("output-folder-field-value")).toBeNull();
     });
   });
 });
