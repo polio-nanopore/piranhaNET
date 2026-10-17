@@ -1,6 +1,8 @@
-import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { vi } from "vitest";
-import { PiranhaError } from "../../src/lib/piranhaAPI.svelte";
+import {
+  initialisePiranhaAPI,
+  PiranhaError,
+} from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
 import { PiranhaVersions } from "../../src/shared/types";
 
 export interface APIMock {
@@ -33,7 +35,8 @@ let log = $state([]);
 let runSucceeded = $state(false);
 let cancelling = $state(false);
 
-export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
+export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
+  initialisePiranhaAPI(); // TODO: explain need to initialise store prior to this
   initialized = values.initialized || defaultAPIMock.initialized;
   error = values.error || defaultAPIMock.error;
   log = values.log || defaultAPIMock.log;
@@ -43,24 +46,35 @@ export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
   const piranhaVersions =
     values.piranhaVersions || defaultAPIMock.piranhaVersions;
 
-  vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(
-    () => initialized,
-  );
-  vi.spyOn(piranhaAPI, "error", "get").mockImplementation(() => error);
-  vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => log);
-  vi.spyOn(piranhaAPI, "running", "get").mockImplementation(() => running);
-  vi.spyOn(piranhaAPI, "cancelling", "get").mockImplementation(
-    () => cancelling,
-  );
-  vi.spyOn(piranhaAPI, "runSucceeded", "get").mockImplementation(
-    () => runSucceeded,
-  );
-  vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "clearRun").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "cancelRun").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "openRunReport").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "openRunOutputFolder").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "piranhaVersions").mockImplementation(
-    () => piranhaVersions,
-  );
+  const { piranhaAPI } = await import("$lib/piranhaAPI/piranhaAPI.svelte");
+
+  const spyOnAPIProp = (propName: string, value: unknown): void => {
+    if (propName in piranhaAPI) {
+      vi.spyOn(piranhaAPI, propName, "get").mockImplementation(() => value);
+    }
+  };
+  const spyOnAPIMethod = (methodName: string, implementation): void => {
+    if (!implementation) {
+      implementation = () => {};
+    }
+    if (methodName in piranhaAPI) {
+      vi.spyOn(piranhaAPI, methodName).mockImplementation(implementation);
+    }
+  };
+  spyOnAPIProp("initialized", initialized);
+  spyOnAPIProp("error", error);
+  spyOnAPIProp("log", log);
+  spyOnAPIProp("running", running);
+  spyOnAPIProp("cancelling", cancelling);
+  spyOnAPIProp("runSucceeded", runSucceeded);
+
+  spyOnAPIMethod("runPiranha");
+  spyOnAPIMethod("clearRun");
+  spyOnAPIMethod("cancelRun");
+  spyOnAPIMethod("openRunReport");
+  spyOnAPIMethod("openRunOutputFolder");
+  spyOnAPIMethod("downloadOutputZip");
+  spyOnAPIMethod("piranhaVersions", () => piranhaVersions);
+
+  return piranhaAPI;
 };

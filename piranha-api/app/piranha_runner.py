@@ -31,7 +31,7 @@ class PiranhaRunner:
 
     def log_line(self, run_id: str, line: str):
         print(f"{run_id} {line}")
-        return line
+        return f"{line}\n"
 
     def log_lines(self, run_id: str, lines: str):
         for line in lines.split("\n"):

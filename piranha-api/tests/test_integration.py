@@ -74,26 +74,33 @@ async def test_run_streaming_response_and_get_results():
                 lines.append(line)
 
             assert len(lines) > 1000  # This is going to be changeable, but it should be a lot!
-            assert lines[0] == f"Starting run test run with run id {run_id}"
-            assert "Building DAG of jobs..." in lines  # This indicates snakemake was called
+            assert lines[0] == f"Starting run test run with run id {run_id}\n"
+            assert "Building DAG of jobs...\n" in lines  # This indicates snakemake was called
 
             # Test for all expected settings
-            assert "\x1b[32mSetting runname:\x1b[0m test_run" in lines
-            assert "\x1b[32mSetting notes:\x1b[0m Test_notes" in lines
-            assert "\x1b[32mSetting threads:\x1b[0m 10" in lines
-            assert "\x1b[32mSetting positive_control:\x1b[0m pos" in lines
-            assert "\x1b[32mSetting negative_control:\x1b[0m neg" in lines
-            assert "\x1b[32mSetting all_metadata_to_header:\x1b[0m True" in lines
-            assert "\x1b[32mSetting no_temp:\x1b[0m True" in lines
-            assert "\x1b[32mSetting username:\x1b[0m Test_User" in lines
-            assert "\x1b[32mSetting institute:\x1b[0m Test_Institute" in lines
+            assert "\x1b[32mSetting runname:\x1b[0m test_run\n" in lines
+            assert "\x1b[32mSetting notes:\x1b[0m Test_notes\n" in lines
+            assert "\x1b[32mSetting threads:\x1b[0m 10\n" in lines
+            assert "\x1b[32mSetting positive_control:\x1b[0m pos\n" in lines
+            assert "\x1b[32mSetting negative_control:\x1b[0m neg\n" in lines
+            assert "\x1b[32mSetting all_metadata_to_header:\x1b[0m True\n" in lines
+            assert "\x1b[32mSetting no_temp:\x1b[0m True\n" in lines
+            assert "\x1b[32mSetting username:\x1b[0m Test_User\n" in lines
+            assert "\x1b[32mSetting institute:\x1b[0m Test_Institute\n" in lines
 
-            assert lines[-1] == "Piranha run completed with exit code 0"
+            assert lines[-1] == "Piranha run completed with exit code 0\n"
 
     with httpx.Client(base_url=BASE_URL) as client:
         results_response = client.get(f"/results/{run_id}")
         assert results_response.status_code == 200
-        assert "Sequencing report: test_run" in results_response.text
+
+        # Open the zip response in memory
+        with ZipFile(BytesIO(results_response.content)) as zip_file:
+            report_html = zip_file.read("report.html").decode("utf-8")
+            assert "Sequencing report: test_run" in report_html
+            # also test for expected barcodes file
+            barcode_html = zip_file.read("barcode_reports/barcode01_report.html").decode("utf-8")
+            assert "Detailed information on MixedTest" in barcode_html
 
 
 async def test_simultaneous_run_requests():
@@ -113,12 +120,12 @@ async def test_simultaneous_run_requests():
                 await asyncio.gather(stream_to_list(response_1, combined), stream_to_list(response_2, combined))
                 # Expect interleaved streamed response list to show that responses were collecting concurrently
                 assert len(combined) > 2000
-                assert combined[0] == f"Starting run test run 1 with run id {run_id_1}"
-                assert combined[1] == f"Starting run test run 2 with run id {run_id_2}"
+                assert combined[0] == f"Starting run test run 1 with run id {run_id_1}\n"
+                assert combined[1] == f"Starting run test run 2 with run id {run_id_2}\n"
                 # Piranha logs include ANSI escape codes
-                assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_1}/report.html" in combined
-                assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_2}/report.html" in combined
-                assert combined.count("Piranha run completed with exit code 0") == 2
+                assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_1}/report.html\n" in combined
+                assert f"\x1b[32mGenerating: \x1b[0m/requests-data/output/{run_id_2}/report.html\n" in combined
+                assert combined.count("Piranha run completed with exit code 0\n") == 2
 
 
 async def test_expected_error_when_minknow_not_valid_zip():

@@ -1,6 +1,6 @@
 <script>
   import { m } from "../../paraglide/messages";
-  import { piranhaAPI } from "../../lib/piranhaAPI.svelte.ts";
+  import { piranhaAPI } from "../../lib/piranhaAPI/piranhaAPI.svelte.ts";
   import { X } from "@lucide/svelte";
   import { Spinner } from "../../lib/shadcn/ui/spinner";
   import I18nMessageWithLinks from "../I18nMessageWithLinks.svelte";
