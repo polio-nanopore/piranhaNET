@@ -2,7 +2,12 @@ import { describe, expect, test, beforeEach, beforeAll, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { render } from "@testing-library/svelte";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
-import {clearSettings, expectTranslations, mockChangeEventOnHTMLInputClick, renderInI18nTestContext } from "../../utils";
+import {
+  clearSettings,
+  expectTranslations,
+  mockChangeEventOnHTMLInputClick,
+  renderInI18nTestContext,
+} from "../../utils";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import { screen } from "@testing-library/svelte";
 import { i18n } from "$lib/i18n.svelte";
@@ -14,7 +19,7 @@ import {
   defaultPiranhaOutputSettingsElectron,
   defaultPiranhaOutputSettingsWeb,
   initialiseStore,
-  isWeb
+  isWeb,
 } from "../../../../src/lib/store.svelte.js";
 import { PiranhaProtocol } from "../../../../src/types";
 
@@ -23,7 +28,7 @@ describe("RunParameters", () => {
 
   let piranhaAPI;
 
-   const initialiseParameters = () => {
+  const initialiseParameters = (): void => {
     i18n.lang = "en";
     // reset runParameters in store
     const defaultValues = defaultRunParameters();
@@ -42,114 +47,114 @@ describe("RunParameters", () => {
     });
   };
 
-   const testRendersAsExpected = async () => {
-     renderInI18nTestContext(RunRelatedComponentInTestContext, {
-       props: { componentName: "RunParameters" },
-     });
-     await expectTranslations(
-       (text) =>
-         expect(screen.getByLabelText(text)).toHaveAttribute("id", "name-field"),
-       {
-         en: "Name",
-         fr: "Nom",
-         pt: "Nome",
-       },
-     );
-     await expectTranslations(
-       (text) =>
-         expect(screen.getByLabelText(text)).toHaveAttribute(
-           "id",
-           "barcodes-file-field",
-         ),
-       {
-         en: /Barcodes file/,
-         fr: /Fichier de codes-barres/,
-         pt: /Ficheiro de códigos de barras/,
-       },
-     );
-     await expectTranslations(
-       (text) =>
-         expect(screen.getByLabelText(text)).toHaveAttribute(
-           "id",
-           "minknow-folder-field",
-         ),
-       {
-         en: /MinKnow folder/,
-         fr: /Dossier MinKnow/,
-         pt: /Pasta MinKnow/,
-       },
-     );
-     await expectTranslations(
-       (text) =>
-         expect(screen.getByLabelText(text)).toHaveAttribute(
-           "id",
-           "notes-field",
-         ),
-       {
-         en: /Notes/,
-         fr: /Notes/,
-         pt: /Notas/,
-       },
-     );
-     await expectTranslations(
-       (text) => {
-         const threadsInput = screen.getByLabelText(text);
-         expect(threadsInput).toHaveAttribute("id", "threads-field");
-         expect(threadsInput.value).toBe("10");
-       },
-       {
-         en: /Analysis threads/,
-         fr: /Threads d'analyse/,
-         pt: /Fios de execução de análise/,
-       },
-     );
-     await expectTranslations(
-       (text) => expect(screen.getByTestId("run")).toHaveTextContent(text),
-       {
-         en: /Run/,
-         fr: /Lancer/,
-         pt: /Corra/,
-       },
-     );
+  const testRendersAsExpected = async (): Promise<void> => {
+    renderInI18nTestContext(RunRelatedComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
+    await expectTranslations(
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute("id", "name-field"),
+      {
+        en: "Name",
+        fr: "Nom",
+        pt: "Nome",
+      },
+    );
+    await expectTranslations(
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "id",
+          "barcodes-file-field",
+        ),
+      {
+        en: /Barcodes file/,
+        fr: /Fichier de codes-barres/,
+        pt: /Ficheiro de códigos de barras/,
+      },
+    );
+    await expectTranslations(
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "id",
+          "minknow-folder-field",
+        ),
+      {
+        en: /MinKnow folder/,
+        fr: /Dossier MinKnow/,
+        pt: /Pasta MinKnow/,
+      },
+    );
+    await expectTranslations(
+      (text) =>
+        expect(screen.getByLabelText(text)).toHaveAttribute(
+          "id",
+          "notes-field",
+        ),
+      {
+        en: /Notes/,
+        fr: /Notes/,
+        pt: /Notas/,
+      },
+    );
+    await expectTranslations(
+      (text) => {
+        const threadsInput = screen.getByLabelText(text);
+        expect(threadsInput).toHaveAttribute("id", "threads-field");
+        expect(threadsInput.value).toBe("10");
+      },
+      {
+        en: /Analysis threads/,
+        fr: /Threads d'analyse/,
+        pt: /Fios de execução de análise/,
+      },
+    );
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("run")).toHaveTextContent(text),
+      {
+        en: /Run/,
+        fr: /Lancer/,
+        pt: /Corra/,
+      },
+    );
 
-     await expectTranslations(
-       (text) => expect(screen.getByTestId("settings")).toHaveTextContent(text),
-       {
-         en: /Settings/,
-         fr: /Paramètres/,
-         pt: /Configurações/,
-       },
-     );
-   };
+    await expectTranslations(
+      (text) => expect(screen.getByTestId("settings")).toHaveTextContent(text),
+      {
+        en: /Settings/,
+        fr: /Paramètres/,
+        pt: /Configurações/,
+      },
+    );
+  };
 
-   const testValidationWhenInvalid = async () => {
-     render(RunRelatedComponentInTestContext, {
-       props: { componentName: "RunParameters" },
-     });
-     const expectNoErrors = (): void =>
-       expect(screen.queryByText(/Required value/)).toBeNull();
+  const testValidationWhenInvalid = async (): Promise<void> => {
+    render(RunRelatedComponentInTestContext, {
+      props: { componentName: "RunParameters" },
+    });
+    const expectNoErrors = (): void =>
+      expect(screen.queryByText(/Required value/)).toBeNull();
 
-     await expectNoErrors();
+    await expectNoErrors();
 
-     // Fill in one value and blur - should see no error message for others
-     await user.type(screen.getByLabelText("Name"), "test name for errors");
-     await expectNoErrors();
+    // Fill in one value and blur - should see no error message for others
+    await user.type(screen.getByLabelText("Name"), "test name for errors");
+    await expectNoErrors();
 
-     // Press Run button - should see errors
-     await user.click(screen.getByTestId("run"));
-     expect(screen.getAllByText(/Required value/).length).toBe(3);
-     expect(piranhaAPI.runPiranha).not.toHaveBeenCalled();
-   };
+    // Press Run button - should see errors
+    await user.click(screen.getByTestId("run"));
+    expect(screen.getAllByText(/Required value/).length).toBe(3);
+    expect(piranhaAPI.runPiranha).not.toHaveBeenCalled();
+  };
 
-   beforeEach(() => {
-     appState.doneInitialSubmit = false;
-   });
+  beforeEach(() => {
+    appState.doneInitialSubmit = false;
+  });
 
-   describe("electron mode", () => {
+  describe("electron mode", () => {
     beforeAll(async () => {
       clearSettings();
       initialiseStore("electron");
-      piranhaAPI =  await mockPiranhaAPI({});
+      piranhaAPI = await mockPiranhaAPI({});
     });
 
     beforeEach(async () => {
@@ -217,9 +222,9 @@ describe("RunParameters", () => {
       expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
         "/store/barcodes.csv",
       );
-      expect(screen.getByTestId("minknow-folder-field-value")).toHaveTextContent(
-        "/store/MinKnow",
-      );
+      expect(
+        screen.getByTestId("minknow-folder-field-value"),
+      ).toHaveTextContent("/store/MinKnow");
       expect(screen.getByLabelText("Notes").value).toBe("store notes");
       expect(screen.getByLabelText("Analysis threads").value).toBe("11");
     });
@@ -262,11 +267,11 @@ describe("RunParameters", () => {
     });
   });
 
-   describe("web mode", () => {
+  describe("web mode", () => {
     beforeAll(async () => {
       clearSettings();
       initialiseStore("web");
-      piranhaAPI =  await mockPiranhaAPI({});
+      piranhaAPI = await mockPiranhaAPI({});
     });
 
     beforeEach(async () => {
@@ -288,28 +293,31 @@ describe("RunParameters", () => {
 
       // Set up the FileSelect values
       const barcodesInput = screen.getByTestId("file-input-Barcodes file");
-      const barcodesFile = new File(["test content"], "barcodes.csv", { type: "text/plain" });
+      const barcodesFile = new File(["test content"], "barcodes.csv", {
+        type: "text/plain",
+      });
       mockChangeEventOnHTMLInputClick(barcodesInput, [barcodesFile]);
 
-      const miknowFolderInput = screen.getByTestId("folder-input-MinKnow folder");
+      const miknowFolderInput = screen.getByTestId(
+        "folder-input-MinKnow folder",
+      );
       const minknowFileList = [
         new File(["test content"], "file1.fastq", { type: "text/plain" }),
-        new File(["more test content"], "file2.fastq", { type: "text/plain" })
+        new File(["more test content"], "file2.fastq", { type: "text/plain" }),
       ];
       minknowFileList.forEach((f) => {
         Object.defineProperty(f, "webkitRelativePath", {
           writable: false,
-          value: `testFolder/${f.name}`
+          value: `testFolder/${f.name}`,
         });
       });
-      mockChangeEventOnHTMLInputClick(miknowFolderInput, minknowFileList)
+      mockChangeEventOnHTMLInputClick(miknowFolderInput, minknowFileList);
 
       await user.type(screen.getByLabelText("Name"), "test name");
       await user.click(screen.getByLabelText("Barcodes file"));
       await user.click(screen.getByLabelText("MinKnow folder"));
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
-
 
       expect(piranhaAPI.runPiranha).toHaveBeenCalledOnce();
       const expectedOptions = {
@@ -324,7 +332,11 @@ describe("RunParameters", () => {
         lang: "en",
         ...defaultPiranhaOutputSettingsWeb,
       };
-      expect(piranhaAPI.runPiranha).toHaveBeenCalledWith(expectedOptions, barcodesFile, minknowFileList);
+      expect(piranhaAPI.runPiranha).toHaveBeenCalledWith(
+        expectedOptions,
+        barcodesFile,
+        minknowFileList,
+      );
     });
   });
 });

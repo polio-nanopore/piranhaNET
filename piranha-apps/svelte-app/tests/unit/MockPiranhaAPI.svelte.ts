@@ -1,5 +1,8 @@
 import { vi } from "vitest";
-import {initialisePiranhaAPI, PiranhaError } from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
+import {
+  initialisePiranhaAPI,
+  PiranhaError,
+} from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
 import { PiranhaVersions } from "../../src/shared/types";
 
 export interface APIMock {
@@ -43,16 +46,14 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   const piranhaVersions =
     values.piranhaVersions || defaultAPIMock.piranhaVersions;
 
-  const {piranhaAPI} = await import("$lib/piranhaAPI/piranhaAPI.svelte");
+  const { piranhaAPI } = await import("$lib/piranhaAPI/piranhaAPI.svelte");
 
-  const spyOnAPIProp = (propName: string, value: unknown) => {
+  const spyOnAPIProp = (propName: string, value: unknown): void => {
     if (propName in piranhaAPI) {
-      vi.spyOn(piranhaAPI, propName, "get").mockImplementation(
-        () => value
-      );
+      vi.spyOn(piranhaAPI, propName, "get").mockImplementation(() => value);
     }
   };
-  const spyOnAPIMethod = (methodName: string, implementation) => {
+  const spyOnAPIMethod = (methodName: string, implementation): void => {
     if (!implementation) {
       implementation = () => {};
     }

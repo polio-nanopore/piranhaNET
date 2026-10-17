@@ -7,7 +7,7 @@
   import { Spinner } from "$lib/shadcn/ui/spinner";
   import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import { runParameters, settings, isWeb } from "$lib/store.svelte";
-  import {PiranhaWebAPI} from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
+  import { PiranhaWebAPI } from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
 
   let logEl;
   const ansi = new ansi_up.AnsiUp();
@@ -75,27 +75,30 @@
     <div class="h-[2rem] flex items-center space-x-2">
       {#if !isWeb()}
         {m.settingOutputFolder()}:
-        <span class="font-bold" data-testid="run-progress-output-folder">{settings.outputFolderPath}</span>
+        <span class="font-bold" data-testid="run-progress-output-folder"
+          >{settings.outputFolderPath}</span
+        >
       {/if}
       {#if piranhaAPI.runSucceeded}
-          {#if isWeb()}
-            <Button
-              data-testid="download-output-zip"
-              onclick={async () => await (piranhaAPI as PiranhaWebAPI).downloadOutputZip()}
+        {#if isWeb()}
+          <Button
+            data-testid="download-output-zip"
+            onclick={async () =>
+              await (piranhaAPI as PiranhaWebAPI).downloadOutputZip()}
             >{m.downloadOutputZip()}</Button
-            >
-          {:else}
-            <Button
-              data-testid="open-report"
-              onclick={async () => await piranhaAPI.openRunReport()}
+          >
+        {:else}
+          <Button
+            data-testid="open-report"
+            onclick={async () => await piranhaAPI.openRunReport()}
             >{m.openReport()}</Button
-            >
-            <Button
-              data-testid="open-output-folder"
-              onclick={async () => await piranhaAPI.openRunOutputFolder()}
+          >
+          <Button
+            data-testid="open-output-folder"
+            onclick={async () => await piranhaAPI.openRunOutputFolder()}
             >{m.openOutputFolder()}</Button
-            >
-          {/if}
+          >
+        {/if}
       {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
@@ -117,15 +120,13 @@
     <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
       {m.newRun()}
     </Button>
-  {:else}
-    {#if !isWeb()}
-      <Button
-        class="action float-end bg-red-600"
-        data-testid="cancel-run"
-        onclick={cancelRun}
-      >
-        {m.cancelRun()}
-      </Button>
-    {/if}
+  {:else if !isWeb()}
+    <Button
+      class="action float-end bg-red-600"
+      data-testid="cancel-run"
+      onclick={cancelRun}
+    >
+      {m.cancelRun()}
+    </Button>
   {/if}
 </div>

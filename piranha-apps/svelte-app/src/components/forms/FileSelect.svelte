@@ -1,9 +1,8 @@
 <script lang="ts">
   import { Button } from "$lib/shadcn/ui/button";
   import { m } from "../../paraglide/messages";
-  import type {AppMode} from "../../types";
-  import type {FileDialogFilters} from "../../shared/types";
-
+  import type { AppMode } from "../../types";
+  import type { FileDialogFilters } from "../../shared/types";
 
   let {
     mode,
@@ -13,16 +12,15 @@
     filters,
     onchange,
     value = $bindable(),
-    fileListValue = $bindable()
+    fileListValue = $bindable(),
   }: {
-    mode: AppMode,
-    title: string,
-    selectFolder: boolean,
-    filters?: FileDialogFilters,
-    onchange: (value?: string, fileListValue?: FileList) => void,
-    value: string,
-    fileListValue: FileList
-
+    mode: AppMode;
+    title: string;
+    selectFolder: boolean;
+    filters?: FileDialogFilters;
+    onchange: (value?: string, fileListValue?: FileList) => void;
+    value: string;
+    fileListValue: FileList;
   } = $props();
 
   let fileInput;
@@ -46,7 +44,7 @@
     if (fileInput) {
       fileInput.click();
     }
-  }
+  };
 
   const onWebDialogChange = (e): void => {
     fileListValue = e.target.files;
@@ -65,9 +63,11 @@
     if (onchange) {
       onchange(value, fileListValue);
     }
-  }
+  };
 
-  const acceptExtensions = $derived(filters.flatMap((f) => f.extensions.map((e) => `.${e}`)));
+  const acceptExtensions = $derived(
+    filters.flatMap((f) => f.extensions.map((e) => `.${e}`)),
+  );
 
   let placeholder = $derived(
     selectFolder ? m.formsNoFolderChosen() : m.formsNoFileChosen(),
@@ -75,35 +75,38 @@
 </script>
 
 <div id={`${id}-container`} class="flex">
-    <Button {id} class="rounded-r-none border-0" onclick={mode == "electron" ? showElectronDialog : showWebDialog}
-      >{selectFolder ? m.formsChooseFolder() : m.formsChooseFile()}</Button
-    >
-    {#if mode == "web"}
-      {#if selectFolder}
-        <input
-          bind:this={fileInput}
-          data-testid={`folder-input-${title}`}
-          type="file"
-          webkitdirectory
-          directory
-          onchange={onWebDialogChange}
-          style="display: none"
-        />
-      {:else}
-        <input
-          bind:this={fileInput}
-          data-testid={`file-input-${title}`}
-          type="file"
-          accept={acceptExtensions.join(",")}
-          onchange={onWebDialogChange}
-          style="display: none"
-        >
-      {/if}
+  <Button
+    {id}
+    class="rounded-r-none border-0"
+    onclick={mode == "electron" ? showElectronDialog : showWebDialog}
+    >{selectFolder ? m.formsChooseFolder() : m.formsChooseFile()}</Button
+  >
+  {#if mode == "web"}
+    {#if selectFolder}
+      <input
+        bind:this={fileInput}
+        data-testid={`folder-input-${title}`}
+        type="file"
+        webkitdirectory
+        directory
+        onchange={onWebDialogChange}
+        style="display: none"
+      />
+    {:else}
+      <input
+        bind:this={fileInput}
+        data-testid={`file-input-${title}`}
+        type="file"
+        accept={acceptExtensions.join(",")}
+        onchange={onWebDialogChange}
+        style="display: none"
+      />
     {/if}
-    <div
-      data-testid={`${id}-value`}
-      class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light"
-    >
-      {value || placeholder}
-    </div>
+  {/if}
+  <div
+    data-testid={`${id}-value`}
+    class="inline-block border border-input rounded-lg px-2.5 py-1 text-base w-full min-w-0 rounded-l-none border-l-0 text-sm font-light"
+  >
+    {value || placeholder}
+  </div>
 </div>

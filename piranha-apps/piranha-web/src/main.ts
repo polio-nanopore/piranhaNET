@@ -2,13 +2,12 @@ import { mount } from "svelte";
 import App from "../../svelte-app/src/App.svelte";
 
 interface RuntimeConfig {
-  apiUrl: string
+  apiUrl: string;
 }
 
-const response = await fetch(
-  `${import.meta.env.BASE_URL}web.config.json`,
-  { cache: 'no-store' }
-);
+const response = await fetch(`${import.meta.env.BASE_URL}web.config.json`, {
+  cache: "no-store",
+});
 
 if (!response.ok) {
   throw new Error(`Could not load runtime configuration: ${response.status}`);
@@ -22,10 +21,10 @@ if (!config.apiUrl) {
 
 const app = mount(App, {
   target: document.getElementById("app")!,
-  props:{
+  props: {
     mode: "web",
-    apiUrl: config.apiUrl
-  }
+    apiUrl: config.apiUrl,
+  },
 });
 
 export default app;

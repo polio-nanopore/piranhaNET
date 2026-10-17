@@ -1,16 +1,16 @@
-import { describe, expect, test, beforeEach, afterEach, beforeAll, vi } from "vitest";
+import { describe, expect, test, afterEach, beforeAll, vi } from "vitest";
 import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { screen, within, render } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import RunProgress from "../../../../src/components/run/RunProgress.svelte";
 import { settings, runParameters } from "$lib/store.svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
-import {initialiseStore} from "../../../../src/lib/store.svelte";
+import { initialiseStore } from "../../../../src/lib/store.svelte";
 
 describe("RunProgress", () => {
   const user = userEvent.setup();
 
-  const expectCommonElementsWhileRunning = async () => {
+  const expectCommonElementsWhileRunning = async (): Promise<void> => {
     await expectTranslations(
       (text) => {
         expect(screen.getByTestId("run-progress")).toHaveTextContent(text);
@@ -60,7 +60,7 @@ describe("RunProgress", () => {
     expect(screen.queryByTestId("run-progress-check")).toBeNull();
   };
 
-  const testNewRunClearsLog = async (piranhaAPI) => {
+  const testNewRunClearsLog = async (piranhaAPI): Promise<void> => {
     renderInI18nTestContext(RunProgress);
     await expectTranslations(
       (text) => {
@@ -258,7 +258,7 @@ describe("RunProgress", () => {
       // Use fake timers only in this test where we need them, as otherwise they cause userEvent to hang
       vi.useFakeTimers();
 
-     const piranhaAPI = await mockPiranhaAPI({
+      const piranhaAPI = await mockPiranhaAPI({
         initialized: true,
         log: ["log entry 1 ", "log entry 2"],
         running: false,

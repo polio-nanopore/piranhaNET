@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
-import {initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
+import { initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
 import { i18n } from "$lib/i18n.svelte";
 import {
   expectTranslations,
@@ -17,7 +17,7 @@ describe("UserSettings", () => {
     i18n.lang = "en";
   });
 
-  const testRendersCommonFieldsAsExpected = async () => {
+  const testRendersCommonFieldsAsExpected = async (): Promise<void> => {
     await expectTranslations(
       (text) => expect(screen.getByLabelText(text).value).toBe("Test User"),
       { en: /User name/, fr: /Nom d'utilisateur/, pt: /Nome de utilizador/ },
@@ -53,7 +53,11 @@ describe("UserSettings", () => {
             "output-folder-field",
           );
         },
-        { en: /Output folder/, fr: /Dossier de résultats/, pt: /Pasta de saída/ },
+        {
+          en: /Output folder/,
+          fr: /Dossier de résultats/,
+          pt: /Pasta de saída/,
+        },
       );
     });
 
@@ -90,34 +94,40 @@ describe("UserSettings", () => {
       await user.type(nameField, "New name");
       expect(settings.userName).toBe("New name");
       expect(onchange).toHaveBeenCalledTimes(9);
-      expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
-        ...settings,
-        userName: "New name",
-        institute: "Test Inst",
-        outputFolderPath: "/testOut",
-      });
+      expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith(
+        {
+          ...settings,
+          userName: "New name",
+          institute: "Test Inst",
+          outputFolderPath: "/testOut",
+        },
+      );
 
       const instField = screen.getByLabelText("Institute");
       await user.clear(instField);
       await user.type(instField, "New Inst");
       expect(settings.institute).toBe("New Inst");
       expect(onchange).toHaveBeenCalledTimes(18);
-      expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
-        ...settings,
-        userName: "New name",
-        institute: "New Inst",
-        outputFolderPath: "/testOut",
-      });
+      expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith(
+        {
+          ...settings,
+          userName: "New name",
+          institute: "New Inst",
+          outputFolderPath: "/testOut",
+        },
+      );
 
       await user.click(screen.getByLabelText("Output folder"));
       expect(settings.outputFolderPath).toBe("/newOut");
       expect(onchange).toHaveBeenCalledTimes(19);
-      expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith({
-        ...settings,
-        userName: "New name",
-        institute: "New Inst",
-        outputFolderPath: "/newOut",
-      });
+      expect(persistentSettingsStore.saveUserSettings).toHaveBeenLastCalledWith(
+        {
+          ...settings,
+          userName: "New name",
+          institute: "New Inst",
+          outputFolderPath: "/newOut",
+        },
+      );
     });
   });
 

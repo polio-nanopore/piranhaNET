@@ -108,43 +108,46 @@ function createWindow(): void {
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.handle("run-piranha", async (_event, options: PiranhaRunOptionsElectron) => {
-    const writable = new Writable({
-      write(chunk, _, callback) {
-        // Send each chunk to the renderer
-        mainWindow.webContents.send("stream-chunk", chunk);
-        callback();
-      },
-      final(callback) {
-        mainWindow.webContents.send("stream-end");
-        callback();
-      },
-    });
-
-    const abortControllerId = uuid.v4();
-    const abortController = new AbortController();
-    abortControllers[abortControllerId] = abortController;
-
-    runner
-      .runPiranha(options, writable, abortController.signal)
-      .catch((e) => {
-        if (e.name == "AbortError") {
-          mainWindow.webContents.send("run-cancelled");
-        } else {
-          mainWindow.webContents.send(
-            "error",
-            "runError",
-            (e as Error).message,
-          );
-        }
-      })
-      .finally(() => {
-        delete abortControllers[abortControllerId];
+  ipcMain.handle(
+    "run-piranha",
+    async (_event, options: PiranhaRunOptionsElectron) => {
+      const writable = new Writable({
+        write(chunk, _, callback) {
+          // Send each chunk to the renderer
+          mainWindow.webContents.send("stream-chunk", chunk);
+          callback();
+        },
+        final(callback) {
+          mainWindow.webContents.send("stream-end");
+          callback();
+        },
       });
 
-    // Immediately return the abort id so it is available to front end during run
-    return abortControllerId;
-  });
+      const abortControllerId = uuid.v4();
+      const abortController = new AbortController();
+      abortControllers[abortControllerId] = abortController;
+
+      runner
+        .runPiranha(options, writable, abortController.signal)
+        .catch((e) => {
+          if (e.name == "AbortError") {
+            mainWindow.webContents.send("run-cancelled");
+          } else {
+            mainWindow.webContents.send(
+              "error",
+              "runError",
+              (e as Error).message,
+            );
+          }
+        })
+        .finally(() => {
+          delete abortControllers[abortControllerId];
+        });
+
+      // Immediately return the abort id so it is available to front end during run
+      return abortControllerId;
+    },
+  );
 }
 
 ipcMain.on("cancel-run", (_event, abortControllerId: string) => {

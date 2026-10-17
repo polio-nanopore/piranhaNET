@@ -5,8 +5,8 @@ import AppRouter from "../../../src/components/AppRouter.svelte";
 import { expectTranslations } from "../utils";
 import { mockPiranhaAPI } from "../MockPiranhaAPI.svelte.js";
 import { i18n } from "$lib/i18n.svelte";
-import {tick} from "svelte";
-import {initialiseStore} from "../../../src/lib/store.svelte";
+import { tick } from "svelte";
+import { initialiseStore } from "../../../src/lib/store.svelte";
 
 describe("App", () => {
   const expectedInitTranslations = {
@@ -35,9 +35,11 @@ describe("App", () => {
   });
 
   const renderSut = (isWeb = false): void => {
-    const props = isWeb ? { mode: "web", apiUrl: "http://testAPI" } : { mode: "electron" };
-    render(AppRouter, { props })
-  }
+    const props = isWeb
+      ? { mode: "web", apiUrl: "http://testAPI" }
+      : { mode: "electron" };
+    render(AppRouter, { props });
+  };
 
   test("renders as expected before initialized", async () => {
     await mockPiranhaAPI({});

@@ -11,7 +11,7 @@
   "aboutCredits": "Crédits",
   "apiErrorAlreadyRunning": "Piranha est déjà en cours d'execution.",
   "apiErrorNoRunOnDownload": "Impossible de télécharger les résultats – Piranha n'a pas été exécuté.",
-  "apiErrorResponseNotReadable":"Le corps de la réponse n'est pas lisible.",
+  "apiErrorResponseNotReadable": "Le corps de la réponse n'est pas lisible.",
   "cancelling": "Annulation en cours",
   "cancelRun": "Annuler l'exécution",
   "continue": "Continuez",

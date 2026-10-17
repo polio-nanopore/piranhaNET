@@ -10,7 +10,7 @@ import {
 } from "../../utils";
 import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import {initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
+import { initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
 
 describe("Welcome", () => {
   let user;
@@ -24,7 +24,6 @@ describe("Welcome", () => {
 
   describe("Electron mode", () => {
     beforeAll(() => {
-
       initialiseStore("electron");
     });
 

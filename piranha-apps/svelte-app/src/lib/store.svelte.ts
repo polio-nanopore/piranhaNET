@@ -1,4 +1,4 @@
-import type {AppMode, AppState, PiranhaRunParameters } from "../types";
+import type { AppMode, AppState, PiranhaRunParameters } from "../types";
 import { PiranhaOrientation, PiranhaProtocol } from "../types";
 import { persistentSettingsStore } from "./persistentSettingsStore";
 
@@ -10,7 +10,7 @@ export const routerHelper = $state({
 
 const defaultUserSettingsWeb = {
   userName: "",
-  institute: ""
+  institute: "",
 };
 
 const defaultUserSettingsElectron = {
@@ -43,14 +43,14 @@ export const appState: AppState = $state({
   mode: null,
   apiUrl: null,
   doneInitialValidate: false,
-  doneInitialSubmit: false
+  doneInitialSubmit: false,
 });
 
 // When in webmode, we keep references to the uploaded files themselves separately from the name strings displayed
 // and used for validation. These are bound to the file selects.
 export const webFiles = $state({
   barcodesFileList: null,
-  minknowFileList: null
+  minknowFileList: null,
 });
 
 // We retain the path parameters in web mode in the parameters objects for display and validation, but we also use
@@ -69,17 +69,20 @@ export const runParameters: PiranhaRunParameters = $state(
 
 export const isWeb = (): boolean => appState.mode === "web";
 
-export const initialiseStore = (mode: AppMode, apiUrl?: string) :void => {
+export const initialiseStore = (mode: AppMode, apiUrl?: string): void => {
   appState.mode = mode;
   appState.apiUrl = apiUrl;
 
   const userSettings =
-    persistentSettingsStore.loadUserSettings() ?? (isWeb() ? defaultUserSettingsWeb : defaultUserSettingsElectron);
+    persistentSettingsStore.loadUserSettings() ??
+    (isWeb() ? defaultUserSettingsWeb : defaultUserSettingsElectron);
 
   const runSettings =
     persistentSettingsStore.loadRunSettings() ?? defaultRunSettings;
 
-  const defaultPiranhaOutputSettings = isWeb() ? defaultPiranhaOutputSettingsWeb : defaultPiranhaOutputSettingsElectron;
+  const defaultPiranhaOutputSettings = isWeb()
+    ? defaultPiranhaOutputSettingsWeb
+    : defaultPiranhaOutputSettingsElectron;
 
   const modeSettings = {
     ...userSettings,
@@ -89,6 +92,4 @@ export const initialiseStore = (mode: AppMode, apiUrl?: string) :void => {
   Object.entries(modeSettings).forEach(([key, value]) => {
     settings[key] = value;
   });
-
-}
-
+};

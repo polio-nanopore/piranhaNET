@@ -14,7 +14,7 @@ const threadsRangeError = m.formsErrorRange({
 
 export const userSettingsFormSchemaWeb = (): ZodRawShape => ({
   userName: requiredString(),
-  institute: requiredString()
+  institute: requiredString(),
 });
 
 export const userSettingsFormSchemaElectron = (): ZodRawShape => ({
@@ -32,7 +32,7 @@ export const piranhaOutputSettingsFormSchemaWeb = (): ZodRawShape => ({
   orientation: requiredString(),
   outputPrefix: z.string(),
   outputIntermediateFiles: z.boolean(),
-  allMetadataToHeader: z.boolean()
+  allMetadataToHeader: z.boolean(),
 });
 
 export const piranhaOutputSettingsFormSchemaElectron = (): ZodRawShape => ({
@@ -65,15 +65,15 @@ const perRunParametersSchema = (): ZodRawShape => ({
 });
 
 export const runParametersSchemaElectron = (): ZodObject => {
-    return z.object({
-      ...perRunParametersSchema(),
-      ...settingsFormSchemaElectron(),
+  return z.object({
+    ...perRunParametersSchema(),
+    ...settingsFormSchemaElectron(),
   });
-}
+};
 
 export const runParametersSchemaWeb = (): ZodObject => {
   return z.object({
     ...perRunParametersSchema(),
     ...settingsFormSchemaWeb(),
   });
-}
+};

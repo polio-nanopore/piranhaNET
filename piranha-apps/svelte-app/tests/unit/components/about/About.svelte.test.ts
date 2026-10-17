@@ -3,7 +3,7 @@ import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import About from "../../../../src/components/about/About.svelte";
 import { screen, within } from "@testing-library/svelte";
-import {initialiseStore} from "../../../../src/lib/store.svelte";
+import { initialiseStore } from "../../../../src/lib/store.svelte";
 
 describe("About", () => {
   test("renders as expected", async () => {

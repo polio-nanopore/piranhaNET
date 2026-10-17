@@ -34,7 +34,7 @@ export interface FileDialogOptions {
   title: string;
   defaultPath: string;
   selectFolder: boolean;
-  filters?: FileDialogFilters
+  filters?: FileDialogFilters;
 }
 
 export interface PiranhaVersions {

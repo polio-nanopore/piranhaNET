@@ -1,5 +1,8 @@
-import {BasePiranhaAPI} from "./basePiranhaAPI.svelte";
-import type { PiranhaRunOptionsElectron, PiranhaVersions} from "../../shared/types";
+import { BasePiranhaAPI } from "./basePiranhaAPI.svelte";
+import type {
+  PiranhaRunOptionsElectron,
+  PiranhaVersions,
+} from "../../shared/types";
 import { m } from "../../paraglide/messages";
 
 export class PiranhaElectronAPI extends BasePiranhaAPI {

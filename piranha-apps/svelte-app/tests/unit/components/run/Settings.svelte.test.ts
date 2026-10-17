@@ -7,7 +7,7 @@ import {
   PiranhaSettings,
 } from "../../../../src/types";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import {initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
+import { initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
 import {
   expectTranslations,
   mockPersistentSettingsStore,
@@ -183,7 +183,7 @@ describe("Settings", () => {
     await expectOpenSections([]);
   });
 
-  const testExpectedRunSettings = async (container) => {
+  const testExpectedRunSettings = async (container): Promise<void> => {
     expect(container.querySelector("#protocol-field")).toHaveTextContent(
       "stool",
     );
@@ -240,10 +240,9 @@ describe("Settings", () => {
         "data-state",
         "unchecked",
       );
-      expect(screen.getByLabelText("Output intermediate files")).toHaveAttribute(
-        "data-state",
-        "unchecked",
-      );
+      expect(
+        screen.getByLabelText("Output intermediate files"),
+      ).toHaveAttribute("data-state", "unchecked");
       expect(screen.getByLabelText("All metadata to header")).toHaveAttribute(
         "data-state",
         "checked",
@@ -482,16 +481,14 @@ describe("Settings", () => {
       );
       expect(screen.getByLabelText("Output prefix").value).toBe("op");
       expect(screen.queryByLabelText("Overwrite output")).toBeNull();
-      expect(screen.getByLabelText("Output intermediate files")).toHaveAttribute(
-        "data-state",
-        "unchecked",
-      );
+      expect(
+        screen.getByLabelText("Output intermediate files"),
+      ).toHaveAttribute("data-state", "unchecked");
       expect(screen.getByLabelText("All metadata to header")).toHaveAttribute(
         "data-state",
         "checked",
       );
       expect(screen.queryByLabelText("Date stamp")).toBeNull();
     });
-
   });
 });

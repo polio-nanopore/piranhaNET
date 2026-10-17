@@ -7,7 +7,7 @@ import {
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { screen, render } from "@testing-library/svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
-import {initialiseStore} from "../../../../src/lib/store.svelte";
+import { initialiseStore } from "../../../../src/lib/store.svelte";
 
 describe("Run", () => {
   const mockSettings = {
@@ -71,7 +71,10 @@ describe("Run", () => {
   });
 
   test("render as expected when piranha has started running", async () => {
-    await mockPiranhaAPI({ running: true, log: ["log entry 1", "log entry 2"] });
+    await mockPiranhaAPI({
+      running: true,
+      log: ["log entry 1", "log entry 2"],
+    });
     render(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",

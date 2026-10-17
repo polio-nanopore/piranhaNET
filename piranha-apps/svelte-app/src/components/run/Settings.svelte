@@ -13,7 +13,7 @@
     piranhaOutputSettingsFormSchemaWeb,
     piranhaOutputSettingsFormSchemaElectron,
     userSettingsFormSchemaWeb,
-    userSettingsFormSchemaElectron
+    userSettingsFormSchemaElectron,
   } from "./RunFormSchema";
   import UserSettings from "./UserSettings.svelte";
 
@@ -34,8 +34,12 @@
       ? sectionName
       : null;
 
-  const piranhaOutputSettingsFormSchema = isWeb() ? piranhaOutputSettingsFormSchemaWeb() : piranhaOutputSettingsFormSchemaElectron();
-  const userSettingsFormSchema = isWeb() ? userSettingsFormSchemaWeb() : userSettingsFormSchemaElectron();
+  const piranhaOutputSettingsFormSchema = isWeb()
+    ? piranhaOutputSettingsFormSchemaWeb()
+    : piranhaOutputSettingsFormSchemaElectron();
+  const userSettingsFormSchema = isWeb()
+    ? userSettingsFormSchemaWeb()
+    : userSettingsFormSchemaElectron();
 
   const sectionsWithError: string[] = $derived(
     [

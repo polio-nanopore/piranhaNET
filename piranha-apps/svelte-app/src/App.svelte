@@ -1,6 +1,6 @@
 <script lang="ts">
-  import {initialisePiranhaAPI, piranhaAPI} from "$lib/piranhaAPI/piranhaAPI.svelte.js";
-  import { initialiseStore, isWeb } from "$lib/store.svelte";
+  import { initialisePiranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte.js";
+  import { initialiseStore } from "$lib/store.svelte";
   import AppRouter from "./components/AppRouter.svelte";
 
   const { mode, apiUrl } = $props();
@@ -8,5 +8,4 @@
   initialisePiranhaAPI();
 </script>
 
-<AppRouter/>
-
+<AppRouter />

@@ -1,4 +1,4 @@
-import type {PiranhaVersions} from "../../shared/types";
+import type { PiranhaVersions } from "../../shared/types";
 
 export interface PiranhaError {
   messageKey: string;
@@ -37,5 +37,5 @@ export abstract class BasePiranhaAPI {
   }
 
   abstract async piranhaVersions(): Promise<PiranhaVersions>;
-  abstract get runSucceeded(): boolean
+  abstract get runSucceeded(): boolean;
 }

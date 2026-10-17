@@ -1,4 +1,7 @@
-import type { PiranhaRunOptionsElectron, PiranhaRunOptionsWeb } from "./shared/types";
+import type {
+  PiranhaRunOptionsElectron,
+  PiranhaRunOptionsWeb,
+} from "./shared/types";
 
 export type AppMode = "web" | "electron";
 
@@ -20,7 +23,7 @@ export interface PiranhaRunParametersElectron extends PiranhaRunParametersCommon
   minKnowFolderPath: string;
 }
 
-export interface PiranhaRunParametersWeb extends PiranhaRunParametersCommon{
+export interface PiranhaRunParametersWeb extends PiranhaRunParametersCommon {
   barcodesFile: File;
   minKnowFolder: FileList;
 }
@@ -61,12 +64,14 @@ export interface PiranhaSettingsCommon {
   allMetadataToHeader: boolean;
 }
 
-export interface PiranhaSettingsElectron extends PiranhaSettingsCommon, UserSettingsElectron, RunSettings {
+export interface PiranhaSettingsElectron
+  extends PiranhaSettingsCommon, UserSettingsElectron, RunSettings {
   overwriteOutput: boolean;
   dateStamp: boolean;
 }
 
-export interface PiranhaSettingsWeb extends PiranhaSettingsCommon, UserSettingsWeb, RunSettings {}
+export interface PiranhaSettingsWeb
+  extends PiranhaSettingsCommon, UserSettingsWeb, RunSettings {}
 
 /**
  * Combine settings and per-run parameters to make the full Piranha options required by the electron runner

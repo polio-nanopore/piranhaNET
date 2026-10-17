@@ -1,9 +1,9 @@
-import {beforeAll, describe, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import { screen } from "@testing-library/svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
-import { expectTranslations,renderInI18nTestContext } from "../../utils";
+import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import Initialzing from "../../../../src/components/init/Initializing.svelte";
-import {initialiseStore} from "../../../../src/lib/store.svelte";
+import { initialiseStore } from "../../../../src/lib/store.svelte";
 
 describe("Initializing", () => {
   beforeAll(() => {

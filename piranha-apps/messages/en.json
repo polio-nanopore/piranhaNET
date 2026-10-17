@@ -11,7 +11,7 @@
   "aboutCredits": "Credits",
   "apiErrorAlreadyRunning": "Piranha is already running.",
   "apiErrorNoRunOnDownload": "Cannot download results - Piranha has not run.",
-  "apiErrorResponseNotReadable":"Response body is not readable.",
+  "apiErrorResponseNotReadable": "Response body is not readable.",
   "cancelRun": "Cancel Run",
   "cancelling": "Cancelling",
   "continue": "Continue",

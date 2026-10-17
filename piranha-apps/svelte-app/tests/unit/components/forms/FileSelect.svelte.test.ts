@@ -1,11 +1,14 @@
 import { describe, expect, test, beforeEach, vi } from "vitest";
 import { screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { expectTranslations, renderInI18nTestContext, mockChangeEventOnHTMLInputClick } from "../../utils";
+import {
+  expectTranslations,
+  renderInI18nTestContext,
+  mockChangeEventOnHTMLInputClick,
+} from "../../utils";
 import FileSelect from "../../../../src/components/forms/FileSelect.svelte";
 
-
-const expectChooseFolderTranslations = async () => {
+const expectChooseFolderTranslations = async (): Promise<void> => {
   await expectTranslations(
     (text) => expect(screen.getByText(text)).toBeVisible(),
     {
@@ -16,7 +19,7 @@ const expectChooseFolderTranslations = async () => {
   );
 };
 
-const expectChooseFileTranslations = async () => {
+const expectChooseFileTranslations = async (): Promise<void> => {
   await expectTranslations(
     (text) => expect(screen.getByText(text)).toBeVisible(),
     {
@@ -118,7 +121,7 @@ describe("FileSelect", () => {
   });
 
   describe("web mode", () => {
-    const renderFolderSelect = (onchange = null) => {
+    const renderFolderSelect = (onchange = null): void => {
       renderInI18nTestContext(FileSelect, {
         props: {
           mode: "web",
@@ -126,12 +129,12 @@ describe("FileSelect", () => {
           filters: [],
           value: "/default",
           title: "test",
-          onchange
+          onchange,
         },
       });
     };
 
-    const renderFileSelect = (onchange = null) => {
+    const renderFileSelect = (onchange = null): void => {
       renderInI18nTestContext(FileSelect, {
         props: {
           mode: "web",
@@ -139,7 +142,7 @@ describe("FileSelect", () => {
           filters: [],
           value: "/default/barcodes.csv",
           title: "test",
-          onchange
+          onchange,
         },
       });
     };
@@ -163,7 +166,7 @@ describe("FileSelect", () => {
       renderFileSelect(mockOnChange);
       const input = screen.getByTestId("file-input-test");
       const fakeFileList = [
-        new File(["test content"], "file1.txt", { type: "text/plain" })
+        new File(["test content"], "file1.txt", { type: "text/plain" }),
       ];
       mockChangeEventOnHTMLInputClick(input, fakeFileList);
       const button = screen.getByRole("button");
@@ -178,13 +181,13 @@ describe("FileSelect", () => {
       const input = screen.getByTestId("folder-input-test");
       const fakeFileList = [
         new File(["test content"], "file1.txt", { type: "text/plain" }),
-        new File(["more test content"], "file2.txt", { type: "text/plain" })
+        new File(["more test content"], "file2.txt", { type: "text/plain" }),
       ];
 
       fakeFileList.forEach((f) => {
         Object.defineProperty(f, "webkitRelativePath", {
           writable: false,
-          value: `testFolder/subFolder/${f.name}`
+          value: `testFolder/subFolder/${f.name}`,
         });
       });
 

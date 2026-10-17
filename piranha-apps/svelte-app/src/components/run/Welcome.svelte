@@ -3,13 +3,18 @@
   import { m } from "../../paraglide/messages";
   import { Button } from "$lib/shadcn/ui/button";
   import UserSettings from "./UserSettings.svelte";
-  import { userSettingsFormSchemaWeb, userSettingsFormSchemaElectron } from "./RunFormSchema";
+  import {
+    userSettingsFormSchemaWeb,
+    userSettingsFormSchemaElectron,
+  } from "./RunFormSchema";
   import { runParameters, settings, isWeb } from "../../lib/store.svelte.js";
 
   const { onpersist } = $props();
   let errors = $state<Record<string, string[]>>({});
   let validateOnEachChange = false;
-  const schema = isWeb() ? userSettingsFormSchemaWeb : userSettingsFormSchemaElectron;
+  const schema = isWeb()
+    ? userSettingsFormSchemaWeb
+    : userSettingsFormSchemaElectron;
 
   const formSchema = z.object(schema());
 

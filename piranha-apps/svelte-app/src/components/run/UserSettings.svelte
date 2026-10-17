@@ -8,7 +8,6 @@
 
   const { errors, onchange } = $props();
 
-
   const handleChange = (): void => {
     persistentSettingsStore.saveUserSettings(settings);
     onchange();

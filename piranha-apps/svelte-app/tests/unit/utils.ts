@@ -110,15 +110,18 @@ export const expectNoErrorFor = (fieldName: string): void => {
  * Utility to mock file selection from HTML input (in web mode). When using this in a test, you still need to trigger
  * the click event on the input to in turn trigger the change event.
  */
-export const mockChangeEventOnHTMLInputClick = (input: HTMLInputElement, files: FileList) => {
+export const mockChangeEventOnHTMLInputClick = (
+  input: HTMLInputElement,
+  files: FileList,
+): void => {
   // handle click event on input to mock user selecting the given file list, and raising the associated change event
   input.addEventListener("click", () => {
     // Update the files value on the input on click, and trigger the change event
-    Object.defineProperty(input,"files", {
+    Object.defineProperty(input, "files", {
       value: files,
-      writable: true
+      writable: true,
     });
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
   });
 };
 
@@ -126,6 +129,6 @@ export const mockChangeEventOnHTMLInputClick = (input: HTMLInputElement, files: 
 /* We may need to bootstrap the settings multiple times to test both web and electron mode, in which
 /* case we'll get unexpected settings if we don't clear down the old values first
 */
-export const clearSettings = () => {
+export const clearSettings = (): void => {
   Object.keys(settings).forEach((k) => delete settings[k]);
-}
+};

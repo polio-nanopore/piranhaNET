@@ -4,10 +4,10 @@ import App from "../../../../svelte-app/src/App.svelte";
 
 const app = mount(App, {
   target: document.getElementById("app")!,
-  props:{
+  props: {
     mode: "electron",
-    apiUrl: null
-  }
+    apiUrl: null,
+  },
 });
 
 export default app;

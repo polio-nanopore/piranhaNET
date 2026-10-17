@@ -5,9 +5,9 @@
   import Run from "./run/Run.svelte";
   import About from "./about/About.svelte";
   import Initializing from "./init/Initializing.svelte";
-  import {piranhaAPI} from "$lib/piranhaAPI/piranhaAPI.svelte.js";
+  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte.js";
   import { isWeb } from "$lib/store.svelte";
- import { i18n } from "$lib/i18n.svelte.js";
+  import { i18n } from "$lib/i18n.svelte.js";
 </script>
 
 {#key i18n.lang}
