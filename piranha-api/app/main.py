@@ -5,8 +5,8 @@ from shutil import rmtree
 from typing import Annotated
 
 from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile
-from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, StreamingResponse
 from shortuuid import uuid
 
 from app.file_manager import FileManager
@@ -21,15 +21,16 @@ file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
 piranha_runner = PiranhaRunner(Path(settings.piranha_venv_path))
 
-# TODO: make allowed origins configurable to only allow PiranhaNET front end
+# TODO: make allowed origins configurable to only allow PiranhaNET front end: mrc-6996
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=[RUN_ID_HEADER, "Content-Disposition"]
+    expose_headers=[RUN_ID_HEADER, "Content-Disposition"],
 )
+
 
 def generate_run_id() -> str:
     now = datetime.now(UTC)

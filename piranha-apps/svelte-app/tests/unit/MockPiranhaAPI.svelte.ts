@@ -36,7 +36,10 @@ let runSucceeded = $state(false);
 let cancelling = $state(false);
 
 export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
-  initialisePiranhaAPI(); // TODO: explain need to initialise store prior to this
+  // initialiseStore should have been called prior to mocking the API, as the mode
+  // (web or electron) selected for the store determines the API class which is
+  // initialised.
+  initialisePiranhaAPI();
   initialized = values.initialized || defaultAPIMock.initialized;
   error = values.error || defaultAPIMock.error;
   log = values.log || defaultAPIMock.log;
