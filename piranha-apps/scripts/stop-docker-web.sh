@@ -1,4 +1,4 @@
 #!/bin/bash
 set -ex
 
-docker rm -f piranha-web
+docker rm -f piranhanet-web
