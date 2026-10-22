@@ -101,7 +101,7 @@ However, the shadcn svelte Form component is heavily tied to SvelteKit via `svel
 ### Tests
 
 Run unit tests with `npm run test:unit`.
-Run integration tests with `npm run test:integration`.
+Run integration tests with `npm run test:electron-integration`.
 Run unit and integration tests with coverage using `npm run coverage`
 
 Run Playwright e2e tests with `npm run test:e2e`.
