@@ -1,4 +1,4 @@
-name: Build and Push PiranhaNET Docker Images
+name: Test and Publish PiranhaNET Docker Images
 on:
   push:
     branches:
@@ -10,8 +10,18 @@ env:
   REGISTRY: ghcr.io
   ORG_NAME: ${{ github.repository_owner}}
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    steps:
+      - name: Build and run API container
+        run: ./scripts/build-and-run-docker-dev
+        working-directory: piranha-api
+      - name: Build and run web container
+        run: ./scripts/build-and-run-docker-dev
+      #- name: Test running containers
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
     strategy:
       matrix:
         include:

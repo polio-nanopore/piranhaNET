@@ -33,10 +33,10 @@ $ npm run dev-web
 You should also have the piranha api running at this point, with `scripts/build-and-run-docker-dev.sh` from the
 `piranha-api` folder.
 
-To test the web app running in a docker container, run the api as above, and run `./scripts/build-and-run-docker-web.sh`
+To test the web app running in a docker container, run the api as above, and run `./scripts/build-and-run-docker-dev.sh`
 from this folder. The web app should be available at http://localhost:5137
 
-Stop and remove the docker container with `./scripts/stop-docker-web.sh`
+Stop and remove the docker container with `./scripts/stop-docker-dev.sh`
 
 #### Troubleshooting
 
