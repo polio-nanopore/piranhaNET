@@ -6,7 +6,7 @@ on:
   pull_request:
 env:
   REGISTRY: ghcr.io
-  ORG_NAME: ${{ github.organization }}
+  ORG_NAME: ${{ github.repository_owner}}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,4 +37,4 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.ORG_NAME }}/${{ matrix.image_name }}:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.ORG_NAME }}/${{ matrix.image_name }}:${{ github.head_ref || github.ref_name }}
