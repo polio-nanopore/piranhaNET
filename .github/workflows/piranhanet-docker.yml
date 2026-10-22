@@ -18,7 +18,7 @@ jobs:
             image_name: piranhanet-api
           - dockerfile: ./piranha-apps/Dockerfile
             context: ./piranha-apps
-            image_tag: piranhanet-web
+            image_name: piranhanet-web
     steps:
       - name: Checkout source
         uses: actions/checkout@v7
