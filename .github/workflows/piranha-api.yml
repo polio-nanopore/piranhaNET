@@ -28,9 +28,3 @@ jobs:
         run: ./scripts/build-and-run-docker-dev
       - name: Unit and integration test
         run: uv run pytest
-      - name: Login to GHCR (GitHub Packages)
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}

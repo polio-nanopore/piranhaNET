@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+if [[ -v "GITHUB_SHA" ]]; then
+    GIT_ID=${GITHUB_SHA:0:7}
+else
+    GIT_ID=$(git rev-parse --short=7 HEAD)
+fi
+
+if [[ -v "BRANCH_NAME" ]]; then
+    GIT_BRANCH=${BRANCH_NAME}
+else
+    GIT_BRANCH=$(git symbolic-ref --short HEAD)
+fi
+
+REGISTRY=ghcr.io
+ORG=polio-nanopore
+API_NAME=piranhanet-api
+WEB_NAME=piranhanet-web
+
+API_TAG_SHA="${REGISTRY}/${ORG}/${API_NAME}:${GIT_ID}"
+API_TAG_BRANCH="${REGISTRY}/${ORG}/${API_NAME}:${GIT_BRANCH}"
+
+WEB_TAG_SHA="${REGISTRY}/${ORG}/${WEB_NAME}:${GIT_ID}"
+WEB_TAG_BRANCH="${REGISTRY}/${ORG}/${WEB_NAME}:${GIT_BRANCH}"
+
+
+
+
+
+
