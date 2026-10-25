@@ -3,10 +3,11 @@
   import pscLogo from "../../assets/psc-logo.svg";
   import articLogo from "../../assets/artic-logo.svg";
   import githubLogo from "../../assets/github-logo.svg";
-  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
   import { m } from "../../paraglide/messages";
-  import type { PiranhaVersions } from "../../shared/types";
+  import type { Versions } from "$lib/versions";
   import I18nMessageWithLinks from "../I18nMessageWithLinks.svelte";
+  import {isWeb} from "$lib/store.svelte";
+  import getVersions from "$lib/versions";
 
   const grants = [
     {
@@ -80,10 +81,10 @@
     },
   ];
 
-  let versions: PiranhaVersions | null = $state(null);
+  let versions: Versions | null = $state(null);
 
   onMount(async () => {
-    versions = await piranhaAPI.piranhaVersions();
+    versions = await getVersions();
   });
 </script>
 
@@ -95,7 +96,12 @@
     <h1 class="mb-4" data-testid="about-header">{m.aboutHeader()}</h1>
     <div data-testid="versions" class="text-xl">
       <p>Piranha v{versions?.piranha}</p>
-      <p>PiranhaNET v{versions?.piranhaNET}</p>
+      {#if isWeb()}
+        <p>PiranhaNET API v{versions?.piranhaNetApi}</p>
+        <p>PiranhaNET Web v{versions?.piranhaNetWeb}</p>
+      {:else}
+        <p>PiranhaNET Electron v{versions?.piranhaNet}</p>
+      {/if}
     </div>
     <p>{m.aboutDescription()}</p>
     <I18nMessageWithLinks messageKey="aboutDevelopment"></I18nMessageWithLinks>

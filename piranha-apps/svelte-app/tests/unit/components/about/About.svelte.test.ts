@@ -4,9 +4,10 @@ import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import About from "../../../../src/components/about/About.svelte";
 import { screen, within } from "@testing-library/svelte";
 import { initialiseStore } from "../../../../src/lib/store.svelte";
+import pkg from "../../../../package.json";
 
 describe("About", () => {
-  test("renders as expected", async () => {
+  test("renders as expected in Electron mode", async () => {
     initialiseStore("electron");
     await mockPiranhaAPI({});
     renderInI18nTestContext(About);
@@ -19,8 +20,8 @@ describe("About", () => {
         pt: /Sobre a PiranhaNET/,
       },
     );
-    expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible();
-    expect(screen.getByText("PiranhaNET v0.2.0-test")).toBeVisible();
+    expect(screen.getByText(`Piranha v${pkg.piranhaVersion}`)).toBeVisible();
+    expect(screen.getByText(`PiranhaNET Electron v${pkg.version}`)).toBeVisible();
     await expectTranslations(
       (text) => expect(screen.getByText(text)).toBeVisible(),
       {
@@ -67,5 +68,14 @@ describe("About", () => {
     expect(screen.getByTestId("about-credits")).toHaveTextContent(
       "Áine O’Toole",
     );
+  });
+
+  test("renders versions as expected in web mode", async () => {
+    initialiseStore("web");
+    await mockPiranhaAPI({});
+    renderInI18nTestContext(About);
+    expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible();
+    expect(screen.getByText("PiranhaNET API v0.2.0-test")).toBeVisible();
+    expect(screen.getByText(`PiranhaNET Web v${pkg.version}`)).toBeVisible();
   });
 });

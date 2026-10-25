@@ -17,6 +17,14 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     return `${this._apiUrl}${relativeUrl}`;
   }
 
+  async getAPIVersions() {
+    const response = await fetch(this._buildUrl("/versions"));
+    if (!response.ok) {
+      throw new Error(`${response.status}: ${response.statusText}.`);
+    }
+    return await response.json();
+  }
+
   async runPiranha(
     options: PiranhaRunOptionsWeb,
     barcodesFile: File,

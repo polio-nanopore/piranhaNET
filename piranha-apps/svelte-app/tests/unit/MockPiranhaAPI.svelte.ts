@@ -3,7 +3,7 @@ import {
   initialisePiranhaAPI,
   PiranhaError,
 } from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
-import { PiranhaVersions } from "../../src/shared/types";
+import {WebVersions} from "../../src/lib/versions";
 
 export interface APIMock {
   initialized: boolean;
@@ -12,7 +12,7 @@ export interface APIMock {
   running: boolean;
   runSucceeded: boolean;
   cancelling: boolean;
-  piranhaVersions: PiranhaVersions;
+  apiVersions: WebVersions;
 }
 
 const defaultAPIMock: APIMock = {
@@ -22,9 +22,9 @@ const defaultAPIMock: APIMock = {
   running: false,
   runSucceeded: false,
   cancelling: false,
-  piranhaVersions: {
+  apiVersions: {
     piranha: "0.1.0-test",
-    piranhaNET: "0.2.0-test",
+    api: "0.2.0-test",
   },
 };
 
@@ -46,8 +46,8 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   running = values.running || defaultAPIMock.running;
   cancelling = values.cancelling || defaultAPIMock.cancelling;
   runSucceeded = values.runSucceeded || defaultAPIMock.runSucceeded;
-  const piranhaVersions =
-    values.piranhaVersions || defaultAPIMock.piranhaVersions;
+  const apiVersions =
+    values.apiVersions || defaultAPIMock.apiVersions;
 
   const { piranhaAPI } = await import("$lib/piranhaAPI/piranhaAPI.svelte");
 
@@ -77,7 +77,7 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   spyOnAPIMethod("openRunReport");
   spyOnAPIMethod("openRunOutputFolder");
   spyOnAPIMethod("downloadOutputZip");
-  spyOnAPIMethod("piranhaVersions", () => piranhaVersions);
+  spyOnAPIMethod("getAPIVersions", () => apiVersions);
 
   return piranhaAPI;
 };
