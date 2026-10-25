@@ -1,5 +1,6 @@
 import asyncio
 import json
+import re
 from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -58,6 +59,15 @@ async def stream_to_list(response, output_list):
     async for line in response.aiter_text():
         output_list.append(line)
 
+async def test_versions():
+    # test for semantic versions
+    regex = r"^[0-9]+\.[0-9]+\.[0-9]+$"
+    with httpx.Client(base_url=BASE_URL) as client:
+        response = client.get("/versions")
+        assert response.status_code == 200
+        versions = response.json()
+        assert re.match(regex, versions["api"]) is not None
+        assert re.match(regex, versions["piranha"]) is not None
 
 async def test_run_streaming_response_and_get_results():
     params = create_params("test run")

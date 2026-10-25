@@ -1,4 +1,5 @@
 import os
+import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
 from shutil import rmtree
@@ -31,6 +32,18 @@ app.add_middleware(
     expose_headers=[RUN_ID_HEADER, "Content-Disposition"],
 )
 
+def get_versions():
+  pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+  with open(pyproject_path, "rb") as f:
+    pyproject = tomllib.load(f)
+    api_version = pyproject["project"]["version"]
+  piranha_version = piranha_runner.get_piranha_version()
+  return [api_version, piranha_version]
+
+[api_version, piranha_version] = get_versions()
+
+print("api version is " + api_version)
+print("piranha version is " + piranha_version)
 
 def generate_run_id() -> str:
     now = datetime.now(UTC)
@@ -49,6 +62,12 @@ def generate_run_id() -> str:
 def get_root():
     return "Welcome to PiranhaNET API"
 
+@app.get("/versions")
+def get_versions():
+    return {
+      "api": api_version,
+      "piranha": piranha_version
+    }
 
 @app.post("/run")
 async def run(
