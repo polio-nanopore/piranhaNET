@@ -18,9 +18,7 @@ This monorepo contains the following components in its directories.
 ## Quick start
 Run the API with: `./scripts/run-api`.
 
-Run the Electron app with: `./scripts/run-electron`.
-
-Run the web app with: `./scripts/run-web`.
+Then either run the Electron app with: `./scripts/run-electron`, or run the web app with: `./scripts/run-web`.
 
 ## Release process
 To make a release:
