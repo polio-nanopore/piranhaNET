@@ -21,7 +21,9 @@ describe("About", () => {
       },
     );
     expect(screen.getByText(`Piranha v${pkg.piranhaVersion}`)).toBeVisible();
-    expect(screen.getByText(`PiranhaNET Electron v${pkg.version}`)).toBeVisible();
+    expect(
+      screen.getByText(`PiranhaNET Electron v${pkg.version}`),
+    ).toBeVisible();
     await expectTranslations(
       (text) => expect(screen.getByText(text)).toBeVisible(),
       {
@@ -74,7 +76,9 @@ describe("About", () => {
     initialiseStore("web");
     await mockPiranhaAPI({});
     renderInI18nTestContext(About);
-    await waitFor(() => expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible());
+    await waitFor(() =>
+      expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible(),
+    );
     expect(screen.getByText("PiranhaNET API v0.2.0-test")).toBeVisible();
     expect(screen.getByText(`PiranhaNET Web v${pkg.version}`)).toBeVisible();
   });

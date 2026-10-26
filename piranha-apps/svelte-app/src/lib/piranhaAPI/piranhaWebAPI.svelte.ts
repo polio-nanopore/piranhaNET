@@ -17,7 +17,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     return `${this._apiUrl}${relativeUrl}`;
   }
 
-  async getAPIVersions() {
+  async getAPIVersions(): Promise<{ api: string; piranha: string }> {
     const response = await fetch(this._buildUrl("/versions"));
     if (!response.ok) {
       throw new Error(`${response.status}: ${response.statusText}.`);

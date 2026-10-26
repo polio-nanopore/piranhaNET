@@ -6,7 +6,7 @@
   import { m } from "../../paraglide/messages";
   import type { Versions } from "$lib/versions";
   import I18nMessageWithLinks from "../I18nMessageWithLinks.svelte";
-  import {isWeb} from "$lib/store.svelte";
+  import { isWeb } from "$lib/store.svelte";
   import getVersions from "$lib/versions";
 
   const grants = [

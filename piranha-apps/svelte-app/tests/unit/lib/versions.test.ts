@@ -1,7 +1,7 @@
-import {describe, test, expect} from "vitest";
+import { describe, test, expect } from "vitest";
 import getVersions from "../../../src/lib/versions";
-import {initialiseStore} from "../../../src/lib/store.svelte";
-import {mockPiranhaAPI} from "../MockPiranhaAPI.svelte";
+import { initialiseStore } from "../../../src/lib/store.svelte";
+import { mockPiranhaAPI } from "../MockPiranhaAPI.svelte";
 import pkg from "../../../../package.json";
 
 describe("versions", () => {
@@ -13,7 +13,7 @@ describe("versions", () => {
   test("in web mode", async () => {
     initialiseStore("web", "http://test");
     await mockPiranhaAPI({
-      apiVersions: {api: "1.0.0", piranha: "2.0.0"}
+      apiVersions: { api: "1.0.0", piranha: "2.0.0" },
     });
 
     const result = await getVersions();
@@ -27,5 +27,5 @@ describe("versions", () => {
     const result = await getVersions();
     expect(result.piranha).toBe(pkg.piranhaVersion);
     expect(result.piranhaNet).toBe(pkg.version);
-  })
+  });
 });

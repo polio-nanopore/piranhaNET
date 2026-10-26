@@ -1,17 +1,17 @@
-import {isWeb} from "./store.svelte";
-import {piranhaAPI} from "$lib/piranhaAPI/piranhaAPI.svelte";
-import {PiranhaWebAPI} from "$lib/piranhaAPI/piranhaWebAPI.svelte";
+import { isWeb } from "./store.svelte";
+import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
+import { PiranhaWebAPI } from "$lib/piranhaAPI/piranhaWebAPI.svelte";
 import pkg from "../../../package.json" with { type: "json" };
 
 export interface ElectronVersions {
-  piranhaNet: string,
-  piranha: string
+  piranhaNet: string;
+  piranha: string;
 }
 
 export interface WebVersions {
-  piranhaNetApi: string,
-  piranhaNetWeb: string,
-  piranha: string
+  piranhaNetApi: string;
+  piranhaNetWeb: string;
+  piranha: string;
 }
 
 export type Versions = ElectronVersions | WebVersions;
@@ -26,13 +26,13 @@ export default async (): Versions => {
     return {
       piranhaNetApi: apiVersions.api,
       piranhaNetWeb: npmVersion,
-      piranha: apiVersions.piranha
+      piranha: apiVersions.piranha,
     } as WebVersions;
   } else {
     const piranhaVersion = pkg.piranhaVersion;
     return {
       piranhaNet: npmVersion,
-      piranha: piranhaVersion
+      piranha: piranhaVersion,
     } as ElectronVersions;
   }
-}
+};

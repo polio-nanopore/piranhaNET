@@ -3,7 +3,7 @@ import {
   initialisePiranhaAPI,
   PiranhaError,
 } from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
-import {WebVersions} from "../../src/lib/versions";
+import { WebVersions } from "../../src/lib/versions";
 
 export interface APIMock {
   initialized: boolean;
@@ -46,8 +46,7 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   running = values.running || defaultAPIMock.running;
   cancelling = values.cancelling || defaultAPIMock.cancelling;
   runSucceeded = values.runSucceeded || defaultAPIMock.runSucceeded;
-  const apiVersions =
-    values.apiVersions || defaultAPIMock.apiVersions;
+  const apiVersions = values.apiVersions || defaultAPIMock.apiVersions;
 
   const { piranhaAPI } = await import("$lib/piranhaAPI/piranhaAPI.svelte");
 
