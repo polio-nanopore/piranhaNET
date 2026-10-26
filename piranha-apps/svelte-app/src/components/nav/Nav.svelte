@@ -5,7 +5,7 @@
   import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
   import NavLink from "./NavLink.svelte";
   import LanguageSelect from "./LanguageSelect.svelte";
-  import { routerHelper } from "$lib/store.svelte";
+  import { routerHelper, isWeb } from "$lib/store.svelte";
 
   const router = useTinyRouter();
 
@@ -13,7 +13,8 @@
     await tick(); // necessary on Windows installation
     // We may be on first load or reloading due to language change - retain the route in latter case,
     // otherwise navigate to default / route.
-    let route = (routerHelper.initialNavigationDone || isWeb()) ? router.path : "/";
+    let route =
+      routerHelper.initialNavigationDone || isWeb() ? router.path : "/";
     // Router path gets unhelpful local file prefix in production, so need to remove this
     route = route.substring(route.lastIndexOf("/"));
     router.navigate(route);

@@ -1,8 +1,5 @@
 import { BasePiranhaAPI } from "./basePiranhaAPI.svelte";
-import type {
-  PiranhaRunOptionsElectron,
-  PiranhaVersions,
-} from "../../shared/types";
+import type { PiranhaRunOptionsElectron } from "../../shared/types";
 import { m } from "../../paraglide/messages";
 
 export class PiranhaElectronAPI extends BasePiranhaAPI {
@@ -97,9 +94,5 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
       this._options.outputFolderPath,
       this._runOutputFolderName,
     );
-  }
-
-  async piranhaVersions(): Promise<PiranhaVersions> {
-    return await window.api.piranhaVersions();
   }
 }

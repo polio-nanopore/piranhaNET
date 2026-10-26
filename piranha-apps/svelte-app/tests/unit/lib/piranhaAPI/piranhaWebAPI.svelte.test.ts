@@ -30,6 +30,27 @@ const testMinknowFileList = [
 const runResponseHeaders = new Headers([["piranhanet-run-id", "testrun-123"]]);
 
 describe("piranhaWebAPI", () => {
+  test("gets API versions", async () => {
+    const mockJson = {
+      api: "1.0.0",
+      piranha: "2.0.0",
+    };
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      statusText: "OK",
+      json: () => mockJson,
+    } as any;
+
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
+    const sut = new PiranhaWebAPI("http://test");
+    const result = await sut.getAPIVersions();
+    expect(result).toBe(mockJson);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const [url] = fetchSpy.mock.calls[0];
+    expect(url).toBe("http://test/versions");
+  });
+
   test("posts to run endpoint on run, and records log", async () => {
     const responseLog = [
       "Piranha run started...",

@@ -9,11 +9,9 @@ import { Writable } from "node:stream";
 import {
   FileDialogOptions,
   PiranhaRunOptionsElectron,
-  PiranhaVersions,
 } from "../../../svelte-app/src/shared/types";
 
 const PIRANHA_IMAGE_NAME = "polionanopore/piranha";
-const piranhaNETVersion = pkg.version;
 const piranhaVersion = pkg.piranhaVersion;
 
 const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, piranhaVersion);
@@ -77,16 +75,6 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
-
-  /**
-   * Get the supported version of Piranha and the package version of PiranhaNET
-   */
-  ipcMain.handle("piranha-versions", (_event): PiranhaVersions => {
-    return {
-      piranha: piranhaVersion,
-      piranhaNET: piranhaNETVersion,
-    };
-  });
 
   /**
    * Display a native file dialog and return selection to renderer

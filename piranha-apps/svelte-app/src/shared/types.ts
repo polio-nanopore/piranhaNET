@@ -36,8 +36,3 @@ export interface FileDialogOptions {
   selectFolder: boolean;
   filters?: FileDialogFilters;
 }
-
-export interface PiranhaVersions {
-  piranha: string;
-  piranhaNET: string;
-}
