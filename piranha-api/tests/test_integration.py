@@ -59,6 +59,7 @@ async def stream_to_list(response, output_list):
     async for line in response.aiter_text():
         output_list.append(line)
 
+
 async def test_versions():
     # test for semantic versions
     regex = r"^[0-9]+\.[0-9]+\.[0-9]+(-[a-z]+)?$"
@@ -68,6 +69,7 @@ async def test_versions():
         versions = response.json()
         assert re.match(regex, versions["api"]) is not None
         assert re.match(regex, versions["piranha"]) is not None
+
 
 async def test_run_streaming_response_and_get_results():
     params = create_params("test run")
