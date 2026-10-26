@@ -16,15 +16,15 @@ describe("versions", () => {
       apiVersions: {api: "1.0.0", piranha: "2.0.0"}
     });
 
-    const result = getVersions();
+    const result = await getVersions();
     expect(result.piranha).toBe("2.0.0");
     expect(result.piranhaNetApi).toBe("1.0.0");
     expect(result.piranhaNetWeb).toBe(pkg.version);
   });
 
-  test("in electron mode", () => {
+  test("in electron mode", async () => {
     initialiseStore("electron");
-    const result = getVersions();
+    const result = await getVersions();
     expect(result.piranha).toBe(pkg.piranhaVersion);
     expect(result.piranhaNet).toBe(pkg.version);
   })

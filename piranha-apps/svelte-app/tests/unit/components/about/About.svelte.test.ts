@@ -4,7 +4,7 @@ import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import About from "../../../../src/components/about/About.svelte";
 import { screen, within } from "@testing-library/svelte";
 import { initialiseStore } from "../../../../src/lib/store.svelte";
-import pkg from "../../../../package.json";
+import pkg from "../../../../../package.json";
 
 describe("About", () => {
   test("renders as expected in Electron mode", async () => {
