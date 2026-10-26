@@ -21,7 +21,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v5
         with:
-          node-version: 24.9
+          node-version-file: piranha-apps/.nvmrc
           cache: npm
           cache-dependency-path: piranha-apps/package-lock.json
       - name: Pull and tar piranha docker image
