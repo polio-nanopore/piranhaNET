@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import About from "../../../../src/components/about/About.svelte";
-import { screen, within } from "@testing-library/svelte";
+import { screen, within, waitFor } from "@testing-library/svelte";
 import { initialiseStore } from "../../../../src/lib/store.svelte";
 import pkg from "../../../../../package.json";
 
@@ -74,7 +74,7 @@ describe("About", () => {
     initialiseStore("web");
     await mockPiranhaAPI({});
     renderInI18nTestContext(About);
-    expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible();
+    await waitFor(() => expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible());
     expect(screen.getByText("PiranhaNET API v0.2.0-test")).toBeVisible();
     expect(screen.getByText(`PiranhaNET Web v${pkg.version}`)).toBeVisible();
   });
