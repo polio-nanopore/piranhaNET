@@ -30,6 +30,7 @@ Run web app:
 ```bash
 $ npm run dev-web
 ```
+
 You should also have the piranha api running at this point, with `scripts/build-and-run-docker-dev.sh` from the
 `piranha-api` folder.
 

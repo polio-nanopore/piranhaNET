@@ -9,14 +9,14 @@ export default defineConfig({
   projects: [
     {
       name: "electron",
-      testDir: "piranha-electron/tests/e2e"
+      testDir: "piranha-electron/tests/e2e",
     },
     {
       name: "web-smoke",
       testDir: "piranha-web/tests/e2e",
       use: {
-        baseURL: "http://localhost:5173"
-      }
-    }
-  ]
+        baseURL: "http://localhost:5173",
+      },
+    },
+  ],
 });
