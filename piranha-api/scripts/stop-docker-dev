@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -ex
 
-docker rm -f piranha-api
+docker rm -f piranhanet-api
