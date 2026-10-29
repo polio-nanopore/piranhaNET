@@ -52,8 +52,10 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
 
   private async findOutputFolderFromLog(): Promise<void> {
     // Find local report path from docker volume path written in log, if run was successful
-    const fullLog = this._log.join(" ");
-    const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
+    const fullLog = this._log.join("\n");
+    const match = fullLog.match(
+      /\/data\/run_data\/output\/(.*?)\/report\.html/,
+    );
     if (match) {
       this._runOutputFolderName = match[1];
     }

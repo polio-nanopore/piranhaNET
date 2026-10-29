@@ -42,6 +42,7 @@ describe("piranhaElectronAPI", () => {
       "test log message 1",
       "test log message 2",
       "Generated: /data/run_data/output/output_1/report.html",
+      "Honeypot: /data/run_data/output/honeypot_for_greedy_regex/report.html",
     ];
     addChunk(encoder.encode(expectedLog.join("\n")));
 
