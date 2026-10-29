@@ -1,4 +1,5 @@
 import asyncio
+import subprocess
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
@@ -31,11 +32,16 @@ class PiranhaRunner:
 
     def log_line(self, run_id: str, line: str):
         print(f"{run_id} {line}")
-        return line
+        return f"{line}\n"
 
     def log_lines(self, run_id: str, lines: str):
         for line in lines.split("\n"):
             yield self.log_line(run_id, line)
+
+    def get_piranha_version(self):
+        result = subprocess.run(["piranha", "--version"], capture_output=True, text=True, check=True)
+        # Take last part of response (remove "piranha")
+        return result.stdout.strip().split()[-1]
 
     async def run_piranha_log_generator(
         self,

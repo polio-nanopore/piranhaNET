@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, vi } from "vitest";
+import { describe, expect, test, beforeEach, vi, beforeAll } from "vitest";
 import { i18n } from "$lib/i18n.svelte";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import {
@@ -10,7 +10,7 @@ import {
 } from "../../utils";
 import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import { settings } from "../../../../src/lib/store.svelte.js";
+import { initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
 
 describe("Welcome", () => {
   let user;
@@ -20,105 +20,114 @@ describe("Welcome", () => {
 
     settings.userName = "";
     settings.institute = "";
-    settings.outputFolderPath = "";
   });
 
-  test("renders as expected", async () => {
-    const { container } = renderInI18nTestContext(
-      RunRelatedComponentInTestContext,
-      {
-        props: {
-          componentName: "Welcome",
+  describe("Electron mode", () => {
+    beforeAll(() => {
+      initialiseStore("electron");
+    });
+
+    beforeEach(() => {
+      settings.outputFolderPath = "";
+    });
+
+    test("renders as expected", async () => {
+      const { container } = renderInI18nTestContext(
+        RunRelatedComponentInTestContext,
+        {
+          props: {
+            componentName: "Welcome",
+          },
         },
-      },
-    );
-    await expectTranslations(
-      (text) => {
-        expect(screen.getByTestId("welcome")).toHaveTextContent(text);
-      },
-      {
-        en: /Welcome to PiranhaNET/,
-        fr: /Bienvenue sur PiranhaNET/,
-        pt: /Bem-vindo ao PiranhaNET/,
-      },
-    );
-    await expectTranslations(
-      (text) => {
-        expect(screen.getByLabelText(text)).toBeInTheDocument();
-      },
-      {
-        en: /User name/,
-        fr: /Nom d'utilisateur/,
-        pt: /Nome de utilizador/,
-      },
-    );
-    await expectTranslations(
-      (text) => {
-        expect(screen.getByTestId("continue")).toHaveTextContent(text);
-      },
-      {
-        en: /Continue/,
-        fr: /Continuez/,
-        pt: /Continue/,
-      },
-    );
+      );
+      await expectTranslations(
+        (text) => {
+          expect(screen.getByTestId("welcome")).toHaveTextContent(text);
+        },
+        {
+          en: /Welcome to PiranhaNET/,
+          fr: /Bienvenue sur PiranhaNET/,
+          pt: /Bem-vindo ao PiranhaNET/,
+        },
+      );
+      await expectTranslations(
+        (text) => {
+          expect(screen.getByLabelText(text)).toBeInTheDocument();
+        },
+        {
+          en: /User name/,
+          fr: /Nom d'utilisateur/,
+          pt: /Nome de utilizador/,
+        },
+      );
+      await expectTranslations(
+        (text) => {
+          expect(screen.getByTestId("continue")).toHaveTextContent(text);
+        },
+        {
+          en: /Continue/,
+          fr: /Continuez/,
+          pt: /Continue/,
+        },
+      );
 
-    expectNoErrors(container);
-  });
-
-  test("submit form persists when valid", async () => {
-    const mockShowFileDialog = vi.fn().mockImplementation(() => "/newOut");
-    window.api = {
-      showFileDialog: mockShowFileDialog,
-    };
-
-    const onpersist = vi.fn();
-
-    const { container } = render(RunRelatedComponentInTestContext, {
-      props: { componentName: "Welcome", onpersist },
+      expectNoErrors(container);
     });
-    await user.type(screen.getByLabelText("User name"), "New name");
-    await user.type(screen.getByLabelText("Institute"), "New Inst");
-    await user.click(screen.getByLabelText("Output folder"));
-    expect(mockShowFileDialog).toHaveBeenCalled();
 
-    await user.click(screen.getByTestId("continue"));
-    expect(onpersist).toHaveBeenCalled();
-    expectNoErrors(container);
-  });
+    test("submit form persists when valid", async () => {
+      const mockShowFileDialog = vi.fn().mockImplementation(() => "/newOut");
+      window.api = {
+        showFileDialog: mockShowFileDialog,
+      };
 
-  test("submit form displays errors when invalid, and updates on every change", async () => {
-    const onpersist = vi.fn();
-    const { container } = render(RunRelatedComponentInTestContext, {
-      props: { componentName: "Welcome", onpersist },
+      const onpersist = vi.fn();
+
+      const { container } = render(RunRelatedComponentInTestContext, {
+        props: { componentName: "Welcome", onpersist },
+      });
+      await user.type(screen.getByLabelText("User name"), "New name");
+      await user.type(screen.getByLabelText("Institute"), "New Inst");
+      await user.click(screen.getByLabelText("Output folder"));
+      expect(mockShowFileDialog).toHaveBeenCalled();
+
+      await user.click(screen.getByTestId("continue"));
+      expect(onpersist).toHaveBeenCalled();
+      expectNoErrors(container);
     });
-    await user.click(screen.getByTestId("continue"));
 
-    const nameField = screen.getByLabelText("User name");
-    const instField = screen.getByLabelText("Institute");
-    const outField = screen.getByLabelText("Output folder");
+    test("submit form displays errors when invalid, and updates on every change", async () => {
+      const onpersist = vi.fn();
+      const { container } = render(RunRelatedComponentInTestContext, {
+        props: { componentName: "Welcome", onpersist },
+      });
+      await user.click(screen.getByTestId("continue"));
 
-    const nameFieldName = "user-name-field";
-    const instituteFieldName = "institute-field";
-    const outputFolderFieldName = "output-folder-field";
+      const nameField = screen.getByLabelText("User name");
+      const instField = screen.getByLabelText("Institute");
+      const outField = screen.getByLabelText("Output folder");
 
-    expectErrorFor(nameFieldName);
-    expectErrorFor(instituteFieldName);
-    expectErrorFor(outputFolderFieldName);
+      const nameFieldName = "user-name-field";
+      const instituteFieldName = "institute-field";
+      const outputFolderFieldName = "output-folder-field";
 
-    await user.type(nameField, "New name");
-    expectNoErrorFor(nameFieldName);
-    expectErrorFor(instituteFieldName);
-    expectErrorFor(outputFolderFieldName);
+      expectErrorFor(nameFieldName);
+      expectErrorFor(instituteFieldName);
+      expectErrorFor(outputFolderFieldName);
 
-    await user.type(instField, "New Inst");
-    expectNoErrorFor(nameFieldName);
-    expectNoErrorFor(instituteFieldName);
-    expectErrorFor(outputFolderFieldName);
+      await user.type(nameField, "New name");
+      expectNoErrorFor(nameFieldName);
+      expectErrorFor(instituteFieldName);
+      expectErrorFor(outputFolderFieldName);
 
-    await user.click(outField);
-    expectNoErrors(container);
-    await user.click(screen.getByTestId("continue"));
-    expect(onpersist).toHaveBeenCalled();
+      await user.type(instField, "New Inst");
+      expectNoErrorFor(nameFieldName);
+      expectNoErrorFor(instituteFieldName);
+      expectErrorFor(outputFolderFieldName);
+
+      await user.click(outField);
+      expectNoErrors(container);
+      await user.click(screen.getByTestId("continue"));
+      expect(onpersist).toHaveBeenCalled();
+    });
   });
 });

@@ -49,7 +49,7 @@ describe("piranhaRunner", () => {
     try {
       await runner.runPiranha(
         {
-          name: "test_name",
+          runName: "test_name",
           notes: "test notes",
           barcodesFilePath: join(testDataPath, barcodesFileName),
           minKnowFolderPath: join(testDataPath, "demultiplexed"),
@@ -122,7 +122,7 @@ describe("piranhaRunner", () => {
     const abortController = new AbortController();
     const runPromise = runPiranha("barcodes.csv", abortController);
     // wait a second to allow helper method to start the run
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     abortController.abort();
     await expect(runPromise).rejects.toThrow();
   }, 30_000);
