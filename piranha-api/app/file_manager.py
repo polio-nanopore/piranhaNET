@@ -27,7 +27,7 @@ class FileManager:
         print(detail)
         raise HTTPException(status_code=400, detail=detail) from None
 
-    async def save_input(self, run_id: str, barcodes_file: UploadFile, minknow_zip: UploadFile):
+    async def save_input(self, run_id: str, samples_file: UploadFile, minknow_zip: UploadFile):
         # Create minknow folder
         minknow_dir = self.minknow_dir(run_id)
         minknow_dir.mkdir(parents=True)
@@ -40,12 +40,12 @@ class FileManager:
         finally:
             await minknow_zip.close()
 
-        # Save barcodes file
+        # Save samples file
         run_dir = self.input_dir(run_id)
-        barcodes_file_path = run_dir / barcodes_file.filename
-        with barcodes_file_path.open(mode="wb") as saved_barcodes_file:
-            barcodes_content = await barcodes_file.read()
-            saved_barcodes_file.write(barcodes_content)
+        samples_file_path = run_dir / samples_file.filename
+        with samples_file_path.open(mode="wb") as saved_samples_file:
+            samples_content = await samples_file.read()
+            saved_samples_file.write(samples_content)
 
     def make_output_dir(self, run_id):
         output_dir = self.output_dir(run_id)

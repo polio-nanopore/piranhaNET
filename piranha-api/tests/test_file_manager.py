@@ -30,11 +30,11 @@ def cleanup_output_temp_dirs():
 
 @patch("app.file_manager.ZipFile")
 async def test_save_input(mock_zipfile_class, tmp_path):
-    mock_barcodes_file_upload = Mock()
-    mock_barcodes_file_upload.filename = "test_barcodes.csv"
+    mock_samples_file_upload = Mock()
+    mock_samples_file_upload.filename = "test_samples.csv"
 
-    barcodes_file_content = "1,2\nvalue 1, value2\n"
-    mock_barcodes_file_upload.read = AsyncMock(return_value=barcodes_file_content.encode())
+    samples_file_content = "1,2\nvalue 1, value2\n"
+    mock_samples_file_upload.read = AsyncMock(return_value=samples_file_content.encode())
     mock_minknow_zip_upload = Mock()
     mock_minknow_zip_upload.file = Mock()
     mock_minknow_zip_upload.close = AsyncMock()
@@ -43,7 +43,7 @@ async def test_save_input(mock_zipfile_class, tmp_path):
     mock_zipfile_class.return_value = mock_minknow_zip_file
 
     sut = get_sut(tmp_path)
-    await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
+    await sut.save_input(run_id, mock_samples_file_upload, mock_minknow_zip_upload)
 
     expected_minknow_dir = tmp_path / "test_input" / run_id / "minknow"
     # Expect minnow dir to have been created
@@ -54,21 +54,21 @@ async def test_save_input(mock_zipfile_class, tmp_path):
     mock_minknow_zip_file.__enter__.return_value.extractall.assert_called_once_with(expected_minknow_dir)
     mock_minknow_zip_upload.close.assert_called_once()
 
-    # Expect barcodes file to have been written
-    expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
-    assert expected_barcodes_file.read_text() == barcodes_file_content
+    # Expect samples file to have been written
+    expected_samples_file = tmp_path / "test_input" / run_id / "test_samples.csv"
+    assert expected_samples_file.read_text() == samples_file_content
 
 
 @patch("app.file_manager.ZipFile")
 async def test_save_input_raises_httpexception_on_bad_zipfile(mock_zipfile_class, tmp_path):
     mock_zipfile_class.side_effect = BadZipFile("bad zip")
-    mock_barcodes_upload = Mock()
+    mock_samples_upload = Mock()
     mock_minknow_upload = Mock()
     mock_minknow_upload.close = AsyncMock()
 
     sut = get_sut(tmp_path)
     with pytest.raises(fastapi.HTTPException) as exc_info:
-        await sut.save_input(run_id, mock_barcodes_upload, mock_minknow_upload)
+        await sut.save_input(run_id, mock_samples_upload, mock_minknow_upload)
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail == "Invalid zip file."
     mock_minknow_upload.close.assert_called_once()
@@ -89,11 +89,11 @@ def test_read_output_zip(tmp_path, cleanup_output_temp_dirs):
     test_report_dir.mkdir(parents=True)
     test_report = test_report_dir / "report.html"
     test_report.write_text(test_report_content)
-    test_barcode_report_content = "<not a barcode report>"
-    test_barcode_dir = test_report_dir / "barcode01"
-    test_barcode_dir.mkdir()
-    test_barcode_report = test_barcode_dir / "barcode.html"
-    test_barcode_report.write_text(test_barcode_report_content)
+    test_sample_report_content = "<not a sample report>"
+    test_sample_dir = test_report_dir / "sample01"
+    test_sample_dir.mkdir()
+    test_sample_report = test_sample_dir / "sample.html"
+    test_sample_report.write_text(test_sample_report_content)
 
     sut = get_sut(tmp_path)
     (zip_path, tmp_dir) = sut.read_output_zip(run_id)
@@ -102,9 +102,9 @@ def test_read_output_zip(tmp_path, cleanup_output_temp_dirs):
         with zip_file.open("report.html") as unzipped_report:
             unzipped_report_text = unzipped_report.read().decode("utf-8")
             assert unzipped_report_text == test_report_content
-        with zip_file.open("barcode01/barcode.html") as unzipped_barcode_report:
-            unzipped_barcode_report_text = unzipped_barcode_report.read().decode("utf-8")
-            assert unzipped_barcode_report_text == test_barcode_report_content
+        with zip_file.open("sample01/sample.html") as unzipped_sample_report:
+            unzipped_sample_report_text = unzipped_sample_report.read().decode("utf-8")
+            assert unzipped_sample_report_text == test_sample_report_content
 
 
 def test_read_output_zip_raises_httpexception_on_unknown_run_id(tmp_path):

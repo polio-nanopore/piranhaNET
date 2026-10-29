@@ -27,7 +27,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
   async runPiranha(
     options: PiranhaRunOptionsWeb,
-    barcodesFile: File,
+    samplesFile: File,
     minknowFiles: FileList,
   ): Promise<void> {
     if (this._running) {
@@ -42,7 +42,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
       // Upload to API
       const formData = new FormData();
-      formData.append("barcodesFile", barcodesFile, barcodesFile.name);
+      formData.append("samplesFile", samplesFile, samplesFile.name);
       formData.append("minknowZip", minknowZipBlob, "minknow.zip");
 
       const params = {

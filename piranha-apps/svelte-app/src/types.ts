@@ -19,12 +19,12 @@ export interface PiranhaRunParametersCommon {
 }
 
 export interface PiranhaRunParametersElectron extends PiranhaRunParametersCommon {
-  barcodesFilePath: string;
+  samplesFilePath: string;
   minKnowFolderPath: string;
 }
 
 export interface PiranhaRunParametersWeb extends PiranhaRunParametersCommon {
-  barcodesFile: File;
+  samplesFile: File;
   minKnowFolder: FileList;
 }
 

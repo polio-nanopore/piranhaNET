@@ -30,9 +30,9 @@ def create_minknow_zip():
 
 def create_files():
     minknow_zip = create_minknow_zip()
-    barcodes_path = test_data_dir / "barcodes.csv"  # read test_data barcodes file
+    samples_path = test_data_dir / "samples.csv"  # read test_data samples file
     return {
-        "barcodesFile": ("barcodes.csv", barcodes_path.read_text(), "text/csv"),
+        "samplesFile": ("samples.csv", samples_path.read_text(), "text/csv"),
         "minknowZip": ("minknow.zip", minknow_zip, "application/zip"),
     }
 
@@ -110,9 +110,9 @@ async def test_run_streaming_response_and_get_results():
         with ZipFile(BytesIO(results_response.content)) as zip_file:
             report_html = zip_file.read("report.html").decode("utf-8")
             assert "Sequencing report: test_run" in report_html
-            # also test for expected barcodes file
-            barcode_html = zip_file.read("barcode_reports/barcode01_report.html").decode("utf-8")
-            assert "Detailed information on MixedTest" in barcode_html
+            # also test for expected samples file
+            samples_html = zip_file.read("samples_reports/samples01_report.html").decode("utf-8")
+            assert "Detailed information on MixedTest" in samples_html
 
 
 async def test_simultaneous_run_requests():
@@ -143,7 +143,7 @@ async def test_simultaneous_run_requests():
 async def test_expected_error_when_minknow_not_valid_zip():
     params = create_params("test run")
     files = {
-        "barcodesFile": ("barcodes.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
+        "samplesFile": ("samples.csv", b"id,name\n1,sample 1\n2,sample 2", "text/csv"),
         "minknowZip": ("minknow.zip", "not a zip", "application/zip"),
     }
     async with httpx.AsyncClient(base_url=BASE_URL) as client:

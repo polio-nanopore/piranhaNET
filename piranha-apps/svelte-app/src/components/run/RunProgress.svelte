@@ -62,8 +62,8 @@
     </div>
     <div class="h-[2rem] flex items-center">
       <div>
-        {m.parameterBarcodesFile()}:
-        <span class="font-bold">{runParameters.barcodesFilePath}</span>
+        {m.parameterSamplesFile()}:
+        <span class="font-bold">{runParameters.samplesFilePath}</span>
       </div>
     </div>
     <div class="h-[2rem] flex items-center">
