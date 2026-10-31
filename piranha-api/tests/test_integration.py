@@ -111,7 +111,7 @@ async def test_run_streaming_response_and_get_results():
             report_html = zip_file.read("report.html").decode("utf-8")
             assert "Sequencing report: test_run" in report_html
             # also test for expected samples file
-            samples_html = zip_file.read("samples_reports/samples01_report.html").decode("utf-8")
+            samples_html = zip_file.read("barcode_reports/barcode01_report.html").decode("utf-8")
             assert "Detailed information on MixedTest" in samples_html
 
 

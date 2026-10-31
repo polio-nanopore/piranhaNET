@@ -32,8 +32,8 @@ describe("RunProgress", () => {
       },
       {
         en: /Samples file/,
-        fr: /Fichier de codes-barres/,
-        pt: /Ficheiro de códigos de barras/,
+        fr: /Fichier d’échantillons/,
+        pt: /Ficheiro de amostras/,
       },
     );
 
