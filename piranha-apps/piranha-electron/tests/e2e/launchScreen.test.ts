@@ -18,8 +18,8 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
       const sourceDir = join(...currentDir.split("/").slice(0, -3));
 
       const testDataDir = join(sourceDir, "test-data", "multiple_samples");
-      if (options.title === "Barcodes file") {
-        return join(testDataDir, "barcodes.csv");
+      if (options.title === "samples file") {
+        return join(testDataDir, "samples.csv");
       }
       if (options.title === "MinKnow folder") {
         return join(testDataDir, "demultiplexed");
@@ -47,8 +47,8 @@ test.afterEach(async () => {
 // Run Parameters
 const getNameInput = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/Name/);
-const getBarcodesFileButton = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Barcodes file/);
+const getSamplesFileButton = async (win: Page): Promise<Locator> =>
+  await win.getByLabel(/samples file/);
 const getMinKnowFolderButton = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/MinKnow folder/);
 const getNotesInput = async (win: Page): Promise<Locator> =>
@@ -126,8 +126,8 @@ const fillRunParameters = async (win: Page): Promise<void> => {
   const nameInput = await getNameInput(win);
   await nameInput.fill("Test Name");
 
-  const barcodesFileButton = await getBarcodesFileButton(win);
-  await barcodesFileButton.click();
+  const samplesFileButton = await getSamplesFileButton(win);
+  await samplesFileButton.click();
 
   const minKnowFolderButton = await getMinKnowFolderButton(win);
   await minKnowFolderButton.click();
@@ -253,9 +253,9 @@ test("can see errors when submit incomplete run parameters", async () => {
   const nameInput = await getNameInput(win);
   await expectErrorMessage(nameInput);
 
-  const barcodesFileButton = await getBarcodesFileButton(win);
-  const barcodesFileField = getFieldFromDialogButton(barcodesFileButton);
-  await expectErrorMessage(barcodesFileField);
+  const samplesFileButton = await getSamplesFileButton(win);
+  const samplesFileField = getFieldFromDialogButton(samplesFileButton);
+  await expectErrorMessage(samplesFileField);
 
   const minKnowFolderButton = await getMinKnowFolderButton(win);
   const minKnowFolderField = getFieldFromDialogButton(minKnowFolderButton);
@@ -270,8 +270,8 @@ test("can see errors when submit incomplete run parameters", async () => {
   await nameInput.blur();
   await expectErrorMessage(nameInput, false);
 
-  await barcodesFileButton.click();
-  await expectErrorMessage(barcodesFileField, false);
+  await samplesFileButton.click();
+  await expectErrorMessage(samplesFileField, false);
 
   await minKnowFolderButton.click();
   await expectErrorMessage(minKnowFolderField, false);

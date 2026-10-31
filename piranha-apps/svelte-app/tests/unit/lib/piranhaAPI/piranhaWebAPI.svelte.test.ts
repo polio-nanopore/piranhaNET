@@ -18,7 +18,7 @@ const testOptions = {
   lang: "en",
 } as any;
 
-const testBarcodesFile = new File(["test barcodes content"], "barcodes.csv", {
+const testSamplesFile = new File(["test samples content"], "samples.csv", {
   type: "text/plain",
 });
 
@@ -77,7 +77,7 @@ describe("piranhaWebAPI", () => {
     const sut = new PiranhaWebAPI("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
-      testBarcodesFile,
+      testSamplesFile,
       testMinknowFileList,
     );
     expect(sut.running).toBe(true);
@@ -96,9 +96,9 @@ describe("piranhaWebAPI", () => {
       "http://test/run?runName=Test+Name&analysisThreads=10&lang=English",
     );
     const formData = options.body as FormData;
-    expect(formData.get("barcodesFile").name).toBe("barcodes.csv");
-    expect(await formData.get("barcodesFile").text()).toBe(
-      "test barcodes content",
+    expect(formData.get("samplesFile").name).toBe("samples.csv");
+    expect(await formData.get("samplesFile").text()).toBe(
+      "test samples content",
     );
     expect(formData.get("minknowZip").type).toBe("application/zip");
     expect(await formData.get("minknowZip").text()).toBe("test zip");
@@ -138,7 +138,7 @@ describe("piranhaWebAPI", () => {
     const sut = new PiranhaWebAPI("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
-      testBarcodesFile,
+      testSamplesFile,
       testMinknowFileList,
     );
     expect(sut.running).toBe(true);
@@ -165,7 +165,7 @@ describe("piranhaWebAPI", () => {
     const sut = new PiranhaWebAPI("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
-      testBarcodesFile,
+      testSamplesFile,
       testMinknowFileList,
     );
     expect(sut.running).toBe(true);

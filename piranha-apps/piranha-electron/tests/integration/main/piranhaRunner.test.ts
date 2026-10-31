@@ -27,7 +27,7 @@ describe("piranhaRunner", () => {
   };
 
   const runPiranha = async (
-    barcodesFileName = "barcodes.csv",
+    samplesFileName = "samples.csv",
     abortController = new AbortController(),
   ): Promise<string[]> => {
     const pullOutput = getWritableWithBuffer();
@@ -51,7 +51,7 @@ describe("piranhaRunner", () => {
         {
           runName: "test_name",
           notes: "test notes",
-          barcodesFilePath: join(testDataPath, barcodesFileName),
+          samplesFilePath: join(testDataPath, samplesFileName),
           minKnowFolderPath: join(testDataPath, "demultiplexed"),
           outputFolderPath: testOutputPath,
           threads: 10,
@@ -113,14 +113,14 @@ describe("piranhaRunner", () => {
   }, 480_000); // This will take a while!
 
   test("throws error if piranha run finishes with non-zero exit code", async () => {
-    await expect(runPiranha("badBarcodes.csv")).rejects.toThrow(
+    await expect(runPiranha("badSamples.csv")).rejects.toThrow(
       "Piranha finished with non-zero exit code 255",
     );
   }, 30_000);
 
   test("throws expected error when piranha run is cancelled", async () => {
     const abortController = new AbortController();
-    const runPromise = runPiranha("barcodes.csv", abortController);
+    const runPromise = runPiranha("samples.csv", abortController);
     // wait a second to allow helper method to start the run
     await new Promise((resolve) => setTimeout(resolve, 2000));
     abortController.abort();

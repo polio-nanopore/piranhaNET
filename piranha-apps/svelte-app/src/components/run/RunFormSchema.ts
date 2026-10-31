@@ -55,7 +55,7 @@ const settingsFormSchemaWeb = (): ZodRawShape => ({
 
 const perRunParametersSchema = (): ZodRawShape => ({
   runName: requiredString(),
-  barcodesFilePath: requiredString(),
+  samplesFilePath: requiredString(),
   minKnowFolderPath: requiredString(),
   notes: requiredString(),
   threads: z

@@ -68,7 +68,7 @@
         // Do not await, so we get updates as they happen
         (piranhaAPI as PiranhaWebAPI).runPiranha(
           runOptions,
-          webFiles.barcodesFileList[0],
+          webFiles.samplesFileList[0],
           webFiles.minknowFileList,
         );
       } else {
@@ -108,20 +108,20 @@
       ></Input>
     </FormField>
     <FormField
-      label={m.parameterBarcodesFile()}
-      help={m.helpParameterBarcodesFile()}
-      error={errors.barcodesFilePath}
-      labelFor="barcodes-file-field"
+      label={m.parameterSamplesFile()}
+      help={m.helpParameterSamplesFile()}
+      error={errors.samplesFilePath}
+      labelFor="samples-file-field"
     >
       <FileSelect
-        id="barcodes-file-field"
+        id="samples-file-field"
         mode={appState.mode}
-        title={m.parameterBarcodesFile()}
+        title={m.parameterSamplesFile()}
         selectFolder={false}
         filters={[{ name: "csv", extensions: ["csv"] }]}
         onchange={onChange}
-        bind:value={runParameters.barcodesFilePath}
-        bind:fileListValue={webFiles.barcodesFileList}
+        bind:value={runParameters.samplesFilePath}
+        bind:fileListValue={webFiles.samplesFileList}
       ></FileSelect>
     </FormField>
     <FormField

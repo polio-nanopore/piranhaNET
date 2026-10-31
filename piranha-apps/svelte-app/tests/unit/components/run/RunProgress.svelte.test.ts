@@ -27,13 +27,13 @@ describe("RunProgress", () => {
       (text) => {
         const parent = screen.getByText(text);
         expect(
-          within(parent).getByText(/\/test\/input\/barcodes\.csv/),
+          within(parent).getByText(/\/test\/input\/samples\.csv/),
         ).toBeVisible();
       },
       {
-        en: /Barcodes file/,
-        fr: /Fichier de codes-barres/,
-        pt: /Ficheiro de códigos de barras/,
+        en: /Samples file/,
+        fr: /Fichier d’échantillons/,
+        pt: /Ficheiro de amostras/,
       },
     );
 
@@ -82,7 +82,7 @@ describe("RunProgress", () => {
       initialiseStore("electron");
       settings.outputFolderPath = "/test/output";
       runParameters.runName = "Test Run";
-      runParameters.barcodesFilePath = "/test/input/barcodes.csv";
+      runParameters.samplesFilePath = "/test/input/samples.csv";
       runParameters.minKnowFolderPath = "/test/input/minknow";
     });
 
@@ -287,7 +287,7 @@ describe("RunProgress", () => {
     beforeAll(async () => {
       initialiseStore("web");
       settings.outputFolderPath = "/test/output";
-      runParameters.barcodesFilePath = "/test/input/barcodes.csv";
+      runParameters.samplesFilePath = "/test/input/samples.csv";
       runParameters.minKnowFolderPath = "/test/input/minknow";
     });
 
