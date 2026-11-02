@@ -48,7 +48,7 @@
 
   const onWebDialogChange = (e): void => {
     fileListValue = e.target.files;
-    // string value for form validation and user feedback.
+    // convert list to string value for form validation and user feedback.
     if (fileListValue.length) {
       if (selectFolder) {
         // We're using webkitdirectory so we don't get the folder name,
