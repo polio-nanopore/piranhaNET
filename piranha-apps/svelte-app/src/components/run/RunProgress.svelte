@@ -59,6 +59,11 @@
           ></Check>
         {/if}
       </div>
+      {#if piranhaAPI.error}
+        <div class="text-red-600 text-sm">
+          {m[piranhaAPI.error.messageKey]()}: {piranhaAPI.error.detail}
+        </div>
+      {/if}
     </div>
     <div class="h-[2rem] flex items-center">
       <div>

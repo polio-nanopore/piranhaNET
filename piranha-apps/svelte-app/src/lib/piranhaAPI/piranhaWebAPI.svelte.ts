@@ -98,6 +98,13 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     } finally {
       this._running = false;
       this.addToLog("Piranha run finished");
+
+      if (!this._error && !this.runSucceeded) {
+        this._error = {
+          messageKey: "runError",
+          detail: "Piranha finished with unexpected error code. See log for details."
+        };
+      }
     }
   }
 

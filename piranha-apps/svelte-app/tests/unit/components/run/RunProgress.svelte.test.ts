@@ -164,9 +164,20 @@ describe("RunProgress", () => {
         },
       );
 
-      expect(screen.queryByTestId("donwload-output-zip")).toBeNull();
+      expect(screen.queryByTestId("download-output-zip")).toBeNull();
 
       expect(screen.queryByTestId("cancelling")).toBeNull();
+
+      await expectTranslations(
+        (text) => {
+          expect(screen.queryByText(text)).toBeNull();
+        },
+        {
+          en: /Piranha Run Error/,
+          fr: /Erreur d'exécution Piranha/,
+          pt: /Erro ao Executar o Piranha/,
+        },
+      );
     });
 
     test("Cancel Run button calls expected method on piranha API", async () => {
@@ -218,6 +229,16 @@ describe("RunProgress", () => {
       });
       renderInI18nTestContext(RunProgress);
       expect(screen.getByTestId("run-progress-x")).toBeVisible();
+      await expectTranslations(
+        (text) => {
+          expect(screen.getByText(text)).toBeVisible();
+        },
+        {
+          en: /Piranha Run Error: oh no/,
+          fr: /Erreur d'exécution Piranha: oh no/,
+          pt: /Erro ao Executar o Piranha: oh no/,
+        },
+      );
       expect(screen.queryByTestId("run-progress-check")).toBeNull();
       expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
       expect(screen.queryByTestId("open-report")).toBeNull();
@@ -345,7 +366,7 @@ describe("RunProgress", () => {
       await testNewRunClearsLog(piranhaAPI);
     });
 
-    test("downloas output zip button calls expected method on piranha API", async () => {
+    test("downloads output zip button calls expected method on piranha API", async () => {
       const piranhaAPI = await mockPiranhaAPI({
         running: false,
         runSucceeded: true,
