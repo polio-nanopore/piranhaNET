@@ -64,7 +64,6 @@
           settings,
           i18n.lang,
         );
-        // TOOO: check
         // Do not await, so we get updates as they happen
         (piranhaAPI as PiranhaWebAPI).runPiranha(
           runOptions,
