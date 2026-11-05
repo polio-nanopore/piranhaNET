@@ -16,6 +16,7 @@ barcodes_file_content = "1,2\nvalue 1, value2\n"
 def get_sut(tmp_path):
     return FileManager(tmp_path / "test_input", tmp_path / "test_output")
 
+
 def mock_zipfile(mock_zipfile_class):
     mock_minknow_zip_upload = Mock()
     mock_minknow_zip_upload.file = Mock()
@@ -24,6 +25,7 @@ def mock_zipfile(mock_zipfile_class):
     mock_minknow_zip_file = MagicMock()
     mock_zipfile_class.return_value = mock_minknow_zip_file
     return mock_minknow_zip_upload, mock_minknow_zip_file
+
 
 @pytest.fixture
 def cleanup_output_temp_dirs():
@@ -62,6 +64,7 @@ async def test_save_input(mock_zipfile_class, tmp_path):
     expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
     assert expected_barcodes_file.read_text() == barcodes_file_content
 
+
 @patch("app.file_manager.ZipFile")
 async def test_save_input_strips_base_barcode_filename_from_absolute_path(mock_zipfile_class, tmp_path):
     mock_barcodes_file_upload = Mock()
@@ -78,6 +81,7 @@ async def test_save_input_strips_base_barcode_filename_from_absolute_path(mock_z
     expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
     assert expected_barcodes_file.read_text() == barcodes_file_content
 
+
 @patch("app.file_manager.ZipFile")
 async def test_save_input_strips_base_barcode_filename_from_relative_path(mock_zipfile_class, tmp_path):
     mock_barcodes_file_upload = Mock()
@@ -93,6 +97,7 @@ async def test_save_input_strips_base_barcode_filename_from_relative_path(mock_z
     # Expect barcodes file to have been written to run folder
     expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
     assert expected_barcodes_file.read_text() == barcodes_file_content
+
 
 @patch("app.file_manager.ZipFile")
 async def test_save_input_raises_httpexception_on_bad_zipfile(mock_zipfile_class, tmp_path):
