@@ -50,9 +50,12 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       formData.append("barcodesFile", barcodesFile, barcodesFile.name);
       formData.append("minknowZip", minknowZipBlob, "minknow.zip");
 
+      // The lang option which is passed to Piranha selects from its available languages which can be used in its
+      // output reports.
+      const lang = options.lang === "fr" ? "French" : "English";
       const params = {
         ...options,
-        lang: options.lang === "fr" ? "French" : "English",
+        lang
       };
       const queryParams = new SvelteURLSearchParams(params).toString();
 
