@@ -16,6 +16,7 @@
   }: {
     mode: AppMode;
     title: string;
+    id: string;
     selectFolder: boolean;
     filters?: FileDialogFilters;
     onchange: (value?: string, fileListValue?: FileList) => void;
