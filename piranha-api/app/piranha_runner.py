@@ -31,11 +31,6 @@ class PiranhaRunner:
         while not log_path.exists() and remaining_wait > 0:
             await asyncio.sleep(POLL_WAIT)
             remaining_wait -= POLL_WAIT
-        if log_path.exists():
-            print("log file created")
-        else:
-            print("log file was not created in time")
-
 
     def log_line(self, run_id: str, line: str):
         print(f"{run_id} {line}")
