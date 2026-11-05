@@ -39,6 +39,13 @@
   const cancelRun = (): void => {
     piranhaAPI.cancelRun();
   };
+
+  let downloading = $state(false);
+  const downloadOutput = async (): Promise<void> => {
+    downloading = true;
+    await (piranhaAPI as PiranhaWebAPI).downloadOutputZip();
+    downloading = false;
+  };
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -88,10 +95,14 @@
         {#if isWeb()}
           <Button
             data-testid="download-output-zip"
-            onclick={async () =>
-              await (piranhaAPI as PiranhaWebAPI).downloadOutputZip()}
+            onclick={downloadOutput}
+            disabled={downloading}
             >{m.downloadOutputZip()}</Button
           >
+          {#if downloading}
+            <Spinner class="text-orange-300" data-testid="downloading-spinner"
+            ></Spinner>
+          {/if}
           {#if piranhaAPI.downloadError}
             <div data-testid="download-error" class="text-red-600 text-sm">
               {m[piranhaAPI.downloadError.messageKey]()}: {piranhaAPI.downloadError.detail}
