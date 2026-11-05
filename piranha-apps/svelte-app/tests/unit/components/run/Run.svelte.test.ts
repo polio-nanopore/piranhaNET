@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, beforeAll } from "vitest";
 import {
   expectTranslations,
   mockPersistentSettingsStore,
@@ -7,6 +7,7 @@ import {
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { screen, render } from "@testing-library/svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
+import { initialiseStore } from "../../../../src/lib/store.svelte";
 
 describe("Run", () => {
   const mockSettings = {
@@ -17,9 +18,13 @@ describe("Run", () => {
     },
   };
 
+  beforeAll(() => {
+    initialiseStore("electron");
+  });
+
   test("renders as expected when user settings have not been persisted", async () => {
     mockPersistentSettingsStore({ userSettings: null });
-    mockPiranhaAPI({ running: false });
+    await mockPiranhaAPI({ running: false });
     renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",
@@ -47,7 +52,7 @@ describe("Run", () => {
 
   test("renders as expected when piranha has not started running", async () => {
     mockPersistentSettingsStore(mockSettings);
-    mockPiranhaAPI({ running: false });
+    await mockPiranhaAPI({ running: false });
     renderInI18nTestContext(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",
@@ -66,7 +71,10 @@ describe("Run", () => {
   });
 
   test("render as expected when piranha has started running", async () => {
-    mockPiranhaAPI({ running: true, log: ["log entry 1", "log entry 2"] });
+    await mockPiranhaAPI({
+      running: true,
+      log: ["log entry 1", "log entry 2"],
+    });
     render(RunRelatedComponentInTestContext, {
       props: {
         componentName: "Run",

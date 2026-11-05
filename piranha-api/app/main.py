@@ -1,10 +1,12 @@
 import os
+import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
 from shutil import rmtree
 from typing import Annotated
 
 from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from shortuuid import uuid
 
@@ -13,10 +15,37 @@ from app.models import PiranhaRunOptions
 from app.piranha_runner import PiranhaRunner
 from app.settings import settings
 
+RUN_ID_HEADER = "piranhanet-run-id"
+
 app = FastAPI()
 file_manager = FileManager(Path(settings.input_dir), Path(settings.output_dir))
 
 piranha_runner = PiranhaRunner(Path(settings.piranha_venv_path))
+
+# TODO: make allowed origins configurable to only allow PiranhaNET front end: mrc-6996
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=[RUN_ID_HEADER, "Content-Disposition"],
+)
+
+
+def get_versions():
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    with open(pyproject_path, "rb") as f:
+        pyproject = tomllib.load(f)
+        api_version = pyproject["project"]["version"]
+    piranha_version = piranha_runner.get_piranha_version()
+    return [api_version, piranha_version]
+
+
+[api_version, piranha_version] = get_versions()
+
+print("api version is " + api_version)
+print("piranha version is " + piranha_version)
 
 
 def generate_run_id() -> str:
@@ -37,6 +66,11 @@ def get_root():
     return "Welcome to PiranhaNET API"
 
 
+@app.get("/versions")
+def get_versions():
+    return {"api": api_version, "piranha": piranha_version}
+
+
 @app.post("/run")
 async def run(
     run_options: Annotated[PiranhaRunOptions, Depends()],
@@ -54,7 +88,7 @@ async def run(
         piranha_runner.run_piranha_log_generator(
             run_id, run_options, str(barcodes_file_path), str(minknow_dir_path), str(output_dir_path)
         ),
-        headers={"piranhanet-run-id": run_id},  # Return the run id in header, as response body is streamed log
+        headers={RUN_ID_HEADER: run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
     )
 
