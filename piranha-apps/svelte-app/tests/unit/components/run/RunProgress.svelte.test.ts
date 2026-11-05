@@ -225,7 +225,7 @@ describe("RunProgress", () => {
         initialized: true,
         log: ["log entry 1 ", "log entry 2"],
         running: false,
-        error: "oh no",
+        error: { messageKey: "runError", detail: "oh no"},
       });
       renderInI18nTestContext(RunProgress);
       expect(screen.getByTestId("run-progress-x")).toBeVisible();
@@ -328,7 +328,7 @@ describe("RunProgress", () => {
       expect(screen.queryByTestId("download-output-zip")).toBeNull();
     });
 
-    test("see Check and Open Results buttons when running is complete with no error", async () => {
+    test("see Check and Download Output button when running is complete with no error", async () => {
       await mockPiranhaAPI({
         log: ["log entry 1 ", "log entry 2"],
         running: false,
@@ -352,6 +352,7 @@ describe("RunProgress", () => {
         },
       );
 
+      expect(screen.queryByTestId("download-error")).toBeNull();
       expect(screen.queryByTestId("open-output-folder")).toBeNull();
       expect(screen.queryByTestId("open-report")).toBeNull();
 
@@ -376,6 +377,28 @@ describe("RunProgress", () => {
       const button = screen.getByTestId("download-output-zip");
       await user.click(button);
       expect(piranhaAPI.downloadOutputZip).toHaveBeenCalled();
+    });
+
+    test("download error is displayed", async () => {
+      await mockPiranhaAPI({
+        running: false,
+        runSucceeded: true,
+        downloadError: {messageKey: "downloadError", detail: "oh no"}
+      });
+      renderInI18nTestContext(RunProgress);
+
+      await expectTranslations(
+        (text) => {
+          expect(screen.getByTestId("download-error")).toHaveTextContent(
+            text,
+          );
+        },
+        {
+          en: /Download Error: oh no/,
+          fr: /Erreur de téléchargement: oh no/,
+          pt: /Erro ao descarregar: oh no/,
+        },
+      );
     });
   });
 });

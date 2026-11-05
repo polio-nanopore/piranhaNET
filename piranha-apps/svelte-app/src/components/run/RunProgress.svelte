@@ -92,6 +92,11 @@
               await (piranhaAPI as PiranhaWebAPI).downloadOutputZip()}
             >{m.downloadOutputZip()}</Button
           >
+          {#if piranhaAPI.downloadError}
+            <div data-testid="download-error" class="text-red-600 text-sm">
+              {m[piranhaAPI.downloadError.messageKey]()}: {piranhaAPI.downloadError.detail}
+            </div>
+          {/if}
         {:else}
           <Button
             data-testid="open-report"

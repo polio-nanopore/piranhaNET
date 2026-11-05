@@ -13,6 +13,7 @@ export interface APIMock {
   runSucceeded: boolean;
   cancelling: boolean;
   apiVersions: WebVersions;
+  downloadError: PiranhaError | null;
 }
 
 const defaultAPIMock: APIMock = {
@@ -26,6 +27,7 @@ const defaultAPIMock: APIMock = {
     piranha: "0.1.0-test",
     api: "0.2.0-test",
   },
+  downloadError: null
 };
 
 let initialized = $state(false);
@@ -34,6 +36,7 @@ let error = $state(null);
 let log = $state([]);
 let runSucceeded = $state(false);
 let cancelling = $state(false);
+let downloadError = $state(null);
 
 export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   // initialiseStore should have been called prior to mocking the API, as the mode
@@ -46,6 +49,7 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   running = values.running || defaultAPIMock.running;
   cancelling = values.cancelling || defaultAPIMock.cancelling;
   runSucceeded = values.runSucceeded || defaultAPIMock.runSucceeded;
+  downloadError = values.downloadError || defaultAPIMock.downloadError;
   const apiVersions = values.apiVersions || defaultAPIMock.apiVersions;
 
   const { piranhaAPI } = await import("$lib/piranhaAPI/piranhaAPI.svelte");
@@ -69,6 +73,7 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   spyOnAPIProp("running", running);
   spyOnAPIProp("cancelling", cancelling);
   spyOnAPIProp("runSucceeded", runSucceeded);
+  spyOnAPIProp("downloadError", downloadError);
 
   spyOnAPIMethod("runPiranha");
   spyOnAPIMethod("clearRun");

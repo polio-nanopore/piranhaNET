@@ -7,6 +7,7 @@ import { m } from "../../paraglide/messages";
 export class PiranhaWebAPI extends BasePiranhaAPI {
   private readonly _apiUrl;
   private _runId: string | null;
+  private _downloadError: PiranhaError | null = $state(null);
   constructor(apiUrl: string) {
     super();
     this._apiUrl = apiUrl;
@@ -15,6 +16,10 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
   _buildUrl(relativeUrl: string): string {
     return `${this._apiUrl}${relativeUrl}`;
+  }
+
+  get downloadError(): PiranhaError {
+    return this._downloadError;
   }
 
   async getAPIVersions(): Promise<{ api: string; piranha: string }> {
@@ -140,15 +145,17 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
+      throw Error("oh no")
     } catch (e) {
       const messageKey = "downloadError";
       const detail = e.message;
-      this._error = { messageKey, detail };
+      this._downloadError = { messageKey, detail };
     }
   }
 
   clearRun(): void {
     super.clearRun();
+    this._downloadError = null;
     this._runId = null;
   }
 }
