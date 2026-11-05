@@ -5,6 +5,8 @@ import { m } from "../../paraglide/messages";
 export class PiranhaElectronAPI extends BasePiranhaAPI {
   private _initialized = $state(false);
   private _options: PiranhaRunOptionsElectron | null = $state(null);
+  // The specific output folder for this run (not the top level output folder which is set in _options). We
+  // discover this by regexing the log output
   private _runOutputFolderName = $state("");
   private _cancelling = $state(false);
   private _abortId = "";
