@@ -145,7 +145,6 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
-      throw Error("oh no")
     } catch (e) {
       const messageKey = "downloadError";
       const detail = e.message;
