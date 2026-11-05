@@ -12,7 +12,8 @@
   onMount(async () => {
     await tick(); // necessary on Windows installation
     // We may be on first load or reloading due to language change - retain the route in latter case,
-    // otherwise navigate to default / route.
+    // otherwise navigate to default / route. This is only relevant in Electron mode, where initial
+    // route can be polluted by local file path.
     let route =
       routerHelper.initialNavigationDone || isWeb() ? router.path : "/";
     // Router path gets unhelpful local file prefix in production, so need to remove this
