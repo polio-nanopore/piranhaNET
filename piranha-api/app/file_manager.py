@@ -42,7 +42,9 @@ class FileManager:
 
         # Save barcodes file
         run_dir = self.input_dir(run_id)
-        barcodes_file_path = run_dir / barcodes_file.filename
+        # Filename should not include path indicators, but strip them out if they do appear
+        filename = Path(barcodes_file.filename).name
+        barcodes_file_path = run_dir / filename
         with barcodes_file_path.open(mode="wb") as saved_barcodes_file:
             barcodes_content = await barcodes_file.read()
             saved_barcodes_file.write(barcodes_content)

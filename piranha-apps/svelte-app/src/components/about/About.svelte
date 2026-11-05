@@ -88,7 +88,7 @@
   });
 </script>
 
-<div class="container mx-auto">
+<div class="container piranha-container mx-auto">
   <div
     id="scrolling-container"
     class="max-h-[calc(100vh-10rem)] overflow-y-auto p-4 space-y-4"

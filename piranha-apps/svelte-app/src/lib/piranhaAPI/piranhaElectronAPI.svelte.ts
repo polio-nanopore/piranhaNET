@@ -5,6 +5,8 @@ import { m } from "../../paraglide/messages";
 export class PiranhaElectronAPI extends BasePiranhaAPI {
   private _initialized = $state(false);
   private _options: PiranhaRunOptionsElectron | null = $state(null);
+  // The specific output folder for this run (not the top level output folder which is set in _options). We
+  // discover this by regexing the log output
   private _runOutputFolderName = $state("");
   private _cancelling = $state(false);
   private _abortId = "";
@@ -52,8 +54,10 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
 
   private async findOutputFolderFromLog(): Promise<void> {
     // Find local report path from docker volume path written in log, if run was successful
-    const fullLog = this._log.join(" ");
-    const match = fullLog.match(/\/data\/run_data\/output\/(.*)\/report\.html/);
+    const fullLog = this._log.join("\n");
+    const match = fullLog.match(
+      /\/data\/run_data\/output\/(.*?)\/report\.html/,
+    );
     if (match) {
       this._runOutputFolderName = match[1];
     }

@@ -52,7 +52,7 @@ describe("piranhaRunner", () => {
           runName: "test_name",
           notes: "test notes",
           barcodesFilePath: join(testDataPath, barcodesFileName),
-          minKnowFolderPath: join(testDataPath, "demultiplexed"),
+          minKnowFolderPath: join(testDataPath, "minknow"),
           outputFolderPath: testOutputPath,
           threads: 10,
           //run settings

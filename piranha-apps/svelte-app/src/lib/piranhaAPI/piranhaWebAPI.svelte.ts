@@ -7,6 +7,7 @@ import { m } from "../../paraglide/messages";
 export class PiranhaWebAPI extends BasePiranhaAPI {
   private readonly _apiUrl;
   private _runId: string | null;
+  private _downloadError: PiranhaError | null = $state(null);
   constructor(apiUrl: string) {
     super();
     this._apiUrl = apiUrl;
@@ -15,6 +16,10 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
 
   _buildUrl(relativeUrl: string): string {
     return `${this._apiUrl}${relativeUrl}`;
+  }
+
+  get downloadError(): PiranhaError {
+    return this._downloadError;
   }
 
   async getAPIVersions(): Promise<{ api: string; piranha: string }> {
@@ -45,9 +50,12 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       formData.append("barcodesFile", barcodesFile, barcodesFile.name);
       formData.append("minknowZip", minknowZipBlob, "minknow.zip");
 
+      // The lang option which is passed to Piranha selects from its available languages which can be used in its
+      // output reports.
+      const lang = options.lang === "fr" ? "French" : "English";
       const params = {
         ...options,
-        lang: options.lang === "fr" ? "French" : "English",
+        lang,
       };
       const queryParams = new SvelteURLSearchParams(params).toString();
 
@@ -98,6 +106,14 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     } finally {
       this._running = false;
       this.addToLog("Piranha run finished");
+
+      if (!this._error && !this.runSucceeded) {
+        this._error = {
+          messageKey: "runError",
+          detail:
+            "Piranha finished with unexpected error code. See log for details.",
+        };
+      }
     }
   }
 
@@ -136,12 +152,13 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
     } catch (e) {
       const messageKey = "downloadError";
       const detail = e.message;
-      this._error = { messageKey, detail };
+      this._downloadError = { messageKey, detail };
     }
   }
 
   clearRun(): void {
     super.clearRun();
+    this._downloadError = null;
     this._runId = null;
   }
 }
