@@ -55,7 +55,7 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       const lang = options.lang === "fr" ? "French" : "English";
       const params = {
         ...options,
-        lang
+        lang,
       };
       const queryParams = new SvelteURLSearchParams(params).toString();
 
@@ -110,7 +110,8 @@ export class PiranhaWebAPI extends BasePiranhaAPI {
       if (!this._error && !this.runSucceeded) {
         this._error = {
           messageKey: "runError",
-          detail: "Piranha finished with unexpected error code. See log for details."
+          detail:
+            "Piranha finished with unexpected error code. See log for details.",
         };
       }
     }

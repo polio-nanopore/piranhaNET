@@ -225,7 +225,7 @@ describe("RunProgress", () => {
         initialized: true,
         log: ["log entry 1 ", "log entry 2"],
         running: false,
-        error: { messageKey: "runError", detail: "oh no"},
+        error: { messageKey: "runError", detail: "oh no" },
       });
       renderInI18nTestContext(RunProgress);
       expect(screen.getByTestId("run-progress-x")).toBeVisible();
@@ -383,15 +383,13 @@ describe("RunProgress", () => {
       await mockPiranhaAPI({
         running: false,
         runSucceeded: true,
-        downloadError: {messageKey: "downloadError", detail: "oh no"}
+        downloadError: { messageKey: "downloadError", detail: "oh no" },
       });
       renderInI18nTestContext(RunProgress);
 
       await expectTranslations(
         (text) => {
-          expect(screen.getByTestId("download-error")).toHaveTextContent(
-            text,
-          );
+          expect(screen.getByTestId("download-error")).toHaveTextContent(text);
         },
         {
           en: /Download Error: oh no/,

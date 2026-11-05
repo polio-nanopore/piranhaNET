@@ -27,7 +27,7 @@ const defaultAPIMock: APIMock = {
     piranha: "0.1.0-test",
     api: "0.2.0-test",
   },
-  downloadError: null
+  downloadError: null,
 };
 
 let initialized = $state(false);

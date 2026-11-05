@@ -216,8 +216,9 @@ describe("piranhaWebAPI", () => {
 
     expect(sut.error).toStrictEqual({
       messageKey: "runError",
-      detail: "Piranha finished with unexpected error code. See log for details."
-    })
+      detail:
+        "Piranha finished with unexpected error code. See log for details.",
+    });
   });
 
   const prepSutForDownload = (sut): void => {

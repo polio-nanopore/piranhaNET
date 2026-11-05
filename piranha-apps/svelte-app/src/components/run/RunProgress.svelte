@@ -96,8 +96,7 @@
           <Button
             data-testid="download-output-zip"
             onclick={downloadOutput}
-            disabled={downloading}
-            >{m.downloadOutputZip()}</Button
+            disabled={downloading}>{m.downloadOutputZip()}</Button
           >
           {#if downloading}
             <Spinner class="text-orange-300" data-testid="downloading-spinner"
@@ -105,7 +104,8 @@
           {/if}
           {#if piranhaAPI.downloadError}
             <div data-testid="download-error" class="text-red-600 text-sm">
-              {m[piranhaAPI.downloadError.messageKey]()}: {piranhaAPI.downloadError.detail}
+              {m[piranhaAPI.downloadError.messageKey]()}: {piranhaAPI
+                .downloadError.detail}
             </div>
           {/if}
         {:else}
