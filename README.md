@@ -61,6 +61,7 @@ Run `./scripts/run-electron`.
 Run the API with: `./scripts/run-api`.
 Run the web front end with: `./scripts/run-web`.
 
+Stop the API with: `/scripts/stop-api`.
 
 ## Release process
 To make a release:
