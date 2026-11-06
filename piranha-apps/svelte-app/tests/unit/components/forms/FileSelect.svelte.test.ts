@@ -56,11 +56,11 @@ describe("FileSelect", () => {
           mode: "electron",
           selectFolder: false,
           filters: [],
-          value: "/default/barcodes.csv",
+          value: "/default/samples.csv",
         },
       });
       await expectChooseFileTranslations();
-      expect(screen.getByText("/default/barcodes.csv")).toBeVisible();
+      expect(screen.getByText("/default/samples.csv")).toBeVisible();
     });
 
     test("shows dialog, updates values and calls onchange", async () => {
@@ -78,7 +78,7 @@ describe("FileSelect", () => {
           selectFolder: false,
           filters: [{ name: "csv", extensions: ["csv"] }],
           onchange: mockOnChange,
-          value: "/default/barcodes.csv",
+          value: "/default/samples.csv",
         },
       });
 
@@ -88,7 +88,7 @@ describe("FileSelect", () => {
         title: "Test Title",
         selectFolder: false,
         filters: [{ name: "csv", extensions: ["csv"] }],
-        defaultPath: "/default/barcodes.csv",
+        defaultPath: "/default/samples.csv",
       });
 
       expect(mockOnChange).toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe("FileSelect", () => {
           selectFolder: false,
           filters: [{ name: "csv", extensions: ["csv"] }],
           onchange: mockOnChange,
-          value: "/default/barcodes.csv",
+          value: "/default/samples.csv",
         },
       });
 
@@ -116,7 +116,7 @@ describe("FileSelect", () => {
       await user.click(button);
 
       expect(mockOnChange).not.toHaveBeenCalled();
-      expect(screen.getByText("/default/barcodes.csv")).toBeVisible();
+      expect(screen.getByText("/default/samples.csv")).toBeVisible();
     });
   });
 
@@ -140,7 +140,7 @@ describe("FileSelect", () => {
           mode: "web",
           selectFolder: false,
           filters: [],
-          value: "/default/barcodes.csv",
+          value: "/default/samples.csv",
           title: "test",
           onchange,
         },
@@ -157,7 +157,7 @@ describe("FileSelect", () => {
     test("renders as expected for file select", async () => {
       renderFileSelect();
       await expectChooseFileTranslations();
-      expect(screen.getByText("/default/barcodes.csv")).toBeVisible();
+      expect(screen.getByText("/default/samples.csv")).toBeVisible();
       expect(screen.getByTestId("file-input-test")).not.toBeVisible();
     });
 

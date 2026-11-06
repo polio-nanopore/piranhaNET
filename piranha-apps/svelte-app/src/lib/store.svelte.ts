@@ -49,7 +49,7 @@ export const appState: AppState = $state({
 // When in webmode, we keep references to the uploaded files themselves separately from the name strings displayed
 // and used for validation. These are bound to the file selects.
 export const webFiles = $state({
-  barcodesFileList: null,
+  samplesFileList: null,
   minknowFileList: null,
 });
 
@@ -58,7 +58,7 @@ export const webFiles = $state({
 export const defaultRunParameters = (): PiranhaRunParameters => ({
   runName: "",
   notes: "",
-  barcodesFilePath: "",
+  samplesFilePath: "",
   minKnowFolderPath: "",
   threads: 10,
 });
