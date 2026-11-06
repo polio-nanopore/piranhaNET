@@ -206,7 +206,7 @@ describe("piranhaWebAPI", () => {
     const sut = new PiranhaWebAPI("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
-      testBarcodesFile,
+      testSamplesFile,
       testMinknowFileList,
     );
 
