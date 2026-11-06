@@ -25,6 +25,7 @@ export abstract class BasePiranhaAPI {
 
   protected addToLog(line: string, error = false): void {
     if (error) {
+      // Add error to log with ANSI colour escape sequence for red text
       this._log.push(`\x1b[1;31m${line}`);
     } else {
       this._log.push(line);

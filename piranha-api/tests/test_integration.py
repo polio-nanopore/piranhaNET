@@ -15,7 +15,7 @@ test_data_dir = Path.cwd().parent / "test-data" / "multiple_samples"
 
 def create_minknow_zip():
     # Create a zip file to upload from the real test data
-    folder = test_data_dir / "demultiplexed"
+    folder = test_data_dir / "minknow"
     zip_buffer = BytesIO()
     with ZipFile(zip_buffer, "w", ZIP_DEFLATED) as zf:
         for file_path in folder.rglob("*"):

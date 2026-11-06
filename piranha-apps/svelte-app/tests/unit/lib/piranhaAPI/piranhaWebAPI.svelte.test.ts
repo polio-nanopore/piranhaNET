@@ -179,6 +179,48 @@ describe("piranhaWebAPI", () => {
     });
   });
 
+  test("runPiranha sets error if expected exit code was not logged", async () => {
+    const responseLog = [
+      "Piranha run started...",
+      "Piranha run failed",
+      "Piranha run completed with exit code 255",
+    ];
+    const mockStreamData = responseLog.join("\n");
+    const mockReadableStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(mockStreamData));
+        controller.close();
+      },
+    });
+
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      statusText: "OK",
+      headers: runResponseHeaders,
+      body: mockReadableStream,
+    } as any;
+
+    vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
+
+    const sut = new PiranhaWebAPI("http://test");
+    const runPromise = sut.runPiranha(
+      testOptions,
+      testBarcodesFile,
+      testMinknowFileList,
+    );
+
+    await runPromise;
+    expect(sut.running).toBe(false);
+    expect(sut.runSucceeded).toBe(false);
+
+    expect(sut.error).toStrictEqual({
+      messageKey: "runError",
+      detail:
+        "Piranha finished with unexpected error code. See log for details.",
+    });
+  });
+
   const prepSutForDownload = (sut): void => {
     // Fake the prerequisites for the sut to attempt download
     sut["_runId"] = "testrun-123";
@@ -230,27 +272,29 @@ describe("piranhaWebAPI", () => {
     expect(revokeObjectURLSpy).toHaveBeenCalledWith("blob:mock-url");
   });
 
-  test("downloadZipfile sets error if no run id", async () => {
+  test("downloadZipfile sets downloadError if no run id", async () => {
     const sut = new PiranhaWebAPI("http://test");
     prepSutForDownload(sut); // provide log
     sut["_runId"] = null;
     await sut.downloadOutputZip();
-    expect(sut.error).toStrictEqual({
+    expect(sut.downloadError).toStrictEqual({
       messageKey: "downloadError",
       detail: "Cannot download results - Piranha has not run.",
     });
+    expect(sut.error).toBeNull();
   });
 
-  test("downloadZipfile sets error if run not succeeded", async () => {
+  test("downloadZipfile sets downloadError if run not succeeded", async () => {
     const sut = new PiranhaWebAPI("http://test");
     sut["_runId"] = "testrun-123";
     sut.log.push("oh dear");
     sut.log.push("run failed");
     await sut.downloadOutputZip();
-    expect(sut.error).toStrictEqual({
+    expect(sut.downloadError).toStrictEqual({
       messageKey: "downloadError",
       detail: "Cannot download results - Piranha has not run.",
     });
+    expect(sut.error).toBeNull();
   });
 
   test("downloadZipfile sets error if download response has error status", async () => {
@@ -264,9 +308,10 @@ describe("piranhaWebAPI", () => {
     const sut = new PiranhaWebAPI("http://test");
     prepSutForDownload(sut);
     await sut.downloadOutputZip();
-    expect(sut.error).toStrictEqual({
+    expect(sut.downloadError).toStrictEqual({
       messageKey: "downloadError",
       detail: "400: Bad Request.",
     });
+    expect(sut.error).toBeNull();
   });
 });

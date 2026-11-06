@@ -42,7 +42,10 @@ class FileManager:
 
         # Save samples file
         run_dir = self.input_dir(run_id)
-        samples_file_path = run_dir / samples_file.filename
+
+        # Filename should not include path indicators, but strip them out if they do appear
+        filename = Path(samples_file.filename).name
+        samples_file_path = run_dir / filename
         with samples_file_path.open(mode="wb") as saved_samples_file:
             samples_content = await samples_file.read()
             saved_samples_file.write(samples_content)

@@ -22,7 +22,7 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
         return join(testDataDir, "samples.csv");
       }
       if (options.title === "MinKnow folder") {
-        return join(testDataDir, "demultiplexed");
+        return join(testDataDir, "minknow");
       }
       if (options.title === "Output folder") {
         return join(sourceDir, "test-results");

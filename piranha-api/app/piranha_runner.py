@@ -39,7 +39,18 @@ class PiranhaRunner:
             yield self.log_line(run_id, line)
 
     def get_piranha_version(self):
-        result = subprocess.run(["piranha", "--version"], capture_output=True, text=True, check=True)
+        try:
+            result = subprocess.run(
+                f"source {self.piranha_activate_path} && piranha --version",
+                executable="/bin/bash",
+                shell=True,
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+        except:
+            print(f"Cannot access piranha. Configured path {self.piranha_activate_path} may be incorrect.")
+            raise
         # Take last part of response (remove "piranha")
         return result.stdout.strip().split()[-1]
 
