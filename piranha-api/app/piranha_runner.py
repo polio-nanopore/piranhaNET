@@ -22,10 +22,12 @@ class PiranhaRunner:
     def __init__(self, piranha_venv_path: Path):
         self.piranha_venv_path = piranha_venv_path
         self.piranha_activate_path = Path(piranha_venv_path / "activate")
+        print(f"Activate path is {self.piranha_activate_path}")
 
     async def wait_for_log_file(self, log_path: Path):
+        print("waiting for log file")
         # Wait for the log file to be created
-        remaining_wait = 5
+        remaining_wait = 10
         while not log_path.exists() and remaining_wait > 0:
             await asyncio.sleep(POLL_WAIT)
             remaining_wait -= POLL_WAIT
