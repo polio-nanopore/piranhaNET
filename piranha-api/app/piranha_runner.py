@@ -1,4 +1,5 @@
 import asyncio
+import os
 import subprocess
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -12,10 +13,10 @@ POLL_WAIT = 0.2
 
 def safe_option(name: str, value: str):
     if len(value.strip()) == 0:
-        return ""
+        return []
     else:
         value = value.replace(" ", "_")
-    return f"{name} {value}"
+    return [name, value]
 
 
 class PiranhaRunner:
@@ -65,44 +66,62 @@ class PiranhaRunner:
         yield self.log_line(run_id, f"Starting run {run_options.run_name} with run id {run_id}")
 
         # We need to write to a log file because mafft (called fron piranha) assumes that the default stdout is
-        # available, and errors if it's being piped through the subprocess. So we do not set stdout or stderr on the
-        # process, but instead send all output to a log file which we poll and stream to the response. This has a nice
+        # available, and errors if it's being piped through the subprocess. So we send stdout and stderr directly
+        # to a log file which we poll and stream to the response. This has a nice
         # consequence that we're naturally saving the logs to file, which we can include in the download
         # zip of the run as it may be of use.
         log_path = Path(output_dir_path) / "piranha.log"
 
         option_vals = [
-            f"-b {barcodes_file_path}",
-            f"-i {minknow_dir_path}",
-            f"-o {output_dir_path}",
+            "-b",
+            barcodes_file_path,
+            "-i",
+            minknow_dir_path,
+            "-o",
+            output_dir_path,
             # run parameters
-            f"--threads {run_options.threads}",
-            safe_option("--runname", run_options.run_name),
-            safe_option("--notes", run_options.notes),
+            "--threads",
+            str(run_options.threads),
+            *safe_option("--runname", run_options.run_name),
+            *safe_option("--notes", run_options.notes),
             # run settings
-            f"--sample-type {run_options.protocol.value}",
-            safe_option("--positive-control", run_options.positive_control),
-            safe_option("--negative-control", run_options.negative_control),
+            "--sample-type",
+            run_options.protocol.value,
+            *safe_option("--positive-control", run_options.positive_control),
+            *safe_option("--negative-control", run_options.negative_control),
             # piranha output settings
-            f"--orientation {run_options.orientation.value}",
-            safe_option("--output-prefix", run_options.output_prefix),
-            f"{'--all-metadata-to-header' if run_options.all_metadata_to_header else ''}",
-            f"{'--no-temp' if run_options.output_intermediate_files else ''}",
+            "--orientation",
+            run_options.orientation.value,
+            *safe_option("--output-prefix", run_options.output_prefix),
+            *(["--all-metadata-to-header"] if run_options.all_metadata_to_header else []),
+            *(["--no-temp"] if run_options.output_intermediate_files else []),
             # user settings
-            safe_option("--username", run_options.user_name),
-            safe_option("--institute", run_options.institute),
-            f"--language {run_options.lang.value}",
-            "--medaka-model AUTO",
+            *safe_option("--username", run_options.user_name),
+            *safe_option("--institute", run_options.institute),
+            "--language",
+            run_options.lang.value,
+            "--medaka-model",
+            "AUTO",
             # this option ensures piranha writes to our run_id output dir, not a new dir with _1 appended
-            "--overwrite ",
+            "--overwrite",
         ]
 
-        options_string = " ".join(option_vals)
-        piranha_cmd = f"source {self.piranha_activate_path} && piranha {options_string} > {log_path} 2>&1"
-
         try:
+            venv_bin = self.piranha_venv_path.resolve()
+            env = os.environ.copy()
+            env["PATH"] = f"{venv_bin}{os.pathsep}{env.get('PATH', os.defpath)}"
+            env["VIRTUAL_ENV"] = str(venv_bin.parent)
+            env.pop("PYTHONHOME", None)
+
             # start non-blocking process
-            process = await asyncio.create_subprocess_shell(piranha_cmd, executable="/bin/bash")
+            with log_path.open("wb") as log_file:
+                process = await asyncio.create_subprocess_exec(
+                    str(venv_bin / "piranha"),
+                    *option_vals,
+                    env=env,
+                    stdout=log_file,
+                    stderr=asyncio.subprocess.STDOUT,
+                )
 
             await self.wait_for_log_file(log_path)
 
