@@ -37,20 +37,30 @@
   schema = schema.superRefine(async (data, ctx) => {
     const filePath = data.samplesFilePath;
     if (filePath) {
-      // TODO: handle error
+      let error;
       let samplesFileText;
-      if (isWeb()) {
-        samplesFileText = await webFiles.samplesFileList[0].text();
-      } else {
-        samplesFileText = await (piranhaAPI as PiranhaElectronAPI).readTextFile(filePath);
+      try {
+        if (isWeb()) {
+          samplesFileText = await webFiles.samplesFileList[0].text();
+        } else {
+          samplesFileText = await (piranhaAPI as PiranhaElectronAPI).readTextFile(filePath);
+        }
+      } catch (e) {
+        error = m.formsErrorSamplesFileUnreadable({error: e.message});
       }
 
       // Validate file text
-      const validateResult = validateSamplesFile(samplesFileText);
-      if (!validateResult.success) {
+      if (!error) {
+        const validateResult = validateSamplesFile(samplesFileText);
+        if (!validateResult.success) {
+          error = validateResult.message;
+        }
+      }
+
+      if (error) {
         ctx.addIssue({
           code: "custom",
-          message: validateResult.message,
+          message: error,
           path: ["samplesFilePath"]
         });
       }
