@@ -39,11 +39,11 @@
     if (filePath) {
       // TODO: handle error
       let samplesFileText;
-      if (!isWeb()) {
+      if (isWeb()) {
+        samplesFileText = await webFiles.samplesFileList[0].text();
+      } else {
         samplesFileText = await (piranhaAPI as PiranhaElectronAPI).readTextFile(filePath);
       }
-      // TODO:
-      //  Get file text (web)
 
       // Validate file text
       const validateResult = validateSamplesFile(samplesFileText);
