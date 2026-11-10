@@ -13,6 +13,9 @@ const api = {
   versions: process.versions,
   showFileDialog: (options: FileDialogOptions) =>
     ipcRenderer.invoke("show-file-dialog", options),
+  readTextFile: (path: string) => {
+    return ipcRenderer.invoke("read-text-file", path);
+  },
   openRunReport: (outputFolderBasePath: string, runOutputFolderName: string) =>
     ipcRenderer.invoke(
       "open-run-report",

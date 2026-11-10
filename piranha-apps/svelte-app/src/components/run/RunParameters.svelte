@@ -25,15 +25,40 @@
   import { i18n } from "$lib/i18n.svelte";
   import { PiranhaWebAPI } from "$lib/piranhaAPI/piranhaWebAPI.svelte";
   import { PiranhaElectronAPI } from "$lib/piranhaAPI/piranhaElectronAPI.svelte";
+  import {validateSamplesFile} from "../../lib/validation";
 
   let errors = $state<Record<string, string[]>>({});
 
-  const schema = isWeb()
+  let schema = isWeb()
     ? runParametersSchemaWeb()
     : runParametersSchemaElectron();
 
-  function validate(): boolean {
-    const result = schema.safeParse({
+  // Add sample file validation to the schema, which needs to be implemented difference in web/electron mode
+  schema = schema.superRefine(async (data, ctx) => {
+    const filePath = data.samplesFilePath;
+    if (filePath) {
+      // TODO: handle error
+      let samplesFileText;
+      if (!isWeb()) {
+        samplesFileText = await (piranhaAPI as PiranhaElectronAPI).readTextFile(filePath);
+      }
+      // TODO:
+      //  Get file text (web)
+
+      // Validate file text
+      const validateResult = validateSamplesFile(samplesFileText);
+      if (!validateResult.success) {
+        ctx.addIssue({
+          code: "custom",
+          message: validateResult.message,
+          path: ["samplesFilePath"]
+        });
+      }
+    }
+  });
+
+  async function validate(): Promise<boolean> {
+    const result = await schema.safeParseAsync({
       ...runParameters,
       ...settings,
     });
@@ -46,17 +71,17 @@
     return result.success;
   }
 
-  function onChange(): void {
+  async function onChange(): void {
     // validate after every change after initial failed submit, so user
     // can see when form becomes valid;
     if (appState.doneInitialSubmit) {
-      validate();
+      await validate();
     }
   }
 
   async function onSubmit(e: SubmitEvent): Promise<void> {
     e.preventDefault();
-    const valid = validate();
+    const valid = await validate();
     if (valid) {
       if (isWeb()) {
         const runOptions = createPiranhaRunOptionsWeb(

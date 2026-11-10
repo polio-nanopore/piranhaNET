@@ -69,7 +69,7 @@ describe("validateSamplesFile", () => {
      message: "File contains invalid character: *"
    });
  });
-  test("errors on invalid barcode", async () => {
+ test("errors on invalid barcode", async () => {
     const rows = [
       "barcode,sample",
       "barcode01,sample01",
@@ -80,6 +80,18 @@ describe("validateSamplesFile", () => {
       success: false, message: "Invalid barcode: barcode02a"
     });
   });
-  // error if 0 rows
-  // TEST TRANSLATIONS
+  test("errors if 0 non-header rows", async () => {
+    const rows = [
+      "barcode,sample",
+    ];
+    expect(await validateSamplesFile(joinRows(rows))).toStrictEqual({
+      success: false, message: "File contains 0 rows"
+    });
+  });
+  test("errors if empty file", async () => {
+    expect(await validateSamplesFile("")).toStrictEqual({
+      success: false, message: "File contains 0 rows"
+    });
+  });
+  // TODO: TEST TRANSLATIONS
 });

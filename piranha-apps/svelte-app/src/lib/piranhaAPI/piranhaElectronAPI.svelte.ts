@@ -99,4 +99,8 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
       this._runOutputFolderName,
     );
   }
+
+  async readTextFile(path: string): Promise<string> {
+    return await window.api.readTextFile(path);
+  };
 }
