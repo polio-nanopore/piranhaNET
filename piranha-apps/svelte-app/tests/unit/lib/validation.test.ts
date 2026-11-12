@@ -1,16 +1,14 @@
 import { describe, test, expect } from "vitest";
 import {validateSamplesFile} from "../../../src/lib/validation";
-import { EOL } from "os";
 import {i18n} from "$lib/i18n.svelte";
 
-// TODO: can this be \n?
-const joinRows = (rows: string[]) => rows.join(EOL);
+const joinRows = (rows: string[]): void => rows.join("\n");
 
-const expectSuccess = (samplesFileRows: string[]) => {
+const expectSuccess = (samplesFileRows: string[]): void => {
   expect(validateSamplesFile(joinRows(samplesFileRows))).toStrictEqual({success: true});
 };
 
-const expectError = (samplesFileRows: string[], expectedErrorTranslations: {en: string, fr: string, pt: string}) => {
+const expectError = (samplesFileRows: string[], expectedErrorTranslations: {en: string, fr: string, pt: string}): void => {
   for (const lang of Object.keys(expectedErrorTranslations)) {
     i18n.lang = lang;
     expect(validateSamplesFile(joinRows(samplesFileRows))).toStrictEqual({

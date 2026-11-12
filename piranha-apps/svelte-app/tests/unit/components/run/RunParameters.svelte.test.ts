@@ -151,7 +151,7 @@ describe("RunParameters", () => {
     expect(piranhaAPI.runPiranha).not.toHaveBeenCalled();
   };
 
-  const mockShowFileDialog = () => {
+  const mockShowFileDialog = (): void => {
     const mockShowFileDialog = vi.fn().mockImplementation((options) => {
       if (options.title == "Samples file") {
         return "/test/samples.csv";
