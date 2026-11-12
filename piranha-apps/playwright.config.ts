@@ -2,10 +2,13 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   timeout: 600_000,
+  expect: {
+    timeout: 20_000, // can be very slow on CI
+  },
   use: {
     screenshot: "only-on-failure",
   },
-  retries: 5, // can be flaky picking up API stream on CI..
+  retries: process.env.CI ? 5 : 1, // can be flaky picking up API stream on CI..
   projects: [
     {
       name: "electron",

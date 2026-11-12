@@ -1,6 +1,7 @@
 import { describe, expect, test, beforeEach, beforeAll, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
+import { validateSamplesFile } from "../../../../src/lib/validation";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import {
   clearSettings,
@@ -22,6 +23,10 @@ import {
   isWeb,
 } from "../../../../src/lib/store.svelte.js";
 import { PiranhaProtocol } from "../../../../src/types";
+
+vi.mock("../../../../src/lib/validation", () => ({
+  validateSamplesFile: vi.fn()
+}));
 
 describe("RunParameters", () => {
   const user = userEvent.setup();
@@ -146,6 +151,21 @@ describe("RunParameters", () => {
     expect(piranhaAPI.runPiranha).not.toHaveBeenCalled();
   };
 
+  const mockShowFileDialog = (): void => {
+    const mockShowFileDialog = vi.fn().mockImplementation((options) => {
+      if (options.title == "Samples file") {
+        return "/test/samples.csv";
+      }
+      if (options.title == "MinKnow folder") {
+        return "/test/MinKnow";
+      }
+      throw new Error("unexpected title");
+    });
+    window.api = {
+      showFileDialog: mockShowFileDialog,
+    };
+  };
+
   beforeEach(() => {
     appState.doneInitialSubmit = false;
   });
@@ -170,27 +190,26 @@ describe("RunParameters", () => {
     });
 
     test("submits run if form is validly completed", async () => {
-      const mockShowFileDialog = vi.fn().mockImplementation((options) => {
-        if (options.title == "Samples file") {
-          return "/test/samples.csv";
-        }
-        if (options.title == "MinKnow folder") {
-          return "/test/MinKnow";
-        }
-        throw new Error("unexpected title");
-      });
-      window.api = {
-        showFileDialog: mockShowFileDialog,
-      };
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: true}));
+
+      mockShowFileDialog();
+
+      piranhaAPI.readTextFile.mockImplementation(() => "test content");
 
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
       });
+
+
       await user.type(screen.getByLabelText("Name"), "test name");
       await user.click(screen.getByLabelText("Samples file"));
       await user.click(screen.getByLabelText("MinKnow folder"));
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
+
+      expect(piranhaAPI.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
+      expect(validateSamplesFile).toHaveBeenCalledWith("test content");
+
       expect(piranhaAPI.runPiranha).toHaveBeenCalledOnce();
       expect(piranhaAPI.runPiranha).toHaveBeenCalledWith({
         runName: "test name",
@@ -256,14 +275,59 @@ describe("RunParameters", () => {
     });
 
     test("validates on load if initial submit has been done", async () => {
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: true}));
       runParameters.threads = 21;
       appState.doneInitialSubmit = true;
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
+      })
+      await waitFor(() => {
+        expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
+          /Value must be between 1 and 20/,
+        );
       });
-      expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
-        /Value must be between 1 and 20/,
+    });
+
+    test("displays error when sample file cannot be read for validation", async () => {
+      mockShowFileDialog();
+
+      piranhaAPI.readTextFile.mockImplementation(() => {
+        throw new Error("Unreadable test file");
+      });
+
+      render(RunRelatedComponentInTestContext, {
+        props: { componentName: "RunParameters" },
+      });
+
+      await user.click(screen.getByLabelText("Samples file"));
+      await user.click(screen.getByTestId("run"));
+
+      expect(piranhaAPI.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
+      expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
+        /Unable to read samples file: Unreadable test file/,
       );
+      expect(validateSamplesFile).not.toHaveBeenCalled();
+    });
+
+    test("displays error when sample file fails validation", async () => {
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: false, message: "bad content"}));
+
+      mockShowFileDialog();
+
+      piranhaAPI.readTextFile.mockImplementation(() => "test content");
+
+      render(RunRelatedComponentInTestContext, {
+        props: { componentName: "RunParameters" },
+      });
+
+      await user.click(screen.getByLabelText("Samples file"));
+      await user.click(screen.getByTestId("run"));
+
+      expect(validateSamplesFile).toHaveBeenCalledWith("test content");
+      expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
+        /bad content/,
+      );
+
     });
   });
 
@@ -287,6 +351,7 @@ describe("RunParameters", () => {
     });
 
     test("submits run if form is validly completed", async () => {
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: true}));
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
       });
@@ -298,7 +363,7 @@ describe("RunParameters", () => {
       });
       mockChangeEventOnHTMLInputClick(samplesInput, [samplesFile]);
 
-      const miknowFolderInput = screen.getByTestId(
+      const minknowFolderInput = screen.getByTestId(
         "folder-input-MinKnow folder",
       );
       const minknowFileList = [
@@ -311,7 +376,7 @@ describe("RunParameters", () => {
           value: `testFolder/${f.name}`,
         });
       });
-      mockChangeEventOnHTMLInputClick(miknowFolderInput, minknowFileList);
+      mockChangeEventOnHTMLInputClick(minknowFolderInput, minknowFileList);
 
       await user.type(screen.getByLabelText("Name"), "test name");
       await user.click(screen.getByLabelText("Samples file"));
@@ -332,10 +397,53 @@ describe("RunParameters", () => {
         lang: "en",
         ...defaultPiranhaOutputSettingsWeb,
       };
+      expect(validateSamplesFile).toHaveBeenCalledWith("test content");
       expect(piranhaAPI.runPiranha).toHaveBeenCalledWith(
         expectedOptions,
         samplesFile,
         minknowFileList,
+      );
+    });
+
+    test("displays error when sample file cannot be read for validation", async () => {
+      render(RunRelatedComponentInTestContext, {
+        props: { componentName: "RunParameters" },
+      });
+
+      // Set up the FileSelect values
+      const samplesInput = screen.getByTestId("file-input-Samples file");
+      const samplesFile = new File(["test content"], "samples.csv", {
+        type: "text/plain",
+      });
+      vi.spyOn(samplesFile, "text").mockImplementation(() => {
+        throw new Error("cannot read text");
+      });
+      mockChangeEventOnHTMLInputClick(samplesInput, [samplesFile]);
+      await user.click(screen.getByLabelText("Samples file"));
+      await user.click(screen.getByTestId("run"));
+
+      expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
+        /Unable to read samples file: cannot read text/,
+      );
+      expect(validateSamplesFile).not.toHaveBeenCalled();
+    });
+
+    test("displays error when sample file fails validation", async () => {
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: false, message: "bad content"}));
+      render(RunRelatedComponentInTestContext, {
+        props: { componentName: "RunParameters" },
+      });
+
+      // Set up the FileSelect values
+      const samplesInput = screen.getByTestId("file-input-Samples file");
+      const samplesFile = new File(["test content"], "samples.csv", {
+        type: "text/plain",
+      });
+      mockChangeEventOnHTMLInputClick(samplesInput, [samplesFile]);
+      await user.click(screen.getByLabelText("Samples file"));
+      await user.click(screen.getByTestId("run"));
+      expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
+        /bad content/,
       );
     });
   });
