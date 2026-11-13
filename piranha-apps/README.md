@@ -31,6 +31,22 @@ Run web app:
 $ npm run dev-web
 ```
 
+#### Test data
+
+There is some useful test data to help with manual local testing in the `test-data` folder (under project root). This
+contains two folder with data files which can be used to run Piranha:
+
+- multiple_samples: This contains data for seven samples which can be used to replicate a typical size of Piranha run. However.
+  this data is in an older format and missing some metadata, so Piranha will log some warnings.
+- new_format: This contains data for a single sample in the new format with all expeced metadata.
+
+Each folder contains a "barcodes.csv" file. Select this file as the "Barcodes file" parameter.
+Each folder also contains a single subfolder called "minknow". Select this subfolder as the "MinKnow folder" parameter.
+Select barcodes file and MinKnow folder from the same test_data folder on each run.
+
+The other settings and parameters can typically take any text (e.g. for run Name and Notes), or can be selected from
+drop down lists or checkboxes. See the inline help for descriptions of what each setting means.
+
 #### Troubleshooting
 
 ##### libEGL warning
@@ -101,7 +117,7 @@ However, the shadcn svelte Form component is heavily tied to SvelteKit via `svel
 ### Tests
 
 Run unit tests with `npm run test:unit`.
-Run integration tests with `npm run test:integration`.
+Run integration tests with `npm run test:electron-integration`.
 Run unit and integration tests with coverage using `npm run coverage`
 
 Run Playwright e2e tests with `npm run test:e2e`.

@@ -194,6 +194,14 @@
   }
 }
 
+button {
+  cursor: pointer;
+}
+
+.piranha-container {
+  max-width: 64rem;
+}
+
 .nav {
   height: 3.5rem;
 }

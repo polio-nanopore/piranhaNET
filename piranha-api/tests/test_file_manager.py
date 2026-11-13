@@ -10,10 +10,21 @@ from app.file_manager import FileManager
 
 run_id = "1234"
 test_report_content = "<not an html report>"
+barcodes_file_content = "1,2\nvalue 1, value2\n"
 
 
 def get_sut(tmp_path):
     return FileManager(tmp_path / "test_input", tmp_path / "test_output")
+
+
+def mock_zipfile(mock_zipfile_class):
+    mock_minknow_zip_upload = Mock()
+    mock_minknow_zip_upload.file = Mock()
+    mock_minknow_zip_upload.close = AsyncMock()
+
+    mock_minknow_zip_file = MagicMock()
+    mock_zipfile_class.return_value = mock_minknow_zip_file
+    return mock_minknow_zip_upload, mock_minknow_zip_file
 
 
 @pytest.fixture
@@ -33,14 +44,9 @@ async def test_save_input(mock_zipfile_class, tmp_path):
     mock_barcodes_file_upload = Mock()
     mock_barcodes_file_upload.filename = "test_barcodes.csv"
 
-    barcodes_file_content = "1,2\nvalue 1, value2\n"
     mock_barcodes_file_upload.read = AsyncMock(return_value=barcodes_file_content.encode())
-    mock_minknow_zip_upload = Mock()
-    mock_minknow_zip_upload.file = Mock()
-    mock_minknow_zip_upload.close = AsyncMock()
 
-    mock_minknow_zip_file = MagicMock()
-    mock_zipfile_class.return_value = mock_minknow_zip_file
+    mock_minknow_zip_upload, mock_minknow_zip_file = mock_zipfile(mock_zipfile_class)
 
     sut = get_sut(tmp_path)
     await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
@@ -57,6 +63,42 @@ async def test_save_input(mock_zipfile_class, tmp_path):
     # Expect barcodes file to have been written
     expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
     assert expected_barcodes_file.read_text() == barcodes_file_content
+
+
+@patch("app.file_manager.ZipFile")
+async def test_save_input_strips_base_barcode_filename_from_absolute_path(mock_zipfile_class, tmp_path):
+    mock_barcodes_file_upload = Mock()
+    mock_barcodes_file_upload.filename = "/app/test_barcodes.csv"
+
+    mock_barcodes_file_upload.read = AsyncMock(return_value=barcodes_file_content.encode())
+
+    mock_minknow_zip_upload, _ = mock_zipfile(mock_zipfile_class)
+
+    sut = get_sut(tmp_path)
+    await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
+
+    # Expect barcodes file to have been written to run folder
+    expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
+    assert expected_barcodes_file.read_text() == barcodes_file_content
+
+
+@patch("app.file_manager.ZipFile")
+async def test_save_input_strips_base_barcode_filename_from_relative_path(mock_zipfile_class, tmp_path):
+    mock_barcodes_file_upload = Mock()
+    mock_barcodes_file_upload.filename = "../test_barcodes.csv"
+
+    mock_barcodes_file_upload.read = AsyncMock(return_value=barcodes_file_content.encode())
+
+    mock_minknow_zip_upload, _ = mock_zipfile(mock_zipfile_class)
+
+    sut = get_sut(tmp_path)
+    minknow_path, barcodes_path = await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
+    assert minknow_path == tmp_path / "test_input" / run_id / "minknow"
+    expected_barcodes_path = tmp_path / "test_input" / run_id / "test_barcodes.csv"
+    assert barcodes_path == expected_barcodes_path
+
+    # Expect barcodes file to have been written to run folder
+    assert expected_barcodes_path.read_text() == barcodes_file_content
 
 
 @patch("app.file_manager.ZipFile")

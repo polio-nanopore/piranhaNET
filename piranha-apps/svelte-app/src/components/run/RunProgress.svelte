@@ -5,8 +5,9 @@
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
   import { Spinner } from "$lib/shadcn/ui/spinner";
-  import { piranhaAPI } from "$lib/piranhaAPI.svelte";
-  import { runParameters, settings } from "$lib/store.svelte";
+  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
+  import { runParameters, settings, isWeb } from "$lib/store.svelte";
+  import { PiranhaWebAPI } from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
 
   let logEl;
   const ansi = new ansi_up.AnsiUp();
@@ -38,6 +39,13 @@
   const cancelRun = (): void => {
     piranhaAPI.cancelRun();
   };
+
+  let downloading = $state(false);
+  const downloadOutput = async (): Promise<void> => {
+    downloading = true;
+    await (piranhaAPI as PiranhaWebAPI).downloadOutputZip();
+    downloading = false;
+  };
 </script>
 
 <div data-testid="run-progress">{m.sequencingRunProgress()}</div>
@@ -45,7 +53,7 @@
   <div class="bg-white mt-2 p-4 border {borderColour}">
     <div class="flex">
       <div class="font-bold pr-2">
-        {runParameters.name}
+        {runParameters.runName}
       </div>
       <div>
         {#if piranhaAPI.running}
@@ -58,10 +66,17 @@
           ></Check>
         {/if}
       </div>
+      {#if piranhaAPI.error}
+        <div class="text-red-600 text-sm">
+          {m[piranhaAPI.error.messageKey]()}: {piranhaAPI.error.detail}
+        </div>
+      {/if}
     </div>
     <div class="h-[2rem] flex items-center">
-      {m.parameterBarcodesFile()}:
-      <span class="font-bold">{runParameters.barcodesFilePath}</span>
+      <div>
+        {m.parameterBarcodesFile()}:
+        <span class="font-bold">{runParameters.barcodesFilePath}</span>
+      </div>
     </div>
     <div class="h-[2rem] flex items-center">
       <div>
@@ -70,19 +85,41 @@
       </div>
     </div>
     <div class="h-[2rem] flex items-center space-x-2">
-      {m.settingOutputFolder()}:
-      <span class="font-bold">{settings.outputFolderPath}</span>
+      {#if !isWeb()}
+        {m.settingOutputFolder()}:
+        <span class="font-bold" data-testid="run-progress-output-folder"
+          >{settings.outputFolderPath}</span
+        >
+      {/if}
       {#if piranhaAPI.runSucceeded}
-        <Button
-          data-testid="open-report"
-          onclick={async () => await piranhaAPI.openRunReport()}
-          >{m.openReport()}</Button
-        >
-        <Button
-          data-testid="open-output-folder"
-          onclick={async () => await piranhaAPI.openRunOutputFolder()}
-          >{m.openOutputFolder()}</Button
-        >
+        {#if isWeb()}
+          <Button
+            data-testid="download-output-zip"
+            onclick={downloadOutput}
+            disabled={downloading}>{m.downloadOutputZip()}</Button
+          >
+          {#if downloading}
+            <Spinner class="text-orange-300" data-testid="downloading-spinner"
+            ></Spinner>
+          {/if}
+          {#if piranhaAPI.downloadError}
+            <div data-testid="download-error" class="text-red-600 text-sm">
+              {m[piranhaAPI.downloadError.messageKey]()}: {piranhaAPI
+                .downloadError.detail}
+            </div>
+          {/if}
+        {:else}
+          <Button
+            data-testid="open-report"
+            onclick={async () => await piranhaAPI.openRunReport()}
+            >{m.openReport()}</Button
+          >
+          <Button
+            data-testid="open-output-folder"
+            onclick={async () => await piranhaAPI.openRunOutputFolder()}
+            >{m.openOutputFolder()}</Button
+          >
+        {/if}
       {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
@@ -104,7 +141,7 @@
     <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
       {m.newRun()}
     </Button>
-  {:else}
+  {:else if !isWeb()}
     <Button
       class="action float-end bg-red-600"
       data-testid="cancel-run"
