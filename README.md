@@ -26,7 +26,7 @@ and provides a docker image for easy running.
 ![PiranhaNET Electron Architecture](/diagrams/PiranhaNET%20Electron%20architecture.drawio.png)
 
 In Electron mode, PiranhaNET is a desktop [Electron](https://www.electronjs.org/) application which can be installed and 
-run on Linux or Windows computers. The svelte app runs in Electron's renderer thread and communicates with the main thread 
+run on Linux or Windows computers. The svelte app runs in Electron's renderer thread and communicates with the Electron main thread 
 for any functionality requiring native OS access, such as opening file dialogs or local files. Code in the main thread runs 
 Piranha itself by starting its docker container for each run, bind mounting the container's volumes for input and output 
 files at the locations selected by the user. The front end can then ask the main thread to open these local files directly, 
