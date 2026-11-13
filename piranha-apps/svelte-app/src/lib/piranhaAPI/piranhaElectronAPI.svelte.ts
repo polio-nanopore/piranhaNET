@@ -5,9 +5,9 @@ import { m } from "../../paraglide/messages";
 export class PiranhaElectronAPI extends BasePiranhaAPI {
   private _initialized = $state(false);
   private _options: PiranhaRunOptionsElectron | null = $state(null);
-  // The specific output folder for this run (not the top level output folder which is set in _options). We
+  // The specific output subfolder for this run (not the top level output folder which is set in _options). We
   // discover this by regexing the log output
-  private _runOutputFolderName = $state("");
+  private _runOutputSubfolderName = $state("");
   private _cancelling = $state(false);
   private _abortId = "";
 
@@ -45,7 +45,7 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
   }
 
   get runSucceeded(): boolean {
-    return !!this._runOutputFolderName;
+    return !!this._runOutputSubfolderName;
   }
 
   get cancelling(): boolean {
@@ -59,7 +59,7 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
       /\/data\/run_data\/output\/(.*?)\/report\.html/,
     );
     if (match) {
-      this._runOutputFolderName = match[1];
+      this._runOutputSubfolderName = match[1];
     }
   }
 
@@ -76,7 +76,7 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
   clearRun(): void {
     super.clearRun();
     this._options = null;
-    this._runOutputFolderName = "";
+    this._runOutputSubfolderName = "";
     this._cancelling = false;
     this._abortId = "";
   }
@@ -89,14 +89,14 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
   async openRunReport(): Promise<void> {
     await window.api.openRunReport(
       this._options.outputFolderPath,
-      this._runOutputFolderName,
+      this._runOutputSubfolderName,
     );
   }
 
   async openRunOutputFolder(): Promise<void> {
     await window.api.openRunOutputFolder(
       this._options.outputFolderPath,
-      this._runOutputFolderName,
+      this._runOutputSubfolderName,
     );
   }
 }
