@@ -49,6 +49,8 @@ class FileManager:
             barcodes_content = await barcodes_file.read()
             saved_barcodes_file.write(barcodes_content)
 
+        return minknow_dir, barcodes_file_path
+
     def make_output_dir(self, run_id):
         output_dir = self.output_dir(run_id)
         output_dir.mkdir(parents=True)

@@ -92,11 +92,13 @@ async def test_save_input_strips_base_barcode_filename_from_relative_path(mock_z
     mock_minknow_zip_upload, _ = mock_zipfile(mock_zipfile_class)
 
     sut = get_sut(tmp_path)
-    await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
+    minknow_path, barcodes_path = await sut.save_input(run_id, mock_barcodes_file_upload, mock_minknow_zip_upload)
+    assert minknow_path == tmp_path / "test_input" / run_id / "minknow"
+    expected_barcodes_path = tmp_path / "test_input" / run_id / "test_barcodes.csv"
+    assert barcodes_path == expected_barcodes_path
 
     # Expect barcodes file to have been written to run folder
-    expected_barcodes_file = tmp_path / "test_input" / run_id / "test_barcodes.csv"
-    assert expected_barcodes_file.read_text() == barcodes_file_content
+    assert expected_barcodes_path.read_text() == barcodes_file_content
 
 
 @patch("app.file_manager.ZipFile")
