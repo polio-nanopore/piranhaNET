@@ -107,6 +107,7 @@ class PiranhaRunner:
         ]
 
         try:
+            # create env for piranha subprocess, providing venv path
             venv_bin = self.piranha_venv_path.resolve()
             env = os.environ.copy()
             env["PATH"] = f"{venv_bin}{os.pathsep}{env.get('PATH', os.defpath)}"
@@ -122,8 +123,6 @@ class PiranhaRunner:
                     stdout=log_file,
                     stderr=asyncio.subprocess.STDOUT,
                 )
-
-            await self.wait_for_log_file(log_path)
 
             # While process is running, poll logfile for new content
             async with aiofiles.open(log_path) as f:
