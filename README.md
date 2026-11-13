@@ -18,7 +18,7 @@ This monorepo contains the following components in its directories.
 
 PiranhaNET runs in two modes: Electron and Web. Both modes use the same [svelte](https://svelte.dev/) app front end to provide the user interface. 
 While much of the front end functionality is shared between modes, the svelte app is implemented to accommodate the differences required by some aspects of 
-running as a web electron front end.
+running as a web or electron front end.
 
 Both modes need to run [Piranha](https://github.com/polio-nanopore/piranha), which is implemented as a Python command line tool, 
 and provides a docker image for easy running.
