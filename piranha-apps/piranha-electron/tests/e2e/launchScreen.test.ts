@@ -18,7 +18,7 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
       const sourceDir = join(...currentDir.split("/").slice(0, -3));
 
       const testDataDir = join(sourceDir, "test-data", "multiple_samples");
-      if (options.title === "samples file") {
+      if (options.title === "Samples file") {
         return join(testDataDir, "samples.csv");
       }
       if (options.title === "MinKnow folder") {
@@ -27,8 +27,7 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
       if (options.title === "Output folder") {
         return join(sourceDir, "test-results");
       }
-      //throw new Error("unknown title");
-      return "unknown title";
+      throw new Error("unknown title");
     });
   });
 };
