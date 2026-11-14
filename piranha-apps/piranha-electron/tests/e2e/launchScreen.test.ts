@@ -48,7 +48,7 @@ test.afterEach(async () => {
 const getNameInput = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/Name/);
 const getSamplesFileButton = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/samples file/);
+  await win.getByLabel(/Samples file/);
 const getMinKnowFolderButton = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/MinKnow folder/);
 const getNotesInput = async (win: Page): Promise<Locator> =>
