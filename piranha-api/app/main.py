@@ -1,4 +1,3 @@
-import os
 import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
@@ -80,9 +79,7 @@ async def run(
 ):
     # Save input files before start response so we can raise any errors related to bad file input before we start
     # streaming output
-    await file_manager.save_input(run_id, samples_file, minknow_zip)
-    minknow_dir_path = file_manager.minknow_dir(run_id)
-    samples_file_path = os.path.join(file_manager.input_dir(run_id), samples_file.filename)
+    minknow_dir_path, samples_file_path = await file_manager.save_input(run_id, samples_file, minknow_zip)
     output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
         piranha_runner.run_piranha_log_generator(
