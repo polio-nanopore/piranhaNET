@@ -53,7 +53,7 @@ class PiranhaRunner:
         self,
         run_id: str,
         run_options: PiranhaRunOptions,
-        barcodes_file_path: str,
+        samples_file_path: str,
         minknow_dir_path: str,
         output_dir_path: str,
     ) -> AsyncGenerator[str, None]:
@@ -68,7 +68,7 @@ class PiranhaRunner:
 
         option_vals = [
             "-b",
-            barcodes_file_path,
+            samples_file_path,
             "-i",
             minknow_dir_path,
             "-o",

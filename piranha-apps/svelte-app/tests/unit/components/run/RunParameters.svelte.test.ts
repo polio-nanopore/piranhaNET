@@ -64,12 +64,12 @@ describe("RunParameters", () => {
       (text) =>
         expect(screen.getByLabelText(text)).toHaveAttribute(
           "id",
-          "barcodes-file-field",
+          "samples-file-field",
         ),
       {
-        en: /Barcodes file/,
-        fr: /Fichier de codes-barres/,
-        pt: /Ficheiro de códigos de barras/,
+        en: /Samples file/,
+        fr: /Fichier d’échantillons/,
+        pt: /Ficheiro de amostras/,
       },
     );
     await expectTranslations(
@@ -171,8 +171,8 @@ describe("RunParameters", () => {
 
     test("submits run if form is validly completed", async () => {
       const mockShowFileDialog = vi.fn().mockImplementation((options) => {
-        if (options.title == "Barcodes file") {
-          return "/test/barcodes.csv";
+        if (options.title == "Samples file") {
+          return "/test/samples.csv";
         }
         if (options.title == "MinKnow folder") {
           return "/test/MinKnow";
@@ -187,7 +187,7 @@ describe("RunParameters", () => {
         props: { componentName: "RunParameters" },
       });
       await user.type(screen.getByLabelText("Name"), "test name");
-      await user.click(screen.getByLabelText("Barcodes file"));
+      await user.click(screen.getByLabelText("Samples file"));
       await user.click(screen.getByLabelText("MinKnow folder"));
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
@@ -195,7 +195,7 @@ describe("RunParameters", () => {
       expect(piranhaAPI.runPiranha).toHaveBeenCalledWith({
         runName: "test name",
         notes: "test notes",
-        barcodesFilePath: "/test/barcodes.csv",
+        samplesFilePath: "/test/samples.csv",
         minKnowFolderPath: "/test/MinKnow",
         threads: 10,
         protocol: PiranhaProtocol.Stool,
@@ -212,15 +212,15 @@ describe("RunParameters", () => {
     test("gets run parameters from store", () => {
       runParameters.runName = "store name";
       runParameters.notes = "store notes";
-      runParameters.barcodesFilePath = "/store/barcodes.csv";
+      runParameters.samplesFilePath = "/store/samples.csv";
       runParameters.minKnowFolderPath = "/store/MinKnow";
       runParameters.threads = 11;
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
       });
       expect(screen.getByLabelText("Name").value).toBe("store name");
-      expect(screen.getByTestId("barcodes-file-field-value")).toHaveTextContent(
-        "/store/barcodes.csv",
+      expect(screen.getByTestId("samples-file-field-value")).toHaveTextContent(
+        "/store/samples.csv",
       );
       expect(
         screen.getByTestId("minknow-folder-field-value"),
@@ -292,11 +292,11 @@ describe("RunParameters", () => {
       });
 
       // Set up the FileSelect values
-      const barcodesInput = screen.getByTestId("file-input-Barcodes file");
-      const barcodesFile = new File(["test content"], "barcodes.csv", {
+      const samplesInput = screen.getByTestId("file-input-Samples file");
+      const samplesFile = new File(["test content"], "samples.csv", {
         type: "text/plain",
       });
-      mockChangeEventOnHTMLInputClick(barcodesInput, [barcodesFile]);
+      mockChangeEventOnHTMLInputClick(samplesInput, [samplesFile]);
 
       const miknowFolderInput = screen.getByTestId(
         "folder-input-MinKnow folder",
@@ -314,7 +314,7 @@ describe("RunParameters", () => {
       mockChangeEventOnHTMLInputClick(miknowFolderInput, minknowFileList);
 
       await user.type(screen.getByLabelText("Name"), "test name");
-      await user.click(screen.getByLabelText("Barcodes file"));
+      await user.click(screen.getByLabelText("Samples file"));
       await user.click(screen.getByLabelText("MinKnow folder"));
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
@@ -334,7 +334,7 @@ describe("RunParameters", () => {
       };
       expect(piranhaAPI.runPiranha).toHaveBeenCalledWith(
         expectedOptions,
-        barcodesFile,
+        samplesFile,
         minknowFileList,
       );
     });
