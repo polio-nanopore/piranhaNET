@@ -25,7 +25,7 @@
   import { i18n } from "$lib/i18n.svelte";
   import { PiranhaWebAPI } from "$lib/piranhaAPI/piranhaWebAPI.svelte";
   import { PiranhaElectronAPI } from "$lib/piranhaAPI/piranhaElectronAPI.svelte";
-  import {validateSamplesFile} from "../../lib/validation";
+  import { validateSamplesFile } from "../../lib/validation";
 
   let errors = $state<Record<string, string[]>>({});
 
@@ -43,10 +43,12 @@
         if (isWeb()) {
           samplesFileText = await webFiles.samplesFileList[0].text();
         } else {
-          samplesFileText = await (piranhaAPI as PiranhaElectronAPI).readTextFile(filePath);
+          samplesFileText = await (
+            piranhaAPI as PiranhaElectronAPI
+          ).readTextFile(filePath);
         }
       } catch (e) {
-        error = m.formsErrorSamplesFileUnreadable({error: e.message});
+        error = m.formsErrorSamplesFileUnreadable({ error: e.message });
       }
 
       // Validate file text
@@ -61,7 +63,7 @@
         ctx.addIssue({
           code: "custom",
           message: error,
-          path: ["samplesFilePath"]
+          path: ["samplesFilePath"],
         });
       }
     }

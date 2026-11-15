@@ -11,22 +11,25 @@ type SampleRow = {
   barcode: string;
 };
 
-const invalidChars = new Set(['|', ';', ':', '"', "'", '*', '<', '>', '?']);
+const invalidChars = new Set(["|", ";", ":", '"', "'", "*", "<", ">", "?"]);
 const barcodeRegex = /^barcode\d{2}$/;
 const requiredColumns = ["sample", "barcode"];
 
 export const validateSamplesFile = (
-  samplesFileText: string
+  samplesFileText: string,
 ): ValidationResult => {
   // Check for whitespace separately from other invalid chars to allow for less confusing error message
   if (samplesFileText.includes(" ")) {
-    return {success: false, message: m.formsErrorSpacesInFile()}
+    return { success: false, message: m.formsErrorSpacesInFile() };
   }
 
   // Check the whole text for invalid chars
   for (const char of samplesFileText) {
     if (invalidChars.has(char)) {
-      return { success: false, message: m.formsErrorInvalidCharInFile({char}) };
+      return {
+        success: false,
+        message: m.formsErrorInvalidCharInFile({ char }),
+      };
     }
   }
 
@@ -37,11 +40,15 @@ export const validateSamplesFile = (
 
   // Check for the expected columns
   const fields = result.meta.fields ?? [];
-  const missingColumns = requiredColumns.filter((column) => !fields.includes(column));
+  const missingColumns = requiredColumns.filter(
+    (column) => !fields.includes(column),
+  );
   if (missingColumns.length > 0) {
     return {
       success: false,
-      message: m.formsErrorMissingColumns({columns: missingColumns.join(", ")}),
+      message: m.formsErrorMissingColumns({
+        columns: missingColumns.join(", "),
+      }),
     };
   }
 
@@ -51,7 +58,7 @@ export const validateSamplesFile = (
     const rowIdx = (firstError.row ?? 0) + 1;
     return {
       success: false,
-      message: `${m.formsErrorInvalidRow({index: rowIdx})} ${firstError.message}`,
+      message: `${m.formsErrorInvalidRow({ index: rowIdx })} ${firstError.message}`,
     };
   }
 
@@ -64,7 +71,12 @@ export const validateSamplesFile = (
       return { success: false, message: m.formsErrorSamplesFileMissingData() };
     }
     if (!barcodeRegex.test(row.barcode)) {
-      return { success: false, message: m.formsErrorSamplesFileInvalidBarcode({barcode: row.barcode}) };
+      return {
+        success: false,
+        message: m.formsErrorSamplesFileInvalidBarcode({
+          barcode: row.barcode,
+        }),
+      };
     }
   }
 

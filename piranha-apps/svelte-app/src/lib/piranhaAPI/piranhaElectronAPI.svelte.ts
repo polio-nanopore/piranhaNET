@@ -102,5 +102,5 @@ export class PiranhaElectronAPI extends BasePiranhaAPI {
 
   async readTextFile(path: string): Promise<string> {
     return await window.api.readTextFile(path);
-  };
+  }
 }

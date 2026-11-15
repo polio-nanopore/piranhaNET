@@ -25,7 +25,7 @@ import {
 import { PiranhaProtocol } from "../../../../src/types";
 
 vi.mock("../../../../src/lib/validation", () => ({
-  validateSamplesFile: vi.fn()
+  validateSamplesFile: vi.fn(),
 }));
 
 describe("RunParameters", () => {
@@ -190,7 +190,9 @@ describe("RunParameters", () => {
     });
 
     test("submits run if form is validly completed", async () => {
-      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: true}));
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({
+        success: true,
+      }));
 
       mockShowFileDialog();
 
@@ -199,7 +201,6 @@ describe("RunParameters", () => {
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
       });
-
 
       await user.type(screen.getByLabelText("Name"), "test name");
       await user.click(screen.getByLabelText("Samples file"));
@@ -275,12 +276,14 @@ describe("RunParameters", () => {
     });
 
     test("validates on load if initial submit has been done", async () => {
-      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: true}));
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({
+        success: true,
+      }));
       runParameters.threads = 21;
       appState.doneInitialSubmit = true;
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
-      })
+      });
       await waitFor(() => {
         expect(screen.getByTestId("threads-field-error")).toHaveTextContent(
           /Value must be between 1 and 20/,
@@ -310,7 +313,10 @@ describe("RunParameters", () => {
     });
 
     test("displays error when sample file fails validation", async () => {
-      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: false, message: "bad content"}));
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({
+        success: false,
+        message: "bad content",
+      }));
 
       mockShowFileDialog();
 
@@ -327,7 +333,6 @@ describe("RunParameters", () => {
       expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
         /bad content/,
       );
-
     });
   });
 
@@ -351,7 +356,9 @@ describe("RunParameters", () => {
     });
 
     test("submits run if form is validly completed", async () => {
-      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: true}));
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({
+        success: true,
+      }));
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
       });
@@ -429,7 +436,10 @@ describe("RunParameters", () => {
     });
 
     test("displays error when sample file fails validation", async () => {
-      vi.mocked(validateSamplesFile).mockImplementation(() => ({success: false, message: "bad content"}));
+      vi.mocked(validateSamplesFile).mockImplementation(() => ({
+        success: false,
+        message: "bad content",
+      }));
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
       });
