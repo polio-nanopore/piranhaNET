@@ -50,6 +50,8 @@ class FileManager:
             samples_content = await samples_file.read()
             saved_samples_file.write(samples_content)
 
+        return minknow_dir, samples_file_path
+
     def make_output_dir(self, run_id):
         output_dir = self.output_dir(run_id)
         output_dir.mkdir(parents=True)

@@ -92,11 +92,14 @@ async def test_save_input_strips_base_samples_filename_from_relative_path(mock_z
     mock_minknow_zip_upload, _ = mock_zipfile(mock_zipfile_class)
 
     sut = get_sut(tmp_path)
-    await sut.save_input(run_id, mock_samples_file_upload, mock_minknow_zip_upload)
 
-    # Expect samples file to have been written to run folder
-    expected_samples_file = tmp_path / "test_input" / run_id / "test_samples.csv"
-    assert expected_samples_file.read_text() == samples_file_content
+    minknow_path, samples_path = await sut.save_input(run_id, mock_samples_file_upload, mock_minknow_zip_upload)
+    assert minknow_path == tmp_path / "test_input" / run_id / "minknow"
+    expected_samples_path = tmp_path / "test_input" / run_id / "test_samples.csv"
+    assert samples_path == expected_samples_path
+
+    # Expect sampless file to have been written to run folder
+    assert expected_samples_path.read_text() == samples_file_content
 
 
 @patch("app.file_manager.ZipFile")
