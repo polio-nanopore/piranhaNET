@@ -1,8 +1,8 @@
-import { BasePiranhaAPI } from "./basePiranhaAPI.svelte";
+import { BasePiranhaProvider } from "./basePiranhaProvider.svelte.js";
 import type { PiranhaRunOptionsElectron } from "../../shared/types";
 import { m } from "../../paraglide/messages";
 
-export class PiranhaElectronAPI extends BasePiranhaAPI {
+export class PiranhaElectronProvider extends BasePiranhaProvider {
   private _initialized = $state(false);
   private _options: PiranhaRunOptionsElectron | null = $state(null);
   // The specific output subfolder for this run (not the top level output folder which is set in _options). We

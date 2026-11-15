@@ -5,7 +5,7 @@ export interface PiranhaError {
   detail: string;
 }
 
-export abstract class BasePiranhaAPI {
+export abstract class BasePiranhaProvider {
   protected _running = $state(false);
   protected _error: PiranhaError | null = $state(null);
   protected _log: string[] = $state([]);

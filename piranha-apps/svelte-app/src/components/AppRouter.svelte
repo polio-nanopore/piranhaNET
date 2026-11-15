@@ -5,7 +5,7 @@
   import Run from "./run/Run.svelte";
   import About from "./about/About.svelte";
   import Initializing from "./init/Initializing.svelte";
-  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte.js";
+  import { piranhaProvider } from "$lib/piranhaProvider/piranhaProvider.svelte.js";
   import { isWeb } from "$lib/store.svelte";
   import { i18n } from "$lib/i18n.svelte.js";
 </script>
@@ -14,7 +14,7 @@
   <Router>
     <Tooltip.Provider>
       <Nav></Nav>
-      {#if isWeb() || piranhaAPI.initialized}
+      {#if isWeb() || piranhaProvider.initialized}
         <Route path="/" component={Run} />
         <Route path="/about" component={About} />
       {:else}

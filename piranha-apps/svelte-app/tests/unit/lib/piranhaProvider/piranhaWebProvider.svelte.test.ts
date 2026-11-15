@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { PiranhaWebAPI } from "../../../../src/lib/piranhaAPI/piranhaWebAPI.svelte.js";
+import { PiranhaWebProvider } from "../../../../src/lib/piranhaProvider/piranhaWebProvider.svelte.js";
 import zipFiles from "../../../../src/lib/zipFiles";
 
 vi.mock(
@@ -29,7 +29,7 @@ const testMinknowFileList = [
 
 const runResponseHeaders = new Headers([["piranhanet-run-id", "testrun-123"]]);
 
-describe("piranhaWebAPI", () => {
+describe("piranhaWebProvider", () => {
   test("gets API versions", async () => {
     const mockJson = {
       api: "1.0.0",
@@ -43,7 +43,7 @@ describe("piranhaWebAPI", () => {
     } as any;
 
     const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     const result = await sut.getAPIVersions();
     expect(result).toBe(mockJson);
     expect(fetchSpy).toHaveBeenCalledTimes(1);
@@ -74,7 +74,7 @@ describe("piranhaWebAPI", () => {
 
     const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
 
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
       testSamplesFile,
@@ -113,7 +113,7 @@ describe("piranhaWebAPI", () => {
   });
 
   test("clears run", () => {
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     sut["_runId"] = "testrun-123";
     sut["_error"] = { messageKey: "testKey", detail: "test detail" };
     sut.log.push("testmessage");
@@ -135,7 +135,7 @@ describe("piranhaWebAPI", () => {
 
     vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
 
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
       testSamplesFile,
@@ -162,7 +162,7 @@ describe("piranhaWebAPI", () => {
 
     vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
 
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
       testSamplesFile,
@@ -203,7 +203,7 @@ describe("piranhaWebAPI", () => {
 
     vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
 
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     const runPromise = sut.runPiranha(
       testOptions,
       testSamplesFile,
@@ -251,7 +251,7 @@ describe("piranhaWebAPI", () => {
     const appendChildSpy = vi.spyOn(document.body, "appendChild");
     const removeChildSpy = vi.spyOn(document.body, "removeChild");
 
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     prepSutForDownload(sut);
 
     await sut.downloadOutputZip();
@@ -273,7 +273,7 @@ describe("piranhaWebAPI", () => {
   });
 
   test("downloadZipfile sets downloadError if no run id", async () => {
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     prepSutForDownload(sut); // provide log
     sut["_runId"] = null;
     await sut.downloadOutputZip();
@@ -285,7 +285,7 @@ describe("piranhaWebAPI", () => {
   });
 
   test("downloadZipfile sets downloadError if run not succeeded", async () => {
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     sut["_runId"] = "testrun-123";
     sut.log.push("oh dear");
     sut.log.push("run failed");
@@ -305,7 +305,7 @@ describe("piranhaWebAPI", () => {
     } as any;
     vi.spyOn(global, "fetch").mockResolvedValue(mockResponse);
 
-    const sut = new PiranhaWebAPI("http://test");
+    const sut = new PiranhaWebProvider("http://test");
     prepSutForDownload(sut);
     await sut.downloadOutputZip();
     expect(sut.downloadError).toStrictEqual({

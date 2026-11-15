@@ -1,8 +1,8 @@
 import { vi } from "vitest";
 import {
-  initialisePiranhaAPI,
+  initialisePiranhaProvider,
   PiranhaError,
-} from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
+} from "../../src/lib/piranhaProvider/piranhaProvider.svelte.js";
 import { WebVersions } from "../../src/lib/versions";
 
 export interface APIMock {
@@ -42,7 +42,7 @@ export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
   // initialiseStore should have been called prior to mocking the API, as the mode
   // (web or electron) selected for the store determines the API class which is
   // initialised.
-  initialisePiranhaAPI();
+  initialisePiranhaProvider();
   initialized = values.initialized || defaultAPIMock.initialized;
   error = values.error || defaultAPIMock.error;
   log = values.log || defaultAPIMock.log;

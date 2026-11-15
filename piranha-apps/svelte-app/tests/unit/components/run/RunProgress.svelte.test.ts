@@ -207,7 +207,7 @@ describe("RunProgress", () => {
       expect(piranhaAPI.openRunOutputFolder).not.toHaveBeenCalled();
     });
 
-    test("Open output folder calls expected method on piranhaAPI", async () => {
+    test("Open output folder calls expected method on piranhaProvider", async () => {
       const piranhaAPI = await mockPiranhaAPI({
         initialized: true,
         running: false,
