@@ -18,7 +18,6 @@ test("can navigate to About screen and see expected versions", async () => {
 
   const expectedPiranhaNETVersion = piranhaNETVersion();
   expect(expectedPiranhaNETVersion.length).toBeGreaterThan(4); //sanity check
-  await expect(
-    await win.getByText(`PiranhaNET v${expectedPiranhaNETVersion}`),
-  ).toBeVisible();
+  const expectedVersionText = `PiranhaNET Electron v${expectedPiranhaNETVersion}`;
+  await expect(await win.getByText(expectedVersionText)).toBeVisible();
 });

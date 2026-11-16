@@ -8,12 +8,10 @@ import { PiranhaRunner } from "./piranhaRunner";
 import { Writable } from "node:stream";
 import {
   FileDialogOptions,
-  PiranhaRunOptions,
-  PiranhaVersions,
+  PiranhaRunOptionsElectron,
 } from "../../../svelte-app/src/shared/types";
 
 const PIRANHA_IMAGE_NAME = "polionanopore/piranha";
-const piranhaNETVersion = pkg.version;
 const piranhaVersion = pkg.piranhaVersion;
 
 const runner = new PiranhaRunner(PIRANHA_IMAGE_NAME, piranhaVersion);
@@ -79,16 +77,6 @@ function createWindow(): void {
   }
 
   /**
-   * Get the supported version of Piranha and the package version of PiranhaNET
-   */
-  ipcMain.handle("piranha-versions", (_event): PiranhaVersions => {
-    return {
-      piranha: piranhaVersion,
-      piranhaNET: piranhaNETVersion,
-    };
-  });
-
-  /**
    * Display a native file dialog and return selection to renderer
    */
   ipcMain.handle(
@@ -108,43 +96,46 @@ function createWindow(): void {
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
    */
-  ipcMain.handle("run-piranha", async (_event, options: PiranhaRunOptions) => {
-    const writable = new Writable({
-      write(chunk, _, callback) {
-        // Send each chunk to the renderer
-        mainWindow.webContents.send("stream-chunk", chunk);
-        callback();
-      },
-      final(callback) {
-        mainWindow.webContents.send("stream-end");
-        callback();
-      },
-    });
-
-    const abortControllerId = uuid.v4();
-    const abortController = new AbortController();
-    abortControllers[abortControllerId] = abortController;
-
-    runner
-      .runPiranha(options, writable, abortController.signal)
-      .catch((e) => {
-        if (e.name == "AbortError") {
-          mainWindow.webContents.send("run-cancelled");
-        } else {
-          mainWindow.webContents.send(
-            "error",
-            "runError",
-            (e as Error).message,
-          );
-        }
-      })
-      .finally(() => {
-        delete abortControllers[abortControllerId];
+  ipcMain.handle(
+    "run-piranha",
+    async (_event, options: PiranhaRunOptionsElectron) => {
+      const writable = new Writable({
+        write(chunk, _, callback) {
+          // Send each chunk to the renderer
+          mainWindow.webContents.send("stream-chunk", chunk);
+          callback();
+        },
+        final(callback) {
+          mainWindow.webContents.send("stream-end");
+          callback();
+        },
       });
 
-    // Immediately return the abort id so it is available to front end during run
-    return abortControllerId;
-  });
+      const abortControllerId = uuid.v4();
+      const abortController = new AbortController();
+      abortControllers[abortControllerId] = abortController;
+
+      runner
+        .runPiranha(options, writable, abortController.signal)
+        .catch((e) => {
+          if (e.name == "AbortError") {
+            mainWindow.webContents.send("run-cancelled");
+          } else {
+            mainWindow.webContents.send(
+              "error",
+              "runError",
+              (e as Error).message,
+            );
+          }
+        })
+        .finally(() => {
+          delete abortControllers[abortControllerId];
+        });
+
+      // Immediately return the abort id so it is available to front end during run
+      return abortControllerId;
+    },
+  );
 }
 
 ipcMain.on("cancel-run", (_event, abortControllerId: string) => {

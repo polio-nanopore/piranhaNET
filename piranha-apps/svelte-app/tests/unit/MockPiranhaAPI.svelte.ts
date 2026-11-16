@@ -1,7 +1,9 @@
-import { piranhaAPI } from "$lib/piranhaAPI.svelte";
 import { vi } from "vitest";
-import { PiranhaError } from "../../src/lib/piranhaAPI.svelte";
-import { PiranhaVersions } from "../../src/shared/types";
+import {
+  initialisePiranhaAPI,
+  PiranhaError,
+} from "../../src/lib/piranhaAPI/piranhaAPI.svelte.js";
+import { WebVersions } from "../../src/lib/versions";
 
 export interface APIMock {
   initialized: boolean;
@@ -10,7 +12,8 @@ export interface APIMock {
   running: boolean;
   runSucceeded: boolean;
   cancelling: boolean;
-  piranhaVersions: PiranhaVersions;
+  apiVersions: WebVersions;
+  downloadError: PiranhaError | null;
 }
 
 const defaultAPIMock: APIMock = {
@@ -20,10 +23,11 @@ const defaultAPIMock: APIMock = {
   running: false,
   runSucceeded: false,
   cancelling: false,
-  piranhaVersions: {
+  apiVersions: {
     piranha: "0.1.0-test",
-    piranhaNET: "0.2.0-test",
+    api: "0.2.0-test",
   },
+  downloadError: null,
 };
 
 let initialized = $state(false);
@@ -32,35 +36,52 @@ let error = $state(null);
 let log = $state([]);
 let runSucceeded = $state(false);
 let cancelling = $state(false);
+let downloadError = $state(null);
 
-export const mockPiranhaAPI = (values: Partial<APIMock>): void => {
+export const mockPiranhaAPI = async (values: Partial<APIMock>): void => {
+  // initialiseStore should have been called prior to mocking the API, as the mode
+  // (web or electron) selected for the store determines the API class which is
+  // initialised.
+  initialisePiranhaAPI();
   initialized = values.initialized || defaultAPIMock.initialized;
   error = values.error || defaultAPIMock.error;
   log = values.log || defaultAPIMock.log;
   running = values.running || defaultAPIMock.running;
   cancelling = values.cancelling || defaultAPIMock.cancelling;
   runSucceeded = values.runSucceeded || defaultAPIMock.runSucceeded;
-  const piranhaVersions =
-    values.piranhaVersions || defaultAPIMock.piranhaVersions;
+  downloadError = values.downloadError || defaultAPIMock.downloadError;
+  const apiVersions = values.apiVersions || defaultAPIMock.apiVersions;
 
-  vi.spyOn(piranhaAPI, "initialized", "get").mockImplementation(
-    () => initialized,
-  );
-  vi.spyOn(piranhaAPI, "error", "get").mockImplementation(() => error);
-  vi.spyOn(piranhaAPI, "log", "get").mockImplementation(() => log);
-  vi.spyOn(piranhaAPI, "running", "get").mockImplementation(() => running);
-  vi.spyOn(piranhaAPI, "cancelling", "get").mockImplementation(
-    () => cancelling,
-  );
-  vi.spyOn(piranhaAPI, "runSucceeded", "get").mockImplementation(
-    () => runSucceeded,
-  );
-  vi.spyOn(piranhaAPI, "runPiranha").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "clearRun").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "cancelRun").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "openRunReport").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "openRunOutputFolder").mockImplementation(() => {});
-  vi.spyOn(piranhaAPI, "piranhaVersions").mockImplementation(
-    () => piranhaVersions,
-  );
+  const { piranhaAPI } = await import("$lib/piranhaAPI/piranhaAPI.svelte");
+
+  const spyOnAPIProp = (propName: string, value: unknown): void => {
+    if (propName in piranhaAPI) {
+      vi.spyOn(piranhaAPI, propName, "get").mockImplementation(() => value);
+    }
+  };
+  const spyOnAPIMethod = (methodName: string, implementation): void => {
+    if (!implementation) {
+      implementation = () => {};
+    }
+    if (methodName in piranhaAPI) {
+      vi.spyOn(piranhaAPI, methodName).mockImplementation(implementation);
+    }
+  };
+  spyOnAPIProp("initialized", initialized);
+  spyOnAPIProp("error", error);
+  spyOnAPIProp("log", log);
+  spyOnAPIProp("running", running);
+  spyOnAPIProp("cancelling", cancelling);
+  spyOnAPIProp("runSucceeded", runSucceeded);
+  spyOnAPIProp("downloadError", downloadError);
+
+  spyOnAPIMethod("runPiranha");
+  spyOnAPIMethod("clearRun");
+  spyOnAPIMethod("cancelRun");
+  spyOnAPIMethod("openRunReport");
+  spyOnAPIMethod("openRunOutputFolder");
+  spyOnAPIMethod("downloadOutputZip");
+  spyOnAPIMethod("getAPIVersions", () => apiVersions);
+
+  return piranhaAPI;
 };

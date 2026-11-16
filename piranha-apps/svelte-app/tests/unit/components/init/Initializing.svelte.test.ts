@@ -1,12 +1,17 @@
-import { describe, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import { screen } from "@testing-library/svelte";
 import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
 import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import Initialzing from "../../../../src/components/init/Initializing.svelte";
+import { initialiseStore } from "../../../../src/lib/store.svelte";
 
 describe("Initializing", () => {
+  beforeAll(() => {
+    initialiseStore("electron");
+  });
+
   test("renders as expected when no API error", async () => {
-    mockPiranhaAPI({});
+    await mockPiranhaAPI({});
     const { container } = renderInI18nTestContext(Initialzing);
     expect(screen.getByTestId("initializing-spinner")).toBeVisible();
     expect(screen.queryByTestId("initializing-x")).toBeNull();
@@ -23,7 +28,7 @@ describe("Initializing", () => {
   });
 
   test("renders as expected when API error with detail", async () => {
-    mockPiranhaAPI({
+    await mockPiranhaAPI({
       error: { messageKey: "initErrorGuidanceNonWindows", detail: "oh dear" },
     });
     const { container } = renderInI18nTestContext(Initialzing);
@@ -52,7 +57,7 @@ describe("Initializing", () => {
   });
 
   test("renders as expected when API error with no detail", async () => {
-    mockPiranhaAPI({
+    await mockPiranhaAPI({
       error: { messageKey: "initErrorGuidanceNonWindows", detail: "" },
     });
     const { container } = renderInI18nTestContext(Initialzing);

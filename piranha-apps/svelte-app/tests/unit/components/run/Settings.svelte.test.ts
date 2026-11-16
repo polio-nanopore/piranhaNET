@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, vi } from "vitest";
+import { describe, expect, test, beforeEach, beforeAll, vi } from "vitest";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { screen, render, within, fireEvent } from "@testing-library/svelte";
 import {
@@ -7,7 +7,7 @@ import {
   PiranhaSettings,
 } from "../../../../src/types";
 import userEvent from "@testing-library/user-event/dist/cjs/index.js";
-import { settings } from "../../../../src/lib/store.svelte.js";
+import { initialiseStore, settings } from "../../../../src/lib/store.svelte.js";
 import {
   expectTranslations,
   mockPersistentSettingsStore,
@@ -183,260 +183,312 @@ describe("Settings", () => {
     await expectOpenSections([]);
   });
 
-  test("renders as expected when run settings have not been initialised and there are no errors", async () => {
-    mockPersistentSettingsStore({});
-    const { container } = renderInI18nTestContext(
-      RunRelatedComponentInTestContext,
-      {
-        props: { componentName: "Settings", errors: {} },
-      },
-    );
-    // runSettings section should be open, with no errors displayed
-    await expectOpenSections(["runSettings"]);
-    expectNoErrors(container);
-  });
-
-  test("renders expected settings values", async () => {
-    mockPersistentSettingsStore({});
-    const { container } = render(RunRelatedComponentInTestContext, {
-      props: { componentName: "Settings", errors: {} },
-    });
-
-    // Open Settings accordion item
-    await user.click(screen.getByTestId("settings"));
-
-    // Open User Settings accordion item
-    await user.click(screen.getByTestId("userSettings"));
-    expect(screen.getByLabelText("User name").value).toBe("testUser");
-    expect(screen.getByLabelText("Institute").value).toBe("testInst");
-    expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent(
-      "/test",
-    );
-
-    // Open Run Settings accordion item
-    await user.click(screen.getByTestId("runSettings"));
+  const testExpectedRunSettings = async (container): Promise<void> => {
     expect(container.querySelector("#protocol-field")).toHaveTextContent(
       "stool",
     );
     expect(screen.getByLabelText("Positive control").value).toBe("pos");
     expect(screen.getByLabelText("Negative control").value).toBe("neg");
+  };
 
-    // Open Piranha Output Settings accordion item
-    await user.click(screen.getByTestId("piranhaOutputSettings"));
-    expect(container.querySelector("#orientation-field")).toHaveTextContent(
-      "horizontal",
-    );
-    expect(screen.getByLabelText("Output prefix").value).toBe("op");
-    expect(screen.getByLabelText("Overwrite output")).toHaveAttribute(
-      "data-state",
-      "unchecked",
-    );
-    expect(screen.getByLabelText("Output intermediate files")).toHaveAttribute(
-      "data-state",
-      "unchecked",
-    );
-    expect(screen.getByLabelText("All metadata to header")).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
-    expect(screen.getByLabelText("Date stamp")).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
-  });
+  describe("electron mode", () => {
+    beforeAll(() => {
+      initialiseStore("electron");
+    });
 
-  const testErrors = (): Record<string, string[]> => ({
-    institute: ["Institute error"],
-    positiveControl: ["Positive control error"],
-    negativeControl: ["Negative control error"],
-  });
-  test("renders with expected open sections when there are errors in settings", async () => {
-    // any sections with errors should be opened - runSettings and userSettings
-    mockPersistentSettingsStore({ runSettings: defaultSettings });
-    const errors = testErrors();
-    const { rerender } = renderInI18nTestContext(
-      RunRelatedComponentInTestContext,
-      {
+    test("renders as expected when run settings have not been initialised and there are no errors", async () => {
+      mockPersistentSettingsStore({});
+      const { container } = renderInI18nTestContext(
+        RunRelatedComponentInTestContext,
+        {
+          props: { componentName: "Settings", errors: {} },
+        },
+      );
+      // runSettings section should be open, with no errors displayed
+      await expectOpenSections(["runSettings"]);
+      expectNoErrors(container);
+    });
+
+    test("renders expected settings values", async () => {
+      mockPersistentSettingsStore({});
+      const { container } = render(RunRelatedComponentInTestContext, {
+        props: { componentName: "Settings", errors: {} },
+      });
+
+      // Open Settings accordion item
+      await user.click(screen.getByTestId("settings"));
+
+      // Open User Settings accordion item
+      await user.click(screen.getByTestId("userSettings"));
+      expect(screen.getByLabelText("User name").value).toBe("testUser");
+      expect(screen.getByLabelText("Institute").value).toBe("testInst");
+      expect(screen.getByTestId("output-folder-field-value")).toHaveTextContent(
+        "/test",
+      );
+
+      // Open Run Settings accordion item
+      await user.click(screen.getByTestId("runSettings"));
+      await testExpectedRunSettings(container);
+
+      // Open Piranha Output Settings accordion item
+      await user.click(screen.getByTestId("piranhaOutputSettings"));
+      expect(container.querySelector("#orientation-field")).toHaveTextContent(
+        "horizontal",
+      );
+      expect(screen.getByLabelText("Output prefix").value).toBe("op");
+      expect(screen.getByLabelText("Overwrite output")).toHaveAttribute(
+        "data-state",
+        "unchecked",
+      );
+      expect(
+        screen.getByLabelText("Output intermediate files"),
+      ).toHaveAttribute("data-state", "unchecked");
+      expect(screen.getByLabelText("All metadata to header")).toHaveAttribute(
+        "data-state",
+        "checked",
+      );
+      expect(screen.getByLabelText("Date stamp")).toHaveAttribute(
+        "data-state",
+        "checked",
+      );
+    });
+
+    const testErrors = (): Record<string, string[]> => ({
+      institute: ["Institute error"],
+      positiveControl: ["Positive control error"],
+      negativeControl: ["Negative control error"],
+    });
+
+    test("renders with expected open sections when there are errors in settings", async () => {
+      // any sections with errors should be opened - runSettings and userSettings
+      mockPersistentSettingsStore({ runSettings: defaultSettings });
+      const errors = testErrors();
+      const { rerender } = renderInI18nTestContext(
+        RunRelatedComponentInTestContext,
+        {
+          props: { componentName: "Settings", errors },
+        },
+      );
+      await expectOpenSections(["runSettings", "userSettings"]);
+
+      // should update to open new error sections when errors update with new sections -
+      // add piranhaOutput setting error - all sections should be open
+      errors["outputPrefix"] = ["Output prefix error"];
+      rerender({ errors });
+      await expectOpenSections([
+        "runSettings",
+        "userSettings",
+        "piranhaOutputSettings",
+      ]);
+
+      // correct all errors - should *not* auto-close
+      rerender({ errors: {} });
+      await expectOpenSections([
+        "runSettings",
+        "userSettings",
+        "piranhaOutputSettings",
+      ]);
+    }, 20000); // can be long-running
+
+    test("renders with expected errors when there are errors in settings", async () => {
+      const errors = testErrors();
+      const expectedErrors = {
+        userSettings: [
+          {
+            fieldName: "institute-field",
+            fieldLabel: "Institute",
+            errorText: "Institute error",
+          },
+        ],
+        runSettings: [
+          {
+            fieldName: "positive-control-field",
+            fieldLabel: "Positive control",
+            errorText: "Positive control error",
+          },
+          {
+            fieldName: "negative-control-field",
+            fieldLabel: "Negative control",
+            errorText: "Negative control error",
+          },
+        ],
+      };
+
+      const { rerender, container } = render(RunRelatedComponentInTestContext, {
         props: { componentName: "Settings", errors },
-      },
-    );
-    await expectOpenSections(["runSettings", "userSettings"]);
+      });
+      expectErrorsDisplayed(expectedErrors);
 
-    // should update to open new error sections when errors update with new sections -
-    // add piranhaOutput setting error - all sections should be open
-    errors["outputPrefix"] = ["Output prefix error"];
-    rerender({ errors });
-    await expectOpenSections([
-      "runSettings",
-      "userSettings",
-      "piranhaOutputSettings",
-    ]);
-
-    // correct all errors - should *not* auto-close
-    rerender({ errors: {} });
-    await expectOpenSections([
-      "runSettings",
-      "userSettings",
-      "piranhaOutputSettings",
-    ]);
-  }, 20000); // can be long-running
-
-  test("renders with expected errors when there are errors in settings", async () => {
-    const errors = testErrors();
-    const expectedErrors = {
-      userSettings: [
+      // should update to open new error sections when errors update with new sections -
+      // add piranhaOutput setting error - new error should be displayed
+      errors["outputPrefix"] = ["Output prefix error"];
+      rerender({ errors });
+      expectedErrors["piranhaOutputSettings"] = [
         {
-          fieldName: "institute-field",
-          fieldLabel: "Institute",
-          errorText: "Institute error",
+          fieldName: "output-prefix-field",
+          fieldLabel: "Output prefix",
+          errorText: "Output prefix error",
         },
-      ],
-      runSettings: [
-        {
-          fieldName: "positive-control-field",
-          fieldLabel: "Positive control",
-          errorText: "Positive control error",
-        },
-        {
-          fieldName: "negative-control-field",
-          fieldLabel: "Negative control",
-          errorText: "Negative control error",
-        },
-      ],
-    };
+      ];
+      expectErrorsDisplayed(expectedErrors);
 
-    const { rerender, container } = render(RunRelatedComponentInTestContext, {
-      props: { componentName: "Settings", errors },
+      // correct all errors
+      rerender({ errors: {} });
+      expectNoErrors(container);
     });
-    expectErrorsDisplayed(expectedErrors);
 
-    // should update to open new error sections when errors update with new sections -
-    // add piranhaOutput setting error - new error should be displayed
-    errors["outputPrefix"] = ["Output prefix error"];
-    rerender({ errors });
-    expectedErrors["piranhaOutputSettings"] = [
-      {
-        fieldName: "output-prefix-field",
-        fieldLabel: "Output prefix",
-        errorText: "Output prefix error",
-      },
-    ];
-    expectErrorsDisplayed(expectedErrors);
+    test("handles updates to run settings by saving settings and calling onchange", async () => {
+      mockPersistentSettingsStore({ runSettings: defaultSettings });
+      const onchange = vi.fn();
+      const { container } = render(RunRelatedComponentInTestContext, {
+        props: { componentName: "Settings", errors: {}, onchange },
+      });
 
-    // correct all errors
-    rerender({ errors: {} });
-    expectNoErrors(container);
+      // Open Settings accordion item
+      await user.click(screen.getByTestId("settings"));
+      // Open User Settings accordion item
+      await user.click(screen.getByTestId("runSettings"));
+
+      // protocol
+      await user.click(container.querySelector("#protocol-field"));
+      expect(container.querySelector("#protocol-field")).toHaveAttribute(
+        "data-state",
+        "open",
+      );
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{Enter}");
+      await user.keyboard("{Tab}");
+      expect(settings.protocol).toBe(PiranhaProtocol.Isolate);
+      expect(onchange).toHaveBeenCalledTimes(1);
+      expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+        ...defaultSettings,
+        protocol: PiranhaProtocol.Isolate,
+        positiveControl: "pos",
+        negativeControl: "neg",
+      });
+
+      // positiveControl
+      const posControlInput = screen.getByLabelText("Positive control");
+      await user.clear(posControlInput);
+      await user.type(posControlInput, "new pos");
+      expect(onchange).toHaveBeenCalledTimes(9); // get one change per keystroke...
+      expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+        ...defaultSettings,
+        protocol: PiranhaProtocol.Isolate,
+        positiveControl: "new pos",
+        negativeControl: "neg",
+      });
+
+      // negativeControl
+      const negControlInput = screen.getByLabelText("Negative control");
+      await user.clear(negControlInput);
+      await user.type(negControlInput, "new neg");
+      expect(onchange).toHaveBeenCalledTimes(17);
+      expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
+        ...defaultSettings,
+        protocol: PiranhaProtocol.Isolate,
+        positiveControl: "new pos",
+        negativeControl: "new neg",
+      });
+
+      // Test settings have been updated
+      expect(settings.protocol).toBe(PiranhaProtocol.Isolate);
+      expect(settings.positiveControl).toBe("new pos");
+      expect(settings.negativeControl).toBe("new neg");
+    });
+
+    test("handles updates to piranha output settings by calling onchange", async () => {
+      mockPersistentSettingsStore({ runSettings: defaultSettings });
+      const onchange = vi.fn();
+      const { container } = render(RunRelatedComponentInTestContext, {
+        props: { componentName: "Settings", errors: {}, onchange },
+      });
+
+      // Open Settings accordion item
+      await user.click(screen.getByTestId("settings"));
+      // Open Piranha Output Settings accordion item
+      await user.click(screen.getByTestId("piranhaOutputSettings"));
+
+      const outputPrefixInput = screen.getByLabelText("Output prefix");
+      await user.clear(outputPrefixInput);
+      await user.type(outputPrefixInput, "new op");
+      expect(onchange).toHaveBeenCalledTimes(7);
+
+      expect(settings.orientation).toBe(PiranhaOrientation.Horizontal);
+      await user.click(container.querySelector("#orientation-field"));
+      expect(container.querySelector("#orientation-field")).toHaveAttribute(
+        "data-state",
+        "open",
+      );
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{ArrowUp}");
+      await user.keyboard("{Enter}");
+      expect(settings.orientation).toBe(PiranhaOrientation.Vertical);
+      expect(onchange).toHaveBeenCalledTimes(8);
+
+      // using fireEvent here rather than userEvent, which objects to pointer-events:none on this element
+      fireEvent.click(screen.getByLabelText("Overwrite output"));
+      expect(onchange).toHaveBeenCalledTimes(9);
+
+      fireEvent.click(screen.getByLabelText("Output intermediate files"));
+      expect(onchange).toHaveBeenCalledTimes(10);
+
+      fireEvent.click(screen.getByLabelText("All metadata to header"));
+      expect(onchange).toHaveBeenCalledTimes(11);
+
+      fireEvent.click(screen.getByLabelText("Date stamp"));
+      expect(onchange).toHaveBeenCalledTimes(12);
+
+      // Test settings have been updated
+      expect(settings.orientation).toBe(PiranhaOrientation.Vertical);
+      expect(settings.outputPrefix).toBe("new op");
+      expect(settings.overwriteOutput).toBe(true);
+      expect(settings.outputIntermediateFiles).toBe(true);
+      expect(settings.allMetadataToHeader).toBe(false);
+      expect(settings.dateStamp).toBe(false);
+    });
   });
 
-  test("handles updates to run settings by saving settings and calling onchange", async () => {
-    mockPersistentSettingsStore({ runSettings: defaultSettings });
-    const onchange = vi.fn();
-    const { container } = render(RunRelatedComponentInTestContext, {
-      props: { componentName: "Settings", errors: {}, onchange },
+  describe("web mode", () => {
+    beforeAll(() => {
+      initialiseStore("web");
     });
 
-    // Open Settings accordion item
-    await user.click(screen.getByTestId("settings"));
-    // Open User Settings accordion item
-    await user.click(screen.getByTestId("runSettings"));
+    test("renders expected settings values", async () => {
+      mockPersistentSettingsStore({});
+      const { container } = render(RunRelatedComponentInTestContext, {
+        props: { componentName: "Settings", errors: {} },
+      });
 
-    // protocol
-    await user.click(container.querySelector("#protocol-field"));
-    expect(container.querySelector("#protocol-field")).toHaveAttribute(
-      "data-state",
-      "open",
-    );
-    await user.keyboard("{ArrowDown}");
-    await user.keyboard("{ArrowDown}");
-    await user.keyboard("{Enter}");
-    await user.keyboard("{Tab}");
-    expect(settings.protocol).toBe(PiranhaProtocol.Isolate);
-    expect(onchange).toHaveBeenCalledTimes(1);
-    expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
-      ...defaultSettings,
-      protocol: PiranhaProtocol.Isolate,
-      positiveControl: "pos",
-      negativeControl: "neg",
+      // Open Settings accordion item
+      await user.click(screen.getByTestId("settings"));
+
+      // Open User Settings accordion item
+      await user.click(screen.getByTestId("userSettings"));
+      expect(screen.getByLabelText("User name").value).toBe("testUser");
+      expect(screen.getByLabelText("Institute").value).toBe("testInst");
+      expect(screen.queryByTestId("output-folder-field-value")).toBeNull();
+
+      // Open Run Settings accordion item
+      await user.click(screen.getByTestId("runSettings"));
+      await testExpectedRunSettings(container);
+
+      // Open Piranha Output Settings accordion item
+      await user.click(screen.getByTestId("piranhaOutputSettings"));
+      expect(container.querySelector("#orientation-field")).toHaveTextContent(
+        "horizontal",
+      );
+      expect(screen.getByLabelText("Output prefix").value).toBe("op");
+      expect(screen.queryByLabelText("Overwrite output")).toBeNull();
+      expect(
+        screen.getByLabelText("Output intermediate files"),
+      ).toHaveAttribute("data-state", "unchecked");
+      expect(screen.getByLabelText("All metadata to header")).toHaveAttribute(
+        "data-state",
+        "checked",
+      );
+      expect(screen.queryByLabelText("Date stamp")).toBeNull();
     });
-
-    // positiveControl
-    const posControlInput = screen.getByLabelText("Positive control");
-    await user.clear(posControlInput);
-    await user.type(posControlInput, "new pos");
-    expect(onchange).toHaveBeenCalledTimes(9); // get one change per keystroke...
-    expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
-      ...defaultSettings,
-      protocol: PiranhaProtocol.Isolate,
-      positiveControl: "new pos",
-      negativeControl: "neg",
-    });
-
-    // negativeControl
-    const negControlInput = screen.getByLabelText("Negative control");
-    await user.clear(negControlInput);
-    await user.type(negControlInput, "new neg");
-    expect(onchange).toHaveBeenCalledTimes(17);
-    expect(persistentSettingsStore.saveRunSettings).toHaveBeenLastCalledWith({
-      ...defaultSettings,
-      protocol: PiranhaProtocol.Isolate,
-      positiveControl: "new pos",
-      negativeControl: "new neg",
-    });
-
-    // Test settings have been updated
-    expect(settings.protocol).toBe(PiranhaProtocol.Isolate);
-    expect(settings.positiveControl).toBe("new pos");
-    expect(settings.negativeControl).toBe("new neg");
-  });
-
-  test("handles updates to piranha output settings by calling onchange", async () => {
-    mockPersistentSettingsStore({ runSettings: defaultSettings });
-    const onchange = vi.fn();
-    const { container } = render(RunRelatedComponentInTestContext, {
-      props: { componentName: "Settings", errors: {}, onchange },
-    });
-
-    // Open Settings accordion item
-    await user.click(screen.getByTestId("settings"));
-    // Open Piranha Output Settings accordion item
-    await user.click(screen.getByTestId("piranhaOutputSettings"));
-
-    const outputPrefixInput = screen.getByLabelText("Output prefix");
-    await user.clear(outputPrefixInput);
-    await user.type(outputPrefixInput, "new op");
-    expect(onchange).toHaveBeenCalledTimes(7);
-
-    expect(settings.orientation).toBe(PiranhaOrientation.Horizontal);
-    await user.click(container.querySelector("#orientation-field"));
-    expect(container.querySelector("#orientation-field")).toHaveAttribute(
-      "data-state",
-      "open",
-    );
-    await user.keyboard("{ArrowDown}");
-    await user.keyboard("{ArrowUp}");
-    await user.keyboard("{Enter}");
-    expect(settings.orientation).toBe(PiranhaOrientation.Vertical);
-    expect(onchange).toHaveBeenCalledTimes(8);
-
-    // using fireEvent here rather than userEvent, which objects to pointer-events:none on this element
-    fireEvent.click(screen.getByLabelText("Overwrite output"));
-    expect(onchange).toHaveBeenCalledTimes(9);
-
-    fireEvent.click(screen.getByLabelText("Output intermediate files"));
-    expect(onchange).toHaveBeenCalledTimes(10);
-
-    fireEvent.click(screen.getByLabelText("All metadata to header"));
-    expect(onchange).toHaveBeenCalledTimes(11);
-
-    fireEvent.click(screen.getByLabelText("Date stamp"));
-    expect(onchange).toHaveBeenCalledTimes(12);
-
-    // Test settings have been updated
-    expect(settings.orientation).toBe(PiranhaOrientation.Vertical);
-    expect(settings.outputPrefix).toBe("new op");
-    expect(settings.overwriteOutput).toBe(true);
-    expect(settings.outputIntermediateFiles).toBe(true);
-    expect(settings.allMetadataToHeader).toBe(false);
-    expect(settings.dateStamp).toBe(false);
   });
 });

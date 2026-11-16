@@ -5,6 +5,7 @@ RUN /venv/bin/pip install fastapi[standard] uvicorn shortuuid aiofiles pydantic
 
 # Copy the FastAPI app
 COPY app/ /app/app/
+COPY pyproject.toml /app/pyproject.toml
 WORKDIR /app
 
 EXPOSE 8000
