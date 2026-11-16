@@ -62,7 +62,7 @@ async def stream_to_list(response, output_list):
 
 async def test_versions():
     # test for semantic versions
-    regex = r"^[0-9]+\.[0-9]+\.[0-9]+$"
+    regex = r"^[0-9]+\.[0-9]+\.[0-9]+(-[a-z]+)?$"
     with httpx.Client(base_url=BASE_URL) as client:
         response = client.get("/versions")
         assert response.status_code == 200

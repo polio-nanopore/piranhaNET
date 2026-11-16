@@ -23,6 +23,7 @@ class PiranhaRunner:
     def __init__(self, piranha_venv_path: Path):
         self.piranha_venv_path = piranha_venv_path
         self.piranha_activate_path = Path(piranha_venv_path / "activate")
+        print(f"Activate path is {self.piranha_activate_path}")
 
     def log_line(self, run_id: str, line: str):
         print(f"{run_id} {line}")

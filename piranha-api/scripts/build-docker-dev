@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -ex
 
-docker build -t piranhaNET/piranha-api-dev .
+docker build -t piranhanet-api-dev .
