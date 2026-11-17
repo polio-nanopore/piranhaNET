@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, beforeAll } from "vitest";
 import AppRouter from "../../../src/components/AppRouter.svelte";
 import { expectTranslations } from "../utils";
-import { mockPiranhaAPI } from "../MockPiranhaAPI.svelte.js";
+import { mockPiranhaProvider } from "../MockPiranhaProvider.svelte.js";
 import { i18n } from "$lib/i18n.svelte";
 import { tick } from "svelte";
 import { initialiseStore } from "../../../src/lib/store.svelte";
@@ -42,7 +42,7 @@ describe("App", () => {
   };
 
   test("renders as expected before initialized", async () => {
-    await mockPiranhaAPI({});
+    await mockPiranhaProvider({});
     renderSut();
     expect(screen.getByRole("img")).toHaveClass("logo");
     expect(screen.getByText("PiranhaNET")).toBeVisible();
@@ -53,7 +53,7 @@ describe("App", () => {
   });
 
   test("renders as expected after initialized", async () => {
-    await mockPiranhaAPI({ initialized: true });
+    await mockPiranhaProvider({ initialized: true });
     renderSut();
     await tick();
 
@@ -67,7 +67,7 @@ describe("App", () => {
   });
 
   test("routes to About and Run pages", async () => {
-    await mockPiranhaAPI({ initialized: true });
+    await mockPiranhaProvider({ initialized: true });
     renderSut();
 
     // Navigate to About using the Nav menu

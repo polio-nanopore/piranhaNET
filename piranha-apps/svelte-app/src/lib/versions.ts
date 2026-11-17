@@ -1,6 +1,6 @@
 import { isWeb } from "./store.svelte";
-import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
-import { PiranhaWebAPI } from "$lib/piranhaAPI/piranhaWebAPI.svelte";
+import { piranhaProvider } from "$lib/piranhaProvider/piranhaProvider.svelte";
+import { PiranhaWebProvider } from "$lib/piranhaProvider/piranhaWebProvider.svelte";
 import pkg from "../../../package.json" with { type: "json" };
 
 export interface ElectronVersions {
@@ -22,7 +22,9 @@ export default async (): Versions => {
   // piranhaVersion in package.json, whereas in web mode, we get it from piranha
   // itself via the python API.
   if (isWeb()) {
-    const apiVersions = await (piranhaAPI as PiranhaWebAPI).getAPIVersions();
+    const apiVersions = await (
+      piranhaProvider as PiranhaWebProvider
+    ).getAPIVersions();
     return {
       piranhaNetApi: apiVersions.api,
       piranhaNetWeb: npmVersion,

@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import getVersions from "../../../src/lib/versions";
 import { initialiseStore } from "../../../src/lib/store.svelte";
-import { mockPiranhaAPI } from "../MockPiranhaAPI.svelte";
+import { mockPiranhaProvider } from "../MockPiranhaProvider.svelte";
 import pkg from "../../../../package.json";
 
 describe("versions", () => {
@@ -12,7 +12,7 @@ describe("versions", () => {
 
   test("in web mode", async () => {
     initialiseStore("web", "http://test");
-    await mockPiranhaAPI({
+    await mockPiranhaProvider({
       apiVersions: { api: "1.0.0", piranha: "2.0.0" },
     });
 

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { expectTranslations, renderInI18nTestContext } from "../../utils";
-import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
+import { mockPiranhaProvider } from "../../MockPiranhaProvider.svelte";
 import About from "../../../../src/components/about/About.svelte";
 import { screen, within, waitFor } from "@testing-library/svelte";
 import { initialiseStore } from "../../../../src/lib/store.svelte";
@@ -9,7 +9,7 @@ import pkg from "../../../../../package.json";
 describe("About", () => {
   test("renders as expected in Electron mode", async () => {
     initialiseStore("electron");
-    await mockPiranhaAPI({});
+    await mockPiranhaProvider({});
     renderInI18nTestContext(About);
     await expectTranslations(
       (text) =>
@@ -74,7 +74,7 @@ describe("About", () => {
 
   test("renders versions as expected in web mode", async () => {
     initialiseStore("web");
-    await mockPiranhaAPI({});
+    await mockPiranhaProvider({});
     renderInI18nTestContext(About);
     await waitFor(() =>
       expect(screen.getByText("Piranha v0.1.0-test")).toBeVisible(),

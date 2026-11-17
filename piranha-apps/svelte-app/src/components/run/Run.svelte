@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
+  import { piranhaProvider } from "$lib/piranhaProvider/piranhaProvider.svelte";
   import RunParameters from "./RunParameters.svelte";
   import RunProgress from "./RunProgress.svelte";
   import Welcome from "./Welcome.svelte";
@@ -14,7 +14,7 @@
 <div class="container piranha-container mx-auto p-4">
   {#if needsFirstPersist}
     <Welcome onpersist={onFirstPersist} />
-  {:else if !piranhaAPI.running && !piranhaAPI.log.length}
+  {:else if !piranhaProvider.running && !piranhaProvider.log.length}
     <RunParameters />
   {:else}
     <RunProgress />

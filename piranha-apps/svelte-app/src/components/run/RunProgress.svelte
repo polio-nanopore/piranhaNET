@@ -5,17 +5,17 @@
   import { X, Check } from "@lucide/svelte";
   import { Button } from "$lib/shadcn/ui/button";
   import { Spinner } from "$lib/shadcn/ui/spinner";
-  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
+  import { piranhaProvider } from "$lib/piranhaProvider/piranhaProvider.svelte";
   import { runParameters, settings, isWeb } from "$lib/store.svelte";
-  import { PiranhaWebAPI } from "../../lib/piranhaAPI/piranhaWebAPI.svelte";
+  import { PiranhaWebProvider } from "../../lib/piranhaProvider/piranhaWebProvider.svelte.js";
 
   let logEl;
   const ansi = new ansi_up.AnsiUp();
 
   const borderColour = $derived(
-    piranhaAPI.running
+    piranhaProvider.running
       ? "border-orange-300"
-      : piranhaAPI.error
+      : piranhaProvider.error
         ? "border-red-600"
         : "border-green-600",
   );
@@ -27,23 +27,23 @@
   }, 300);
 
   $effect(() => {
-    if (piranhaAPI.log.length) {
+    if (piranhaProvider.log.length) {
       scrollLogToEnd();
     }
   });
 
   const clearRun = (): void => {
-    piranhaAPI.clearRun();
+    piranhaProvider.clearRun();
   };
 
   const cancelRun = (): void => {
-    piranhaAPI.cancelRun();
+    piranhaProvider.cancelRun();
   };
 
   let downloading = $state(false);
   const downloadOutput = async (): Promise<void> => {
     downloading = true;
-    await (piranhaAPI as PiranhaWebAPI).downloadOutputZip();
+    await (piranhaProvider as PiranhaWebProvider).downloadOutputZip();
     downloading = false;
   };
 </script>
@@ -56,19 +56,20 @@
         {runParameters.runName}
       </div>
       <div>
-        {#if piranhaAPI.running}
+        {#if piranhaProvider.running}
           <Spinner class="text-orange-300" data-testid="run-progress-spinner"
           ></Spinner>
-        {:else if piranhaAPI.error}
+        {:else if piranhaProvider.error}
           <X class="text-red-600" data-testid="run-progress-x"></X>
         {:else}
           <Check class="text-green-600" data-testid="run-progress-check"
           ></Check>
         {/if}
       </div>
-      {#if piranhaAPI.error}
+      {#if piranhaProvider.error}
         <div class="text-red-600 text-sm">
-          {m[piranhaAPI.error.messageKey]()}: {piranhaAPI.error.detail}
+          {m[piranhaProvider.error.messageKey]()}: {piranhaProvider.error
+            .detail}
         </div>
       {/if}
     </div>
@@ -91,7 +92,7 @@
           >{settings.outputFolderPath}</span
         >
       {/if}
-      {#if piranhaAPI.runSucceeded}
+      {#if piranhaProvider.runSucceeded}
         {#if isWeb()}
           <Button
             data-testid="download-output-zip"
@@ -102,34 +103,34 @@
             <Spinner class="text-orange-300" data-testid="downloading-spinner"
             ></Spinner>
           {/if}
-          {#if piranhaAPI.downloadError}
+          {#if piranhaProvider.downloadError}
             <div data-testid="download-error" class="text-red-600 text-sm">
-              {m[piranhaAPI.downloadError.messageKey]()}: {piranhaAPI
+              {m[piranhaProvider.downloadError.messageKey]()}: {piranhaProvider
                 .downloadError.detail}
             </div>
           {/if}
         {:else}
           <Button
             data-testid="open-report"
-            onclick={async () => await piranhaAPI.openRunReport()}
+            onclick={async () => await piranhaProvider.openRunReport()}
             >{m.openReport()}</Button
           >
           <Button
             data-testid="open-output-folder"
-            onclick={async () => await piranhaAPI.openRunOutputFolder()}
+            onclick={async () => await piranhaProvider.openRunOutputFolder()}
             >{m.openOutputFolder()}</Button
           >
         {/if}
       {/if}
     </div>
     <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
-      {#each piranhaAPI.log as logentry, index (index)}
+      {#each piranhaProvider.log as logentry, index (index)}
         <!-- eslint-disable  svelte/no-at-html-tags -->
         {@html ansi.ansi_to_html(logentry)}<br />
       {/each}
     </code>
   </div>
-  {#if piranhaAPI.cancelling}
+  {#if piranhaProvider.cancelling}
     <div class="float-end flex" data-testid="cancelling">
       <Spinner
         class="text-orange-300 size-6 mr-2"
@@ -137,7 +138,7 @@
       ></Spinner>
       {m.cancelling()}
     </div>
-  {:else if !piranhaAPI.running}
+  {:else if !piranhaProvider.running}
     <Button class="action float-end" data-testid="new-run" onclick={clearRun}>
       {m.newRun()}
     </Button>

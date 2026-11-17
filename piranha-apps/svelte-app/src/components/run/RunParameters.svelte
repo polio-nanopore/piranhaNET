@@ -15,7 +15,7 @@
     createPiranhaRunOptionsWeb,
     createPiranhaRunOptionsElectron,
   } from "../../types";
-  import { piranhaAPI } from "$lib/piranhaAPI/piranhaAPI.svelte";
+  import { piranhaProvider } from "$lib/piranhaProvider/piranhaProvider.svelte";
   import FileSelect from "../forms/FileSelect.svelte";
   import {
     runParametersSchemaElectron,
@@ -23,8 +23,8 @@
   } from "./RunFormSchema";
   import Settings from "./Settings.svelte";
   import { i18n } from "$lib/i18n.svelte";
-  import { PiranhaWebAPI } from "$lib/piranhaAPI/piranhaWebAPI.svelte";
-  import { PiranhaElectronAPI } from "$lib/piranhaAPI/piranhaElectronAPI.svelte";
+  import { PiranhaWebProvider } from "$lib/piranhaProvider/piranhaWebProvider.svelte";
+  import { PiranhaElectronProvider } from "$lib/piranhaProvider/piranhaElectronProvider.svelte";
   import { validateSamplesFile } from "../../lib/validation";
 
   let errors = $state<Record<string, string[]>>({});
@@ -44,7 +44,7 @@
           samplesFileText = await webFiles.samplesFileList[0].text();
         } else {
           samplesFileText = await (
-            piranhaAPI as PiranhaElectronAPI
+            piranhaProvider as PiranhaElectronProvider
           ).readTextFile(filePath);
         }
       } catch (e) {
@@ -102,7 +102,7 @@
           i18n.lang,
         );
         // Do not await, so we get updates as they happen
-        (piranhaAPI as PiranhaWebAPI).runPiranha(
+        (piranhaProvider as PiranhaWebProvider).runPiranha(
           runOptions,
           webFiles.samplesFileList[0],
           webFiles.minknowFileList,
@@ -113,7 +113,9 @@
           settings,
           i18n.lang,
         );
-        await (piranhaAPI as PiranhaElectronAPI).runPiranha(runOptions);
+        await (piranhaProvider as PiranhaElectronProvider).runPiranha(
+          runOptions,
+        );
       }
     }
     appState.doneInitialSubmit = true;

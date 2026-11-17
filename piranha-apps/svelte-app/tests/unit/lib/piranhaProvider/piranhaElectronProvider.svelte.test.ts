@@ -1,8 +1,8 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { i18n } from "../../../../src/lib/i18n.svelte.js";
-import { PiranhaElectronAPI } from "../../../../src/lib/piranhaAPI/piranhaElectronAPI.svelte.js";
+import { PiranhaElectronProvider } from "../../../../src/lib/piranhaProvider/piranhaElectronProvider.svelte.js";
 
-describe("piranhaElectronAPI", () => {
+describe("piranhaElectronProvider", () => {
   let sut;
   beforeEach(() => {
     i18n.lang = "en";
@@ -17,7 +17,7 @@ describe("piranhaElectronAPI", () => {
       openRunReport: vi.fn(),
       openRunOutputFolder: vi.fn(),
     };
-    sut = new PiranhaElectronAPI();
+    sut = new PiranhaElectronProvider();
   });
 
   const testOptions = {
@@ -53,7 +53,7 @@ describe("piranhaElectronAPI", () => {
     await end();
     expect(sut.log).toStrictEqual([...expectedLog, "Piranha Run Finished"]);
 
-    //On end, the API should have set the output folder, so runSucceeded should be true...
+    //On end, the Provider should have set the run output subfolder, so runSucceeded should be true...
     expect(sut.runSucceeded).toBe(true);
 
     //.. and the output folder will be used in open output calls
@@ -81,7 +81,7 @@ describe("piranhaElectronAPI", () => {
     ]);
   });
 
-  test("runPiranha calls api", async () => {
+  test("runPiranha calls window.api", async () => {
     expect(sut.running).toBe(false);
     sut.log.push("Earlier run message");
     await sut.runPiranha(testOptions);

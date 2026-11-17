@@ -1,10 +1,10 @@
-import { BasePiranhaAPI } from "./basePiranhaAPI.svelte";
+import { BasePiranhaProvider } from "./basePiranhaProvider.svelte.js";
 import { SvelteURLSearchParams } from "svelte/reactivity";
 import type { PiranhaRunOptionsWeb } from "../../shared/types";
 import zipFiles from "../zipFiles";
 import { m } from "../../paraglide/messages";
 
-export class PiranhaWebAPI extends BasePiranhaAPI {
+export class PiranhaWebProvider extends BasePiranhaProvider {
   private readonly _apiUrl;
   private _runId: string | null;
   private _downloadError: PiranhaError | null = $state(null);
