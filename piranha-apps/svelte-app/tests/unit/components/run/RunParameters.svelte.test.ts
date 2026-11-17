@@ -9,7 +9,7 @@ import {
   mockChangeEventOnHTMLInputClick,
   renderInI18nTestContext,
 } from "../../utils";
-import { mockPiranhaAPI } from "../../MockPiranhaAPI.svelte";
+import { mockPiranhaProvider } from "../../MockPiranhaProvider.svelte";
 import { screen } from "@testing-library/svelte";
 import { i18n } from "$lib/i18n.svelte";
 import {
@@ -31,7 +31,7 @@ vi.mock("../../../../src/lib/validation", () => ({
 describe("RunParameters", () => {
   const user = userEvent.setup();
 
-  let piranhaAPI;
+  let piranhaProvider;
 
   const initialiseParameters = (): void => {
     i18n.lang = "en";
@@ -148,7 +148,7 @@ describe("RunParameters", () => {
     // Press Run button - should see errors
     await user.click(screen.getByTestId("run"));
     expect(screen.getAllByText(/Required value/).length).toBe(3);
-    expect(piranhaAPI.runPiranha).not.toHaveBeenCalled();
+    expect(piranhaProvider.runPiranha).not.toHaveBeenCalled();
   };
 
   const mockShowFileDialog = (): void => {
@@ -174,7 +174,7 @@ describe("RunParameters", () => {
     beforeAll(async () => {
       clearSettings();
       initialiseStore("electron");
-      piranhaAPI = await mockPiranhaAPI({});
+      piranhaProvider = await mockPiranhaProvider({});
     });
 
     beforeEach(async () => {
@@ -196,7 +196,7 @@ describe("RunParameters", () => {
 
       mockShowFileDialog();
 
-      piranhaAPI.readTextFile.mockImplementation(() => "test content");
+      piranhaProvider.readTextFile.mockImplementation(() => "test content");
 
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
@@ -208,11 +208,11 @@ describe("RunParameters", () => {
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
 
-      expect(piranhaAPI.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
+      expect(piranhaProvider.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
       expect(validateSamplesFile).toHaveBeenCalledWith("test content");
 
-      expect(piranhaAPI.runPiranha).toHaveBeenCalledOnce();
-      expect(piranhaAPI.runPiranha).toHaveBeenCalledWith({
+      expect(piranhaProvider.runPiranha).toHaveBeenCalledOnce();
+      expect(piranhaProvider.runPiranha).toHaveBeenCalledWith({
         runName: "test name",
         notes: "test notes",
         samplesFilePath: "/test/samples.csv",
@@ -294,7 +294,7 @@ describe("RunParameters", () => {
     test("displays error when sample file cannot be read for validation", async () => {
       mockShowFileDialog();
 
-      piranhaAPI.readTextFile.mockImplementation(() => {
+      piranhaProvider.readTextFile.mockImplementation(() => {
         throw new Error("Unreadable test file");
       });
 
@@ -305,7 +305,7 @@ describe("RunParameters", () => {
       await user.click(screen.getByLabelText("Samples file"));
       await user.click(screen.getByTestId("run"));
 
-      expect(piranhaAPI.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
+      expect(piranhaProvider.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
       expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
         /Unable to read samples file: Unreadable test file/,
       );
@@ -320,7 +320,7 @@ describe("RunParameters", () => {
 
       mockShowFileDialog();
 
-      piranhaAPI.readTextFile.mockImplementation(() => "test content");
+      piranhaProvider.readTextFile.mockImplementation(() => "test content");
 
       render(RunRelatedComponentInTestContext, {
         props: { componentName: "RunParameters" },
@@ -340,7 +340,7 @@ describe("RunParameters", () => {
     beforeAll(async () => {
       clearSettings();
       initialiseStore("web");
-      piranhaAPI = await mockPiranhaAPI({});
+      piranhaProvider = await mockPiranhaProvider({});
     });
 
     beforeEach(async () => {
@@ -391,7 +391,7 @@ describe("RunParameters", () => {
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
 
-      expect(piranhaAPI.runPiranha).toHaveBeenCalledOnce();
+      expect(piranhaProvider.runPiranha).toHaveBeenCalledOnce();
       const expectedOptions = {
         runName: "test name",
         notes: "test notes",
@@ -405,7 +405,7 @@ describe("RunParameters", () => {
         ...defaultPiranhaOutputSettingsWeb,
       };
       expect(validateSamplesFile).toHaveBeenCalledWith("test content");
-      expect(piranhaAPI.runPiranha).toHaveBeenCalledWith(
+      expect(piranhaProvider.runPiranha).toHaveBeenCalledWith(
         expectedOptions,
         samplesFile,
         minknowFileList,
