@@ -15,7 +15,14 @@ export default defineConfig({
       testDir: "piranha-electron/tests/e2e",
     },
     {
-      name: "web-smoke",
+      name: "web-smoke", // basic web test to ensure docker containers run and communicate
+      testDir: "piranha-web/tests/e2e-smoke",
+      use: {
+        baseURL: "http://localhost:5173",
+      },
+    },
+    {
+      name: "web", // full test suite for web mode
       testDir: "piranha-web/tests/e2e",
       use: {
         baseURL: "http://localhost:5173",

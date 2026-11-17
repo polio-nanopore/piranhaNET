@@ -3,7 +3,6 @@ import {
   ElectronApplication,
   Page,
 } from "@playwright/test";
-import pkg from "../../../package.json" with { type: "json" };
 
 // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
 // permission-related failures on CI.
@@ -30,4 +29,4 @@ export const getWindow = async (app: ElectronApplication): Promise<Page> => {
   return await app.firstWindow();
 };
 
-export const piranhaNETVersion = (): string => pkg.version;
+

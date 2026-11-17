@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { initialiseTest, getWindow, piranhaNETVersion } from "./utils";
+import { initialiseTest, getWindow } from "./utils";
+import { piranhaNETVersion } from "../../../shared/tests/e2e/utils";
 
 let electronApp;
 
