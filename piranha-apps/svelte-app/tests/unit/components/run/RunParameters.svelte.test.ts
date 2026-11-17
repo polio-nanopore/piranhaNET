@@ -208,7 +208,9 @@ describe("RunParameters", () => {
       await user.type(screen.getByLabelText("Notes"), "test notes");
       await user.click(screen.getByTestId("run"));
 
-      expect(piranhaProvider.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
+      expect(piranhaProvider.readTextFile).toHaveBeenCalledWith(
+        "/test/samples.csv",
+      );
       expect(validateSamplesFile).toHaveBeenCalledWith("test content");
 
       expect(piranhaProvider.runPiranha).toHaveBeenCalledOnce();
@@ -305,7 +307,9 @@ describe("RunParameters", () => {
       await user.click(screen.getByLabelText("Samples file"));
       await user.click(screen.getByTestId("run"));
 
-      expect(piranhaProvider.readTextFile).toHaveBeenCalledWith("/test/samples.csv");
+      expect(piranhaProvider.readTextFile).toHaveBeenCalledWith(
+        "/test/samples.csv",
+      );
       expect(screen.getByTestId("samples-file-field-error")).toHaveTextContent(
         /Unable to read samples file: Unreadable test file/,
       );

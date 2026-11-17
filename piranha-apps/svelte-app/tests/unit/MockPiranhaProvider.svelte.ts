@@ -38,7 +38,9 @@ let runSucceeded = $state(false);
 let cancelling = $state(false);
 let downloadError = $state(null);
 
-export const mockPiranhaProvider = async (values: Partial<ProviderMock>): void => {
+export const mockPiranhaProvider = async (
+  values: Partial<ProviderMock>,
+): void => {
   // initialiseStore should have been called prior to mocking the API, as the mode
   // (web or electron) selected for the store determines the API class which is
   // initialised.
@@ -52,11 +54,14 @@ export const mockPiranhaProvider = async (values: Partial<ProviderMock>): void =
   downloadError = values.downloadError || defaultProviderMock.downloadError;
   const apiVersions = values.apiVersions || defaultProviderMock.apiVersions;
 
-  const { piranhaProvider } = await import("$lib/piranhaProvider/piranhaProvider.svelte");
+  const { piranhaProvider } =
+    await import("$lib/piranhaProvider/piranhaProvider.svelte");
 
   const spyOnProviderProp = (propName: string, value: unknown): void => {
     if (propName in piranhaProvider) {
-      vi.spyOn(piranhaProvider, propName, "get").mockImplementation(() => value);
+      vi.spyOn(piranhaProvider, propName, "get").mockImplementation(
+        () => value,
+      );
     }
   };
   const spyOnProviderMethod = (methodName: string, implementation): void => {
