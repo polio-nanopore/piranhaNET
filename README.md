@@ -13,7 +13,7 @@ This monorepo contains the following components in its directories.
   * `piranha-electron` - the electron wrapper for `svelte-app`. Its vite config file is `electron.vite.config.ts`. It runs Piranha from its main thread by launching the Piranha docker container. 
   * `piranha-web` - the web app wrapper for `svelte-app`. Its vite config file is `web.vite.config.ts`.
 * `piranha-api` - source for PiranhaNET API, a Python FastAPI, used by the web app. It runs in a docker container based on the [Piranha](https://github.com/polio-nanopore/piranha) container.
-* ```
+
 
 ## Architecture
 
