@@ -73,17 +73,17 @@ def get_versions():
 @app.post("/run")
 async def run(
     run_options: Annotated[PiranhaRunOptions, Depends()],
-    barcodes_file: Annotated[UploadFile, File(alias="barcodesFile")],
+    samples_file: Annotated[UploadFile, File(alias="samplesFile")],
     minknow_zip: Annotated[UploadFile, File(alias="minknowZip")],
     run_id: Annotated[str, Depends(generate_run_id)],
 ):
     # Save input files before start response so we can raise any errors related to bad file input before we start
     # streaming output
-    minknow_dir_path, barcodes_file_path = await file_manager.save_input(run_id, barcodes_file, minknow_zip)
+    minknow_dir_path, samples_file_path = await file_manager.save_input(run_id, samples_file, minknow_zip)
     output_dir_path = file_manager.make_output_dir(run_id)
     return StreamingResponse(
         piranha_runner.run_piranha_log_generator(
-            run_id, run_options, str(barcodes_file_path), str(minknow_dir_path), str(output_dir_path)
+            run_id, run_options, str(samples_file_path), str(minknow_dir_path), str(output_dir_path)
         ),
         headers={RUN_ID_HEADER: run_id},  # Return the run id in header, as response body is streamed log
         media_type="text/plain",
