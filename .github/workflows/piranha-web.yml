@@ -27,13 +27,15 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build-web
-      - name: Make test-results dir
-        run: mkdir -p ../test-results
       - name: Run API
         run: ./scripts/build-and-run-docker-dev
         working-directory: ./piranha-api
       - name: Run Web
         run: nohup ./start-server.sh > /dev/null 2>&1 &
+      - name: Make test-results dir
+        run: mkdir -p ../test-results
+      - name: Install Playwright
+        run: npx playwright install
       - name: E2e test
         run: npm run test-web:e2e
       - name: Upload e2e error snapshots
