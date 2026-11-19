@@ -31,7 +31,7 @@ jobs:
         run: ./scripts/build-and-run-docker-dev
         working-directory: ./piranha-api
       - name: Run Web
-        run: nohup ./start-server.sh > /dev/null 2>&1 &
+        run: ./scripts/build-and-run-docker-dev
       - name: Make test-results dir
         run: mkdir -p ../test-results
       - name: Install Playwright
