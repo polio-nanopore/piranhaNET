@@ -1,10 +1,10 @@
+import {semanticVersionRegex, expectAboutTitle} from "../../../shared/tests/e2e/utils";
 import { expect, test } from "@playwright/test";
 
 test("can see versions on about page", async ({ page }) => {
   await page.goto("./about");
-  await expect(page.getByText(/About PiranhaNET/)).toBeVisible();
+  await expectAboutTitle(page);
   // check versions when available to confirm successful fetch from API
-  const semanticVersionRegex = /[0-9]+\.[0-9]+\.[0-9]+(-[a-z]+)?$/;
   await expect(
     page.getByText(new RegExp("Piranha v" + semanticVersionRegex.source)),
   ).toBeVisible();

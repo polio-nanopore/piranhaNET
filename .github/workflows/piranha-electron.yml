@@ -35,5 +35,5 @@ jobs:
         if: always() && hashFiles('piranha-apps/test-results') != ''
         uses: actions/upload-artifact@v7
         with:
-          name: E2e error snapshots
+          name: Electron e2e error snapshots
           path: piranha-apps/test-results

@@ -32,6 +32,7 @@
     "test-electron:integration": "vitest piranha-electron/tests/integration/",
     "coverage": "vitest run --coverage",
     "test-electron:e2e": "electron-vite piranha-electron/build && xvfb-run npx playwright test --project=electron",
+    "test-web:e2e": "npx playwright test --project=web",
     "docker:pull-and-tar-piranha": "node scripts/pull-and-tar-piranha-docker.js"
   },
   "dependencies": {
