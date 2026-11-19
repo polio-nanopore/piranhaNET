@@ -3,6 +3,7 @@ import {
   ElectronApplication,
   Page,
 } from "@playwright/test";
+import * as shared from "../../../shared/tests/e2e/utils";
 
 // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
 // permission-related failures on CI.
@@ -13,11 +14,7 @@ export const initialiseTest = async (): Promise<ElectronApplication> => {
   // Initialise to default language (English) for all tests, and remove any saved settings
   const app = await launchApp();
   const win = await app.firstWindow();
-  await win.evaluate(() => {
-    localStorage.removeItem("lang");
-    localStorage.removeItem("userSettings");
-    localStorage.removeItem("runSettings");
-  });
+  await shared.clearLocalStorage(win);
   await app.close(); // We'll need to re-open to get back to Welcome screen
 
   const electronApp = await launchApp();

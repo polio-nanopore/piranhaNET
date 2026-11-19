@@ -1,6 +1,8 @@
 import { test, expect, Locator, Page } from "@playwright/test";
 import { initialiseTest, launchApp, getWindow } from "./utils";
+import * as shared from "../../../shared/tests/e2e/utils";
 import Docker from "dockerode";
+import {expectErrorsOnIncompleteWelcomeScreen} from "../../../shared/tests/e2e/utils";
 
 let electronApp;
 const docker = new Docker();
@@ -43,104 +45,10 @@ test.afterEach(async () => {
   }
 });
 
-// Run Parameters
-const getNameInput = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Name/);
-const getSamplesFileButton = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Samples file/);
-const getMinKnowFolderButton = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/MinKnow folder/);
-const getNotesInput = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Notes/);
-// User Settings
-const getUserSettings = async (win: Page): Promise<Locator> =>
-  await win.getByTestId("userSettings");
-const getUserNameInput = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/User name/);
-const getInstituteInput = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Institute/);
-const getOutputFolderButton = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Output folder/);
-// Run Settings
-const getRunSettings = async (win: Page): Promise<Locator> =>
-  await win.getByTestId("runSettings");
-const getProtocol = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Protocol/);
-const getPositiveControl = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Positive control/);
-const getNegativeControl = async (win: Page): Promise<Locator> =>
-  await win.getByLabel(/Negative control/);
-
-const getContinueButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", { name: /Continue/ });
-const getRunButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", { name: /Run Piranha/ });
-const getCancelButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", { name: /Cancel Run/ });
-const getNewRunButton = async (win: Page): Promise<Locator> =>
-  await win.getByRole("button", { name: "New Run" });
-
 const getOpenReportButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Open report/ });
 const getOpenOutputFolderButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Open output folder/ });
-
-const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
-  buttonElement.locator("..");
-const expectErrorMessage = async (
-  fieldElement: Locator,
-  expectError = true,
-  expectedErrorMsg = "Required value",
-): Promise<void> => {
-  // error is in <p> following field
-  const errorEl = fieldElement.locator("//following-sibling::p");
-  if (expectError) {
-    await expect(errorEl).toHaveText(expectedErrorMsg);
-  } else {
-    await expect(errorEl).not.toBeVisible();
-  }
-};
-
-const completeWelcomeScreenForm = async (win: Page): Promise<void> => {
-  await expect(
-    await win.getByText("PiranhaNET", { exact: true }),
-  ).toBeVisible();
-
-  // need to wait for button to become visible when docker image has downloaded
-  await expect(await getContinueButton(win)).toBeVisible({
-    timeout: 300_000,
-  });
-
-  const userNameInput = await getUserNameInput(win);
-  await userNameInput.fill("Test User");
-  const instituteInput = await getInstituteInput(win);
-  await instituteInput.fill("Test Institute");
-  const outputFolderButton = await getOutputFolderButton(win);
-  await outputFolderButton.click();
-  const continueButton = await getContinueButton(win);
-  await continueButton.click();
-};
-
-const fillRunParameters = async (win: Page): Promise<void> => {
-  const nameInput = await getNameInput(win);
-  await nameInput.fill("Test Name");
-
-  const samplesFileButton = await getSamplesFileButton(win);
-  await samplesFileButton.click();
-
-  const minKnowFolderButton = await getMinKnowFolderButton(win);
-  await minKnowFolderButton.click();
-
-  const notesInput = await getNotesInput(win);
-  await notesInput.fill("some test notes");
-};
-
-const fillRunSettings = async (win: Page): Promise<void> => {
-  const posControl = await getPositiveControl(win);
-  await posControl.fill("pos");
-  const negControl = await getNegativeControl(win);
-  await negControl.fill("neg");
-};
 
 const piranhaIsRunning = async (): Promise<boolean> => {
   const containers = await docker.listContainers();
@@ -149,74 +57,36 @@ const piranhaIsRunning = async (): Promise<boolean> => {
 
 test("can see welcome screen and run form, fill in parameters form and run Piranha", async () => {
   const win = await getWindow(electronApp);
-  await completeWelcomeScreenForm(win);
+  await shared.completeWelcomeScreenForm(win);
 
-  await fillRunParameters(win);
+  await shared.fillRunParameters(win);
 
-  // Can see help text on hover
-  const tooltipTrigger = await win
-    .locator("button[data-slot='tooltip-trigger']")
-    .nth(0);
-  await tooltipTrigger.hover();
-  expect(
-    await win.locator("div[data-bits-floating-content-wrapper]"),
-  ).toHaveText(/Run name to appear in report/);
+  await shared.expectHelpTextOnHover(page);
 
   await fillRunSettings(win);
 
   // Open and edit Piranha Output settings
-  const settings = await win.getByTestId("settings");
-  const piranhaOutput = await settings.getByTestId("piranhaOutputSettings");
+  const settings = await shared.getSettings(win);
+  expect(settings).toBeVisible();
+  const piranhaOutput = await shared.getOutputSettings(win);
   await piranhaOutput.click();
   const overwriteOutput = await piranhaOutput.getByLabel("Overwrite output");
   await overwriteOutput.click();
-  const allMetadataToHeader = await piranhaOutput.getByLabel(
-    "All metadata to header",
-  );
+  const allMetadataToHeader = await shared.getAllMetadataToHeader(win);
   await allMetadataToHeader.click();
 
   // Open and edit User Settings (these were the ones we originally entered in the Welcome screen)
-  const userSettings = await getUserSettings(win);
-  await userSettings.click();
-  const userNameInput = await getUserNameInput(win);
-  await userNameInput.fill("New Test User");
+  await shared.fillUserSettings(win);
 
-  // A wait seems to necessary here to allow updates before submitting run
-  await win.waitForTimeout(2000);
-  const runButton = await getRunButton(win);
-  await runButton.click();
+  await shared.startPiranhaRun(win);
 
-  // See progress spinner
-  expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
+  expect(await shared.getProgressSpinner(win)).toBeVisible();
 
   // Open output buttons are not visible yet
   expect(await getOpenReportButton(win)).toHaveCount(0);
   expect(await getOpenOutputFolderButton(win)).toHaveCount(0);
 
-  // See expected start run text in log
-  const log = await win.getByTestId("logs");
-  await expect(log).toHaveText(/Building DAG of jobs.../, { timeout: 15_000 });
-  console.log("Run has started");
-
-  // Expect to see parameters and settings being used in log
-  await expect(log).toHaveText(/Setting username: New_Test_User/);
-  await expect(log).toHaveText(/Setting institute: Test_Institute/);
-  await expect(log).toHaveText(/Setting runname: Test_Name/);
-  await expect(log).toHaveText(/Setting notes: some_test_notes/);
-  await expect(log).toHaveText(/Setting positive_control: pos/);
-  await expect(log).toHaveText(/Setting negative_control: neg/);
-  await expect(log).toHaveText(/Setting overwrite: True/);
-  await expect(log).toHaveText(/Setting all_metadata_to_header: True/);
-
-  // Eventually see run completed successfully
-  await expect(win.getByTestId("run-progress-check")).toBeVisible({
-    timeout: 600_000,
-  });
-
-  await expect(log).toHaveText(
-    /Generating: \/data\/run_data\/output\/piranha_output\/report\.html/,
-  );
-  await expect(log).toHaveText(/Piranha Run Finished/);
+  await shared.expectSuccessfulRunLog(win);
 
   expect(await getOpenReportButton(win)).toBeEnabled();
   expect(await getOpenOutputFolderButton(win)).toBeEnabled();
@@ -224,116 +94,19 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
 test("can see errors when submit incomplete welcome screen settings", async () => {
   const win = await getWindow(electronApp);
-  await expect(await getContinueButton(win)).toBeVisible({
-    timeout: 300_000,
-  });
-  const continueButton = await getContinueButton(win);
-  await continueButton.click();
-
-  const userNameInput = await getUserNameInput(win);
-  await expectErrorMessage(userNameInput);
-
-  const instituteInput = await getInstituteInput(win);
-  await expectErrorMessage(instituteInput);
-
-  const outputFolderButton = await getOutputFolderButton(win);
-  const outputFolderField = getFieldFromDialogButton(outputFolderButton);
-  await expectErrorMessage(outputFolderField);
+  await shared.expectErrorsOnIncompleteWelcomeScreen(win);
 });
 
 test("can see errors when submit incomplete run parameters", async () => {
   const win = await getWindow(electronApp);
-  await completeWelcomeScreenForm(win);
-
-  // click run on next screen - should get errors on all parameters except threads, and also on run settings
-  const runButton = await getRunButton(win);
-  await runButton.click();
-
-  const nameInput = await getNameInput(win);
-  await expectErrorMessage(nameInput);
-
-  const samplesFileButton = await getSamplesFileButton(win);
-  const samplesFileField = getFieldFromDialogButton(samplesFileButton);
-  await expectErrorMessage(samplesFileField);
-
-  const minKnowFolderButton = await getMinKnowFolderButton(win);
-  const minKnowFolderField = getFieldFromDialogButton(minKnowFolderButton);
-  await expectErrorMessage(minKnowFolderField);
-
-  const notesInput = await getNotesInput(win);
-  await expectErrorMessage(notesInput);
-
-  // correct values and see errors disappear
-  await nameInput.fill("test name");
-  // Need to lose focus for update to occur
-  await nameInput.blur();
-  await expectErrorMessage(nameInput, false);
-
-  await samplesFileButton.click();
-  await expectErrorMessage(samplesFileField, false);
-
-  await minKnowFolderButton.click();
-  await expectErrorMessage(minKnowFolderField, false);
-
-  await notesInput.fill("test notes");
-  await notesInput.blur();
-  await expectErrorMessage(notesInput, false);
-
-  // put in an invalid threads value - see threads error
-  const threadsInput = await win.locator("#threads-field");
-  await threadsInput.fill("-1");
-  await threadsInput.blur();
-  await expectErrorMessage(
-    threadsInput,
-    true,
-    "Value must be between 1 and 20",
-  );
-  await threadsInput.fill("");
-  await threadsInput.blur();
-  await expectErrorMessage(threadsInput, true, "Value must be a whole number");
-  await threadsInput.fill("21");
-  await threadsInput.blur();
-  await expectErrorMessage(
-    threadsInput,
-    true,
-    "Value must be between 1 and 20",
-  );
-
-  // correct value and see threads error disappear
-  await threadsInput.fill("20");
-  await threadsInput.blur();
-  await expectErrorMessage(threadsInput, false);
+  await shared.completeWelcomeScreenForm(win);
+  await expectErrorsOnIncompleteRunParameters(win);
 });
 
 test("can see errors when submit incomplete settings", async () => {
   const win = await getWindow(electronApp);
-  await completeWelcomeScreenForm(win);
-  const userSettings = await getUserSettings(win);
-  await userSettings.click();
-  // Clear username and institute - should see errors on both when press Run
-  const userNameInput = await getUserNameInput(win);
-  await userNameInput.fill("");
-  const instituteInput = await getInstituteInput(win);
-  await instituteInput.fill("");
-
-  const runButton = await getRunButton(win);
-  await runButton.click();
-
-  await expectErrorMessage(userNameInput);
-  await expectErrorMessage(instituteInput);
-
-  // We haven't provided control values, so should also see error for those
-  const posInput = await getPositiveControl(win);
-  await expectErrorMessage(posInput);
-  const negInput = await getNegativeControl(win);
-  await expectErrorMessage(negInput);
-
-  await userNameInput.fill("Test User");
-  await userNameInput.blur();
-  await expectErrorMessage(userNameInput, false);
-  await instituteInput.fill("Test Institute");
-  await instituteInput.blur();
-  await expectErrorMessage(instituteInput, false);
+  await shared.completeWelcomeScreenForm(win);
+  await shared.expectErrorsOnIncompleteSettings(win);
 });
 
 test("can change language", async () => {

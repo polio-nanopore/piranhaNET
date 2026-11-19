@@ -22,7 +22,7 @@ export class PiranhaElectronProvider extends BasePiranhaProvider {
       this._log.push(...lines);
     });
     window.api?.onEnd(async () => {
-      this._log.push("Piranha Run Finished");
+      this._log.push("Piranha run finished");
       await this.findOutputFolderFromLog();
       this._running = false;
     });
