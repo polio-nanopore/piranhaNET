@@ -1,5 +1,6 @@
 import {expect, Locator, Page } from "@playwright/test";
 import pkg from "../../../package.json" with { type: "json" };
+import {getWindow, launchApp} from "../../../piranha-electron/tests/e2e/utils";
 
 export const piranhaNETVersion = (): string => pkg.version;
 export const semanticVersionRegex = /[0-9]+\.[0-9]+\.[0-9]+(-[a-z]+)?$/;
@@ -61,6 +62,8 @@ const getContinueButton = async (page: Page): Promise<Locator> =>
   await page.getByRole("button", { name: /Continue/ });
 const getRunButton = async (page: Page): Promise<Locator> =>
   await page.getByRole("button", { name: /Run Piranha/ });
+export const getLog = async (page: Page): Promise<Locator> =>
+  await page.getByTestId("logs");
 const getCancelButton = async (page: Page): Promise<Locator> =>
   await page.getByRole("button", { name: /Cancel Run/ });
 const getNewRunButton = async (page: Page): Promise<Locator> =>
@@ -156,7 +159,7 @@ export const startPiranhaRun = async (page: Page): Promise<void> => {
 
 export const expectSuccessfulRunLog = async (page: Page, isWeb = false): Promise<void> => {
   // See expected start run text in log
-  const log = await page.getByTestId("logs");
+  const log = await getLog(page);
   await expect(log).toHaveText(/Building DAG of jobs.../, { timeout: 15_000 });
   console.log("Run has started");
 
@@ -308,4 +311,90 @@ export const expectErrorsOnIncompleteSettings = async (page: Page) => {
   await instituteInput.fill("Test Institute");
   await instituteInput.blur();
   await expectErrorMessage(instituteInput, false);
+};
+
+export const testCanChangeLanguage = async (page: Page, relaunchApp) => {
+  let title = await page.getByTestId("welcome");
+  await expect(title).toHaveText(/Welcome to PiranhaNET/);
+
+  //change to French
+  let langLink = await page.getByRole("button", { name: "en", exact: true });
+  await langLink.click();
+  const frItem = await page.getByTestId("lang-fr");
+  await frItem.click();
+  await expect(title).toHaveText(/Bienvenue sur PiranhaNET/);
+  const userNameLabel = await page.getByTestId("user-name-field-label");
+  await expect(userNameLabel).toHaveText(/Nom d'utilisateur/);
+
+  //change to Portuguese
+  langLink = await page.getByRole("button", { name: "fr" });
+  await langLink.click();
+  const ptItem = await page.getByTestId("lang-pt");
+  await ptItem.click();
+  await expect(title).toHaveText(/Bem-vindo ao PiranhaNET/);
+  await expect(userNameLabel).toHaveText(/Nome de utilizador/);
+
+  // Test language is retained on restart
+  page = await relaunchApp(page);
+  langLink = await page.getByRole("button", { name: "pt" });
+  expect(langLink).toBeEnabled();
+  title = await page.getByTestId("welcome");
+  await expect(title).toHaveText(/Bem-vindo ao PiranhaNET/);
+
+  // change back to English
+  await langLink.click();
+  const enItem = await page.getByTestId("lang-en");
+  await enItem.click();
+  await expect(title).toHaveText(/Welcome to PiranhaNET/);
+  await expect(await page.getByTestId("user-name-field-label")).toHaveText(
+    /User name/,
+  );
+};
+
+export const testUserAndRunSettingsArePersisted =  async (page: Page, isWeb: boolean, relaunchApp) => {
+  await completeWelcomeScreenForm(page, isWeb);
+  let protocol = await getProtocol(page);
+  await protocol.click();
+  const environmental = await page.getByText(/environmental/);
+  await environmental.click();
+  let posControl = await getPositiveControl(page);
+  await posControl.fill("test pos");
+  await posControl.blur();
+  let negControl = await getNegativeControl(page);
+  await negControl.fill("test neg");
+  await negControl.blur();
+
+  // restart app and test values have been persisted.
+  page = await relaunchApp(page);
+
+  // should be taken to run screen immediately
+  const run = await getRunButton(page);
+  await expect(run).toBeVisible();
+
+  const settings = await page.getByTestId("settings");
+  await settings.click();
+
+  // check user settings
+  const userSettings = await getUserSettings(page);
+  await userSettings.scrollIntoViewIfNeeded();
+  await expect(userSettings).toBeVisible();
+  await userSettings.click();
+  const userNameInput = await getUserNameInput(page);
+  await expect(userNameInput).toHaveValue("Test User");
+  const instituteInput = await getInstituteInput(page);
+  await expect(instituteInput).toHaveValue("Test Institute");
+  if (!isWeb) {
+    const outputFolderField = await page.getByTestId("output-folder-field-value");
+    await expect(outputFolderField).toHaveText(/\/test-results/);
+  }
+
+  // check run settings
+  const runSettings = await getRunSettings(page);
+  await runSettings.click();
+  protocol = await getProtocol(page);
+  await expect(protocol).toHaveText(/environmental/);
+  posControl = await getPositiveControl(page);
+  await expect(posControl).toHaveValue("test pos");
+  negControl = await getNegativeControl(page);
+  await expect(negControl).toHaveValue("test neg");
 };

@@ -34,6 +34,12 @@ const initialiseFileDialogHandler = async (): Promise<void> => {
   });
 };
 
+const relaunchApp = async () => {
+  await electronApp.close();
+  electronApp = await launchApp();
+  return await getWindow(electronApp);
+};
+
 test.beforeEach(async () => {
   electronApp = await initialiseTest();
   await initialiseFileDialogHandler();
@@ -111,95 +117,16 @@ test("can see errors when submit incomplete settings", async () => {
 
 test("can change language", async () => {
   let win = await getWindow(electronApp);
-  let title = await win.getByTestId("welcome");
-  await expect(title).toHaveText(/Welcome to PiranhaNET/);
-
-  //change to French
-  let langLink = await win.getByRole("button", { name: "en", exact: true });
-  await langLink.click();
-  const frItem = await win.getByTestId("lang-fr");
-  await frItem.click();
-  await expect(title).toHaveText(/Bienvenue sur PiranhaNET/);
-  const userNameLabel = await win.getByTestId("user-name-field-label");
-  await expect(userNameLabel).toHaveText(/Nom d'utilisateur/);
-
-  //change to Portuguese
-  langLink = await win.getByRole("button", { name: "fr" });
-  await langLink.click();
-  const ptItem = await win.getByTestId("lang-pt");
-  await ptItem.click();
-  await expect(title).toHaveText(/Bem-vindo ao PiranhaNET/);
-  await expect(userNameLabel).toHaveText(/Nome de utilizador/);
-
-  // Test language is retained on restart
-  await electronApp.close();
-  electronApp = await launchApp();
-  win = await getWindow(electronApp);
-  langLink = await win.getByRole("button", { name: "pt" });
-  expect(langLink).toBeEnabled();
-  title = await win.getByTestId("welcome");
-  await expect(title).toHaveText(/Bem-vindo ao PiranhaNET/);
-
-  // change back to English
-  await langLink.click();
-  const enItem = await win.getByTestId("lang-en");
-  await enItem.click();
-  await expect(title).toHaveText(/Welcome to PiranhaNET/);
-  await expect(await win.getByTestId("user-name-field-label")).toHaveText(
-    /User name/,
-  );
+  await shared.testCanChangeLanguage(win, relaunchApp);
 });
 
 test("user and run settings are persisted", async () => {
   let win = await getWindow(electronApp);
-  await completeWelcomeScreenForm(win);
-  let protocol = await getProtocol(win);
-  await protocol.click();
-  const environmental = await win.getByText(/environmental/);
-  await environmental.click();
-  let posControl = await getPositiveControl(win);
-  await posControl.fill("test pos");
-  await posControl.blur();
-  let negControl = await getNegativeControl(win);
-  await negControl.fill("test neg");
-  await negControl.blur();
-
-  // restart app and test values have been persisted.
-  await electronApp.close();
-  const newApp = await launchApp();
-  win = await getWindow(newApp);
-
-  // should be taken to run screen immediately
-  const run = await getRunButton(win);
-  await expect(run).toBeVisible();
-
-  const settings = await win.getByTestId("settings");
-  await settings.click();
-
-  // check user settings
-  const userSettings = await getUserSettings(win);
-  await userSettings.scrollIntoViewIfNeeded();
-  await expect(userSettings).toBeVisible();
-  await userSettings.click();
-  const userNameInput = await getUserNameInput(win);
-  await expect(userNameInput).toHaveValue("Test User");
-  const instituteInput = await getInstituteInput(win);
-  await expect(instituteInput).toHaveValue("Test Institute");
-  const outputFolderField = await win.getByTestId("output-folder-field-value");
-  await expect(outputFolderField).toHaveText(/\/test-results/);
-
-  // check run settings
-  const runSettings = await getRunSettings(win);
-  await runSettings.click();
-  protocol = await getProtocol(win);
-  await expect(protocol).toHaveText(/environmental/);
-  posControl = await getPositiveControl(win);
-  await expect(posControl).toHaveValue("test pos");
-  negControl = await getNegativeControl(win);
-  await expect(negControl).toHaveValue("test neg");
+  await shared.testUserAndRunSettingsArePersisted(win, false, relaunchApp);
 });
 
 test("cancel button ends run and kills docker container", async () => {
+  // Cancel button is currently only implemented in Electron
   // Run job
   const win = await getWindow(electronApp);
   await completeWelcomeScreenForm(win);

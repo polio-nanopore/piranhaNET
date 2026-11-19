@@ -1,6 +1,7 @@
 import path from "node:path";
 import {expect, Locator, Page, test} from "@playwright/test";
 import * as shared from "../../../shared/tests/e2e/utils";
+import {getWindow, launchApp} from "../../../piranha-electron/tests/e2e/utils";
 
 const testDataDir = path.join(__dirname, "..", "..", "..", "..", "test-data", "multiple_samples");
 
@@ -19,6 +20,11 @@ const prepareFileInputs = async (page) => {
 
 const getDownloadOutputButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Download output zip/ });
+
+const relaunchApp = async (page) => {
+  await page.reload();
+  return page;
+};
 
 test.beforeEach(async ({page}) => {
   await page.goto("/");
@@ -51,7 +57,19 @@ test("can see welcome screen and run form, fill in parameters form and run Piran
 
   await shared.expectSuccessfulRunLog(page, true);
 
-  expect(await getDownloadOutputButton(page)).toBeEnabled();
+  const downloadButton = await getDownloadOutputButton(page);
+  expect(downloadButton).toBeEnabled();
+
+  // Can download output zip, which should be named after the run id
+  const log = await shared.getLog(page).textContent();
+  const runId = log.match(/^Starting run Test_Name with run id (.*)$/)[1];
+
+  const downloadPromise = page.waitForEvent("download");
+  await downloadButton.click();
+  const download = await downloadPromise;
+  // Wait for the download process to complete
+  await download.path();
+  expect(download.suggestedFilename()).toBe(`${runId}.zip`);
 });
 
 test("can see errors when submit incomplete welcome screen settings", async ({page}) => {
@@ -67,4 +85,12 @@ test("can see errors when submit incomplete settings", async ({page}) => {
   await shared.completeWelcomeScreenForm(page, true);
   await prepareFileInputs(page);
   await shared.expectErrorsOnIncompleteSettings(page);
+});
+
+test("can change language", async ({page}) => {
+  await shared.testCanChangeLanguage(page, relaunchApp);
+});
+
+test("user and run settings are persisted", async ({page}) => {
+  await shared.testUserAndRunSettingsArePersisted(page, true, relaunchApp);
 });
