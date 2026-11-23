@@ -55,7 +55,15 @@ Some details to note on the two modes:
 - Each mode shows a different UI to access results. In Electron mode, there are buttons to open the report in browser or open the output folder in native file explorer. In web mode, there is a button to download the output zip. The main report in the output zip file contains local links to other report files for the individual samples. These are relative links, and they work for the downloaded reports.
 
 ## Quick start
+
+Prerequisites:
+- Docker
+- Node 24 (see [.nvmrc](/piranha-apps/.nvmrc) for exact version used on CI)
+- bash
+- uv (for web mode API)
+
 ### Electron mode
+
 Run `./scripts/run-electron`.
 
 ### Web mode
