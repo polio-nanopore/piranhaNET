@@ -2,7 +2,7 @@
 
 A [Svelte](https://svelte.dev/) app written in [TypeScript](https://www.typescriptlang.org/) which enables desktop users to run [piranha](https://github.com/polio-nanopore/piranha).
 
-This app can be run both within an [Electron](https://www.electronjs.org/svelte) application and as a web application.
+This app can be run both within an [Electron](https://www.electronjs.org) application and as a web application.
 
 Source code is contained in the following folders:
 `svelte-app` - the shared Svelte application
@@ -31,26 +31,26 @@ Run web app:
 $ npm run dev-web
 ```
 
-You should also have the piranha api running at this point, with `scripts/build-and-run-docker-dev.sh` from the
+You should also have the piranha api running at this point, with `scripts/build-and-run-docker-dev` from the
 `piranha-api` folder.
 
 To test the web app running in a docker container, run the api as above, and run `./scripts/build-and-run-docker-dev`
-from this folder. The web app should be available at http://localhost:5137
+from this folder. The web app should be available at http://localhost:5173
 
 Stop and remove the docker container with `./scripts/stop-docker-dev`
 
 #### Test data
 
 There is some useful test data to help with manual local testing in the `test-data` folder (under project root). This
-contains two folder with data files which can be used to run Piranha:
+contains two folders with data files which can be used to run Piranha:
 
 - multiple_samples: This contains data for seven samples which can be used to replicate a typical size of Piranha run. However.
   this data is in an older format and missing some metadata, so Piranha will log some warnings.
-- new_format: This contains data for a single sample in the new format with all expeced metadata.
+- new_format: This contains data for a single sample in the new format with all expected metadata.
 
-Each folder contains a "barcodes.csv" file. Select this file as the "Barcodes file" parameter.
+Each folder contains a "samples.csv" file. Select this file as the "Samples file" parameter.
 Each folder also contains a single subfolder called "minknow". Select this subfolder as the "MinKnow folder" parameter.
-Select barcodes file and MinKnow folder from the same test_data folder on each run.
+Select samples file and MinKnow folder from the same test_data folder on each run.
 
 The other settings and parameters can typically take any text (e.g. for run Name and Notes), or can be selected from
 drop down lists or checkboxes. See the inline help for descriptions of what each setting means.
@@ -97,10 +97,10 @@ sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
 
 Internationalisation in the renderer is implemented using [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs).
 To add a UI string, add it in English (en), French (fr) and Portuguese (pt), with the same key, to the relevant json files
-in the `messages` folder. After an `npm run build` that key will be available as a method on `m` which can be
-imported from `src/paraglide/messages`.
+in the `messages` folder. After an `npm run build-electron` or `npm run build-web` that key will be available as a method on `m` which can be
+imported from `svelte-app/src/paraglide/messages`.
 
-The `i18n` object defined in `renderer/src/lib/i18n.svelte.ts` allows reading and writing the current language which is
+The `i18n` object defined in `svelte-app/src/lib/i18n.svelte.ts` allows reading and writing the current language which is
 a svelte `$state` value. To make a message string in the UI reactive to language change, it should be included in a
 key block tied to that value:
 
@@ -125,15 +125,15 @@ However, the shadcn svelte Form component is heavily tied to SvelteKit via `svel
 ### Tests
 
 Run unit tests with `npm run test:unit`.
-Run integration tests with `npm run test:electron-integration`.
+Run integration tests with `npm run test-electron:integration`.
 Run unit and integration tests with coverage using `npm run coverage`
 
-Run Playwright e2e tests with `npm run test:e2e`.
+Run Playwright e2e tests with `npm run test-electron:e2e`.
 
-In order to run the Playwright tests on GitHub Actions, the `test:e2e` script uses xvfb, a virtual display for use on
+In order to run the Playwright tests on GitHub Actions, the `test-electron:e2e` script uses xvfb, a virtual display for use on
 systems without a default display driver. See [here](https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci) for more details.
 
-The `test:e2e` script also pre-builds the app, as Playwright needs to use a built js application, not Typescript directly.
+The `test-electron:e2e` script also pre-builds the app, as Playwright needs to use a built js application, not Typescript directly.
 
 To see additional logging during the e2e tests, you can switch on debug logging by changing the `test-electron:e2e` script to:
 `electron-vite piranha-electron/build && DEBUG=pw:api xvfb-run npx playwright test`
@@ -153,8 +153,10 @@ Run formatting with automatic fixes: `npm run format:write`
 Build distributions of the app with:
 
 ```bash
-# For windows
-$ npm run build:win
+# For windows, with Docker image bundled
+$ npm run build:win-full
+# For windows, Docker image will be pulled on install
+$ npm run build:win-light
 
 # For macOS
 $ npm run build:mac
