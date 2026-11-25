@@ -166,6 +166,7 @@ $ npm run build-installer:linux
 ```
 
 Build the distribution of the web app, which is included in the Docker image:
+
 ```bash
 npm run build-web
 ```
