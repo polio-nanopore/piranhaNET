@@ -33,7 +33,7 @@
     ? runParametersSchemaWeb()
     : runParametersSchemaElectron();
 
-  // Add sample file validation to the schema, which needs to be implemented difference in web/electron mode
+  // Add sample file validation to the schema, which needs to be implemented differently in web/electron mode
   schema = schema.superRefine(async (data, ctx) => {
     const filePath = data.samplesFilePath;
     if (filePath) {
