@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import * as path from "path";
-import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { electronApp, is, optimizer } from "@electron-toolkit/utils";
 import * as uuid from "uuid";
+import fs from "node:fs/promises";
 import pkg from "../../../package.json" with { type: "json" };
 import icon from "../../resources/icon.png?asset";
 import { PiranhaRunner } from "./piranhaRunner";
@@ -92,6 +93,13 @@ function createWindow(): void {
       return result.filePaths.length ? result.filePaths[0] : null;
     },
   );
+
+  /**
+   * Read a local text file and return its content to the main window
+   */
+  ipcMain.handle("read-text-file", async (_event, path: string) => {
+    return await fs.readFile(path, { encoding: "utf8" });
+  });
 
   /**
    * Handles request from renderer to run Piranha and stream logs back to the main window
