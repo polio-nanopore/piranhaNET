@@ -8,12 +8,12 @@ application, or deployed as a web application.
 
 This monorepo contains the following components in its directories.
 
-* `piranha-apps` - npm root and source for both the Electron and web applications, containing the following notable sub-directories:
+* `piranha-apps` - npm root and source for both the Electron and web applications. See its [README](/piranha-apps/README.md) for details. This directory containing the following notable sub-directories:
   * `svelte-app` - the front end svelte application code used by both applications
   * `piranha-electron` - the electron wrapper for `svelte-app`. Its vite config file is `electron.vite.config.ts`. It runs Piranha from its main thread by launching the Piranha docker container. 
   * `piranha-web` - the web app wrapper for `svelte-app`. Its vite config file is `web.vite.config.ts`.
-* `piranha-api` - source for PiranhaNET API, a Python FastAPI, used by the web app. It runs in a docker container based on the [Piranha](https://github.com/polio-nanopore/piranha) container.
-* ```
+* `piranha-api` - source for PiranhaNET API, a Python FastAPI, used by the web app. It runs in a docker container based on the [Piranha](https://github.com/polio-nanopore/piranha) container. See its [README](/piranha-api/README.md) for details. 
+
 
 ## Architecture
 
@@ -55,14 +55,22 @@ Some details to note on the two modes:
 - Each mode shows a different UI to access results. In Electron mode, there are buttons to open the report in browser or open the output folder in native file explorer. In web mode, there is a button to download the output zip. The main report in the output zip file contains local links to other report files for the individual samples. These are relative links, and they work for the downloaded reports.
 
 ## Quick start
+
+Prerequisites:
+- Docker
+- Node 24 (see [.nvmrc](/piranha-apps/.nvmrc) for exact version used on CI)
+- bash
+- uv (for web mode API)
+
 ### Electron mode
+
 Run `./scripts/run-electron`.
 
 ### Web mode
 Run the API with: `./scripts/run-api`.
 Run the web front end with: `./scripts/run-web`.
 
-Stop the API with: `/scripts/stop-api`.
+Stop the API with: `./scripts/stop-api`.
 
 ## Release process
 To make a release:

@@ -113,11 +113,6 @@ export class PiranhaRunner {
         Image: this.imageRef,
         Cmd: [], // default cmd
         Env: env,
-        Volumes: {
-          containerBarcodesFilePath: {},
-          containerBaseCalledPath: {},
-          containerOutputPath: {},
-        },
         User: this.userMapping,
         HostConfig: {
           Binds: [
