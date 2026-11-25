@@ -18,7 +18,7 @@ export interface PiranhaRunOptionsWeb {
 }
 
 export interface PiranhaRunOptionsElectron extends PiranhaRunOptionsWeb {
-  barcodesFilePath: string;
+  samplesFilePath: string;
   minKnowFolderPath: string;
   outputFolderPath: string;
   overwriteOutput: boolean;

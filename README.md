@@ -8,12 +8,12 @@ application, or deployed as a web application.
 
 This monorepo contains the following components in its directories.
 
-* `piranha-apps` - npm root and source for both the Electron and web applications, containing the following notable sub-directories:
+* `piranha-apps` - npm root and source for both the Electron and web applications. See its [README](/piranha-apps/README.md) for details. This directory containing the following notable sub-directories:
   * `svelte-app` - the front end svelte application code used by both applications
   * `piranha-electron` - the electron wrapper for `svelte-app`. Its vite config file is `electron.vite.config.ts`. It runs Piranha from its main thread by launching the Piranha docker container. 
   * `piranha-web` - the web app wrapper for `svelte-app`. Its vite config file is `web.vite.config.ts`.
-* `piranha-api` - source for PiranhaNET API, a Python FastAPI, used by the web app. It runs in a docker container based on the [Piranha](https://github.com/polio-nanopore/piranha) container.
-* ```
+* `piranha-api` - source for PiranhaNET API, a Python FastAPI, used by the web app. It runs in a docker container based on the [Piranha](https://github.com/polio-nanopore/piranha) container. See its [README](/piranha-api/README.md) for details. 
+
 
 ## Architecture
 
@@ -52,17 +52,25 @@ Some details to note on the two modes:
 - One key step in this initialisation is setting up the correct api class (either `PiranhaWebAPI` or `PiranhaElectronAPI`) which will be used to communicate with either the Python API (in web mode) or Electron main thread (in electron mode). *There is potential for confusion here - in the context of these classes in the svelte app, "API" refers to the front end's API for accessing Piranha, which is implemented differently in the two modes. In the context of the overall architecture, "PiranhaNET API" refers to the web API provided by PiranhaNET API, the Python FastAPI whose source is in the "piranha-api" folder, and which is deployed in a docker container based on the Piranha docker image.* 
 - Some run settings are not relevant when running in web mode, as they relate to local output, e.g. the overwrite output checkbox. Settings types and validation are therefore slightly different between the modes.
 - The `FileSelect` component is adapted to either handle opening native dialogs via the electron main thread, or standard web dialogs to select files and folders. When selecting the MinKnow folder, we need to know the internal folder structure so that we can assemble the archive with the structure retained (this is required to run Piranha), so we include the `webkitdirectory` attribute to provide this information. This shows a confirmation warning in the browser by default.
-- Each mode shows a different UI to access results. In Electron mode, there are buttons to open the report in browser or open the output folder in native file explorer. In web mode, there is a button to download the output zip. The main report in the output zip file contains local links to other report files for the individual barcodes. These are relative links, and they work for the downloaded reports.
+- Each mode shows a different UI to access results. In Electron mode, there are buttons to open the report in browser or open the output folder in native file explorer. In web mode, there is a button to download the output zip. The main report in the output zip file contains local links to other report files for the individual samples. These are relative links, and they work for the downloaded reports.
 
 ## Quick start
+
+Prerequisites:
+- Docker
+- Node 24 (see [.nvmrc](/piranha-apps/.nvmrc) for exact version used on CI)
+- bash
+- uv (for web mode API)
+
 ### Electron mode
+
 Run `./scripts/run-electron`.
 
 ### Web mode
 Run the API with: `./scripts/run-api`.
 Run the web front end with: `./scripts/run-web`.
 
-Stop the API with: `/scripts/stop-api`.
+Stop the API with: `./scripts/stop-api`.
 
 ## Release process
 To make a release:

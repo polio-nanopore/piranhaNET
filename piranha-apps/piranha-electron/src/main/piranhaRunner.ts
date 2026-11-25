@@ -96,13 +96,13 @@ export class PiranhaRunner {
     // Because we're running as non-root user we need to make sure home and cache used by snakemake don't default to
     // /root.
     const env = ["XDG_CACHE_HOME=/tmp/.cache", "HOME=/tmp", envString];
+
+    // We also need to set USER (for non-Windows) as this is used by some piranha dependencies
     if (!this.isWindows) {
       env.push(`USER=${this.userName}`);
     }
 
-    // We also need to set USER (for non-Windows) as this is used by some piranha dependencies
-
-    const containerBarcodesFilePath = "/data/run_data/analysis/barcodes.csv";
+    const containerSamplesFilePath = "/data/run_data/analysis/barcodes.csv";
     const containerBaseCalledPath = "/data/run_data/basecalled";
     const containerOutputPath = "/data/run_data/output";
 
@@ -113,15 +113,10 @@ export class PiranhaRunner {
         Image: this.imageRef,
         Cmd: [], // default cmd
         Env: env,
-        Volumes: {
-          containerBarcodesFilePath: {},
-          containerBaseCalledPath: {},
-          containerOutputPath: {},
-        },
         User: this.userMapping,
         HostConfig: {
           Binds: [
-            `${options.barcodesFilePath}:${containerBarcodesFilePath}`,
+            `${options.samplesFilePath}:${containerSamplesFilePath}`,
             `${options.minKnowFolderPath}:${containerBaseCalledPath}`,
             `${options.outputFolderPath}:${containerOutputPath}`,
           ],
