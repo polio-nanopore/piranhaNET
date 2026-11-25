@@ -150,17 +150,22 @@ Run formatting with automatic fixes: `npm run format:write`
 
 ### Build
 
-Build distributions of the app with:
+Build installable distributions of the Electron app with:
 
 ```bash
 # For windows, with Docker image bundled
-$ npm run build:win-full
+$ npm run build-installer:win-full
 # For windows, Docker image will be pulled on install
-$ npm run build:win-light
+$ npm run build-installer:win-light
 
 # For macOS
-$ npm run build:mac
+$ npm run build-installer:mac
 
 # For Linux
-$ npm run build:linux
+$ npm run build-installer:linux
+```
+
+Build the distribution of the web app, which is included in the Docker image:
+```bash
+npm run build-web
 ```
